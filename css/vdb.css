@@ -1,0 +1,79 @@
+html {
+  min-height: 100%;
+  position: relative; }
+
+body {
+  height: 100%;
+  background-color: #grey-lighter;
+  font-family: "Merriweather", serif; }
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Merriweather Sans", sans-serif; }
+
+#main-content {
+  margin-top: 15px; }
+
+.main-panel {
+  padding: 15px;
+  border-radius: 0 !important; }
+
+.alert,
+.navbar {
+  font-family: "Arial", sans-serif; }
+
+.navbar-default .navbar-brand {
+  color: #eee; }
+  .navbar-default .navbar-brand :hover, .navbar-default .navbar-brand focus {
+    color: #fff; }
+.navbar-default .navbar-nav > li > a {
+  color: #eee; }
+  .navbar-default .navbar-nav > li > a :hover, .navbar-default .navbar-nav > li > a focus {
+    color: #fff; }
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:hover,
+.navbar-default .navbar-nav > .active > a:focus,
+.navbar-default .navbar-nav > .open > a,
+.navbar-default .navbar-nav > .open > a:hover,
+.navbar-default .navbar-nav > .open > a:focus {
+  color: #fff;
+  background-color: #3AB53A; }
+.navbar-default .navbar-nav > .dropdown > a .caret {
+  border-top-color: #eee;
+  border-bottom-color: #eee; }
+  .navbar-default .navbar-nav > .dropdown > a .caret :hover, .navbar-default .navbar-nav > .dropdown > a .caret focus {
+    border-top-color: #fff; }
+  .navbar-default .navbar-nav > .dropdown > a .caret :hover, .navbar-default .navbar-nav > .dropdown > a .caret focus {
+    border-bottom-color: #fff; }
+.navbar-default .navbar-nav > .open > a .caret,
+.navbar-default .navbar-nav > .open > a:hover .caret,
+.navbar-default .navbar-nav > .open > a:focus .caret {
+  border-top-color: #fff;
+  border-bottom-color: #3AB53A; }
+
+.detail-table {
+  font-family: "Fira Mono";
+  font-size: 12px;
+  margin-top: 0px;
+  padding-top: small-spacing;
+  padding-right: 15px;
+  padding-bottom: 15px;
+  padding-left: 15px; }
+
+.icon {
+  padding-right: 15px; }
+
+#background,
+#googlemaps {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  z-index: -1; }
+
+/*# sourceMappingURL=vdb.css.map */

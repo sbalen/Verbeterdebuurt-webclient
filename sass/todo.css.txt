@@ -1,0 +1,68 @@
+
+#map-button{
+background: url("./img/map.png") no-repeat scroll center center transparent;
+}
+#map-button:hover,
+#map-button:focus{
+background: url("./img/map_high.png") no-repeat scroll center center transparent;
+}
+#new-button{
+background: url("./img/new.png") no-repeat scroll center center transparent;
+}
+#new-button:hover,
+#new-button:focus{
+background: url("./img/new_high.png") no-repeat scroll center center transparent;
+}
+#my-button{
+background: url("./img/my.png") no-repeat scroll center center transparent;
+}
+#my-button:hover,
+#my-button:focus{
+background: url("./img/my_high.png") no-repeat scroll center center transparent;
+}
+.sub-nav-btn-content {
+   padding-top: 54px;
+  }
+
+
+#us2-address{
+ border: 0px;
+ width: 100%;
+ text-decoration: underline;
+ color: #007ac3;
+}
+#us2-address:hover{
+ border: 0px;
+ width: 100%;
+ text-decoration: underline;
+ color: #4bace6;
+}
+#us2-address:focus{
+ border: 2px inset;
+ width: 100%;
+ text-decoration: none;
+ color: #666;
+}
+.form-group {
+ padding-right:15px;
+ padding-left:15px;
+}
+.form-col{
+padding-right:0px;
+padding-left:0px; 
+}
+.issue-panel{
+border-color: #fff;
+}
+.issue-panel .panel-heading {
+ background-color: #fff;
+}
+select{
+ border: 1px solid #ccc;
+ border-radius: 4px;
+ height: 34px;
+ padding-left: 6px;
+}
+option:disabled {
+    color: #ccc;
+}

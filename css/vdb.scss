@@ -1,0 +1,125 @@
+@mixin light_up_property_over($property, $base, $high) {
+  #{$property}: $base;
+  :hover, focus {#{$property}: $high};
+}
+
+//Fonts
+$heading-font: 'Merriweather Sans',  sans-serif;
+$default-font: 'Merriweather', serif;
+$nav-font: 'Arial', sans-serif;
+$log-font: 'Fira Mono', ;
+
+//colors
+$red: #FA1E00;
+$red-darker:            darken($red, 20%) !default;
+$red-dark:              darken($red, 10%) !default;
+$red-light:             lighten($red, 10%) !default; 
+$red-lighter:           lighten($red, 20%) !default;
+
+$green: #3AB53A;
+$green-darker:            darken($green, 20%) !default; 
+$green-dark:              darken($green, 10%) !default;
+$green-light:             lighten($green, 10%) !default; 
+$green-lighter:           lighten($green, 20%) !default;
+
+$blue: #007AC3;
+$blue-darker:            darken($blue, 20%) !default; 
+$blue-dark:              darken($blue, 10%) !default;
+$blue-light:             lighten($blue, 10%) !default; 
+$blue-lighter:           lighten($blue, 20%) !default;
+
+$grey: #333;
+$grey-darker:            darken($grey, 20%) !default; 
+$grey-dark:              darken($grey, 10%) !default;
+$grey-light:             lighten($grey, 10%) !default; 
+$grey-lighter:           lighten($grey, 20%) !default;
+
+$primary-color: $grey;
+$background-color: #grey-lighter;
+$white-normal: #eee;
+$white-light: #fff;
+
+//spaces
+$normal-spacing: 15px;
+$small-spacing: 5px;
+
+html {
+  min-height: 100%; 
+  position:relative;
+}
+body { 
+  height: 100%; 
+  background-color: $background-color;
+  font-family: $default-font;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: $heading-font;
+}
+#main-content {
+  margin-top: $normal-spacing
+}
+.main-panel {
+  padding: $normal-spacing;
+  border-radius: 0 !important;
+}
+.alert,
+.navbar {
+  font-family: $nav-font;
+}
+.navbar-default {
+  .navbar-brand {
+    @include light_up_property_over(color, $white-normal, $white-light);
+  }
+  .navbar-nav{ 
+    > li > a {
+      @include light_up_property_over(color, $white-normal, $white-light);    }
+    > .active > a, 
+    > .active > a:hover, 
+    > .active > a:focus,
+    > .open > a, 
+    > .open > a:hover, 
+    > .open > a:focus {
+      color: #fff;
+      background-color: #3AB53A;
+    }
+    > .dropdown > a .caret {
+      @include light_up_property_over(border-top-color, $white-normal, $white-light);
+      @include light_up_property_over(border-bottom-color, $white-normal, $white-light);
+    }
+    > .open > a .caret, 
+    > .open > a:hover .caret,
+    > .open > a:focus .caret { 
+      border-top-color: #fff;
+      border-bottom-color: #3AB53A;
+    }
+  }
+}
+
+
+.detail-table{
+  font-family: $log-font;
+  font-size: 12px;
+  margin-top: 0px;
+  padding-top: small-spacing;
+  padding-right: $normal-spacing;
+  padding-bottom: $normal-spacing;
+  padding-left: $normal-spacing;
+}
+.icon{
+  padding-right: $normal-spacing;
+}
+//the backgrounds
+#background,
+#googlemaps{
+  top:0;
+  bottom:0;
+  left:0;
+  right:0;
+  overflow:hidden;
+  z-index:-1; 
+}
