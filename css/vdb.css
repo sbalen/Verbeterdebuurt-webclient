@@ -74,6 +74,19 @@ h6 {
   left: 0;
   right: 0;
   overflow: hidden;
-  z-index: -1; }
+  z-index: 0; }
+
+.footer {
+  width: 80%;
+  height: 100px;
+  background-color: white;
+  text-align: center;
+  margin-left: 10%;
+  position: relative; }
+
+.footertext {
+  width: 100%;
+  height: 60%;
+  padding-top: 40px; }
 
 /*# sourceMappingURL=vdb.css.map */
