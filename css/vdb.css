@@ -82,7 +82,10 @@ h6 {
   background-color: white;
   text-align: center;
   margin-left: 10%;
-  position: relative; }
+  position: relative;
+  border-color: #007AC3;
+  border-style: solid;
+  border-width: thin; }
 
 .footertext {
   width: 100%;
