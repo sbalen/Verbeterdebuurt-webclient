@@ -121,7 +121,7 @@ h6 {
   left:0;
   right:0;
   overflow:hidden;
-  z-index:-1; 
+  z-index:0; 
 }
 //footer
 .footer{
@@ -130,6 +130,7 @@ h6 {
   background-color:white;
   text-align: center;
   margin-left: 10%;
+  position: relative;
   
 }
 .footertext{
