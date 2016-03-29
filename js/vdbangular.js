@@ -3,16 +3,18 @@ var vdbApp = angular.module('vdbApp', ['ngRoute']);
 vdbApp.config(['$routeProvider','$locationProvider', function ($routeProvider,$locationProvider) {
 	$routeProvider
 
-	.when('/home.html', {
-		templateUrl: 'homes.html'
+	.when('/', {
+		templateUrl: 'map.html'
 		
 	})
-	.when('/home', {
-		templateUrl: 'homes.html'
-		
-	})
+	
 	.when('/mention', {
 		templateUrl: 'mention.html',
+		
+	})
+    
+    .when('/myissues', {
+		templateUrl: 'myissues.html'
 		
 	})
 	
