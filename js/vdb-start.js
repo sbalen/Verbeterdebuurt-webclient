@@ -16,6 +16,7 @@ function start(){this._map_center = {lat: 52.158367, lng: 4.492999};
      getLocation(map);
       //start location picker
      map.setOptions({draggable: true, zoomControl: true, scrollwheel: true, disableDoubleClickZoom: true});
+     
     
 } /*
 class Map {

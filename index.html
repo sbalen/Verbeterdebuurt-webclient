@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="vdbApp">
 <head>
     <title>Verbeterdebuurt &raquo; Hillegom &raquo; lantarenpalen die niet branden</title>
     <!--META-->
@@ -25,23 +25,30 @@
     <link rel="stylesheet" href="./css/app.css">
     <link href="./css/star-rating.css" media="all" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" type="text/css" href="css/vdb.css">
+
     <!--SCRIPTS-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
     <!--Angular-->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js" ></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular-resource.min.js"></script>
     <script src="https://code.angularjs.org/1.5.0/angular-route.js" ></script>
     <script src="js/vdbangular.js"></script>
     <base href="/">
+    
     <!--PAGE SPECIFIC SCRIPTS -->
     <script src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+   
 </head>
-<body ng-app="vdbApp">
+<body>
     
     <!-- map div on the background -->
-    <div id="googlemaps" class=""></div>
-    
+    <div ng-controller="cityCtrl">
+    <input type="hidden" id="city" ng-model="city" ></input>
+    <div id="googlemaps" class="" ng-click="alrCity()" ></div>
+    </div>
+     
     <!-- navigation -->
     <nav id="navtop" class="navbar navbar-default">
         <div class="container-fluid">
@@ -103,9 +110,8 @@
 </body>
 </html>
 <!-- Page specific js -->
-<!-- <script src="./js/googlemapjs.js"></script> -->
-<script src="./js/vdb-start.js"></script>
-
+<script src="./js/googlemapjs.js"></script>
+<!-- <script src="./js/vdb-start.js"></script> -->
 
 
 
