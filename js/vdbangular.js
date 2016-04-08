@@ -17,6 +17,18 @@ vdbApp.config(['$routeProvider','$locationProvider', function ($routeProvider,$l
 		templateUrl: 'myissues.html'
 		
 	})
+    
+    .when('/login', {
+		templateUrl: 'login.html'
+		
+	})
+    
+    .when('/register', {
+		templateUrl: 'register.html'
+		
+	})
+    
+    
 	
 	 $locationProvider.html5Mode(true);
 }])

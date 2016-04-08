@@ -77,7 +77,7 @@ h6 {
   }
   .navbar-nav{ 
     > li > a {
-      @include light_up_property_over(color, $white-normal, $white-light);    }
+      @include light_up_property_over(color, $green-light, $white-light);    }
     > .active > a, 
     > .active > a:hover, 
     > .active > a:focus,
