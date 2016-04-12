@@ -1,7 +1,9 @@
 var vdbApp = angular.module('vdbApp', ['ngRoute'])
-var APIURL = "http://staging.​verbeterdebuurt.nl/api.php/json_1_2/";
+var APIURL = "http://local.​verbeterdebuurt.nl/api.php/json_1_2/";
 
 var issuesService = new Object();
+var registerService = new Object();
+var loginService  = new Object();
 
 //change menu selected
 function menuSelected($scope,selected){
@@ -22,7 +24,7 @@ function menuSelected($scope,selected){
 	}
 };
 
-vdbApp.config(['$routeProvider','$locationProvider','$httpProvider', function ($routeProvider,$locationProvider,$httpProvider) {
+vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegateProvider', function ($routeProvider,$locationProvider,$httpProvider,$sceDelegateProvider) {
 	$routeProvider
 
 	.when('/', {
@@ -30,11 +32,7 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider', function ($
 		controller: 'mainCtrl'
 		
 	})
-	.when('/city', {
-		templateUrl: 'map.html',
-		controller: 'cityCtrl'
-	})
-	.when('/city/:id', {
+	.when('/city/:cityName', {
 		templateUrl: 'map.html',
 		controller: 'cityCtrl'
 	})
@@ -62,7 +60,10 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider', function ($
     
 	
 	 $locationProvider.html5Mode(true);
-	 
+	 $sceDelegateProvider.resourceUrlWhitelist([
+		// Allow same origin resource loads.
+		'self'
+	]);
 }]);
 // Service
 vdbApp.factory('issuesService', ['$http',function ($http) {
@@ -74,6 +75,7 @@ vdbApp.factory('issuesService', ['$http',function ($http) {
 				 $http.post(APIURL+'issues',jsondata)
 						.success(function(data){
 							issuesService.data.message = data;
+							console.log(jsondata);
 							console.log(issuesService.data.message);
 						})
 						.error(function(data){
@@ -89,14 +91,14 @@ vdbApp.factory('issuesService', ['$http',function ($http) {
 
 
 vdbApp.controller('cityCtrl', ['$scope','$window','$location','$rootScope','$routeParams','$http','issuesService', function ($scope,$window,$location,$rootScope,$routeParams,$http,issuesService) {
-					if($routeParams.id) {
+					if($routeParams.cityName) {
 						// alert($routeParams.id);
 						}
 					$scope.alrCity = function(){
 						if(city.long_name != null){
 							// console.log("controller:"+city.long_name);
-							$location.path("city/"+city.long_name)
-							var jsondata = JSON.stringify({"council" : ""+$routeParams.id+""});
+							$location.path("/city/"+city.long_name)
+							var jsondata = JSON.stringify({"council" : ""+$routeParams.cityName+""});
 							issuesService.getIssues(jsondata);
 						}		
 					}

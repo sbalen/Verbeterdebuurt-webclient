@@ -1,4 +1,5 @@
 <IfModule mod_rewrite.c>
+AddType text/css .css
 Options FollowSymLinks
 RewriteEngine On
 RewriteBase /

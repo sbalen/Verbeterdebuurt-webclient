@@ -21,9 +21,9 @@
     <link href='https://fonts.googleapis.com/css?family=Raleway:400,500' rel='stylesheet' type='text/css'>
     <!--STYLESHEET -->
     <!--link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"-->
-    <link rel="stylesheet" href="./css/app.css">
-    <link href="./css/star-rating.css" media="all" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="css/vdb.css">
+    <link rel="stylesheet" href="/css/app.css">
+    <link href="/css/star-rating.css" media="all" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="/css/vdb.css">
 
     <!--SCRIPTS-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -43,8 +43,8 @@
     
     <!-- map div on the background -->
     <div ng-controller="cityCtrl">
-    <input type="hidden" id="city" ng-model="city" ></input>
-    <div id="googlemaps" class="" ng-mouseup="alrCity()" ></div>
+    <div id="googlemaps" class="city" ng-mouseup="alrCity()" ></div>
+    <input type="hidden" id="city"  ></input>
     </div>
      
     <!-- navigation -->
@@ -61,7 +61,7 @@
             <div class="collapse navbar-collapse" id="Navbar">
                 <ul class="nav navbar-nav hidden-lg hidden-sm hidden-md"> 
                     <li class="divider-vertical"></li>
-                    <li class="{{homeSelected}}"><a href="home">Kaart</a></li>
+                    <li class="{{homeSelected}}"><a href="/">Kaart</a></li>
                     <li class="divider-vertical"></li>
                     <li class="{{mentionSelected}}"><a href="mention">Melding maken</a></li>
                     <li class="divider-vertical"></li>
