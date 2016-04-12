@@ -16,11 +16,7 @@ function getLocation(map) {
                         }
                     }
                 }
-                     //console.log(city.long_name);
-                     document.getElementById('city').value = city.long_name;
-                     //var memCity = city.long_name;
-                     // var url = document.location.href+'city/'+city.long_name; 
-                     // window.location = url;
+                     // console.log("googlemap:"+city.long_name);
                     }
                 
 

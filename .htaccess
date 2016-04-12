@@ -2,6 +2,7 @@
 Options FollowSymLinks
 RewriteEngine On
 RewriteBase /
+Header set Access-Control-Allow-Origin "*"
 # Don't rewrite files or directories
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
