@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" >
 <head>
     <title>Verbeterdebuurt &raquo; Hillegom &raquo; lantarenpalen die niet branden</title>
     <!--META-->
@@ -21,26 +21,32 @@
     <link href='https://fonts.googleapis.com/css?family=Raleway:400,500' rel='stylesheet' type='text/css'>
     <!--STYLESHEET -->
     <!--link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"-->
-    
-    <link rel="stylesheet" href="./css/app.css">
-    <link href="./css/star-rating.css" media="all" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="css/vdb.css">
+    <link rel="stylesheet" href="/css/app.css">
+    <link href="/css/star-rating.css" media="all" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="/css/vdb.css">
+
     <!--SCRIPTS-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
     <!--Angular-->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js" ></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular-resource.min.js"></script>
     <script src="https://code.angularjs.org/1.5.0/angular-route.js" ></script>
-    <script src="js/vdbangular.js"></script>
     <base href="/">
+    
     <!--PAGE SPECIFIC SCRIPTS -->
     <script src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+   
 </head>
 <body ng-app="vdbApp">
     
     <!-- map div on the background -->
-    <div id="googlemaps" class=""></div>
-    
+    <div ng-controller="cityCtrl">
+    <div id="googlemaps" class="city" ng-mouseup="alrCity()" ></div>
+    <input type="hidden" id="city"  ></input>
+    </div>
+     
     <!-- navigation -->
     <nav id="navtop" class="navbar navbar-default">
         <div class="container-fluid">
@@ -55,11 +61,11 @@
             <div class="collapse navbar-collapse" id="Navbar">
                 <ul class="nav navbar-nav hidden-lg hidden-sm hidden-md"> 
                     <li class="divider-vertical"></li>
-                    <li class="active"><a href="home">Kaart</a></li>
+                    <li class="{{homeSelected}}"><a href="/">Kaart</a></li>
                     <li class="divider-vertical"></li>
-                    <li><a href="mention">Melding maken</a></li>
+                    <li class="{{mentionSelected}}"><a href="mention">Melding maken</a></li>
                     <li class="divider-vertical"></li>
-                    <li><a href="myalert">Mijn meldingen</a></li>  
+                    <li class="{{myIssuesSelected}}"><a href="myissues">Mijn meldingen</a></li>  
                     <li class="divider-vertical"></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
@@ -76,9 +82,9 @@
             <div class="container"> 
                 <ul class="pager subnav-pager"> 
                     <div class="btn-group-wrap btn-group">
-                        <button type="button" id="map-button" class="active btn sub-nav-btn" ><a href="/">Kaart</a></button>
-                        <button type="button" id="new-button" class="btn sub-nav-btn"><a href="mention">Melding maken</a></button>
-                        <button type="button" id="my-button" class="btn sub-nav-btn" ><a href="myissues">Mijn meldingen</a></button>
+                        <button type="button" id="map-button" class="{{homeSelected}} btn sub-nav-btn" ><a href="/">Kaart</a></button>
+                        <button type="button" id="new-button" class="{{mentionSelected}} btn sub-nav-btn"><a href="mention">Melding maken</a></button>
+                        <button type="button" id="my-button" class="{{myIssuesSelected}} btn sub-nav-btn" ><a href="myissues">Mijn meldingen</a></button>
                      </div>         
                 </ul>   
             </div>
@@ -102,6 +108,9 @@
 </body>
 </html>
 <!-- Page specific js -->
+<script src="/js/googlemapjs.js"></script>
 <script src="./js/vdb-start.js"></script>
+<script src="js/vdbangular.js"></script>
+
 
 
