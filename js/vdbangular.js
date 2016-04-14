@@ -5,6 +5,7 @@ var issuesService = new Object();
 var registerService = new Object();
 var loginService  = new Object();
 var reportService = new Object();
+var loginService = new Object();
 
 //change menu selected
 function menuSelected($scope,selected){
@@ -92,8 +93,8 @@ vdbApp.factory('reportService', ['$http',function ($http) {
 				return $http.post(APIURL+'reports',jsondata)
 					.success(function(data){
 						if(angular.isObject(data)){
-							reportService.data =data;
-							return reportService.data;
+						reportService.data =data;
+						return reportService.data;
 						}
 					});
 					return reportService.data;
@@ -102,6 +103,20 @@ vdbApp.factory('reportService', ['$http',function ($http) {
 		}
 
 }]);
+vdbApp.factory('loginService', ['$http',function ($http) {
+		return {
+			getLogin : function( jsondata ){
+				return $http.post(APIURL+'login', jsondata)
+				.success(function(data){
+					if(angular.isObject(data)){
+						loginService.data=data;
+						return loginService.data;
+					}
+				});
+				return loginService.data;
+			}
+	};
+}])
 
 
 
@@ -152,4 +167,23 @@ vdbApp.controller('mentionCtrl', ['$scope','$rootScope', function ($scope,$rootS
 }])
 vdbApp.controller('myIssuesCtrl', ['$scope','$rootScope', function ($scope,$rootScope) {
 	menuSelected($rootScope,'myIssues');
+}])
+
+vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService', function ($scope,$rootScope,$window,loginService) {
+	$scope.hide = "ng-hide";
+
+	$scope.login = function(){
+		var jsondata = JSON.stringify({"user":{"username":""+$scope.username+"","password":""+$scope.password+""}});
+		var getLogin = loginService.getLogin(jsondata).then(function (data){
+				var getLogin = data.data;
+				if(!getLogin.success){
+					$scope.errorMessage = getLogin.error;
+					$scope.hide = "";
+				}	
+		})
+		
+	}
+	$scope.close = function(){
+		$scope.hide="ng-hide";
+	}
 }])
