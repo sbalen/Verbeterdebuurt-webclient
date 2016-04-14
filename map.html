@@ -1,34 +1,29 @@
     <!-- body -->  
     <div id="main-content" class="container">
 	    <!--  sidebar left -->
+      
 	    <div class="col-md-3 hidden-sm hidden-xs hidden-md">
+                    <div class="panel side-panel panel-default" id="new-problem-widget">
+                        <div class="panel-heading">
+                            <strong>Report</strong>
+                        </div>
+            <div class="panel-body">
+                          <div class="list-group" ng-controller="cityCtrl" >
+                            <strong>City:{{reportList.council}}</strong></br>
+                      {{reportList.reports}} reports per Month</br>
+                      {{reportList.solutions}} solution per Month
+                          </div>
+            </div>  
+                    </div>
                     <div class="panel side-panel panel-default" id="new-problem-widget">
                         <div class="panel-heading">
                             <strong>Nieuwste problemen</strong>
                         </div>
       			<div class="panel-body">
-                          <div class="list-group">
-                            <a href="#" class="list-group-item clearfix">
+                          <div class="list-group" ng-controller="cityCtrl" >
+                            <a href="#" class="list-group-item clearfix" ng-repeat="newProblem in newProblemList| filter : {type:'problem'} | filter: {status:'!open'} | orderBy : 'created_at' : true |limitTo:3" >
                               <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
-                              <strong> Afval: Afval in de straat </strong>Haitsma Mulierstraat 64, Haarlem
-                              <span class="pull-right">
-                                <button class="btn btn-xs btn-success">
-                                  <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
-                                </button>
-                              </span>
-                            </a>
-                            <a href="#" class="list-group-item clearfix">
-                              <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
-                              <strong> Afval: Afval in de straat </strong>Haitsma Mulierstraat 64, Haarlem
-                              <span class="pull-right">
-                                <button class="btn btn-xs btn-success">
-                                  <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
-                                </button>
-                              </span>
-                            </a>
-                            <a href="#" class="list-group-item clearfix">
-                              <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
-                              <strong> Afval: Afval in de straat </strong>Haitsma Mulierstraat 64, Haarlem
+                              <strong> {{newProblem.title}}</strong> {{newProblem.location.full_address}}
                               <span class="pull-right">
                                 <button class="btn btn-xs btn-success">
                                   <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
@@ -36,35 +31,17 @@
                               </span>
                             </a>
                           </div>
-                        </div>  
-		    </div>
+            </div>  
+		                </div>
                     <div class="panel side-panel panel-default">
                         <div class="panel-heading" id="active-idea-widget">
                             <strong>Actieve Ideeen</strong>
                         </div>
       			<div class="panel-body">
                           <div class="list-group">
-                            <a href="#" class="list-group-item clearfix">
+                            <a href="#" class="list-group-item clearfix" ng-repeat="newProblem in newProblemList| filter : {type:'idea'} | filter: {status:'!open'} | orderBy : 'created_at' : true |limitTo:3" >
                               <img class="icon" src="./img/icon_idea_2_21_21.png" size="20px"/>
-                              <strong>Verkeersdrempel </strong>Haitsma Mulierstraat 64, Haarlem
-                              <span class="pull-right">
-                                <button class="btn btn-xs btn-success">
-                                  <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
-                                </button>
-                              </span>
-                            </a>
-                            <a href="#" class="list-group-item clearfix">
-                              <img class="icon" src="./img/icon_idea_2_21_21.png" size="20px"/>
-                              <strong>Verkeersdrempel </strong>Haitsma Mulierstraat 64, Haarlem
-                              <span class="pull-right">
-                                <button class="btn btn-xs btn-success">
-                                  <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
-                                </button>
-                              </span>
-                            </a>
-                            <a href="#" class="list-group-item clearfix">
-                              <img class="icon" src="./img/icon_idea_2_21_21.png" size="20px"/>
-                              <strong>Verkeersdrempel </strong>Haitsma Mulierstraat 64, Haarlem
+                              <strong>{{newProblem.title}}</strong> {{newProblem.location.full_address}}
                               <span class="pull-right">
                                 <button class="btn btn-xs btn-success">
                                   <span class="glyphicon glyphicon glyphicon-chevron-right"></span>

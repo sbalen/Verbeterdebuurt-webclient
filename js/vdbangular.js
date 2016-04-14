@@ -1,9 +1,10 @@
 var vdbApp = angular.module('vdbApp', ['ngRoute'])
-var APIURL = "http://local.​verbeterdebuurt.nl/api.php/json_1_2/";
+var APIURL = "http://staging.​verbeterdebuurt.nl/api.php/json_1_3/";
 
 var issuesService = new Object();
 var registerService = new Object();
 var loginService  = new Object();
+var reportService = new Object();
 
 //change menu selected
 function menuSelected($scope,selected){
@@ -29,7 +30,7 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
 
 	.when('/', {
 		templateUrl: 'map.html',
-		controller: 'mainCtrl'
+		controller: 'cityCtrl'
 		
 	})
 	.when('/city/:cityName', {
@@ -65,43 +66,75 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
 		'self'
 	]);
 }]);
-// Service
+
+
 vdbApp.factory('issuesService', ['$http',function ($http) {
-			
-			var message;
-			issuesService.data = {};
-
-			 issuesService.getIssues = function( jsondata ){
-				 $http.post(APIURL+'issues',jsondata)
-						.success(function(data){
-							issuesService.data.message = data;
-							console.log(jsondata);
-							console.log(issuesService.data.message);
-						})
-						.error(function(data){
-							alert("error");
-						});
+			return {
+				getIssues : function( jsondata){
+					return $http.post(APIURL+'issues',jsondata)
+					.success(function(data){
+						if(angular.isObject(data)){
+						issuesService.data = data;
 						return issuesService.data;
+						}	
+												
+					});
+					return issuesService.data;					
+				}
 
+			}
 
-		 }
-		return issuesService;
+}]);
+
+vdbApp.factory('reportService', ['$http',function ($http) {
+		return {
+			getReport : function ( jsondata ){
+				return $http.post(APIURL+'reports',jsondata)
+					.success(function(data){
+						if(angular.isObject(data)){
+							reportService.data =data;
+							return reportService.data;
+						}
+					});
+					return reportService.data;
+				
+			}
+		}
 
 }]);
 
 
-vdbApp.controller('cityCtrl', ['$scope','$window','$location','$rootScope','$routeParams','$http','issuesService', function ($scope,$window,$location,$rootScope,$routeParams,$http,issuesService) {
-					if($routeParams.cityName) {
-						// alert($routeParams.id);
-						}
-					$scope.alrCity = function(){
+
+
+vdbApp.controller('cityCtrl', ['$scope','$window','$location','$rootScope','$routeParams','$http','issuesService','reportService', function ($scope,$window,$location,$rootScope,$routeParams,$http,issuesService,reportService) {
+						var jsondata = JSON.stringify({"council" : "Groningen"});
+						
+						//promise for make asyncronise data factory to be syncronis
+						var getIssues = issuesService.getIssues( jsondata ).then(function (data){
+								var getdata = data.data;
+								$rootScope.newProblemList = getdata.issues;
+								// console.log(getdata.data.issues); 
+						});
+						var getReport = reportService.getReport( jsondata ).then(function (data){
+								var getdata = data.data;
+								$rootScope.reportList = getdata.report;
+						});
+						
+						
+						//click function
+						$scope.alrCity = function(){
 						if(city.long_name != null){
-							// console.log("controller:"+city.long_name);
-							$location.path("/city/"+city.long_name)
-							var jsondata = JSON.stringify({"council" : ""+$routeParams.cityName+""});
-							issuesService.getIssues(jsondata);
-						}		
-					}
+							//Get city problem when click/drag
+							jsondata = JSON.stringify({"council" : "Groningen"});
+							$location.path("/city/"+city.long_name);
+							getIssues = issuesService.getIssues( jsondata ).then(function (data){
+								var getdata = data.data;
+								$rootScope.newProblemList = getdata.issues; 
+								
+								});
+							}		
+						}
+
 					}]);
 //Retrieving issues
 

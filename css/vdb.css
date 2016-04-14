@@ -92,4 +92,25 @@ h6 {
   height: 60%;
   padding-top: 40px; }
 
+#reportBox {
+  width: 100%;
+  height: auto;
+  position: relative;
+  z-index: 3;
+  border-radius: 5px;
+  border-color: blue;
+  border-style: solid;
+  border-width: thin;
+  margin-bottom: 20px; }
+
+#reportBoxHeader {
+  width: 100%;
+  height: auto;
+  background-color: #3AB53A; }
+
+#reportBoxBody {
+  width: 100%;
+  height: auto;
+  background-color: white; }
+
 /*# sourceMappingURL=vdb.css.map */
