@@ -16,7 +16,7 @@ function getLocation(map) {
                         }
                     }
                 }
-                     // console.log("googlemap:"+city.long_name);
+                     // console.log("drag googlemap:"+city.long_name);
                     }
                 
 
@@ -40,7 +40,7 @@ function getLocation(map) {
                         }
                     }
                 }
-                     // console.log("googlemap:"+city.long_name);
+                     // console.log("click googlemap:"+city.long_name);
                     }
                 
 
