@@ -1,50 +1,60 @@
-
 <body>
     
     
-
     <!-- body -->  
     <div id="main-content" class="container">
-	    <!--  sidebar left -->
-	    <div class="col-md-3 hidden-sm hidden-xs hidden-md">
-		  
-	    </div>
-	    <!-- main container -->
-	    <div class="col-lg-6 main-container">
-	        <div class="panel panel-default main-panel">
-                    <div class="alert alert-danger">
-                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-	                <p>Straat is verplicht</p>
-                        <p>Achternaam is verplicht</p>
-		    </div>
-		    <h1>Registreren</h1>
+        <!--  sidebar left -->
+        <div class="col-md-3 hidden-sm hidden-xs hidden-md">
+          
+        </div>
+        <!-- main container -->
+        <div class="col-lg-6 main-container">
+            <div class="panel panel-default main-panel" ng-controller="registerCtrl">
+                    <div class="alert alert-danger {{hide}}">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close" ng-click="close">&times;</a>
+                        <p>{{errorEmail}}</p>
+                        <p>{{errorNewUsername}}</p>
+                        <p>Sex {{errorSex}}</p>
+                        <p>{{errorSurname}}</p>
+                        <p>{{errorAddress}}</p>
+                        <p>{{errorAddressN}}</p>
+                        <p>{{errorPost}}</p>
+                        <p>{{errorCity}}</p>
+                        <p>{{errorPassword}}</p>
+                        <p>{{errorPassword1}}</p>
+                        <p>{{errorInit}}</p>
+                        <p>{{errorMiddle}}</p>
+                        
+                        
+            </div>
+            <h1>Registreren</h1>
                         <form class="form-horizontal" role="form">
                             <div class="panel-body">
                                 <h4>Inloggegevens</h4>
                                 <div class="form-group">
                                     <div class="col-sm-12 form-col">
-                                        <input type="text" class="form-control" id="email" placeholder="E-mailadres">
+                                        <input type="text" class="form-control" id="email" placeholder="E-mailadres" ng-model="email">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <div class="col-sm-12 form-col">
-                                        <input type="text" class="form-control" id="username" placeholder="Gebruikersnaam">
+                                        <input type="text" class="form-control" id="username" placeholder="Gebruikersnaam" ng-model="username">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <div class="col-sm-12 form-col">
-                                        <input type="password" class="form-control" id="password-1" placeholder="Wachtwoord">
+                                        <input type="password" class="form-control" id="password-1" placeholder="Wachtwoord" ng-model="password1">
                                     </div>
                                     <div class="col-sm-12 form-col">
-                                        <input type="password" class="form-control" id="password-2" placeholder="Wachtwoord herhalen">
+                                        <input type="password" class="form-control" id="password-2" placeholder="Wachtwoord herhalen" ng-model="password2">
                                     </div>
                                 </div>
-		            </div>
+                    </div>
                             <div class="panel-body">
                                 <h4>Persoonsgegevens</h4>
                                 <div class="form-group">
                                         <div class="col-sm-2 form-col">
-                                            <select class="combobox" id="category" style="width:100%;height:34px;">
+                                            <select class="combobox" id="category" style="width:100%;height:34px;" ng-model="sex">
                                                 <option value="0"></option>
                                                 <option value="m">Dhr.</option>
                                                 <option value="f">Mw.</option>
@@ -54,15 +64,15 @@
                                             <input type="text" class="form-control" id="initials" placeholder="voorletters">
                                         </div>
                                         <div class="col-sm-3 form-col">
-                                            <input type="text" class="form-control" id="tussenvoegsel" placeholder="tussenvoegsel">
+                                            <input type="text" class="form-control" id="tussenvoegsel" placeholder="tussenvoegsel" ng-model="tussenvoegsel">
                                         </div>
                                         <div class="col-sm-4 has-error form-col">
-                                            <input type="text" class="form-control" id="name" placeholder="Achternaam">
+                                            <input type="text" class="form-control" id="name" placeholder="Achternaam" ng-model ="surname">
                                         </div>
                                 </div>
                                 <div class="form-group">
                                     <div class="col-sm-8 has-error form-col">
-                                        <input type="text" class="form-control" id="street" placeholder="Straat">
+                                        <input type="text" class="form-control" id="street" placeholder="Straat" ng-model ="address">
                                     </div>
                                     <div class="col-sm-4 form-col">
                                         <input type="text" class="form-control" id="number" placeholder="Huisnummer">
@@ -118,17 +128,16 @@
                             
                             <div class="submit-buttons">
                                 <button type="button" class="btn btn-danger" data-dismiss="modal">Annuleren</button>
-                                <button type="button" class="btn btn-success" data-dismiss="modal">Registreren</button>
+                                <button type="button" class="btn btn-success" data-dismiss="modal" ng-click="register()">Registreren</button>
                             </div>
                         </form>
                 </div>
-	    </div>
-	    
-	<!--  sidebar right -->
-	<div class="col-lg-3 hidden-xs">
+        </div>
+        
+    <!--  sidebar right -->
+    <div class="col-lg-3 hidden-xs">
         </div>  
     </div>
 </body>
-
 <script type='text/javascript'>
 </script>

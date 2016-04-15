@@ -9,11 +9,11 @@
 	    </div>
 	    <!-- main container -->
 	    <div class="col-lg-6 main-container">
-	        <div class="panel panel-default main-panel">
-                    <div class="alert alert-danger">
-                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-	                <p>Wachtwoord of gebruikersnaam niet bekend</p>
-		    </div>
+	        <div class="panel panel-default main-panel" ng-controller="loginCtrl">
+                    <div class="alert alert-danger {{hide}}" >
+                        <a href="#" class="close" aria-label="close" ng-click="close()" >&times;</a>
+	                <p>{{errorMessage}}</p>
+		            </div>
                     <div id="side_bar" class="clearfix" style="margin-bottom:15px;">
                         <h1 style="float: left;">Login</h1>
                         <button class="btn btn-primary" style="float: right; position: relative; top: 25px; right: 0px;">Registreren</button>
@@ -22,12 +22,12 @@
                     
                     <div class="form-group">
                         <div class="col-sm-12 form-col">
-                            <input type="text" class="form-control" id="username" placeholder="Gebruikersnaam of e-mailadres">
+                            <input type="text" class="form-control" id="username" placeholder="Gebruikersnaam of e-mailadres" ng-model="username">
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-sm-12 form-col">
-                            <input type="password" class="form-control" id="password-1" placeholder="Wachtwoord">
+                            <input type="password" class="form-control" id="password-1" placeholder="Wachtwoord" ng-model="password">
                         </div>
                     </div>
                     <div class="checkbox">
@@ -37,7 +37,7 @@
                     </div>
                     <div class="form-group">
                         <div class="col-sm-12 form-col">
-                            <button type="button" style="width:100%;" class="btn btn-primary">Inloggen</button>
+                            <button type="button" style="width:100%;" class="btn btn-primary" ng-click="login()">Inloggen</button>
                         </div>
                     </div>
                     
