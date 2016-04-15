@@ -119,6 +119,22 @@ vdbApp.factory('loginService', ['$http',function ($http) {
 }])
 
 
+vdbApp.factory('registerService', ['$http',function ($http) {
+		return {
+			getRegister : function( jsondata ){
+				return $http.post(APIURL+'register', jsondata)
+				.success(function(data){
+					if(angular.isObject(data)){
+						registerService.data=data;
+						return registerService.data;
+					}
+				});
+				return registerService.data;
+			}
+	};
+}])
+
+
 
 
 vdbApp.controller('cityCtrl', ['$scope','$window','$location','$rootScope','$routeParams','$http','issuesService','reportService', function ($scope,$window,$location,$rootScope,$routeParams,$http,issuesService,reportService) {
@@ -178,6 +194,56 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService', 
 				var getLogin = data.data;
 				if(!getLogin.success){
 					$scope.errorMessage = getLogin.error;
+					$scope.hide = "";
+				}	
+		})
+		
+	}
+	$scope.close = function(){
+		$scope.hide="ng-hide";
+	}
+}])
+
+vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerService', function ($scope,$rootScope,$window,registerService) {
+	$scope.hide = "ng-hide";
+
+	$scope.register = function(){
+		var jsondata = JSON.stringify({"user":{"username":""+$scope.username+"","password":""+$scope.password+"","email":""+$scope.email+""}},
+                                     {"user_profile":{"initials":""+$scope.initials+"","tussenvoegsel":""+$scope.tussenvoegsel+"","surname":""+$scope.surname+"","sex":""+$scope.sex+"","address":""+$scope.address+"","address_number":""+$scope.address_number+"","address_suffix":""+$scope.address_suffix+"","postcode":""+$scope.postcode+"","city":""+$scope.city+"","phone":""+$scope.phone+""}});
+        
+        
+        
+		var getRegister = registerService.getRegister(jsondata).then(function (data){
+				var getRegister = data.data;
+                console.log(getRegister.errors);
+
+            
+            if($scope.password1 != $scope.password2)
+                {
+                    $scope.errorPassword = "Password not match"
+                    
+                }
+            
+            else if($scope.password1 == "undefined")
+                {
+                     $scope.errorPassword1 = "Tidak boleh kosong"
+                    
+                }
+        
+				else if(!getRegister.success){
+					$scope.errorEmail = getRegister.errors.email;
+                    $scope.errorUsername = getRegister.errors.username;
+                    $scope.errorSurname = getRegister.errors.surname;
+                    $scope.errorSex = getRegister.errors.sex;
+                    $scope.errorAddress = getRegister.errors.address;
+                    $scope.errorAddressN = getRegister.errors.address_number;
+                    $scope.errorPost= getRegister.errors.postcode;
+                    $scope.errorCity = getRegister.errors.city;
+                    $scope.errorInit = getRegister.errors.initials;
+                    $scope.errorMiddle = getRegister.errors.tussenvoegsel;
+                
+                
+                    
 					$scope.hide = "";
 				}	
 		})
