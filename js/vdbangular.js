@@ -6,6 +6,7 @@ var registerService = new Object();
 var loginService  = new Object();
 var reportService = new Object();
 var loginService = new Object();
+var commentService = new Object();
 
 //change menu selected
 function menuSelected($scope,selected){
@@ -28,17 +29,19 @@ function menuSelected($scope,selected){
 
 vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegateProvider', function ($routeProvider,$locationProvider,$httpProvider,$sceDelegateProvider) {
 	$routeProvider
-
 	.when('/', {
 		templateUrl: 'map.html',
-		controller: 'cityCtrl'
+		controller: 'mainCtrl'
 		
 	})
 	.when('/city/:cityName', {
 		templateUrl: 'map.html',
-		controller: 'cityCtrl'
+		controller: 'mainCtrl'
 	})
-	
+	.when('/issues/:id',{
+		templateUrl :'map.html',
+		controller : 'mainCtrl'
+	})
 	.when('/mention', {
 		templateUrl: 'mention.html',
 		controller : 'mentionCtrl'
@@ -58,9 +61,6 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
 		templateUrl: 'register.html'
 		
 	})
-    
-    
-	
 	 $locationProvider.html5Mode(true);
 	 $sceDelegateProvider.resourceUrlWhitelist([
 		// Allow same origin resource loads.
@@ -118,6 +118,19 @@ vdbApp.factory('loginService', ['$http',function ($http) {
 	};
 }])
 
+vdbApp.factory('commentService', ['$http',function ($http) {
+		return {
+			getComment : function( jsondata ){
+				return $http.post(APIURL+'"comments').success(function(data){
+					if(angular.isObject){
+						commentService.data = data;
+						return commentService.data;
+					}
+				});
+				return commentService.data;
+			}
+		};
+}])
 
 vdbApp.factory('registerService', ['$http',function ($http) {
 		return {
@@ -137,35 +150,77 @@ vdbApp.factory('registerService', ['$http',function ($http) {
 
 
 
-vdbApp.controller('cityCtrl', ['$scope','$window','$location','$rootScope','$routeParams','$http','issuesService','reportService', function ($scope,$window,$location,$rootScope,$routeParams,$http,issuesService,reportService) {
+vdbApp.controller('mainCtrl', ['$scope','$window','$location','$rootScope','$routeParams','$http','issuesService','reportService','commentService', function ($scope,$window,$location,$rootScope,$routeParams,$http,issuesService,reportService,commentService) {
 						var jsondata = JSON.stringify({"council" : "Groningen"});
-						
+						var jsoniddata = JSON.stringify({"issue_id":""+$routeParams.id+""});
+						$scope.hide = "ng-hide";
+						//control pop up
+						if($routeParams.id){
+							$scope.hide = "";
+							$scope.id = function(){
+									return $routeParams.id
+								}
+						}
 						//promise for make asyncronise data factory to be syncronis
 						var getIssues = issuesService.getIssues( jsondata ).then(function (data){
 								var getdata = data.data;
 								$rootScope.newProblemList = getdata.issues;
 								// console.log(getdata.data.issues); 
 						});
+						
 						var getReport = reportService.getReport( jsondata ).then(function (data){
 								var getdata = data.data;
 								$rootScope.reportList = getdata.report;
 						});
+
+						var getComments = commentService.getComment( jsoniddata ).then(function(data){
+								var getdata = data.data;
+								$rootScope.commentList = getdata.comments;
+						});
 						
 						
-						//click function
+						//click function at map
 						$scope.alrCity = function(){
-						if(city.long_name != null){
+							if(city.long_name !=null){
+							
+							//url change validation	
+							if($location.path().includes("/city/") || $location.path().endsWith("/") ){
+								$location.path("/city/"+city.long_name);
+							}
+							
 							//Get city problem when click/drag
 							jsondata = JSON.stringify({"council" : "Groningen"});
-							$location.path("/city/"+city.long_name);
 							getIssues = issuesService.getIssues( jsondata ).then(function (data){
 								var getdata = data.data;
 								$rootScope.newProblemList = getdata.issues; 
 								
 								});
-							}		
+							}
+							$rootScope.lastUrl = $location.path();		
 						}
 
+						//click at problem
+						$scope.clickIssues = function(){
+								$scope.hide = "";
+								$scope.id = function(){
+									return $routeParams.id
+								}
+								//comment service
+								
+								
+						}
+
+						$scope.close = function(){
+							$scope.hide = "ng-hide";
+							console.log($rootScope.lastUrl);
+							if($rootScope.lastUrl == null){
+								$rootScope.lastUrl = "";
+								$location.path($rootScope.lastUrl);
+							}
+							else{
+							$location.path($rootScope.lastUrl);
+							}
+						};
 					}]);
 //Retrieving issues
 
@@ -175,9 +230,6 @@ vdbApp.controller('cityCtrl', ['$scope','$window','$location','$rootScope','$rou
 // vdbApp.controller('mainCtrl', ['$scope','issues', function ($scope,issues) {
 
 // }]);
-vdbApp.controller('mainCtrl', ['$scope','$rootScope', function ($scope,$rootScope) {
-	menuSelected($rootScope,'home');
-}])
 vdbApp.controller('mentionCtrl', ['$scope','$rootScope', function ($scope,$rootScope) {
 	menuSelected($rootScope,'mention');
 }])
@@ -201,6 +253,7 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService', 
 	}
 	$scope.close = function(){
 		$scope.hide="ng-hide";
+		location.path("/city/");
 	}
 }])
 
