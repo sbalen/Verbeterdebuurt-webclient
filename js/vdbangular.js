@@ -151,6 +151,7 @@ vdbApp.factory('registerService', ['$http',function ($http) {
 
 
 vdbApp.controller('mainCtrl', ['$scope','$window','$location','$rootScope','$routeParams','$http','issuesService','reportService','commentService', function ($scope,$window,$location,$rootScope,$routeParams,$http,issuesService,reportService,commentService) {
+						menuSelected($rootScope,'home');
 						var jsondata = JSON.stringify({"council" : "Groningen"});
 						var jsoniddata = JSON.stringify({"issue_id":""+$routeParams.id+""});
 						$scope.hide = "ng-hide";
@@ -186,6 +187,7 @@ vdbApp.controller('mainCtrl', ['$scope','$window','$location','$rootScope','$rou
 							//url change validation	
 							if($location.path().includes("/city/") || $location.path().endsWith("/") ){
 								$location.path("/city/"+city.long_name);
+								$rootScope.lastUrl = $location.path();	
 							}
 							
 							//Get city problem when click/drag
@@ -196,7 +198,7 @@ vdbApp.controller('mainCtrl', ['$scope','$window','$location','$rootScope','$rou
 								
 								});
 							}
-							$rootScope.lastUrl = $location.path();		
+							
 						}
 
 						//click at problem
@@ -209,16 +211,16 @@ vdbApp.controller('mainCtrl', ['$scope','$window','$location','$rootScope','$rou
 								
 								
 						}
-
-						$scope.close = function(){
-							$scope.hide = "ng-hide";
 							console.log($rootScope.lastUrl);
+						$scope.close = function(){
+							console.log($rootScope.lastUrl);
+							$scope.hide = "ng-hide";
 							if($rootScope.lastUrl == null){
 								$rootScope.lastUrl = "";
 								$location.path($rootScope.lastUrl);
 							}
 							else{
-							$location.path($rootScope.lastUrl);
+								$location.path($rootScope.lastUrl);
 							}
 						};
 					}]);
