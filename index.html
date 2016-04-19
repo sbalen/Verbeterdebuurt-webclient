@@ -41,10 +41,10 @@
     <script src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
    
 </head>
-<body ng-app="vdbApp">
+<body ng-app="vdbApp"  ng-controller="mainCtrl">
     
     <!-- map div on the background -->
-    <div ng-controller="mainCtrl">
+    <div>
     <div id="googlemaps" class="city" ng-mousedown="alrCity()" ></div>
     <input type="hidden" id="city"  ></input>
     </div>
@@ -70,9 +70,12 @@
                     <li class="{{myIssuesSelected}}"><a href="myissues">Mijn meldingen</a></li>  
                     <li class="divider-vertical"></li>
                 </ul>
-                <ul class="nav navbar-nav navbar-right">
+                <ul class="nav navbar-nav navbar-right" ng-if="!loginStatus()">
                     <li><a href="register"><span class="glyphicon glyphicon-user"></span> Registreren</a></li>
                     <li><a href="login"><span class="glyphicon glyphicon-log-in"></span> Inloggen</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right" ng-if="loginStatus()" >
+                   {{username}}<a ng-click="logout()">log out</span>
                 </ul>
             </div>
         </div>

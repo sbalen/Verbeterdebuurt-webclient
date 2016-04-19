@@ -1,5 +1,5 @@
 var vdbApp = angular.module('vdbApp', ['ngRoute','angularSpinner'])
-var APIURL = "http://staging.​verbeterdebuurt.nl/api.php/json_1_3/";
+var APIURL = "https://staging.​verbeterdebuurt.nl/api.php/json_1_3/";
 
 var issuesService = new Object();
 var registerService = new Object();
@@ -153,7 +153,7 @@ vdbApp.factory('registerService', ['$http',function ($http) {
 vdbApp.controller('mainCtrl', ['$scope','$window','$location','$rootScope','$routeParams','$http','issuesService','reportService','commentService', function ($scope,$window,$location,$rootScope,$routeParams,$http,issuesService,reportService,commentService) {
 						menuSelected($rootScope,'home');
 						var jsondata = JSON.stringify({"council" : "Groningen"});
-
+						$rootScope.urlBefore = $location.path();
 						//promise for make asyncronise data factory to be syncronis
 						var getIssues = issuesService.getIssues( jsondata ).then(function (data){
 								var getdata = data.data;
@@ -186,7 +186,25 @@ vdbApp.controller('mainCtrl', ['$scope','$window','$location','$rootScope','$rou
 							}
 							
 						}
-
+						//login session
+						$scope.loginStatus = function(){
+							if($window.sessionStorage.username == null){
+								return false;
+							}
+							else{
+								$rootScope.username = $window.sessionStorage.username;
+								return true;
+							}
+						}
+						//logOut
+						$scope.logout = function(){
+							$window.sessionStorage.clear();
+							$location.path('/');
+						}
+						//search
+						$scope.clickSearch= function(){
+							$window.searchCity = $scope.searchCity;
+						}
 						
 					}]);
 //Retrieving issues
@@ -203,7 +221,7 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$routeParams','issuesSer
 		if($rootScope.lastUrl==null){
 			$rootScope.lastUrl=='/';
 		}
-
+	$rootScope.urlBefore = $location.path();
 	var getIssues = issuesService.getIssues( jsondata ).then(function (data){
 								var getdata = data.data;
 								$rootScope.newProblemList = getdata.issues;
@@ -227,30 +245,64 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$routeParams','issuesSer
 }])
 
 
-vdbApp.controller('mentionCtrl', ['$scope','$rootScope', function ($scope,$rootScope) {
+vdbApp.controller('mentionCtrl', ['$scope','$rootScope','$window','$location', function ($scope,$rootScope,$window,$location) {
 	menuSelected($rootScope,'mention');
+		if($window.sessionStorage.username==null){
+				$rootScope.urlBefore = $location.path();
+				$location.path('/login');
+		}
 }])
-vdbApp.controller('myIssuesCtrl', ['$scope','$rootScope', function ($scope,$rootScope) {
+vdbApp.controller('myIssuesCtrl', ['$scope','$rootScope','$window','$location', function ($scope,$rootScope,$window,$location) {
 	menuSelected($rootScope,'myIssues');
+		if($window.sessionStorage.username==null){
+				$rootScope.urlBefore = $location.path();
+				$location.path('/login');
+		}
 }])
 
-vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService', function ($scope,$rootScope,$window,loginService) {
+vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','$location','usSpinnerService', function ($scope,$rootScope,$window,loginService,$location,usSpinnerService) {
 	$scope.hide = "ng-hide";
+	
+	if($rootScope.urlBefore==null || $rootScope.urlBefore == '/login'){
+			$rootScope.urlBefore='/' ;
+	}
 
 	$scope.login = function(){
+		usSpinnerService.spin('spinner-1');
 		var jsondata = JSON.stringify({"user":{"username":""+$scope.username+"","password":""+$scope.password+""}});
 		var getLogin = loginService.getLogin(jsondata).then(function (data){
 				var getLogin = data.data;
 				if(!getLogin.success){
 					$scope.errorMessage = getLogin.error;
+					usSpinnerService.stop('spinner-1');
 					$scope.hide = "";
+				}else if(getLogin.success){
+					//temp for data session
+					$window.sessionStorage.username = getLogin.user.username;
+					$window.sessionStorage.email = getLogin.user.email;
+					$window.sessionStorage.password_hash = getLogin.user.password_hash;
+					$window.sessionStorage.name = getLogin.user_profile.name;
+					$window.sessionStorage.initials = getLogin.user_profile.initials;
+					$window.sessionStorage.surname = getLogin.user_profile.surname;
+					$window.sessionStorage.tussenvoegsel = getLogin.user_profile.tussenvoegsel;
+					$window.sessionStorage.sex = getLogin.user_profile.sex;
+					$window.sessionStorage.address = getLogin.user_profile.address;
+					$window.sessionStorage.address_number = getLogin.user_profile.address_number;
+					$window.sessionStorage.address_suffix = getLogin.user_profile.address_suffix;
+					$window.sessionStorage.postcode = getLogin.user_profile.postcode;
+					$window.sessionStorage.city = getLogin.user_profile.city;
+					$window.sessionStorage.phone = getLogin.user_profile.phone;
+					$rootScope.loginStatus = function(){
+						return true;
+					}
+					usSpinnerService.stop('spinner-1');
+					$location.path($rootScope.urlBefore);
 				}	
 		})
 		
 	}
 	$scope.close = function(){
 		$scope.hide="ng-hide";
-		location.path("/city/");
 	}
 }])
 

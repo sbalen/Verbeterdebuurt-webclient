@@ -1,5 +1,5 @@
     <!-- body -->  
-    <div id="main-content" class="container" ng-controller="mainCtrl">
+    <div id="main-content" class="container">
 	    <!--  sidebar left -->
       
 	    <div class="col-md-3 hidden-sm hidden-xs hidden-md">
@@ -65,9 +65,9 @@
 	    <!--  sidebar right -->
 	    <div class="col-lg-3">
                 <div class="input-group" id="search-widget">
-                                     <input type="text" class="form-control" placeholder="Zoek op adres">
+                                     <input type="text" class="form-control" placeholder="Zoek op adres" ng-model="searchCity">
                                      <span class="input-group-btn">
-                                        <button class="btn btn-primary" type="button"><span class="glyphicon glyphicon-search"></span><span class="hidden-xs">Zoeken</span></button>
+                                        <button class="btn btn-primary" type="button" ng-click="clickSearch()"><span class="glyphicon glyphicon-search"></span><span class="hidden-xs">Zoeken</span></button>
                                      </span>
                 </div>
 	    </div>  
