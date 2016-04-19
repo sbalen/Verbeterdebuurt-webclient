@@ -1,4 +1,4 @@
-var vdbApp = angular.module('vdbApp', ['ngRoute'])
+var vdbApp = angular.module('vdbApp', ['ngRoute','angularSpinner'])
 var APIURL = "http://staging.​verbeterdebuurt.nl/api.php/json_1_3/";
 
 var issuesService = new Object();
@@ -39,8 +39,8 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
 		controller: 'mainCtrl'
 	})
 	.when('/issues/:id',{
-		templateUrl :'map.html',
-		controller : 'mainCtrl'
+		templateUrl :'issues.html',
+		controller : 'issuesCtrl'
 	})
 	.when('/mention', {
 		templateUrl: 'mention.html',
@@ -59,7 +59,12 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
     
     .when('/register', {
 		templateUrl: 'register.html'
-		
+        
+    })
+    
+    .when('/regisconfirmation',{
+        templateUrl: 'regisconfirmation.html'
+        
 	})
 	 $locationProvider.html5Mode(true);
 	 $sceDelegateProvider.resourceUrlWhitelist([
@@ -153,15 +158,7 @@ vdbApp.factory('registerService', ['$http',function ($http) {
 vdbApp.controller('mainCtrl', ['$scope','$window','$location','$rootScope','$routeParams','$http','issuesService','reportService','commentService', function ($scope,$window,$location,$rootScope,$routeParams,$http,issuesService,reportService,commentService) {
 						menuSelected($rootScope,'home');
 						var jsondata = JSON.stringify({"council" : "Groningen"});
-						var jsoniddata = JSON.stringify({"issue_id":""+$routeParams.id+""});
-						$scope.hide = "ng-hide";
-						//control pop up
-						if($routeParams.id){
-							$scope.hide = "";
-							$scope.id = function(){
-									return $routeParams.id
-								}
-						}
+
 						//promise for make asyncronise data factory to be syncronis
 						var getIssues = issuesService.getIssues( jsondata ).then(function (data){
 								var getdata = data.data;
@@ -173,12 +170,6 @@ vdbApp.controller('mainCtrl', ['$scope','$window','$location','$rootScope','$rou
 								var getdata = data.data;
 								$rootScope.reportList = getdata.report;
 						});
-
-						var getComments = commentService.getComment( jsoniddata ).then(function(data){
-								var getdata = data.data;
-								$rootScope.commentList = getdata.comments;
-						});
-						
 						
 						//click function at map
 						$scope.alrCity = function(){
@@ -201,28 +192,7 @@ vdbApp.controller('mainCtrl', ['$scope','$window','$location','$rootScope','$rou
 							
 						}
 
-						//click at problem
-						$scope.clickIssues = function(){
-								$scope.hide = "";
-								$scope.id = function(){
-									return $routeParams.id
-								}
-								//comment service
-								
-								
-						}
-							console.log($rootScope.lastUrl);
-						$scope.close = function(){
-							console.log($rootScope.lastUrl);
-							$scope.hide = "ng-hide";
-							if($rootScope.lastUrl == null){
-								$rootScope.lastUrl = "";
-								$location.path($rootScope.lastUrl);
-							}
-							else{
-								$location.path($rootScope.lastUrl);
-							}
-						};
+						
 					}]);
 //Retrieving issues
 
@@ -232,6 +202,36 @@ vdbApp.controller('mainCtrl', ['$scope','$window','$location','$rootScope','$rou
 // vdbApp.controller('mainCtrl', ['$scope','issues', function ($scope,issues) {
 
 // }]);
+vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$routeParams','issuesService','reportService','usSpinnerService','$location','$anchorScroll', function ($scope,$rootScope,$routeParams,issuesService,reportService,usSpinnerService,$location,$anchorScroll) {
+	$scope.hide = "ng-hide";
+	var jsondata = JSON.stringify({"council" : "Groningen"});
+		if($rootScope.lastUrl==null){
+			$rootScope.lastUrl=='/';
+		}
+
+	var getIssues = issuesService.getIssues( jsondata ).then(function (data){
+								var getdata = data.data;
+								$rootScope.newProblemList = getdata.issues;
+								$scope.hide = "";
+								usSpinnerService.stop('spinner-1');
+								var temp = $location.hash();
+								$location.hash('main-main-content');
+								$anchorScroll();
+								
+								// console.log(getdata.data.issues); 
+						});
+
+	var getReport = reportService.getReport( jsondata ).then(function (data){
+								var getdata = data.data;
+								$rootScope.reportList = getdata.report;
+						});
+	$scope.id = function(){
+		return $routeParams.id;
+	}
+
+}])
+
+
 vdbApp.controller('mentionCtrl', ['$scope','$rootScope', function ($scope,$rootScope) {
 	menuSelected($rootScope,'mention');
 }])
@@ -259,46 +259,71 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService', 
 	}
 }])
 
-vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerService', function ($scope,$rootScope,$window,registerService) {
+vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerService','usSpinnerService', function ($scope,$rootScope,$window,registerService,usSpinnerService) {
 	$scope.hide = "ng-hide";
+    
 
 	$scope.register = function(){
-		var jsondata = JSON.stringify({"user":{"username":""+$scope.username+"","password":""+$scope.password+"","email":""+$scope.email+""}},
-                                     {"user_profile":{"initials":""+$scope.initials+"","tussenvoegsel":""+$scope.tussenvoegsel+"","surname":""+$scope.surname+"","sex":""+$scope.sex+"","address":""+$scope.address+"","address_number":""+$scope.address_number+"","address_suffix":""+$scope.address_suffix+"","postcode":""+$scope.postcode+"","city":""+$scope.city+"","phone":""+$scope.phone+""}});
+        usSpinnerService.spin('spinner-1');
+		var jsondata = JSON.stringify({"user":{"username":""+$scope.username+""
+                                               ,"password":""+$scope.password+""
+                                               ,"email":""+$scope.email+""},
+                                       
+                                       "user_profile":{"initials":""+$scope.initials+""
+                                                      ,"tussenvoegsel":""+$scope.tussenvoegsel+""
+                                                      ,"surname":""+$scope.surname+""
+                                                      ,"sex":""+$scope.sex+""
+                                                      ,"address":""+$scope.address+""
+                                                      ,"address_number":""+$scope.address_number+""
+                                                      ,"address_suffix":""+$scope.address_suffix+""
+                                                      ,"postcode":""+$scope.postcode+""
+                                                      ,"city":""+$scope.city+""
+                                                      ,"phone":""+$scope.phone+""}
+                                      
         
+                                       
+                                       
+                                      });
+                                   
         
-        
+       
 		var getRegister = registerService.getRegister(jsondata).then(function (data){
 				var getRegister = data.data;
                 console.log(getRegister.errors);
-
-            
-            if($scope.password1 != $scope.password2)
-                {
-                    $scope.errorPassword = "Password not match"
-                    
-                }
-            
-            else if($scope.password1 == "undefined")
-                {
-                     $scope.errorPassword1 = "Tidak boleh kosong"
-                    
-                }
+                $scope.errorPassword = ""
         
-				else if(!getRegister.success){
+                
+                
+            if($scope.password != $scope.password2)
+                {
+                    $scope.errorPassword = "Wachtwoord niet overeen"
+                    $scope.hide = "";
+                }
+            
+            if(getRegister.errors.sex !=null){
+                    $scope.errorSex = "sex "+getRegister.errors.sex;
+                    }else{
+                    $scope.errorSex="";
+                    }
+            
+            if (!getRegister.success){
+                
+                   
 					$scope.errorEmail = getRegister.errors.email;
-                    $scope.errorUsername = getRegister.errors.username;
+                    $scope.errorNewPassword = getRegister.errors.password;
+                    $scope.errorPassword1= getRegister.errors.password_repeat;
+                    $scope.errorNewUsername = getRegister.errors.username;
                     $scope.errorSurname = getRegister.errors.surname;
-                    $scope.errorSex = getRegister.errors.sex;
                     $scope.errorAddress = getRegister.errors.address;
                     $scope.errorAddressN = getRegister.errors.address_number;
                     $scope.errorPost= getRegister.errors.postcode;
                     $scope.errorCity = getRegister.errors.city;
-                    $scope.errorInit = getRegister.errors.initials;
                     $scope.errorMiddle = getRegister.errors.tussenvoegsel;
+                    $scope.errorPost = getRegister.errors.postcode;
+                    $scope.errorCity = getRegister.errors.city;
+                    $scope.errorInitials = getRegister.errors.initials;
                 
-                
-                    
+                    usSpinnerService.stop('spinner-1');
 					$scope.hide = "";
 				}	
 		})
