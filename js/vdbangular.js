@@ -258,31 +258,50 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
 	$scope.hide = "ng-hide";
 
 	$scope.register = function(){
-		var jsondata = JSON.stringify({"user":{"username":""+$scope.username+"","password":""+$scope.password+"","email":""+$scope.email+""}},
-                                     {"user_profile":{"initials":""+$scope.initials+"","tussenvoegsel":""+$scope.tussenvoegsel+"","surname":""+$scope.surname+"","sex":""+$scope.sex+"","address":""+$scope.address+"","address_number":""+$scope.address_number+"","address_suffix":""+$scope.address_suffix+"","postcode":""+$scope.postcode+"","city":""+$scope.city+"","phone":""+$scope.phone+""}});
+		var jsondata = JSON.stringify({"user":{"username":""+$scope.username+""
+                                               ,"password":""+$scope.password+""
+                                               ,"email":""+$scope.email+""},
+                                       
+                                       "user_profile":{"initials":""+$scope.initials+""
+                                                      ,"tussenvoegsel":""+$scope.tussenvoegsel+""
+                                                      ,"surname":""+$scope.surname+""
+                                                      ,"sex":""+$scope.sex+""
+                                                      ,"address":""+$scope.address+""
+                                                      ,"address_number":""+$scope.address_number+""
+                                                      ,"address_suffix":""+$scope.address_suffix+""
+                                                      ,"postcode":""+$scope.postcode+""
+                                                      ,"city":""+$scope.city+""
+                                                      ,"phone":""+$scope.phone+""}
+                                      
         
+                                       
+                                       
+                                      });
+                                   
         
-        
+        console.log(jsondata);
 		var getRegister = registerService.getRegister(jsondata).then(function (data){
 				var getRegister = data.data;
                 console.log(getRegister.errors);
 
             
-            if($scope.password1 != $scope.password2)
-                {
-                    $scope.errorPassword = "Password not match"
-                    
-                }
-            
-            else if($scope.password1 == "undefined")
-                {
-                     $scope.errorPassword1 = "Tidak boleh kosong"
-                    
-                }
+//            if($scope.password != $scope.password2)
+//                {
+//                    $scope.errorPassword = "Password not match"
+//                    
+//                }
+//            
+//            else if($scope.password == "undefined")
+//                {
+//                     $scope.errorPassword1 = "Tidak boleh kosong"
+//                    
+//                }
         
-				else if(!getRegister.success){
+				if(!getRegister.success){
 					$scope.errorEmail = getRegister.errors.email;
-                    $scope.errorUsername = getRegister.errors.username;
+                    $scope.errorNewPassword = getRegister.errors.password;
+                    //$scope.errorPassword1= getRegister.errors.password_repeat;
+                    $scope.errorNewUsername = getRegister.errors.username;
                     $scope.errorSurname = getRegister.errors.surname;
                     $scope.errorSex = getRegister.errors.sex;
                     $scope.errorAddress = getRegister.errors.address;
@@ -291,6 +310,8 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
                     $scope.errorCity = getRegister.errors.city;
                     $scope.errorInit = getRegister.errors.initials;
                     $scope.errorMiddle = getRegister.errors.tussenvoegsel;
+                    $scope.errorPost = getRegister.errors.postcode;
+                    $scope.errorCity = getRegister.errors.city;
                 
                 
                     

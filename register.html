@@ -12,19 +12,22 @@
             <div class="panel panel-default main-panel" ng-controller="registerCtrl">
                     <div class="alert alert-danger {{hide}}">
                         <a href="#" class="close" data-dismiss="alert" aria-label="close" ng-click="close">&times;</a>
+                       
+                        
                         <p>{{errorEmail}}</p>
                         <p>{{errorNewUsername}}</p>
-                        <p>Sex {{errorSex}}</p>
+                        <p>{{errorNewPassword}}</p>
+<!--                        <p>{{errorPassword1}}</p>-->
+                        <p>Sex{{errorSex}}</p>
                         <p>{{errorSurname}}</p>
                         <p>{{errorAddress}}</p>
                         <p>{{errorAddressN}}</p>
                         <p>{{errorPost}}</p>
                         <p>{{errorCity}}</p>
-                        <p>{{errorPassword}}</p>
-                        <p>{{errorPassword1}}</p>
                         <p>{{errorInit}}</p>
                         <p>{{errorMiddle}}</p>
-                        
+                       
+                      
                         
             </div>
             <h1>Registreren</h1>
@@ -43,10 +46,11 @@
                                 </div>
                                 <div class="form-group">
                                     <div class="col-sm-12 form-col">
-                                        <input type="password" class="form-control" id="password-1" placeholder="Wachtwoord" ng-model="password1">
+                                        <input type="password" class="form-control" id="password-1" placeholder="Wachtwoord" ng-model="password">
+                                    {{password}}
                                     </div>
                                     <div class="col-sm-12 form-col">
-                                        <input type="password" class="form-control" id="password-2" placeholder="Wachtwoord herhalen" ng-model="password2">
+                                        <input type="password" class="form-control" id="password-2" placeholder="Wachtwoord herhalen" ng-model="password_repeat">
                                     </div>
                                 </div>
                     </div>
@@ -61,7 +65,7 @@
                                             </select>
                                         </div>
                                         <div class="col-sm-3 form-col">
-                                            <input type="text" class="form-control" id="initials" placeholder="voorletters">
+                                            <input type="text" class="form-control" id="initials" placeholder="voorletters" ng-model="initials">
                                         </div>
                                         <div class="col-sm-3 form-col">
                                             <input type="text" class="form-control" id="tussenvoegsel" placeholder="tussenvoegsel" ng-model="tussenvoegsel">
@@ -75,16 +79,16 @@
                                         <input type="text" class="form-control" id="street" placeholder="Straat" ng-model ="address">
                                     </div>
                                     <div class="col-sm-4 form-col">
-                                        <input type="text" class="form-control" id="number" placeholder="Huisnummer">
+                                        <input type="text" class="form-control" id="number" placeholder="Huisnummer" ng-model ="address_number">
                                     </div>
                                     <div class="col-sm-4 form-col">
-                                        <input type="text" class="form-control" id="postcode" placeholder="Postcode">
+                                        <input type="text" class="form-control" id="postcode" placeholder="Postcode" ng-model="postcode">
                                     </div>
                                     <div class="col-sm-8 form-col">
-                                        <input type="text" class="form-control" id="city" placeholder="Plaats">
+                                        <input type="text" class="form-control" id="city" placeholder="Plaats" ng-model="city">
                                     </div>
                                     <div class="col-sm-12 form-col">
-                                        <input type="text" class="form-control" id="telephonenumber" placeholder="Telefoonnummer (optioneel)">
+                                        <input type="text" class="form-control" id="telephonenumber" placeholder="Telefoonnummer (optioneel)" ng-model="model">
                                     </div>
                                 </div>
                             </div>
