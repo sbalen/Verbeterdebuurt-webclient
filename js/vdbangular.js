@@ -59,7 +59,12 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
     
     .when('/register', {
 		templateUrl: 'register.html'
-		
+        
+    })
+    
+    .when('/regisconfirmation',{
+        templateUrl: 'regisconfirmation.html'
+        
 	})
 	 $locationProvider.html5Mode(true);
 	 $sceDelegateProvider.resourceUrlWhitelist([
@@ -254,10 +259,12 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService', 
 	}
 }])
 
-vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerService', function ($scope,$rootScope,$window,registerService) {
+vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerService','usSpinnerService', function ($scope,$rootScope,$window,registerService,usSpinnerService) {
 	$scope.hide = "ng-hide";
+    
 
 	$scope.register = function(){
+        usSpinnerService.spin('spinner-1');
 		var jsondata = JSON.stringify({"user":{"username":""+$scope.username+""
                                                ,"password":""+$scope.password+""
                                                ,"email":""+$scope.email+""},
@@ -279,42 +286,44 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
                                       });
                                    
         
-        console.log(jsondata);
+       
 		var getRegister = registerService.getRegister(jsondata).then(function (data){
 				var getRegister = data.data;
                 console.log(getRegister.errors);
-
-            
-//            if($scope.password != $scope.password2)
-//                {
-//                    $scope.errorPassword = "Password not match"
-//                    
-//                }
-//            
-//            else if($scope.password == "undefined")
-//                {
-//                     $scope.errorPassword1 = "Tidak boleh kosong"
-//                    
-//                }
+                $scope.errorPassword = ""
         
-				if(!getRegister.success){
+                
+                
+            if($scope.password != $scope.password2)
+                {
+                    $scope.errorPassword = "Wachtwoord niet overeen"
+                    $scope.hide = "";
+                }
+            
+            if(getRegister.errors.sex !=null){
+                    $scope.errorSex = "sex "+getRegister.errors.sex;
+                    }else{
+                    $scope.errorSex="";
+                    }
+            
+            if (!getRegister.success){
+                
+                   
 					$scope.errorEmail = getRegister.errors.email;
                     $scope.errorNewPassword = getRegister.errors.password;
-                    //$scope.errorPassword1= getRegister.errors.password_repeat;
+                    $scope.errorPassword1= getRegister.errors.password_repeat;
                     $scope.errorNewUsername = getRegister.errors.username;
                     $scope.errorSurname = getRegister.errors.surname;
-                    $scope.errorSex = getRegister.errors.sex;
                     $scope.errorAddress = getRegister.errors.address;
                     $scope.errorAddressN = getRegister.errors.address_number;
                     $scope.errorPost= getRegister.errors.postcode;
                     $scope.errorCity = getRegister.errors.city;
-                    $scope.errorInit = getRegister.errors.initials;
                     $scope.errorMiddle = getRegister.errors.tussenvoegsel;
                     $scope.errorPost = getRegister.errors.postcode;
                     $scope.errorCity = getRegister.errors.city;
+                    $scope.errorInitials = getRegister.errors.initials;
                 
-                
-                    
+                    usSpinnerService.stop('spinner-1');
 					$scope.hide = "";
 				}	
 		})
