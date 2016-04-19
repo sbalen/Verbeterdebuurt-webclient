@@ -1,4 +1,4 @@
-var vdbApp = angular.module('vdbApp', ['ngRoute'])
+var vdbApp = angular.module('vdbApp', ['ngRoute','angularSpinner'])
 var APIURL = "http://staging.​verbeterdebuurt.nl/api.php/json_1_3/";
 
 var issuesService = new Object();
@@ -39,8 +39,8 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
 		controller: 'mainCtrl'
 	})
 	.when('/issues/:id',{
-		templateUrl :'map.html',
-		controller : 'mainCtrl'
+		templateUrl :'issues.html',
+		controller : 'issuesCtrl'
 	})
 	.when('/mention', {
 		templateUrl: 'mention.html',
@@ -153,15 +153,7 @@ vdbApp.factory('registerService', ['$http',function ($http) {
 vdbApp.controller('mainCtrl', ['$scope','$window','$location','$rootScope','$routeParams','$http','issuesService','reportService','commentService', function ($scope,$window,$location,$rootScope,$routeParams,$http,issuesService,reportService,commentService) {
 						menuSelected($rootScope,'home');
 						var jsondata = JSON.stringify({"council" : "Groningen"});
-						var jsoniddata = JSON.stringify({"issue_id":""+$routeParams.id+""});
-						$scope.hide = "ng-hide";
-						//control pop up
-						if($routeParams.id){
-							$scope.hide = "";
-							$scope.id = function(){
-									return $routeParams.id
-								}
-						}
+
 						//promise for make asyncronise data factory to be syncronis
 						var getIssues = issuesService.getIssues( jsondata ).then(function (data){
 								var getdata = data.data;
@@ -173,12 +165,6 @@ vdbApp.controller('mainCtrl', ['$scope','$window','$location','$rootScope','$rou
 								var getdata = data.data;
 								$rootScope.reportList = getdata.report;
 						});
-
-						var getComments = commentService.getComment( jsoniddata ).then(function(data){
-								var getdata = data.data;
-								$rootScope.commentList = getdata.comments;
-						});
-						
 						
 						//click function at map
 						$scope.alrCity = function(){
@@ -201,28 +187,7 @@ vdbApp.controller('mainCtrl', ['$scope','$window','$location','$rootScope','$rou
 							
 						}
 
-						//click at problem
-						$scope.clickIssues = function(){
-								$scope.hide = "";
-								$scope.id = function(){
-									return $routeParams.id
-								}
-								//comment service
-								
-								
-						}
-							console.log($rootScope.lastUrl);
-						$scope.close = function(){
-							console.log($rootScope.lastUrl);
-							$scope.hide = "ng-hide";
-							if($rootScope.lastUrl == null){
-								$rootScope.lastUrl = "";
-								$location.path($rootScope.lastUrl);
-							}
-							else{
-								$location.path($rootScope.lastUrl);
-							}
-						};
+						
 					}]);
 //Retrieving issues
 
@@ -232,6 +197,36 @@ vdbApp.controller('mainCtrl', ['$scope','$window','$location','$rootScope','$rou
 // vdbApp.controller('mainCtrl', ['$scope','issues', function ($scope,issues) {
 
 // }]);
+vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$routeParams','issuesService','reportService','usSpinnerService','$location','$anchorScroll', function ($scope,$rootScope,$routeParams,issuesService,reportService,usSpinnerService,$location,$anchorScroll) {
+	$scope.hide = "ng-hide";
+	var jsondata = JSON.stringify({"council" : "Groningen"});
+		if($rootScope.lastUrl==null){
+			$rootScope.lastUrl=='/';
+		}
+
+	var getIssues = issuesService.getIssues( jsondata ).then(function (data){
+								var getdata = data.data;
+								$rootScope.newProblemList = getdata.issues;
+								$scope.hide = "";
+								usSpinnerService.stop('spinner-1');
+								var temp = $location.hash();
+								$location.hash('main-main-content');
+								$anchorScroll();
+								
+								// console.log(getdata.data.issues); 
+						});
+
+	var getReport = reportService.getReport( jsondata ).then(function (data){
+								var getdata = data.data;
+								$rootScope.reportList = getdata.report;
+						});
+	$scope.id = function(){
+		return $routeParams.id;
+	}
+
+}])
+
+
 vdbApp.controller('mentionCtrl', ['$scope','$rootScope', function ($scope,$rootScope) {
 	menuSelected($rootScope,'mention');
 }])
