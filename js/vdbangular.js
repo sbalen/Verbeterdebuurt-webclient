@@ -267,19 +267,27 @@ vdbApp.controller('myIssuesCtrl', ['$scope','$rootScope','$window','$location', 
 
 vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','$location','usSpinnerService', function ($scope,$rootScope,$window,loginService,$location,usSpinnerService) {
 	$scope.hide = "ng-hide";
+	//$scope.overlay ACTIVE WHENclick and overlay when no event
+	$scope.overlay="overlay";
+
 	
 	if($rootScope.urlBefore==null || $rootScope.urlBefore == '/login'){
 			$rootScope.urlBefore='/' ;
 	}
+	if($window.sessionStorage.username !=null){
+			$location.path('/');
+	}
 
 	$scope.login = function(){
 		usSpinnerService.spin('spinner-1');
+		$scope.overlay = "overlayactive";
 		var jsondata = JSON.stringify({"user":{"username":""+$scope.username+"","password":""+$scope.password+""}});
 		var getLogin = loginService.getLogin(jsondata).then(function (data){
 				var getLogin = data.data;
 				if(!getLogin.success){
 					$scope.errorMessage = getLogin.error;
 					usSpinnerService.stop('spinner-1');
+					$scope.overlay = "overlay";
 					$scope.hide = "";
 				}else if(getLogin.success){
 					//temp for data session
@@ -301,6 +309,7 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
 						return true;
 					}
 					usSpinnerService.stop('spinner-1');
+					$scope.overlay = "overlay";
 					$location.path($rootScope.urlBefore);
 				}	
 		})

@@ -20,7 +20,9 @@ h6 {
 
 .main-panel {
   padding: 15px;
-  border-radius: 0 !important; }
+  border-radius: 0 !important;
+  position: relative;
+  z-index: -1; }
 
 .alert,
 .navbar {
@@ -74,7 +76,7 @@ h6 {
   left: 0;
   right: 0;
   overflow: hidden;
-  z-index: 0; }
+  z-index: -999; }
 
 .footer {
   width: 80%;
@@ -112,5 +114,13 @@ h6 {
   width: 100%;
   height: auto;
   background-color: white; }
+
+#overlayactive {
+  z-index: 999;
+  background-color: rgba(52, 56, 36, 0.6); }
+
+#overlay {
+  position: relative;
+  z-index: 0; }
 
 /*# sourceMappingURL=vdb.css.map */
