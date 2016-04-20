@@ -63,9 +63,9 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
         
     })
     
-    .when('/regisconfirmation',{
-        templateUrl: 'regisconfirmation.html'
-        
+    .when('/regisconf',{
+        templateUrl: 'regisconf.html',
+        controller : 'regisconfCtrl'
 	})
 	 $locationProvider.html5Mode(true);
 	 $sceDelegateProvider.resourceUrlWhitelist([
@@ -351,11 +351,11 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
 	}
 }])
 
-vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerService','usSpinnerService', function ($scope,$rootScope,$window,registerService,usSpinnerService) {
+vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerService','usSpinnerService','$location', function ($scope,$rootScope,$window,registerService,usSpinnerService,$location) {
 	$scope.hide = "ng-hide";
     $scope.overlay="overlay";
 
-	$scope.register = function(){
+	$scope.register = function(sex){
         usSpinnerService.spin('spinner-1');
         $scope.overlay = "overlayactive";
 		var jsondata = JSON.stringify({"user":{"username":""+$scope.username+""
@@ -377,8 +377,13 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
                                        
                                        
                                       });
-                                   
         
+        
+
+        $rootScope.tempemail=$scope.email;
+        console.log($rootScope.tempemail);
+
+                                   
        
 		var getRegister = registerService.getRegister(jsondata).then(function (data){
 				var getRegister = data.data;
@@ -393,7 +398,7 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
                     $scope.hide = "";
                 }
             
-            if(getRegister.errors.sex !=null){
+            if(getRegister.errors.sex === undefined){
                     $scope.errorSex = "sex "+getRegister.errors.sex;
                     }else{
                     $scope.errorSex="";
@@ -421,6 +426,15 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
 					$scope.overlay="overlay";
 
 				}	
+            
+            if(getRegister.success)
+                {
+                    $location.path('/regisconf');
+                    
+                    usSpinnerService.stop('spinner-1');
+					$scope.overlay = "overlay";
+                    
+                }
 		});
 		
 	}
@@ -428,3 +442,15 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
 		$scope.hide="ng-hide";
 	}
 }])
+
+
+vdbApp.controller('regisconfCtrl', ['$scope','$rootScope','$window','usSpinnerService','$location', function ($scope,$rootScope,$window,usSpinnerService,$location) {
+	
+            	$scope.home = function(){
+		        $location.path('/');
+	                                   
+                }
+                                       
+                                       
+                                      }]);
+
