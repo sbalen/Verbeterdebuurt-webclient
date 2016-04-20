@@ -1,4 +1,4 @@
-var vdbApp = angular.module('vdbApp', ['ngRoute','angularSpinner'])
+var vdbApp = angular.module('vdbApp', ['ngRoute','angularSpinner','angularUtils.directives.dirPagination'])
 var APIURL = "https://staging.​verbeterdebuurt.nl/api.php/json_1_3/";
 
 var issuesService = new Object();
@@ -7,6 +7,7 @@ var loginService  = new Object();
 var reportService = new Object();
 var loginService = new Object();
 var commentService = new Object();
+var myIssuesService = new Object();
 
 //change menu selected
 function menuSelected($scope,selected){
@@ -152,6 +153,21 @@ vdbApp.factory('registerService', ['$http',function ($http) {
 	};
 }])
 
+vdbApp.factory('myIssuesService', ['$http',function ($http) {
+	return {
+			getMyIssues  : function( jsondata ){
+				return $http.post(APIURL+'myIssues', jsondata)
+				.success(function (data){
+					if(angular.isObject(data)){
+						myIssuesService.data = data ; 
+						return myIssuesService.data;
+					}
+				});
+				return myIssuesService.data;
+			}
+	};
+}])
+
 
 
 
@@ -210,6 +226,8 @@ vdbApp.controller('mainCtrl', ['$scope','$window','$location','$rootScope','$rou
 						$scope.clickSearch= function(){
 							$window.searchCity = $scope.searchCity;
 						}
+						//validate session user
+
 						
 					}]);
 //Retrieving issues
@@ -257,19 +275,32 @@ vdbApp.controller('mentionCtrl', ['$scope','$rootScope','$window','$location', f
 				$location.path('/login');
 		}
 }])
-vdbApp.controller('myIssuesCtrl', ['$scope','$rootScope','$window','$location', function ($scope,$rootScope,$window,$location) {
+
+vdbApp.controller('myIssuesCtrl', ['$scope','$rootScope','$window','$location','myIssuesService', function ($scope,$rootScope,$window,$location,myIssuesService) {
 	menuSelected($rootScope,'myIssues');
+  		$scope.totalPage = 3;
 		if($window.sessionStorage.username==null){
 				$rootScope.urlBefore = $location.path();
 				$location.path('/login');
 		}
+		var jsondata = JSON.stringify({"user":{ "username":""+$window.sessionStorage.username+"",
+												"password_hash":""+$window.sessionStorage.password_hash+""
+
+												}});
+
+		var getMyIssues = myIssuesService.getMyIssues( jsondata ).then(function (data){
+			var getdata = data.data;
+			$scope.count = getdata.count;
+			$scope.myIssuesList = getdata.issues
+		})
+
 }])
 
 vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','$location','usSpinnerService', function ($scope,$rootScope,$window,loginService,$location,usSpinnerService) {
 	$scope.hide = "ng-hide";
 	//$scope.overlay ACTIVE WHENclick and overlay when no event
 	$scope.overlay="overlay";
-
+	
 	
 	if($rootScope.urlBefore==null || $rootScope.urlBefore == '/login'){
 			$rootScope.urlBefore='/' ;
@@ -281,7 +312,7 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
 	$scope.login = function(){
 		usSpinnerService.spin('spinner-1');
 		$scope.overlay = "overlayactive";
-		var jsondata = JSON.stringify({"user":{"username":""+$scope.username+"","password":""+$scope.password+""}});
+		var jsondata = JSON.stringify({"user":{"username":""+$scope.lusername+"","password":""+$scope.lpassword+""}});
 		var getLogin = loginService.getLogin(jsondata).then(function (data){
 				var getLogin = data.data;
 				if(!getLogin.success){
