@@ -322,10 +322,11 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
 
 vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerService','usSpinnerService', function ($scope,$rootScope,$window,registerService,usSpinnerService) {
 	$scope.hide = "ng-hide";
-    
+    $scope.overlay="overlay";
 
 	$scope.register = function(){
         usSpinnerService.spin('spinner-1');
+        $scope.overlay = "overlayactive";
 		var jsondata = JSON.stringify({"user":{"username":""+$scope.username+""
                                                ,"password":""+$scope.password+""
                                                ,"email":""+$scope.email+""},
@@ -386,8 +387,10 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
                 
                     usSpinnerService.stop('spinner-1');
 					$scope.hide = "";
+					$scope.overlay="overlay";
+
 				}	
-		})
+		});
 		
 	}
 	$scope.close = function(){
