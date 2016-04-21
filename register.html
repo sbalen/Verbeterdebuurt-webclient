@@ -9,8 +9,9 @@
           
         </div>
         <!-- main container -->
-        <div class="col-lg-6 main-container">
-            <div class="panel panel-default main-panel" ng-controller="registerCtrl">
+        <div class="col-lg-6 main-container" ng-controller="registerCtrl">
+            <div id="{{overlay}}">
+            <div class="panel panel-default main-panel" >
                     <div class="alert alert-danger {{hide}}">
                         <a href="#" class="close" data-dismiss="alert" aria-label="close" ng-click="close">&times;</a>
                        
@@ -138,6 +139,7 @@
                             </div>
                         </form>
                 </div>
+            </div>
         </div>
         
     <!--  sidebar right -->

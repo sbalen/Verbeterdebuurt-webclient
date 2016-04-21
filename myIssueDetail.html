@@ -1,64 +1,17 @@
-    <!-- body -->  
-    <div id="main-content" class="container" ng-controller="issuesCtrl">
+ <!-- body -->  
+    <div id="main-content" class="container" >
 	    <!--  sidebar left -->
       
-	    <div class="col-md-3 hidden-sm hidden-xs hidden-md">
-                    <div class="panel side-panel panel-default" id="new-problem-widget">
-                        <div class="panel-heading">
-                            <strong>Report</strong>
-                        </div>
-            <div class="panel-body">
-                          <div class="list-group" >
-                            <strong>City:{{reportList.council}}</strong></br>
-                                   {{reportList.reports}} reports per Month</br>
-                                   {{reportList.solutions}} solution per Month
-                          </div>
-            </div>  
-                    </div>
-                    <div class="panel side-panel panel-default" id="new-problem-widget">
-                        <div class="panel-heading">
-                            <strong>Nieuwste problemen</strong>
-                        </div>
-      			<div class="panel-body">
-                          <div class="list-group" >
-                            <a href="/issues/{{newProblem.id}}" class="list-group-item clearfix" ng-repeat="newProblem in newProblemList| filter : {type:'problem'} | filter: {status:'!open'} | orderBy : 'created_at' : true |limitTo:3" ng-click="clickIssues()">
-                              <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
-                              <strong> {{newProblem.title}}</strong> {{newProblem.location.full_address}}
-                              <span class="pull-right">
-                                <button class="btn btn-xs btn-success" >
-                                  <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
-                                </button>
-                              </span>
-                            </a>
-                          </div>
-            </div>  
-		                </div>
-                    <div class="panel side-panel panel-default">
-                        <div class="panel-heading" id="active-idea-widget">
-                            <strong>Actieve Ideeen</strong>
-                        </div>
-      			<div class="panel-body">
-                          <div class="list-group">
-                            <a href="/issues/{{newProblem.id}}" class="list-group-item clearfix" ng-repeat="newProblem in newProblemList| filter : {type:'idea'} | filter: {status:'!open'} | orderBy : 'created_at' : true |limitTo:3" ng-click="clickIssues()">
-                              <img class="icon" src="./img/icon_idea_2_21_21.png" size="20px"/>
-                              <strong>{{newProblem.title}}</strong> {{newProblem.location.full_address}}
-                              <span class="pull-right">
-                                <button class="btn btn-xs btn-success">
-                                  <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
-                                </button>
-                              </span>
-                            </a>
-                          </div>
-                        </div>  
-            </div>
+	    <div class="col-md-3 hidden-sm hidden-xs hidden-md" ng-controller="myIssuesDetailCtrl">
+                    
             </div>
 	    <!-- main container -->
 	    <div class="col-lg-6 main-container">
 
                 <span us-spinner spinner-key="spinner-1" spinner-start-active="true"></span>
-                <div class="panel panel-default main-panel {{hide}}" ng-repeat="newProblem in newProblemList |filter : {id : id()}">
-                  <a href="{{lastUrl}}" class="close" aria-label="close" >&times;</a>
-            <h1>{{newProblem.title}}<br><small>{{newProblem.location.full_address}}</small></h1>
+                <div class="panel panel-default main-panel {{hide}}" ng-repeat="myIssues in myIssuesList | filter : {id : id()} ">
+                  <a href="/myissues" class="close" aria-label="close" >&times;</a>
+            <h1>{{myIssues.title}}<br><small>{{myIssues.location.full_address}}</small></h1>
             <div class="thumbnail right-caption span4">
                 <img class="img-responsive" src="./img/20130913_151618_1.jpg" alt="Plaatje van de situatie">
                   <div class="detail-table hidden-xs">
@@ -105,7 +58,7 @@
                 </div>
               </div>
               <h2>Beschrijving</h2>
-              <p>{{newProblem.description}} </p>
+              <p>{{myIssues.description}} </p>
               <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#StemModal">Reageer <span class="badge">5</span></button>
               <button type="button" class="btn btn-primary">Stem <span class="badge">7</span></button>
               <h2>Reacties</h2>
@@ -131,12 +84,7 @@
 	    </div>
 	    <!--  sidebar right -->
 	    <div class="col-lg-3">
-                <div class="input-group" id="search-widget">
-                                     <input type="text" class="form-control" placeholder="Zoek op adres">
-                                     <span class="input-group-btn">
-                                        <button class="btn btn-primary" type="button"><span class="glyphicon glyphicon-search"></span><span class="hidden-xs">Zoeken</span></button>
-                                     </span>
-                </div>
+                
 	    </div>  
     </div>	
 
