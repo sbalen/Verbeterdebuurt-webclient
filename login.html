@@ -2,32 +2,34 @@
     
     
     <!-- body -->  
-    <div id="main-content" class="container">
+    <div id="main-content" class="container" ng-controller="loginCtrl">
 	    <!--  sidebar left -->
 	    <div class="col-md-3 hidden-sm hidden-xs hidden-md">
 		  
 	    </div>
 	    <!-- main container -->
 	    <div class="col-lg-6 main-container">
-	        <div class="panel panel-default main-panel" ng-controller="loginCtrl">
+            <div id="{{overlay}}">
+	        <div class="panel panel-default main-panel" >
+                    <span us-spinner spinner-key="spinner-1"></span>
                     <div class="alert alert-danger {{hide}}" >
                         <a href="#" class="close" aria-label="close" ng-click="close()" >&times;</a>
 	                <p>{{errorMessage}}</p>
 		            </div>
                     <div id="side_bar" class="clearfix" style="margin-bottom:15px;">
                         <h1 style="float: left;">Login</h1>
-                        <button class="btn btn-primary" style="float: right; position: relative; top: 25px; right: 0px;">Registreren</button>
+                        <button class="btn btn-primary" style="float: right; position: relative; top: 25px; right: 0px;" ng-click="register()" >Registreren</button>
                     </div>		    
                     <form class="form-horizontal" role="form">
                     
                     <div class="form-group">
                         <div class="col-sm-12 form-col">
-                            <input type="text" class="form-control" id="username" placeholder="Gebruikersnaam of e-mailadres" ng-model="username">
+                            <input type="text" class="form-control" id="username" placeholder="Gebruikersnaam of e-mailadres" ng-model="lusername">
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-sm-12 form-col">
-                            <input type="password" class="form-control" id="password-1" placeholder="Wachtwoord" ng-model="password">
+                            <input type="password" class="form-control" id="password-1" placeholder="Wachtwoord" ng-model="lpassword">
                         </div>
                     </div>
                     <div class="checkbox">
@@ -54,7 +56,9 @@
                     </div>
                     </form>
                 </div>
-	    </div>
+	       </div>
+        </div>
+
 	    <!--  sidebar right -->
 	    <div class="col-lg-3 hidden-xs">
 		   

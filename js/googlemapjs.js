@@ -36,6 +36,7 @@ function getLocation(map) {
                    // name of city
                     city= result[0].address_components[i];
                     // console.log(city);
+                    console.log(searchCity);
                     break;
                         }
                     }
