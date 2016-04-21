@@ -52,6 +52,10 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
 		templateUrl: 'myissues.html',
 		controller : 'myIssuesCtrl'	
 	})
+	.when('/myIssues/:id', {
+		templateUrl: 'myIssueDetail.html',
+		controller: 'myIssuesDetailCtrl'
+	})
     
     .when('/login', {
 		templateUrl: 'login.html'
@@ -277,8 +281,37 @@ vdbApp.controller('mentionCtrl', ['$scope','$rootScope','$window','$location', f
 }])
 
 vdbApp.controller('myIssuesCtrl', ['$scope','$rootScope','$window','$location','myIssuesService', function ($scope,$rootScope,$window,$location,myIssuesService) {
-	menuSelected($rootScope,'myIssues');
+		$scope.hide = "";
+		menuSelected($rootScope,'myIssues');
+		
+		
+		$rootScope.currentPage = 1;
+
+		console.log($rootScope.page);
   		$scope.totalPage = 3;
+		if($window.sessionStorage.username==null){
+				$rootScope.urlBefore = $location.path();
+				$location.path('/login');
+		}
+		var jsondata = JSON.stringify({"user":{ "username":""+$window.sessionStorage.username+"",
+												"password_hash":""+$window.sessionStorage.password_hash+""
+
+												}});
+		console.log(jsondata);
+		var getMyIssues = myIssuesService.getMyIssues( jsondata ).then(function (data){
+			var getdata = data.data;
+			$scope.count = getdata.count;
+			$scope.myIssuesList = getdata.issues;
+		})
+
+}])
+
+vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootScope','$location','$window','myIssuesService','usSpinnerService', function ($scope,$routeParams,$http,$rootScope,$location,$window,myIssuesService,usSpinnerService) {
+		$scope.hide = "";
+		
+		$scope.id = function(){
+			return $routeParams.id;
+		}
 		if($window.sessionStorage.username==null){
 				$rootScope.urlBefore = $location.path();
 				$location.path('/login');
@@ -292,8 +325,8 @@ vdbApp.controller('myIssuesCtrl', ['$scope','$rootScope','$window','$location','
 			var getdata = data.data;
 			$scope.count = getdata.count;
 			$scope.myIssuesList = getdata.issues
+			usSpinnerService.stop('spinner-1');
 		})
-
 }])
 
 vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','$location','usSpinnerService', function ($scope,$rootScope,$window,loginService,$location,usSpinnerService) {
@@ -348,6 +381,10 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
 	}
 	$scope.close = function(){
 		$scope.hide="ng-hide";
+	}
+	//move to register page
+	$scope.register = function(){
+		$location.path('/register');
 	}
 }])
 

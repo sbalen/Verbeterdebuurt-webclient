@@ -14,7 +14,9 @@
 	        <div class="panel panel-default main-panel">
 		    <h1>Mijn meldingen</h1>
                     <div class="list-group">
-                            <a href="/myissues/{{myIssues.id}}" class="list-group-item clearfix" dir-paginate="myIssues in myIssuesList | itemsPerPage:totalPage">
+                            <a href="/myIssues/{{myIssues.id}}" class="list-group-item clearfix" dir-paginate="myIssues in myIssuesList | itemsPerPage:totalPage"
+                            current-page="currentPage">
+                                <input type="hidden" ng-model="page" value="{{currentPage}}">
                                <div width="100%" class="clearfix">
                                <div class="pull-left">
                                  <img src="./img/IMG_0007.JPG" height="100px" width="100px" style="padding-right:10px;">
