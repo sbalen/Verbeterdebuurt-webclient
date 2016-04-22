@@ -79,6 +79,11 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
         templateUrl: 'forgotpass.html',
         controller : 'forgotCtrl'
 	})
+    .when('/forgotconf',{
+        templateUrl: 'forgotconf.html',
+        controller : 'forgotconfCtrl'
+	})
+    
 	 $locationProvider.html5Mode(true);
 	 $sceDelegateProvider.resourceUrlWhitelist([
 		// Allow same origin resource loads.
@@ -452,6 +457,17 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
 	$scope.register = function(){
 		$location.path('/register');
 	}
+    
+      $scope.forgotpass=function()
+    {
+        $location.path('/forgotpass');
+        
+    }
+    
+	$scope.close = function(){
+		$scope.hide="ng-hide";
+	}
+    
 }])
 
 vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerService','usSpinnerService','$location', function ($scope,$rootScope,$window,registerService,usSpinnerService,$location) {
@@ -536,21 +552,12 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
                     
                     usSpinnerService.stop('spinner-1');
 					$scope.overlay = "overlay";
-                    
+                     
                 }
 		});
 		
 	}
-    $scope.forgotpass=function()
-    {
-        $location.path('/forgotpass');
-        
-    }
-    
-	$scope.close = function(){
-		$scope.hide="ng-hide";
-	}
-    
+  
     
 }])
 
@@ -608,28 +615,25 @@ vdbApp.controller('forgotCtrl', ['$scope','$rootScope','$window','forgotService'
         $scope.overlay = "overlayactive";
 		var jsondata = JSON.stringify({"email":""+$scope.femail+""});
         
+        $rootScope.tempemail1=$scope.femail;
+        console.log($rootScope.tempemail1);
+      
     
      var getForgot = forgotService.getForgot(jsondata).then(function (data){
+         
 				var getForgot = data.data;
                 console.log(getForgot.error);
                 $scope.errorFEmail = ""
+                console.log(getForgot)
+                
                 
                 if (getForgot.success){
-                
+                $location.path('/forgotconf');
                 $scope.errorFEmail = getForgot.error;
                 usSpinnerService.stop("spinner-1");
                 $scope.overlay="overlay";
                 $scope.hide = "";
-                    
-                if(getForgot.success)
-                {
-                    $location.path('#StemModalt');
-                    
-                    usSpinnerService.stop('spinner-1');
-					$scope.overlay = "overlay";
-                    
-                }
-                    
+               
                 }
          usSpinnerService.stop('spinner-1');
 					$scope.overlay = "overlay";
@@ -640,13 +644,22 @@ vdbApp.controller('forgotCtrl', ['$scope','$rootScope','$window','forgotService'
     
     $scope.close = function(){
 		$scope.hide="ng-hide";
+        
+         
 	}
-    
+  
 }])
 	
                             
-  
-
+ 
+vdbApp.controller('forgotconfCtrl', ['$scope','$rootScope','$window','usSpinnerService','$location', function ($scope,$rootScope,$window,usSpinnerService,$location) {
+	
+            	$scope.home = function(){
+		        $location.path('/');
+	                                   
+                }
+                        
+}]);
 	
         
 
