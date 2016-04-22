@@ -4,7 +4,7 @@
     
     
     <!-- body -->  
-    <div id="main-content" class="container">
+    <div id="main-content" class="container" ng-controller="myIssuesCtrl">
 	    <!--  sidebar left -->
 	    <div class="col-md-3 hidden-sm hidden-xs hidden-md">
 		  
@@ -14,57 +14,23 @@
 	        <div class="panel panel-default main-panel">
 		    <h1>Mijn meldingen</h1>
                     <div class="list-group">
-                            <a href="#" class="list-group-item clearfix">
+                            <a href="/myIssues/{{myIssues.id}}" class="list-group-item clearfix" dir-paginate="myIssues in myIssuesList | itemsPerPage:totalPage"
+                            current-page="currentPage">
+                                <input type="hidden" ng-model="page" value="{{currentPage}}">
                                <div width="100%" class="clearfix">
                                <div class="pull-left">
                                  <img src="./img/IMG_0007.JPG" height="100px" width="100px" style="padding-right:10px;">
                                </div>
                                <div>
-                               <p><strong>Afval: Afval in de straat </strong><img class="icon" src="./img/icon_2_21_21.png" /></p>
-			       Haitsma Mulierstraat 64, Haarlem<br/>
-                               <span class="text-muted">24 mei 2015</span>
+                               <p><strong>{{myIssues.title}}</strong><img class="icon" src="./img/icon_2_21_21.png" /></p>
+			                           {{myIssues.location.full_address}}<br/>
+                               <span class="text-muted">{{myIssues.created_at}}</span>
                               </div></div>
                               <span class="pull-right">
                                 <div class="submit-buttons"><div class="btn-group">
                                     <button type="button" class="btn btn-success">Bekijken</button>
-				    <button type="button" class="btn btn-success">Afsluiten</button>
-				    <button type="button" class="btn btn-danger">Verwijderen</button>
-                                </div></div>
-                              </span>
-                            </a>
-                            <a href="#" class="list-group-item clearfix">
-                               <div width="100%" class="clearfix">
-                               <div class="pull-left">
-                                 <img src="./img/IMG_0007.JPG" height="100px" width="100px" style="padding-right:10px;">
-                               </div>
-                               <div>
-                               <p><strong>Verkeersdrempel </strong><img class="icon" src="./img/icon_idea_2_21_21.png" /></p>
-			       Haitsma Mulierstraat 64, Haarlem<br/>
-                               <span class="text-muted">24 mei 2015</span>
-                              </div></div>
-                              <span class="pull-right">
-                                <div class="submit-buttons"><div class="btn-group">
-                                    <button type="button" class="btn btn-success">Bekijken</button>
-				    <button type="button" class="btn btn-success">Afsluiten</button>
-				    <button type="button" class="btn btn-danger">Verwijderen</button>
-                                </div></div>
-                              </span>
-                            </a>
-                            <a href="#" class="list-group-item clearfix">
-                               <div width="100%" class="clearfix">
-                               <div class="pull-left">
-                                 <img src="./img/IMG_0007.JPG" height="100px" width="100px" style="padding-right:10px;">
-                               </div>
-                               <div>
-                               <p><strong>Afval: Afval in de straat </strong><img class="icon" src="./img/flag_2_21_21.png" /></p>
-			       Haitsma Mulierstraat 64, Haarlem<br/>
-                               <span class="text-muted">24 mei 2015</span>
-                              </div></div>
-                              <span class="pull-right">
-                                <div class="submit-buttons"><div class="btn-group">
-                                    <button type="button" class="btn btn-success">Bekijken</button>
-				    <button type="button" class="btn btn-success">Afsluiten</button>
-				    <button type="button" class="btn btn-danger">Verwijderen</button>
+                        				    <button type="button" class="btn btn-success">Afsluiten</button>
+                        				    <button type="button" class="btn btn-danger">Verwijderen</button>
                                 </div></div>
                               </span>
                             </a>
@@ -72,13 +38,15 @@
                      <span class="clearfix">
                                     <div class="submit-buttons pull-right">
 				        <nav>
-				            <ul class="pagination">
+                  <dir-pagination-controls boundary-links="true" template-url="node_modules/angular-utils-pagination/dirPagination.tpl.html" max-size="5"></dir-pagination-controls>
+				            <!-- <ul class="pagination">
 				                <li class="active"><a href="#">1</a></li>
 				                <li><a href="#">2</a></li>
 				                <li><a href="#">3</a></li>
 				                <li><a href="#">4</a></li>
 				                <li><a href="#">5</a></li>
-				            </ul>
+				            </ul> -->
+
 				        </nav>
                                     </div>
                     </span>
