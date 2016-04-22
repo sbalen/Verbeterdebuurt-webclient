@@ -22,15 +22,15 @@
                         <form class="form-horizontal" role="form">
                             <div class="panel-body">
                                 <div class="form-group">
-                                    <div class="col-sm-12 form-col" ng-class="{'has-error': errorEmail}">
+                                    <div class="col-sm-12 form-col">
                                         <input type="text" class="form-control" id="email" placeholder="E-mailadres" ng-model="femail">
                                     </div>
                                 </div>
                             </div>
                                 
                             
-                            <div class="submit-buttons">
-                                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-disabled="!femail" ng-click="forgotpass()" >Voortzetten</button>
+                            <div id="side_bar" class="clearfix" style="margin-bottom:15px;">
+                                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-disabled="!femail" ng-click="forgotpass()"style="float: right; position: relative; top: 25px; right: 0px;" >Voortzetten</button>
                             </div>
                             
                         </form>
@@ -38,7 +38,7 @@
             </div>
         </div>
         
-        <div id="StemModal" class="modal fade" role="dialog">
+        <div id="StemModal1" class="modal fade" role="dialog">
         <div class="modal-dialog">
         <!-- Modal content-->
             <div class="modal-content">
