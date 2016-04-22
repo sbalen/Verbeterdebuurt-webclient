@@ -13,8 +13,9 @@
 	        <div class="panel panel-default main-panel" >
                     <span us-spinner spinner-key="spinner-1"></span>
                     <div class="alert alert-danger {{hide}}" >
-                        <a href="#" class="close" aria-label="close" ng-click="close()" >&times;</a>
+                        <a class="close {{hide}}" aria-label="close" ng-click="close()" >&times;</a>
 	                <p>{{errorMessage}}</p>
+                    <p>{{errorSession}}</p>
 		            </div>
                     <div id="side_bar" class="clearfix" style="margin-bottom:15px;">
                         <h1 style="float: left;">Login</h1>

@@ -8,6 +8,7 @@ var reportService = new Object();
 var loginService = new Object();
 var commentService = new Object();
 var myIssuesService = new Object();
+var commentSubmitService = new Object();
 
 //change menu selected
 function menuSelected($scope,selected){
@@ -172,6 +173,21 @@ vdbApp.factory('myIssuesService', ['$http',function ($http) {
 	};
 }])
 
+vdbApp.factory('commentSubmitService', ['$http',function ($http) {
+	return {
+		getCommentSubmit : function( jsondata ){
+			return $http.post(APIURL+'commentSubmit' , jsondata)
+			.success(function (data){
+				if(angular.isObject(data)){
+					commentSubmitService.data = data;
+					return commentSubmitService.data;
+				}
+			});
+			return commentSubmitService.data;
+		}
+	};
+}])
+
 
 
 
@@ -242,8 +258,9 @@ vdbApp.controller('mainCtrl', ['$scope','$window','$location','$rootScope','$rou
 // vdbApp.controller('mainCtrl', ['$scope','issues', function ($scope,issues) {
 
 // }]);
-vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$routeParams','issuesService','reportService','usSpinnerService','$location','$anchorScroll', function ($scope,$rootScope,$routeParams,issuesService,reportService,usSpinnerService,$location,$anchorScroll) {
+vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams','issuesService','reportService','usSpinnerService','$location','$anchorScroll', function ($scope,$rootScope,$window,$routeParams,issuesService,reportService,usSpinnerService,$location,$anchorScroll) {
 	$scope.hide = "ng-hide";
+	$scope.overlay = "overlay";
 	var jsondata = JSON.stringify({"council" : "Groningen"});
 		if($rootScope.lastUrl==null){
 			$rootScope.lastUrl=='/';
@@ -254,7 +271,7 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$routeParams','issuesSer
 								$rootScope.newProblemList = getdata.issues;
 								$scope.hide = "";
 								usSpinnerService.stop('spinner-1');
-								var temp = $location.hash();
+								// var temp = $location.hash();
 								$location.hash('main-main-content');
 								$anchorScroll();
 								
@@ -267,6 +284,23 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$routeParams','issuesSer
 						});
 	$scope.id = function(){
 		return $routeParams.id;
+	}
+
+	//validity must login when comment
+	$scope.sessionValid = function(){
+		if(!$window.sessionStorage.username){
+			$location.path("/login");
+			$scope.stemModal = "";
+			$rootScope.errorSession="je moet ingelogd zijn om commentaar te geven of de snelheid"
+		}
+		else{
+			$scope.stemModal = "#StemModal";
+		}	
+	};
+	
+	//close the detail;
+	$scope.close = function(){
+		$scope.hide = "ng-hide";
 	}
 
 }])
@@ -341,7 +375,10 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
 	if($window.sessionStorage.username !=null){
 			$location.path('/');
 	}
-
+	//error session
+	if($rootScope.errorSession){
+		$scope.hide = "";
+	}
 	$scope.login = function(){
 		usSpinnerService.spin('spinner-1');
 		$scope.overlay = "overlayactive";
@@ -381,6 +418,7 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
 	}
 	$scope.close = function(){
 		$scope.hide="ng-hide";
+		$rootScope.errorSession="";
 	}
 	//move to register page
 	$scope.register = function(){
@@ -490,4 +528,34 @@ vdbApp.controller('regisconfCtrl', ['$scope','$rootScope','$window','usSpinnerSe
                                        
                                        
                                       }]);
+ vdbApp.controller('commentSubmitCtrl', ['$scope','$rootScope','$window','$routeParams','usSpinnerService','commentSubmitService', function ($scope,$rootScope,$window,$routeParams,usSpinnerService,commentSubmitService) {
+ 	//comment Service :v
+	$scope.commentSubmit = function(){
+			usSpinnerService.spin('spinner-2');
+			var jsondata = JSON.stringify(
+				{"user":{"username":""+$window.sessionStorage.username+"",
+				"password_hash":""+$window.sessionStorage.password_hash+""
+				},
+				"issue_id":""+$routeParams.id+"",
+				"body":""+$scope.comment+""
+			});
+			console.log(jsondata);
 
+			var getCommentSubmit = commentSubmitService.getCommentSubmit( jsondata ).then(function (data){
+				var getCommentSubmit = data.data;
+				if(!getCommentSubmit.success){
+				usSpinnerService.stop('spinner-2');
+				console.log(getCommentSubmit);
+				}
+				else{
+				usSpinnerService.stop('spinner-2');
+				$scope.dissmissModal="modal";
+				}
+
+			})
+			
+	}
+	$scope.close = function(){
+		$scope.hide="ng-hide";
+	}
+ }])
