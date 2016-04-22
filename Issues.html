@@ -106,8 +106,8 @@
               </div>
               <h2>Beschrijving</h2>
               <p>{{newProblem.description}} </p>
-              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#StemModal">Reageer <span class="badge">5</span></button>
-              <button type="button" class="btn btn-primary">Stem <span class="badge">7</span></button>
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="{{stemModal}}" ng-click="sessionValid()">Reageer <span class="badge">5</span></button>
+              <button type="button" class="btn btn-primary" ng-click="sessionValid()">Stem <span class="badge">7</span></button>
               <h2>Reacties</h2>
               <ul class="commentList">
                         <li>
@@ -141,27 +141,32 @@
     </div>	
 
 <!-- StemModal -->
-    <div id="StemModal" class="modal fade" role="dialog">
+    <div id="StemModal" class="modal fade" role="dialog" ng-controller="commentSubmitCtrl">
         <div class="modal-dialog">
         <!-- Modal content-->
             <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h1 class="modal-title">Reactie plaatsen</h1>
-                </div>
-                <div class="modal-body">
-                    <textarea class="form-control" rows="5" id="comment"></textarea>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Annuleren</button>
-                    <button type="button" class="btn btn-success" data-dismiss="modal">Plaatsen</button>
-                </div>
+                 <span us-spinner spinner-key="spinner-2"></span>
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h1 class="modal-title">Reactie plaatsen</h1>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-danger ng-hide" >
+                            <a class="close" aria-label="close" ng-click="close()" >&times;</a>
+                        <p>{{errorMessage}}</p>
+                        </div>
+                        <textarea class="form-control" rows="5" id="comment" ng-model="comment"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Annuleren</button>
+                        <button type="button" class="btn btn-success" data-dismiss="{{dissmissModal}}" ng-click="commentSubmit()">Plaatsen</button>
+                    </div>
             </div>
         </div>
     </div>
     
     <!-- CloseModal -->
-    <div id="CloseModal" class="modal fade" role="dialog">
+    <div id="CloseModal" class="modal fade" role="dialog" >
         <div class="modal-dialog">
         <!-- Modal content-->
             <div class="modal-content">
@@ -222,6 +227,7 @@
             </div>
         </div>
     </div>
+   
 <!-- Page specific js -->
 <!-- <script src="./js/vdb-start.js"></script> -->
 <script type='text/javascript'>
