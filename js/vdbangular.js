@@ -1,5 +1,6 @@
 var vdbApp = angular.module('vdbApp', ['ngRoute','angularSpinner','angularUtils.directives.dirPagination'])
 var APIURL = "https://staging.verbeterdebuurt.nl/api.php/json_1_3/";
+var geocoder = new google.maps.Geocoder();
 
 var issuesService = new Object();
 var registerService = new Object();
@@ -216,13 +217,12 @@ vdbApp.factory('commentSubmitService', ['$http',function ($http) {
 	};
 }])
 
-
-
-
 vdbApp.controller('mainCtrl', ['$scope','$window','$location','$rootScope','$routeParams','$http','issuesService','reportService','commentService', function ($scope,$window,$location,$rootScope,$routeParams,$http,issuesService,reportService,commentService) {
 						menuSelected($rootScope,'home');
 						var jsondata = JSON.stringify({"council" : "Groningen"});
 						$rootScope.urlBefore = $location.path();
+						$window.cityName = $routeParams.cityName;
+						$scope.searchCity = $routeParams.cityName;
 						//promise for make asyncronise data factory to be syncronis
 						var getIssues = issuesService.getIssues( jsondata ).then(function (data){
 								var getdata = data.data;
@@ -237,12 +237,13 @@ vdbApp.controller('mainCtrl', ['$scope','$window','$location','$rootScope','$rou
 						
 						//click function at map
 						$scope.alrCity = function(){
-							if(city.long_name !=null){
+							if($window.city.long_name !=null){
 							
 							//url change validation	
 							if($location.path().includes("/city/") || $location.path().endsWith("/") ){
-								$location.path("/city/"+city.long_name);
-								$rootScope.lastUrl = $location.path();	
+								$location.path("/city/"+$window.city.long_name);
+								$rootScope.lastUrl = $location.path();
+								$scope.searchCity = city.long_name;	
 							}
 							
 							//Get city problem when click/drag
@@ -272,8 +273,12 @@ vdbApp.controller('mainCtrl', ['$scope','$window','$location','$rootScope','$rou
 						}
 						//search
 						$scope.clickSearch= function(){
-							$window.searchCity = $scope.searchCity;
+							$window.cityName = null;
+							console.log($scope.searchCity);
+							geocodeAddress(geocoder, map);
+							$location.path("city/"+$scope.searchCity);
 						}
+
 						//validate session user
 
 						
