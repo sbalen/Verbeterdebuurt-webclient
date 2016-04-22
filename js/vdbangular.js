@@ -1,5 +1,5 @@
 var vdbApp = angular.module('vdbApp', ['ngRoute','angularSpinner','angularUtils.directives.dirPagination'])
-var APIURL = "https://staging.​verbeterdebuurt.nl/api.php/json_1_3/";
+var APIURL = "https://staging.verbeterdebuurt.nl/api.php/json_1_3/";
 
 var issuesService = new Object();
 var registerService = new Object();
@@ -7,8 +7,10 @@ var loginService  = new Object();
 var reportService = new Object();
 var loginService = new Object();
 var commentService = new Object();
+var forgotService = new Object();
 var myIssuesService = new Object();
 var commentSubmitService = new Object();
+
 
 //change menu selected
 function menuSelected($scope,selected){
@@ -71,6 +73,10 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
     .when('/regisconf',{
         templateUrl: 'regisconf.html',
         controller : 'regisconfCtrl'
+	})
+    .when('/forgotpass',{
+        templateUrl: 'forgotpass.html',
+        controller : 'forgotCtrl'
 	})
 	 $locationProvider.html5Mode(true);
 	 $sceDelegateProvider.resourceUrlWhitelist([
@@ -158,6 +164,22 @@ vdbApp.factory('registerService', ['$http',function ($http) {
 	};
 }])
 
+
+vdbApp.factory('forgotService', ['$http',function ($http) {
+		return {
+			getForgot : function( jsondata ){
+				return $http.post(APIURL+'resetPassword', jsondata)
+				.success(function(data){
+					if(angular.isObject(data)){
+						forgotService.data=data;
+						return forgotService.data;
+					}
+				});
+				return forgotService.data;
+
+    			}
+	};
+}])
 vdbApp.factory('myIssuesService', ['$http',function ($http) {
 	return {
 			getMyIssues  : function( jsondata ){
@@ -169,6 +191,7 @@ vdbApp.factory('myIssuesService', ['$http',function ($http) {
 					}
 				});
 				return myIssuesService.data;
+
 			}
 	};
 }])
@@ -472,18 +495,18 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
                     $scope.errorPassword = "Wachtwoord niet overeen"
                     $scope.hide = "";
                 }
-            
-            if(getRegister.errors.sex === undefined){
-                    $scope.errorSex = "sex "+getRegister.errors.sex;
+          
+            if (!getRegister.success){
+                      
+            if(getRegister.errors.sex !== ''){
+                    $scope.errorSex = "Sex "+getRegister.errors.sex;
                     }else{
                     $scope.errorSex="";
                     }
             
-            if (!getRegister.success){
-                
                    
 					$scope.errorEmail = getRegister.errors.email;
-                    $scope.errorNewPassword = getRegister.errors.password;
+                    $scope.errorNewPassword =  getRegister.errors.password;
                     $scope.errorPassword1= getRegister.errors.password_repeat;
                     $scope.errorNewUsername = getRegister.errors.username;
                     $scope.errorSurname = getRegister.errors.surname;
@@ -513,9 +536,17 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
 		});
 		
 	}
+    $scope.forgotpass=function()
+    {
+        $location.path('/forgotpass');
+        
+    }
+    
 	$scope.close = function(){
 		$scope.hide="ng-hide";
 	}
+    
+    
 }])
 
 
@@ -559,3 +590,58 @@ vdbApp.controller('regisconfCtrl', ['$scope','$rootScope','$window','usSpinnerSe
 		$scope.hide="ng-hide";
 	}
  }])
+
+vdbApp.controller('forgotCtrl', ['$scope','$rootScope','$window','forgotService','usSpinnerService','$location', function ($scope,$rootScope,$window,forgotService,usSpinnerService,$location) { 
+    $scope.hide = "ng-hide";
+    $scope.overlay="overlay";
+    
+    
+        
+    
+    $scope.forgotpass = function(){
+        usSpinnerService.spin('spinner-1');
+        $scope.overlay = "overlayactive";
+		var jsondata = JSON.stringify({"email":""+$scope.femail+""});
+        
+    
+     var getForgot = forgotService.getForgot(jsondata).then(function (data){
+				var getForgot = data.data;
+                console.log(getForgot.error);
+                $scope.errorFEmail = ""
+                
+                if (getForgot.success){
+                
+                $scope.errorFEmail = getForgot.error;
+                usSpinnerService.stop("spinner-1");
+                $scope.overlay="overlay";
+                $scope.hide = "";
+                    
+                if(getForgot.success)
+                {
+                    $location.path('#StemModalt');
+                    
+                    usSpinnerService.stop('spinner-1');
+					$scope.overlay = "overlay";
+                    
+                }
+                    
+                }
+         usSpinnerService.stop('spinner-1');
+					$scope.overlay = "overlay";
+         });
+        
+        
+    }
+    
+    $scope.close = function(){
+		$scope.hide="ng-hide";
+	}
+    
+}])
+	
+                            
+  
+
+	
+        
+
