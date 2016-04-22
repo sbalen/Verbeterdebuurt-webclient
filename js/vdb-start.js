@@ -14,6 +14,19 @@ function start(){this._map_center = {lat: 52.158367, lng: 4.492999};
 
      map = new google.maps.Map(document.getElementById('googlemaps'), mapOptions);
      getLocation(map);
+     var geocoder = new google.maps.Geocoder();
+     
+     if(cityName!=null){
+        geocodeAddress(geocoder, map);
+        cityName=null;
+     }
+
+     // document.getElementById('clickSearch').addEventListener('click', function() {
+     //      geocodeAddress(geocoder, map);
+     //    });
+     // $('#clickSearch').click(function(){
+     //      geocodeAddress(geocoder, map);
+     // });
       //start location picker
      map.setOptions({draggable: true, zoomControl: true, scrollwheel: true, disableDoubleClickZoom: true});
      
