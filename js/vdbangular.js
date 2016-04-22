@@ -9,6 +9,7 @@ var loginService = new Object();
 var commentService = new Object();
 var forgotService = new Object();
 var myIssuesService = new Object();
+var commentSubmitService = new Object();
 
 
 //change menu selected
@@ -77,6 +78,11 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
         templateUrl: 'forgotpass.html',
         controller : 'forgotCtrl'
 	})
+    .when('/forgotconf',{
+        templateUrl: 'forgotconf.html',
+        controller : 'forgotconfCtrl'
+	})
+    
 	 $locationProvider.html5Mode(true);
 	 $sceDelegateProvider.resourceUrlWhitelist([
 		// Allow same origin resource loads.
@@ -195,6 +201,21 @@ vdbApp.factory('myIssuesService', ['$http',function ($http) {
 	};
 }])
 
+vdbApp.factory('commentSubmitService', ['$http',function ($http) {
+	return {
+		getCommentSubmit : function( jsondata ){
+			return $http.post(APIURL+'commentSubmit' , jsondata)
+			.success(function (data){
+				if(angular.isObject(data)){
+					commentSubmitService.data = data;
+					return commentSubmitService.data;
+				}
+			});
+			return commentSubmitService.data;
+		}
+	};
+}])
+
 
 
 
@@ -265,8 +286,9 @@ vdbApp.controller('mainCtrl', ['$scope','$window','$location','$rootScope','$rou
 // vdbApp.controller('mainCtrl', ['$scope','issues', function ($scope,issues) {
 
 // }]);
-vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$routeParams','issuesService','reportService','usSpinnerService','$location','$anchorScroll', function ($scope,$rootScope,$routeParams,issuesService,reportService,usSpinnerService,$location,$anchorScroll) {
+vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams','issuesService','reportService','usSpinnerService','$location','$anchorScroll', function ($scope,$rootScope,$window,$routeParams,issuesService,reportService,usSpinnerService,$location,$anchorScroll) {
 	$scope.hide = "ng-hide";
+	$scope.overlay = "overlay";
 	var jsondata = JSON.stringify({"council" : "Groningen"});
 		if($rootScope.lastUrl==null){
 			$rootScope.lastUrl=='/';
@@ -277,7 +299,7 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$routeParams','issuesSer
 								$rootScope.newProblemList = getdata.issues;
 								$scope.hide = "";
 								usSpinnerService.stop('spinner-1');
-								var temp = $location.hash();
+								// var temp = $location.hash();
 								$location.hash('main-main-content');
 								$anchorScroll();
 								
@@ -290,6 +312,23 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$routeParams','issuesSer
 						});
 	$scope.id = function(){
 		return $routeParams.id;
+	}
+
+	//validity must login when comment
+	$scope.sessionValid = function(){
+		if(!$window.sessionStorage.username){
+			$location.path("/login");
+			$scope.stemModal = "";
+			$rootScope.errorSession="je moet ingelogd zijn om commentaar te geven of de snelheid"
+		}
+		else{
+			$scope.stemModal = "#StemModal";
+		}	
+	};
+	
+	//close the detail;
+	$scope.close = function(){
+		$scope.hide = "ng-hide";
 	}
 
 }])
@@ -364,7 +403,10 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
 	if($window.sessionStorage.username !=null){
 			$location.path('/');
 	}
-
+	//error session
+	if($rootScope.errorSession){
+		$scope.hide = "";
+	}
 	$scope.login = function(){
 		usSpinnerService.spin('spinner-1');
 		$scope.overlay = "overlayactive";
@@ -404,11 +446,23 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
 	}
 	$scope.close = function(){
 		$scope.hide="ng-hide";
+		$rootScope.errorSession="";
 	}
 	//move to register page
 	$scope.register = function(){
 		$location.path('/register');
 	}
+    
+      $scope.forgotpass=function()
+    {
+        $location.path('/forgotpass');
+        
+    }
+    
+	$scope.close = function(){
+		$scope.hide="ng-hide";
+	}
+    
 }])
 
 vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerService','usSpinnerService','$location', function ($scope,$rootScope,$window,registerService,usSpinnerService,$location) {
@@ -493,21 +547,12 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
                     
                     usSpinnerService.stop('spinner-1');
 					$scope.overlay = "overlay";
-                    
+                     
                 }
 		});
 		
 	}
-    $scope.forgotpass=function()
-    {
-        $location.path('/forgotpass');
-        
-    }
-    
-	$scope.close = function(){
-		$scope.hide="ng-hide";
-	}
-    
+  
     
 }])
 
@@ -521,6 +566,37 @@ vdbApp.controller('regisconfCtrl', ['$scope','$rootScope','$window','usSpinnerSe
                                        
                                        
                                       }]);
+ vdbApp.controller('commentSubmitCtrl', ['$scope','$rootScope','$window','$routeParams','usSpinnerService','commentSubmitService', function ($scope,$rootScope,$window,$routeParams,usSpinnerService,commentSubmitService) {
+ 	//comment Service :v
+	$scope.commentSubmit = function(){
+			usSpinnerService.spin('spinner-2');
+			var jsondata = JSON.stringify(
+				{"user":{"username":""+$window.sessionStorage.username+"",
+				"password_hash":""+$window.sessionStorage.password_hash+""
+				},
+				"issue_id":""+$routeParams.id+"",
+				"body":""+$scope.comment+""
+			});
+			console.log(jsondata);
+
+			var getCommentSubmit = commentSubmitService.getCommentSubmit( jsondata ).then(function (data){
+				var getCommentSubmit = data.data;
+				if(!getCommentSubmit.success){
+				usSpinnerService.stop('spinner-2');
+				console.log(getCommentSubmit);
+				}
+				else{
+				usSpinnerService.stop('spinner-2');
+				$scope.dissmissModal="modal";
+				}
+
+			})
+			
+	}
+	$scope.close = function(){
+		$scope.hide="ng-hide";
+	}
+ }])
 
 vdbApp.controller('forgotCtrl', ['$scope','$rootScope','$window','forgotService','usSpinnerService','$location', function ($scope,$rootScope,$window,forgotService,usSpinnerService,$location) { 
     $scope.hide = "ng-hide";
@@ -534,28 +610,25 @@ vdbApp.controller('forgotCtrl', ['$scope','$rootScope','$window','forgotService'
         $scope.overlay = "overlayactive";
 		var jsondata = JSON.stringify({"email":""+$scope.femail+""});
         
+        $rootScope.tempemail1=$scope.femail;
+        console.log($rootScope.tempemail1);
+      
     
      var getForgot = forgotService.getForgot(jsondata).then(function (data){
+         
 				var getForgot = data.data;
                 console.log(getForgot.error);
                 $scope.errorFEmail = ""
+                console.log(getForgot)
+                
                 
                 if (getForgot.success){
-                
+                $location.path('/forgotconf');
                 $scope.errorFEmail = getForgot.error;
                 usSpinnerService.stop("spinner-1");
                 $scope.overlay="overlay";
                 $scope.hide = "";
-                    
-                if(getForgot.success)
-                {
-                    $location.path('#StemModalt');
-                    
-                    usSpinnerService.stop('spinner-1');
-					$scope.overlay = "overlay";
-                    
-                }
-                    
+               
                 }
          usSpinnerService.stop('spinner-1');
 					$scope.overlay = "overlay";
@@ -566,13 +639,22 @@ vdbApp.controller('forgotCtrl', ['$scope','$rootScope','$window','forgotService'
     
     $scope.close = function(){
 		$scope.hide="ng-hide";
+        
+         
 	}
-    
+  
 }])
 	
                             
-  
-
+ 
+vdbApp.controller('forgotconfCtrl', ['$scope','$rootScope','$window','usSpinnerService','$location', function ($scope,$rootScope,$window,usSpinnerService,$location) {
+	
+            	$scope.home = function(){
+		        $location.path('/');
+	                                   
+                }
+                        
+}]);
 	
         
-                                                    
+
