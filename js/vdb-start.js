@@ -2,7 +2,6 @@
 
 function start(){this._map_center = {lat: 52.158367, lng: 4.492999};
       this._marker_positions = [{lat: 27.1959742, lng: 78.02423269999100}, {lat: 27.1959733, lng: 78.02423269999992}] ;
-      
       var mapOptions = {
         zoom: 16, // initialize zoom level - the max value is 21
         disableDefaultUI: true,
@@ -11,7 +10,6 @@ function start(){this._map_center = {lat: 52.158367, lng: 4.492999};
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         center:  this._map_center
       };
-
      map = new google.maps.Map(document.getElementById('googlemaps'), mapOptions);
      getLocation(map);
      var geocoder = new google.maps.Geocoder();
@@ -20,7 +18,17 @@ function start(){this._map_center = {lat: 52.158367, lng: 4.492999};
         geocodeAddress(geocoder, map);
         cityName=null;
      }
-
+      //marker google map
+       // for(var i= 0 ; i < issuesData.count ; i++){
+       //               var latLng = {lat:issues.issues[i].location.latitude , lng : issues.location.longitude}
+       //               console.log(latLng);
+       //               var markerOption = {
+       //                position : latLng,
+       //                map : map,
+       //              };
+       //              var marker = new google.maps.Marker(markerOption);
+       //  }
+    
      // document.getElementById('clickSearch').addEventListener('click', function() {
      //      geocodeAddress(geocoder, map);
      //    });

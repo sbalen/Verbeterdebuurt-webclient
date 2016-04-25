@@ -1,6 +1,8 @@
 var vdbApp = angular.module('vdbApp', ['ngRoute','angularSpinner','angularUtils.directives.dirPagination'])
 var APIURL = "https://staging.verbeterdebuurt.nl/api.php/json_1_3/";
 var geocoder = new google.maps.Geocoder();
+var infoWindow = new google.maps.InfoWindow();
+var infoWindowContent = []; 
 
 var issuesService = new Object();
 var registerService = new Object();
@@ -12,6 +14,23 @@ var forgotService = new Object();
 var myIssuesService = new Object();
 var commentSubmitService = new Object();
 
+//google map
+function googleMap(lat,lng){
+	var location = {lat: lat , lng: lng}
+	var mapOption2 = {
+		center : location,
+		zoom : 21,
+		mapTypeId: google.maps.MapTypeId.ROADMAP
+	}
+	var markerOption2 = {
+		 position : latLng,
+         map : map
+	}
+	var map=new google.maps.Map(document.getElementById("googleMap"),mapProp);
+	var marker = new google.maps.Marker(markerOption2);
+	marker.setMap(map);
+	google.maps.event.addDomListener(window, 'load', initialize);
+}
 
 //change menu selected
 function menuSelected($scope,selected){
@@ -223,10 +242,13 @@ vdbApp.controller('mainCtrl', ['$scope','$window','$location','$rootScope','$rou
 						$rootScope.urlBefore = $location.path();
 						$window.cityName = $routeParams.cityName;
 						$scope.searchCity = $routeParams.cityName;
-						//promise for make asyncronise data factory to be syncronis
+						//promise for make asyncronise data factory to be syncronis first load
 						var getIssues = issuesService.getIssues( jsondata ).then(function (data){
 								var getdata = data.data;
 								$rootScope.newProblemList = getdata.issues;
+								//initial google map marker
+								$window.issuesData = getdata;
+								showIssue(infoWindow,infoWindowContent);
 								// console.log(getdata.data.issues); 
 						});
 						
@@ -251,7 +273,7 @@ vdbApp.controller('mainCtrl', ['$scope','$window','$location','$rootScope','$rou
 							getIssues = issuesService.getIssues( jsondata ).then(function (data){
 								var getdata = data.data;
 								$rootScope.newProblemList = getdata.issues; 
-								
+								$window.issuesData = getdata;
 								});
 							}
 							
@@ -275,6 +297,12 @@ vdbApp.controller('mainCtrl', ['$scope','$window','$location','$rootScope','$rou
 						$scope.clickSearch= function(){
 							$window.cityName = null;
 							console.log($scope.searchCity);
+							getIssues = issuesService.getIssues( jsondata ).then(function (data){
+							var getdata = data.data;
+							$rootScope.newProblemList = getdata.issues; 
+							$window.issuesData = getdata;
+								});
+							
 							geocodeAddress(geocoder, map);
 							$location.path("city/"+$scope.searchCity);
 						}
@@ -305,8 +333,8 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 								$scope.hide = "";
 								usSpinnerService.stop('spinner-1');
 								// var temp = $location.hash();
-								$location.hash('main-main-content');
-								$anchorScroll();
+								// $location.hash('main-main-content');
+								// $anchorScroll();
 								
 								// console.log(getdata.data.issues); 
 						});
@@ -635,6 +663,7 @@ vdbApp.controller('forgotCtrl', ['$scope','$rootScope','$window','forgotService'
                 $scope.hide = "";
                
                 }
+                
          usSpinnerService.stop('spinner-1');
 					$scope.overlay = "overlay";
          });
