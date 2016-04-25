@@ -82,6 +82,10 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
         templateUrl: 'forgotconf.html',
         controller : 'forgotconfCtrl'
 	})
+    .when('/createissue',{
+        templateUrl: 'createissues.html',
+        controller : 'CissueCtrl'
+	})
     
 	 $locationProvider.html5Mode(true);
 	 $sceDelegateProvider.resourceUrlWhitelist([
@@ -622,14 +626,19 @@ vdbApp.controller('forgotCtrl', ['$scope','$rootScope','$window','forgotService'
                 console.log(getForgot)
                 
                 
-                if (getForgot.success){
-                $location.path('/forgotconf');
+                if (getForgot.success=="false"){
                 $scope.errorFEmail = getForgot.error;
                 usSpinnerService.stop("spinner-1");
                 $scope.overlay="overlay";
                 $scope.hide = "";
-               
                 }
+                else{
+                        
+                        $location.path('/forgotconf');
+                        
+                    }
+               
+                
          usSpinnerService.stop('spinner-1');
 					$scope.overlay = "overlay";
          });
