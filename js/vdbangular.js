@@ -15,21 +15,21 @@ var myIssuesService = new Object();
 var commentSubmitService = new Object();
 
 //google map
-function googleMap(lat,lng){
+function googleMapIssue(lat,lng){
 	var location = {lat: lat , lng: lng}
 	var mapOption2 = {
 		center : location,
-		zoom : 21,
+		zoom : 18,
 		mapTypeId: google.maps.MapTypeId.ROADMAP
 	}
 	var markerOption2 = {
-		 position : latLng,
-         map : map
+		 position : location
 	}
-	var map=new google.maps.Map(document.getElementById("googleMap"),mapProp);
+	var map2=new google.maps.Map(document.getElementById("googleMapIssue"),mapOption2);
+	map2.setOptions({draggable:false});
 	var marker = new google.maps.Marker(markerOption2);
-	marker.setMap(map);
-	google.maps.event.addDomListener(window, 'load', initialize);
+	marker.setMap(map2);
+	google.maps.event.addDomListener(window, 'load', start);
 }
 
 //change menu selected
@@ -307,7 +307,6 @@ vdbApp.controller('mainCtrl', ['$scope','$window','$location','$rootScope','$rou
 							$location.path("city/"+$scope.searchCity);
 						}
 
-						//validate session user
 
 						
 					}]);
@@ -332,11 +331,6 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 								$rootScope.newProblemList = getdata.issues;
 								$scope.hide = "";
 								usSpinnerService.stop('spinner-1');
-								// var temp = $location.hash();
-								// $location.hash('main-main-content');
-								// $anchorScroll();
-								
-								// console.log(getdata.data.issues); 
 						});
 
 	var getReport = reportService.getReport( jsondata ).then(function (data){
@@ -362,6 +356,11 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 	//close the detail;
 	$scope.close = function(){
 		$scope.hide = "ng-hide";
+	}
+
+	//googlemap
+	$scope.googleMapIssue = function(lat,lng){
+		googleMapIssue(lat,lng);
 	}
 
 }])
@@ -422,6 +421,12 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 			$scope.myIssuesList = getdata.issues
 			usSpinnerService.stop('spinner-1');
 		})
+
+		//call googlemap
+		$scope.googleMapIssue = function(lat,lng){
+		googleMapIssue(lat,lng);
+	}
+
 }])
 
 vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','$location','usSpinnerService', function ($scope,$rootScope,$window,loginService,$location,usSpinnerService) {

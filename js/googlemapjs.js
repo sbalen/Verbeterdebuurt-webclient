@@ -3,6 +3,7 @@ function getLocation(map) {
                  var infoWindowContent = []; 
             // get the data from center of map
                google.maps.event.addListener(map, 'dragend', function (e) {
+               google.maps.event.trigger(map,'resize')
                geocoder = new google.maps.Geocoder();
                geocoder.geocode({'latLng': map.getCenter()} , function (result , status){
                 if (status == google.maps.GeocoderStatus.OK){
@@ -27,6 +28,7 @@ function getLocation(map) {
 
             });
                google.maps.event.addListener(map, 'click', function (e) {
+                google.maps.event.trigger(map,'resize')
                geocoder = new google.maps.Geocoder();
                geocoder.geocode({'latLng':e.latLng} , function (result , status){
                 if (status == google.maps.GeocoderStatus.OK){
