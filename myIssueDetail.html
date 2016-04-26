@@ -13,7 +13,8 @@
                   <a href="/myissues" class="close" aria-label="close" >&times;</a>
             <h1>{{myIssues.title}}<br><small>{{myIssues.location.full_address}}</small></h1>
             <div class="thumbnail right-caption span4">
-                <img class="img-responsive" src="./img/20130913_151618_1.jpg" alt="Plaatje van de situatie">
+                <img class="img-responsive" src="{{myIssues.image.image_url}}" alt="Plaatje van de situatie" ng-if="myIssues.image">
+                <div  class = "img-resposive" ng-if="!myIssues.image" id = "googleMapIssue" ng-init="googleMapIssue(myIssues.location.latitude,myIssues.location.longitude)"></div>
                   <div class="detail-table hidden-xs">
                     <table width="100%">
                             <tbody> 

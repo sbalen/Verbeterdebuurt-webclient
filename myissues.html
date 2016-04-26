@@ -14,8 +14,7 @@
 	        <div class="panel panel-default main-panel">
 		    <h1>Mijn meldingen</h1>
                     <div class="list-group">
-                            <a href="/myIssues/{{myIssues.id}}" class="list-group-item clearfix" dir-paginate="myIssues in myIssuesList | itemsPerPage:totalPage"
-                            current-page="currentPage">
+                            <a href="/myIssues/{{myIssues.id}}" class="list-group-item clearfix" dir-paginate="myIssues in myIssuesList | itemsPerPage:totalPage" current-page="currentPage">
                                 <input type="hidden" ng-model="page" value="{{currentPage}}">
                                <div width="100%" class="clearfix">
                                <div class="pull-left">
@@ -38,7 +37,7 @@
                      <span class="clearfix">
                                     <div class="submit-buttons pull-right">
 				        <nav>
-                  <dir-pagination-controls boundary-links="true" template-url="node_modules/angular-utils-pagination/dirPagination.tpl.html" max-size="5"></dir-pagination-controls>
+                  <dir-pagination-controls boundary-links="true" template-url="node_modules/angular-utils-pagination/dirPagination.tpl.html" max-size="6"></dir-pagination-controls>
 				            <!-- <ul class="pagination">
 				                <li class="active"><a href="#">1</a></li>
 				                <li><a href="#">2</a></li>
