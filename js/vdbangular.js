@@ -26,7 +26,7 @@ function googleMapIssue(lat,lng){
 		 position : location
 	}
 	var map2=new google.maps.Map(document.getElementById("googleMapIssue"),mapOption2);
-	map2.setOptions({draggable:false});
+	map2.setOptions({draggable:false,zoomControl:false,scrollwheel: false, disableDoubleClickZoom: true,streetViewControl: false,disableDefaultUI:true});
 	var marker = new google.maps.Marker(markerOption2);
 	marker.setMap(map2);
 	google.maps.event.addDomListener(window, 'load', start);
@@ -253,7 +253,6 @@ vdbApp.controller('mainCtrl', ['$scope','$window','$location','$rootScope','$rou
 								//initial google map marker
 								$window.issuesData = getdata;
 								showIssue(infoWindow,infoWindowContent);
-								// console.log(getdata.data.issues); 
 						});
 						
 						var getReport = reportService.getReport( jsondata ).then(function (data){
@@ -300,7 +299,6 @@ vdbApp.controller('mainCtrl', ['$scope','$window','$location','$rootScope','$rou
 						//search
 						$scope.clickSearch= function(){
 							$window.cityName = null;
-							console.log($scope.searchCity);
 							getIssues = issuesService.getIssues( jsondata ).then(function (data){
 							var getdata = data.data;
 							$rootScope.newProblemList = getdata.issues; 
@@ -381,11 +379,8 @@ vdbApp.controller('mentionCtrl', ['$scope','$rootScope','$window','$location', f
 vdbApp.controller('myIssuesCtrl', ['$scope','$rootScope','$window','$location','myIssuesService', function ($scope,$rootScope,$window,$location,myIssuesService) {
 		$scope.hide = "";
 		menuSelected($rootScope,'myIssues');
-		
-		
-		$rootScope.currentPage = 1;
 
-		console.log($rootScope.page);
+		$rootScope.currentPage = 1;
   		$scope.totalPage = 3;
 		if($window.sessionStorage.username==null){
 				$rootScope.urlBefore = $location.path();
@@ -394,8 +389,9 @@ vdbApp.controller('myIssuesCtrl', ['$scope','$rootScope','$window','$location','
 		var jsondata = JSON.stringify({"user":{ "username":""+$window.sessionStorage.username+"",
 												"password_hash":""+$window.sessionStorage.password_hash+""
 
-												}});
-		console.log(jsondata);
+											}});
+		//to get hash password
+		// console.log(jsondata);
 		var getMyIssues = myIssuesService.getMyIssues( jsondata ).then(function (data){
 			var getdata = data.data;
 			$scope.count = getdata.count;
@@ -619,7 +615,6 @@ vdbApp.controller('regisconfCtrl', ['$scope','$rootScope','$window','usSpinnerSe
 				"issue_id":""+$routeParams.id+"",
 				"body":""+$scope.comment+""
 			});
-			console.log(jsondata);
 
 			var getCommentSubmit = commentSubmitService.getCommentSubmit( jsondata ).then(function (data){
 				var getCommentSubmit = data.data;
