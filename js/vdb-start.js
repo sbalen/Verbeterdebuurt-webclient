@@ -1,3 +1,4 @@
+
 // The latitude and longitude of your business / place
 
 function start(){this._map_center = {lat: 52.158367, lng: 4.492999};
@@ -81,5 +82,4 @@ class Map {
 };*/
 
 
- 
 google.maps.event.addDomListener(window, 'load', start);
