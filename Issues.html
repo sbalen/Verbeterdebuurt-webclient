@@ -9,9 +9,9 @@
                         </div>
             <div class="panel-body">
                           <div class="list-group" >
-                            <strong>City:{{reportList.council}}</strong></br>
-                                   {{reportList.reports}} reports per Month</br>
-                                   {{reportList.solutions}} solution per Month
+                            <strong>Stad: {{reportList.council}}</strong></br>
+                                   {{reportList.reports}} rapporten per maand</br>
+                                   {{reportList.solutions}} oplossing per maand
                           </div>
             </div>  
                     </div>
@@ -72,7 +72,7 @@
                                 </tr>
                                 <tr>
                                     <td>Door:</td>
-                                    <td>Sbalen</td>
+                                    <td>{{newProblem.owner.username}}</td>
                                     <td rowspan="3" colspan="2" align="right"> 
                                         <img class="img-rounded" alt="Twitter" width="49" height="49" src="./img/twitter_s.png">
                                         <img class="img-rounded" alt="Facebook" width="49" height="49" src="./img/facebook_s.png">
@@ -80,11 +80,11 @@
                                 </tr>
                                 <tr>
                                     <td>Datum:</td>
-                                    <td>24-05-2015</td>
+                                    <td>{{newProblem.created_at}}</td>
                                 </tr>
                                 <tr>
                                     <td>Categorie:</td>
-                                    <td>Straatmeubilair en Verlichting</td>
+                                    <td>{{newProblem.category}}</td>
                                 </tr>
                                 <tr>
                                     <td>Status:</td>
