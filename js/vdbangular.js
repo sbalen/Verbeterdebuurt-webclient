@@ -13,6 +13,8 @@ var commentService = new Object();
 var forgotService = new Object();
 var myIssuesService = new Object();
 var commentSubmitService = new Object();
+var profileService = new Object();
+
 
 //google map
 function googleMap(lat,lng){
@@ -104,7 +106,11 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
 	})
     .when('/createissue',{
         templateUrl: 'createissues.html',
-        controller : 'CissueCtrl'
+        controller : 'createissueCtrl'
+	})
+    .when('/profile',{
+        templateUrl: 'profile.html',
+        controller : 'profileCtrl'
 	})
     
 	 $locationProvider.html5Mode(true);
@@ -237,6 +243,23 @@ vdbApp.factory('commentSubmitService', ['$http',function ($http) {
 			});
 			return commentSubmitService.data;
 		}
+	};
+}])
+
+
+vdbApp.factory('profileService', ['$http',function ($http) {
+		return {
+			getProfile : function( jsondata ){
+				return $http.post(APIURL+'editSettings', jsondata)
+				.success(function(data){
+					if(angular.isObject(data)){
+						profileService.data=data;
+						return profileService.data;
+					}
+				});
+				return profileService.data;
+
+    			}
 	};
 }])
 
@@ -529,7 +552,7 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
                                        
                                       });
         
-        
+          
 
         $rootScope.tempemail=$scope.email;
         console.log($rootScope.tempemail);
@@ -699,6 +722,130 @@ vdbApp.controller('forgotconfCtrl', ['$scope','$rootScope','$window','usSpinnerS
                 }
                         
 }]);
-	
-        
 
+
+    
+vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileService','$location','usSpinnerService', function ($scope,$rootScope,$window,profileService,$location,usSpinnerService) {
+	$scope.hide = "ng-hide";
+	//$scope.overlay ACTIVE WHENclick and overlay when no event
+	$scope.overlay="overlay";
+	
+	
+	//error session
+	if($rootScope.errorSession){
+		$scope.hide = "";
+	}
+    
+    $scope.username = $window.sessionStorage.username ;
+    $scope.email = $window.sessionStorage.email;
+    if($window.sessionStorage.sex == 'man')
+        {
+            $scope.selected1='selected'
+            $scope.selected2=' '
+        }
+    else{
+            $scope.selected2='selected'
+            $scope.selected1=' '
+        
+    }
+    
+    $scope.sex = $window.sessionStorage.sex;
+    $scope.initials = $window.sessionStorage.initials;
+    if($window.sessionStorage.tussenvoegsel == 'null')
+        { 
+            $scope.tussenvoegsel=" ";
+        }
+    else{
+        $scope.tussenvoegsel = $window.sessionStorage.tussenvoegsel;
+        }
+    
+    $scope.surname = $window.sessionStorage.surname;
+    $scope.address = $window.sessionStorage.address;
+    $scope.address_number = $window.sessionStorage.address_number;
+    $scope.postcode = $window.sessionStorage.postcode;
+    $scope.city = $window.sessionStorage.city;
+    $scope.phone = $window.sessionStorage.phone;
+    
+    
+	$scope.profile = function(){
+		usSpinnerService.spin('spinner-1');
+		$scope.overlay = "overlayactive";
+		var jsondata = JSON.stringify({"user":{"username":""+$scope.username+"",
+                                               "password_hash":""+$scope.password_hash+""},
+                                      
+                                       "password":{"password_old":""+$scope.password_old+"",
+                                                   "password_new":""+$scope.password_new+""},
+                                      
+                                      "user_profile":{"initials":""+$scope.intials+"",
+                                                       "tussenvoegsel":""+$scope.tussenvoegsel+"",
+                                                       "surname":""+$scope.surname+"",
+                                                       "email":""+$scope.email+"",
+                                                        "sex":""+$scope.sex+"",
+                                                        "address_old":""+$scope.address_old+"",
+                                                        "address":""+$scope.address+"",
+                                                     "address_number":""+$scope.address_number+"",
+                                                     "address_suffix":""+$scope.address_suffix+"",
+                                                     "postcode":""+$scope.postcode+"",
+                                                     "city":""+$scope.city+"",
+                                                     "phone":""+$scope.phone+""}
+                                      
+                                      
+                                      
+                                      
+                                      
+                                      
+                                      
+                                      });
+		var getProfile = profileService.getProfile(jsondata).then(function (data){
+				var getProfile = data.data;
+				if(!getProfile.success){
+					$scope.errorMessage = getProfile.error;
+					usSpinnerService.stop('spinner-1');
+					$scope.overlay = "overlay";
+					$scope.hide = "";
+				}else if(getProfile.success){
+					//temp for data session
+					$scope.username = $window.sessionStorage.username ;
+					$scope.email = $window.sessionStorage.email;
+					$window.sessionStorage.password_hash = getLogin.user.password_hash;
+					$window.sessionStorage.name = getLogin.user_profile.name;
+					$window.sessionStorage.initials = getLogin.user_profile.initials;
+					$window.sessionStorage.surname = getLogin.user_profile.surname;
+					$window.sessionStorage.tussenvoegsel = getLogin.user_profile.tussenvoegsel;
+					$window.sessionStorage.sex = getLogin.user_profile.sex;
+					$window.sessionStorage.address = getLogin.user_profile.address;
+					$window.sessionStorage.address_number = getLogin.user_profile.address_number;
+					$window.sessionStorage.address_suffix = getLogin.user_profile.address_suffix;
+					$window.sessionStorage.postcode = getLogin.user_profile.postcode;
+					$window.sessionStorage.city = getLogin.user_profile.city;
+					$window.sessionStorage.phone = getLogin.user_profile.phone;
+					$rootScope.loginStatus = function(){
+						return true;
+					}
+					usSpinnerService.stop('spinner-1');
+					$scope.overlay = "overlay";
+					$location.path($rootScope.urlBefore);
+				}	
+		})
+		
+	}
+	$scope.close = function(){
+		$scope.hide="ng-hide";
+		$rootScope.errorSession="";
+	}
+	//move to register page
+	$scope.register = function(){
+		$location.path('/register');
+	}
+    
+      $scope.forgotpass=function()
+    {
+        $location.path('/forgotpass');
+        
+    }
+    
+	$scope.close = function(){
+		$scope.hide="ng-hide";
+	}
+    
+}])

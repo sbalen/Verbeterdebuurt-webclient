@@ -1,0 +1,132 @@
+<body>
+    
+    
+    <!-- body -->  
+    <div id="main-content" class="container">
+        <span us-spinner spinner-key="spinner-1"></span>
+        <!--  sidebar left -->
+        <div class="col-md-3 hidden-sm hidden-xs hidden-md">
+          
+        </div>
+        <!-- main container -->
+        <div class="col-lg-6 main-container" ng-controller="profileCtrl">
+<!--            <div id="{{overlay}}">-->
+            <div class="panel panel-default main-panel" >
+                    <div class="alert alert-danger {{hide}}">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close" ng-click="close">&times;</a>
+                       
+                      
+                      
+                        
+            </div>
+            <h1>Profiel</h1>
+                        <form class="form-horizontal" role="form">
+                            <div class="panel-body">
+                                <h4>Profiel Informatie</h4>
+                                <div class="form-group">
+                                    <div class="col-sm-12 form-col" ng-class="{'has-error': errorNewUsername}">
+                                        <input type="text" class="form-control" id="username" placeholder="Gebruikersnaam" ng-model="username" disabled>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-12 form-col" ng-class="{'has-error': errorEmail}">
+                                        <input type="text" class="form-control" id="email" placeholder="E-mailadres" ng-model="email" disabled>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-12 form-col" ng-class="{'has-error': errorPassword}">
+                                        <input type="password" class="form-control" id="password-1" placeholder="Wachtwoord" ng-model="password_hash">
+                                    </div>
+                                    <div class="col-sm-12 form-col" ng-class="{'has-error': errorPassword}">
+                                        <input type="password" class="form-control" id="password-2" placeholder="Wachtwoord herhalen" ng-model="password_new">
+                                    </div>
+                                </div>
+                    </div>
+                            <div class="panel-body">
+                                <h4>Persoonsgegevens</h4>
+                                <h5 style="color:green">This information will not be used are not visible to the public products.It for marketing purposes, is to work for the town to help report.</h5>
+                                <div class="form-group" ng-class="{'has-error': errorSex }">
+                                        <div class="col-sm-2 form-col">
+                                            <select class="combobox" id="category" style="width:100%;height:34px;" >
+                                                <option value="m" {{selected1}}>Dhr.</option>
+                                                <option value="f" {{selected2}}>Mw.</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-3 form-col">
+                                            <input type="text" class="form-control" id="initials" placeholder="voorletters" ng-model="initials">
+                                        </div>
+                                        <div class="col-sm-3 form-col">
+                                            <input type="text" class="form-control" id="tussenvoegsel" placeholder="tussenvoegsel" ng-model="tussenvoegsel">
+                                        </div>
+                                        <div class="col-sm-4 form-col" ng-class="{'has-error': errorSurname }">
+                                            <input type="text" class="form-control" id="name" placeholder="Achternaam" ng-model ="surname">
+                                        </div>
+                                </div>
+                                <div class="form-group" >
+                                    <div class="col-sm-8  form-col" ng-class="{'has-error': errorAddress}">
+                                        <input type="text" class="form-control" id="street" placeholder="Straat" ng-model ="address">
+                                    </div>
+                                    <div class="col-sm-4 form-col" ng-class="{'has-error': errorAddressN}">
+                                        <input type="text" class="form-control" id="number" placeholder="Huisnummer" ng-model ="address_number">
+                                    </div>
+                                    <div class="col-sm-4 form-col" ng-class="{'has-error': errorPost}">
+                                        <input type="text" class="form-control" id="postcode" placeholder="Postcode" ng-model="postcode">
+                                    </div>
+                                    <div class="col-sm-8 form-col" ng-class="{'has-error': errorCity}">
+                                        <input type="text" class="form-control" id="city" placeholder="Plaats" ng-model="city">
+                                    </div>
+                                    <div class="col-sm-12 form-col">
+                                        <input type="text" class="form-control" id="telephonenumber" placeholder="Telefoonnummer (optioneel)" ng-model="model">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <h4>Verbinden met social media</h4>
+                                <table style="margin:15px;">
+                                    <tr>
+                                        <td style="padding-left:10px;padding-right:10px;"> 
+                                           <img class="img-rounded" alt="Twitter" width="49" height="49" src="./img/twitter_s.png">
+                                        </td>
+                                        <td class="hidden-xs"> 
+                                           Verbeterdebuurt verbinden met Twitter. Houd je vrienden op de hoogte!
+                                        </td>
+                                        <td> 
+                                            <button type="button" class="btn btn-default">Connect Twitter</button>
+                                        </td>
+                                    </tr>
+                                    <tr style="padding-top:10px;">
+                                        <td style="padding-left:10px;padding-right:10px;"> 
+                                           <img class="img-rounded" alt="Facebook" width="49" height="49" src="./img/facebook_s.png">
+                                        </td>
+                                        <td class="hidden-xs"> 
+                                           Verbeterdebuurt verbinden met Facebook. Houd je vrienden op de hoogte!
+                                        </td>
+                                        <td> 
+                                           <button type="button" class="btn btn-default">Connect Facebook</button>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" ng-model="agree"> Ik ben akkoord met de Algemene Voorwaarden
+                                    </label> 
+                                
+                                </div>
+                            </div>
+                            
+                            <div class="submit-buttons">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Annuleren</button>
+                                <button type="button" class="btn btn-success" data-dismiss="modal" ng-disabled="!agree" ng-click="register()">Update</button>
+                            </div>
+                        </form>
+                </div>
+            </div>
+        </div>
+        
+    <!--  sidebar right -->
+    <div class="col-lg-3 hidden-xs">
+        </div>  
+    </div>
+</body>
+<script type='text/javascript'>
+</script>
