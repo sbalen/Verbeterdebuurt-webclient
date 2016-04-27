@@ -29,7 +29,6 @@ function googleMapIssue(lat,lng){
 	map2.setOptions({draggable:false,zoomControl:false,scrollwheel: false, disableDoubleClickZoom: true,streetViewControl: false,disableDefaultUI:true});
 	var marker = new google.maps.Marker(markerOption2);
 	marker.setMap(map2);
-	google.maps.event.addDomListener(window, 'load', start);
 }
 
 //change menu selected

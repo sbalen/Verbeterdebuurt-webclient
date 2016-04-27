@@ -108,8 +108,8 @@
               </div>
               <h2>Beschrijving</h2>
               <p>{{newProblem.description}} </p>
-              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="{{stemModal}}" ng-click="sessionValid()">Reageer <span class="badge">5</span></button>
-              <button type="button" class="btn btn-primary" ng-click="sessionValid()">Stem <span class="badge">7</span></button>
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="{{stemModal}}" ng-click="sessionValid()">Reageer <span class="badge">{{newProblem.comments}}</span></button>
+              <button type="button" class="btn btn-primary" ng-click="sessionValid()">Stem <span class="badge">{{newProblem.votes}}</span></button>
               <h2>Reacties</h2>
               <ul class="commentList">
                         <li>
