@@ -1,7 +1,6 @@
     <!-- body -->  
     <div id="main-content" class="container" ng-controller="issuesCtrl">
-	    <!--  sidebar left -->
-      
+	    <!--  sidebar left --> 
 	    <div class="col-md-3 hidden-sm hidden-xs hidden-md">
                     <div class="panel side-panel panel-default" id="new-problem-widget">
                         <div class="panel-heading">
@@ -9,9 +8,9 @@
                         </div>
             <div class="panel-body">
                           <div class="list-group" >
-                            <strong>City:{{reportList.council}}</strong></br>
-                                   {{reportList.reports}} reports per Month</br>
-                                   {{reportList.solutions}} solution per Month
+                            <strong>Stad: {{reportList.council}}</strong></br>
+                                   {{reportList.reports}} rapporten per maand</br>
+                                   {{reportList.solutions}} oplossing per maand
                           </div>
             </div>  
                     </div>
@@ -21,7 +20,7 @@
                         </div>
       			<div class="panel-body">
                           <div class="list-group" >
-                            <a href="/issues/{{newProblem.id}}" class="list-group-item clearfix" ng-repeat="newProblem in newProblemList| filter : {type:'problem'} | filter: {status:'!open'} | orderBy : 'created_at' : true |limitTo:3" ng-click="clickIssues()">
+                            <a href="/issues/{{newProblem.id}}" class="list-group-item clearfix" ng-repeat="newProblem in newProblemList| filter : {type:'problem'} | filter: {status:'!open'} | orderBy : 'created_at' : true |limitTo:3"ng-click="clickIssues()">
                               <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
                               <strong> {{newProblem.title}}</strong> {{newProblem.location.full_address}}
                               <span class="pull-right">
@@ -39,7 +38,8 @@
                         </div>
       			<div class="panel-body">
                           <div class="list-group">
-                            <a href="/issues/{{newProblem.id}}" class="list-group-item clearfix" ng-repeat="newProblem in newProblemList| filter : {type:'idea'} | filter: {status:'!open'} | orderBy : 'created_at' : true |limitTo:3" ng-click="clickIssues()">
+                            <a href="/issues/{{newProblem.id}}" class="list-group-item clearfix" ng-repeat="newProblem in newProblemList| filter : {type:'idea'} | filter: {status:'!open'} | orderBy : 'created_at' : true |limitTo:3" 
+                            ng-click="clickIssues()">
                               <img class="icon" src="./img/icon_idea_2_21_21.png" size="20px"/>
                               <strong>{{newProblem.title}}</strong> {{newProblem.location.full_address}}
                               <span class="pull-right">
@@ -56,12 +56,12 @@
 	    <div class="col-lg-6 main-container">
 
                 <span us-spinner spinner-key="spinner-1" spinner-start-active="true"></span>
-                <div class="panel panel-default main-panel {{hide}}" ng-repeat="newProblem in newProblemList |filter : {id : id()}">
+                <div class="panel panel-default main-panel {{hide}}" ng-repeat="newProblem in newProblemList |filter : {id : id()}" >
                   <a href="{{lastUrl}}" class="close" aria-label="close" >&times;</a>
             <h1>{{newProblem.title}}<br><small>{{newProblem.location.full_address}}</small></h1>
             <div class="thumbnail right-caption span4">
-                <img class="img-responsive" src="./img/20130913_151618_1.jpg" alt="Plaatje van de situatie">
-                <div class = "img-resposive"></div>
+                <img class="img-responsive" src="./img/20130913_151618_1.jpg" alt="Plaatje van de situatie" ng-if="newProblem.image">
+                <div  class = "img-resposive" ng-if="!newProblem.image" id = "googleMapIssue" ng-init="googleMapIssue(newProblem.location.latitude,newProblem.location.longitude)"></div>
                   <div class="detail-table hidden-xs">
                     <table width="100%">
                             <tbody> 
@@ -71,7 +71,7 @@
                                 </tr>
                                 <tr>
                                     <td>Door:</td>
-                                    <td>Sbalen</td>
+                                    <td>{{newProblem.owner.username}}</td>
                                     <td rowspan="3" colspan="2" align="right"> 
                                         <img class="img-rounded" alt="Twitter" width="49" height="49" src="./img/twitter_s.png">
                                         <img class="img-rounded" alt="Facebook" width="49" height="49" src="./img/facebook_s.png">
@@ -79,11 +79,11 @@
                                 </tr>
                                 <tr>
                                     <td>Datum:</td>
-                                    <td>24-05-2015</td>
+                                    <td>{{newProblem.created_at}}</td>
                                 </tr>
                                 <tr>
                                     <td>Categorie:</td>
-                                    <td>Straatmeubilair en Verlichting</td>
+                                    <td>{{newProblem.category}}</td>
                                 </tr>
                                 <tr>
                                     <td>Status:</td>

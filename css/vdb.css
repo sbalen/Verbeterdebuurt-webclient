@@ -84,6 +84,7 @@ h6 {
   background-color: white;
   text-align: center;
   margin-left: 10%;
+  margin-bottom: 20px;
   position: relative;
   border-color: #007AC3;
   border-style: solid;
@@ -126,5 +127,11 @@ h6 {
 .col-lg-6 {
   position: relative;
   z-index: 5; }
+
+#googleMapIssue {
+  width: 100%;
+  height: 200px;
+  background-color: red;
+  overflow: visible; }
 
 /*# sourceMappingURL=vdb.css.map */

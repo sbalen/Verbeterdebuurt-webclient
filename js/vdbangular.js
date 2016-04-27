@@ -17,21 +17,21 @@ var profileService = new Object();
 
 
 //google map
-function googleMap(lat,lng){
+function googleMapIssue(lat,lng){
 	var location = {lat: lat , lng: lng}
 	var mapOption2 = {
 		center : location,
-		zoom : 21,
+		zoom : 18,
 		mapTypeId: google.maps.MapTypeId.ROADMAP
 	}
 	var markerOption2 = {
-		 position : latLng,
-         map : map
+		 position : location
 	}
-	var map=new google.maps.Map(document.getElementById("googleMap"),mapProp);
+	var map2=new google.maps.Map(document.getElementById("googleMapIssue"),mapOption2);
+	map2.setOptions({draggable:false,zoomControl:false,scrollwheel: false, disableDoubleClickZoom: true,streetViewControl: false,disableDefaultUI:true});
 	var marker = new google.maps.Marker(markerOption2);
-	marker.setMap(map);
-	google.maps.event.addDomListener(window, 'load', initialize);
+	marker.setMap(map2);
+	google.maps.event.addDomListener(window, 'load', start);
 }
 
 //change menu selected
@@ -276,7 +276,6 @@ vdbApp.controller('mainCtrl', ['$scope','$window','$location','$rootScope','$rou
 								//initial google map marker
 								$window.issuesData = getdata;
 								showIssue(infoWindow,infoWindowContent);
-								// console.log(getdata.data.issues); 
 						});
 						
 						var getReport = reportService.getReport( jsondata ).then(function (data){
@@ -323,7 +322,6 @@ vdbApp.controller('mainCtrl', ['$scope','$window','$location','$rootScope','$rou
 						//search
 						$scope.clickSearch= function(){
 							$window.cityName = null;
-							console.log($scope.searchCity);
 							getIssues = issuesService.getIssues( jsondata ).then(function (data){
 							var getdata = data.data;
 							$rootScope.newProblemList = getdata.issues; 
@@ -333,8 +331,11 @@ vdbApp.controller('mainCtrl', ['$scope','$window','$location','$rootScope','$rou
 							geocodeAddress(geocoder, map);
 							$location.path("city/"+$scope.searchCity);
 						}
+						//move page
+						$scope.clickMenu = function(selected){
+								$location.path('/'+selected);
+						}
 
-						//validate session user
 
 						
 					}]);
@@ -359,11 +360,6 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 								$rootScope.newProblemList = getdata.issues;
 								$scope.hide = "";
 								usSpinnerService.stop('spinner-1');
-								// var temp = $location.hash();
-								// $location.hash('main-main-content');
-								// $anchorScroll();
-								
-								// console.log(getdata.data.issues); 
 						});
 
 	var getReport = reportService.getReport( jsondata ).then(function (data){
@@ -391,6 +387,11 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 		$scope.hide = "ng-hide";
 	}
 
+	//googlemap
+	$scope.googleMapIssue = function(lat,lng){
+		googleMapIssue(lat,lng);
+	}
+
 }])
 
 
@@ -405,11 +406,8 @@ vdbApp.controller('mentionCtrl', ['$scope','$rootScope','$window','$location', f
 vdbApp.controller('myIssuesCtrl', ['$scope','$rootScope','$window','$location','myIssuesService', function ($scope,$rootScope,$window,$location,myIssuesService) {
 		$scope.hide = "";
 		menuSelected($rootScope,'myIssues');
-		
-		
-		$rootScope.currentPage = 1;
 
-		console.log($rootScope.page);
+		$rootScope.currentPage = 1;
   		$scope.totalPage = 3;
 		if($window.sessionStorage.username==null){
 				$rootScope.urlBefore = $location.path();
@@ -418,8 +416,9 @@ vdbApp.controller('myIssuesCtrl', ['$scope','$rootScope','$window','$location','
 		var jsondata = JSON.stringify({"user":{ "username":""+$window.sessionStorage.username+"",
 												"password_hash":""+$window.sessionStorage.password_hash+""
 
-												}});
-		console.log(jsondata);
+											}});
+		//to get hash password
+		// console.log(jsondata);
 		var getMyIssues = myIssuesService.getMyIssues( jsondata ).then(function (data){
 			var getdata = data.data;
 			$scope.count = getdata.count;
@@ -449,6 +448,12 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 			$scope.myIssuesList = getdata.issues
 			usSpinnerService.stop('spinner-1');
 		})
+
+		//call googlemap
+		$scope.googleMapIssue = function(lat,lng){
+		googleMapIssue(lat,lng);
+	}
+
 }])
 
 vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','$location','usSpinnerService', function ($scope,$rootScope,$window,loginService,$location,usSpinnerService) {
@@ -637,7 +642,6 @@ vdbApp.controller('regisconfCtrl', ['$scope','$rootScope','$window','usSpinnerSe
 				"issue_id":""+$routeParams.id+"",
 				"body":""+$scope.comment+""
 			});
-			console.log(jsondata);
 
 			var getCommentSubmit = commentSubmitService.getCommentSubmit( jsondata ).then(function (data){
 				var getCommentSubmit = data.data;

@@ -1,3 +1,4 @@
+
 // The latitude and longitude of your business / place
 
 function start(){this._map_center = {lat: 52.158367, lng: 4.492999};
@@ -8,7 +9,9 @@ function start(){this._map_center = {lat: 52.158367, lng: 4.492999};
         streetViewControl: false, // hide the yellow Street View pegman
         /*scaleControl: false, // allow users to zoom the Google Map*/
         mapTypeId: google.maps.MapTypeId.ROADMAP,
-        center:  this._map_center
+        center:  this._map_center,
+        zoomControlOptions : { 
+          position :google.maps.ControlPosition.RIGHT_CENTER }
       };
      map = new google.maps.Map(document.getElementById('googlemaps'), mapOptions);
      getLocation(map);
@@ -18,6 +21,7 @@ function start(){this._map_center = {lat: 52.158367, lng: 4.492999};
         geocodeAddress(geocoder, map);
         cityName=null;
      }
+
       //marker google map
        // for(var i= 0 ; i < issuesData.count ; i++){
        //               var latLng = {lat:issues.issues[i].location.latitude , lng : issues.location.longitude}
@@ -78,5 +82,4 @@ class Map {
 };*/
 
 
- 
 google.maps.event.addDomListener(window, 'load', start);

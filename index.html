@@ -38,7 +38,6 @@
     <script src="node_modules/spin.js/spin.js"></script>
     <script src="node_modules/angular-spinner/angular-spinner.js"></script>
     <!--Paging Script -->
-    <script src="node_modules/angular-utils-pagination/dirPagination.tpl.html"></script>
     <script src="node_modules/angular-utils-pagination/dirPagination.js"></script>
     <!--PAGE SPECIFIC SCRIPTS -->
     <script src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
@@ -77,7 +76,7 @@
                     <li><a href="login"><span class="glyphicon glyphicon-log-in"></span> Inloggen</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right" ng-if="loginStatus()" >
-                   {{username}}<a ng-click="logout()">log out</span>
+                   {{username}}<a ng-click="logout()">log out</a></span>
                 </ul>
             </div>
         </div>
@@ -89,9 +88,9 @@
             <div class="container"> 
                 <ul class="pager subnav-pager"> 
                     <div class="btn-group-wrap btn-group">
-                        <button type="button" id="map-button" class="{{homeSelected}} btn sub-nav-btn" ><a href="/">Kaart</a></button>
-                        <button type="button" id="new-button" class="{{mentionSelected}} btn sub-nav-btn"><a href="mention">Melding maken</a></button>
-                        <button type="button" id="my-button" class="{{myIssuesSelected}} btn sub-nav-btn" ><a href="myissues">Mijn meldingen</a></button>
+                       <button type="button" id="map-button" class="{{homeSelected}} btn sub-nav-btn" ng-click="clickMenu('')">Kaart</button>
+                       <button type="button" id="new-button" class="{{mentionSelected}} btn sub-nav-btn" ng-click="clickMenu('mention')">Melding maken</button>
+                        <button type="button" id="my-button" class="{{myIssuesSelected}} btn sub-nav-btn" ng-click="clickMenu('myissues')">Mijn meldingen</button>
                      </div>         
                 </ul>   
             </div>
