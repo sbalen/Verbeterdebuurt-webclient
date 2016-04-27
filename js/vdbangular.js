@@ -308,6 +308,10 @@ vdbApp.controller('mainCtrl', ['$scope','$window','$location','$rootScope','$rou
 							geocodeAddress(geocoder, map);
 							$location.path("city/"+$scope.searchCity);
 						}
+						//move page
+						$scope.clickMenu = function(selected){
+								$location.path('/'+selected);
+						}
 
 
 						
