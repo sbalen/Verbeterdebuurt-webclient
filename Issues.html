@@ -87,9 +87,9 @@
                                 </tr>
                                 <tr>
                                     <td>Status:</td>
-                                    <td>Open <a href="#log-details" data-toggle="collapse">Meer >></a></td>
+                                    <td>Open <a class="{{hideLogStatus}}" ng-click="logStatus()">Meer >> </a></td>
                                 </tr>
-                                <tr id="log-details" class="collapse">
+                                <tr class="{{hideStatus}}">
                                     <td colspan="3">
                                         <ul class="status-log">
                                             <li class="list-group-item status-log-item"><span class="text-muted">04-09-2015 13:06: </span>De melding is afgehandeld verklaard door Hillegom Koppeling</li>
@@ -110,21 +110,11 @@
               <button type="button" class="btn btn-primary" data-toggle="modal" data-target="{{stemModal}}" ng-click="sessionValid()">Reageer <span class="badge">{{newProblem.comments}}</span></button>
               <button type="button" class="btn btn-primary" ng-click="sessionValid()">Stem <span class="badge">{{newProblem.votes}}</span></button>
               <h2>Reacties</h2>
-              <ul class="commentList">
-                        <li>
+              <ul class="commentList" >
+                        <li ng-repeat="comment in commentList">
                             <div class="commentText">
-                                <p class="">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p> <span class="date sub-text"><strong>Sbalen</strong> op 5 april, 2014</span>
+                                <p class="">{{comment.body}}</p> <span class="date sub-text"><strong>Sbalen</strong> {{comment.created_at}}</span>
                             </div>
-                        </li>
-                        <li>
-                            <div class="commentText">
-                                <p class="">Sed do eiusmod tempor incididunt ut labore.</p> <span class="date sub-text"><strong>Sbalen</strong> op 5 april, 2014</span>
-                            </div>
-                        </li>
-                        <li>
-                           <div class="commentText">
-                                <p class="">uis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p> <span class="date sub-text"><strong>Sbalen</strong> op 5 april, 2014</span>
-                           </div>
                         </li>
                     </ul>
             </div> 
@@ -132,12 +122,7 @@
 	    </div>
 	    <!--  sidebar right -->
 	    <div class="col-lg-3">
-                <div class="input-group" id="search-widget">
-                                     <input type="text" class="form-control" placeholder="Zoek op adres">
-                                     <span class="input-group-btn">
-                                        <button class="btn btn-primary" type="button"><span class="glyphicon glyphicon-search"></span><span class="hidden-xs">Zoeken</span></button>
-                                     </span>
-                </div>
+              
 	    </div>  
     </div>	
 

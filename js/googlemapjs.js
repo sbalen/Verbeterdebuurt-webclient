@@ -71,6 +71,7 @@ function geocodeAddress(geocoder, resultsMap) {
       }
 
 function showIssue(infoWindow,infoWindowContent){
+    var markers = [];
   for(var i= 0 ; i < issuesData.count ; i++){
                      var latLng = {lat:issuesData.issues[i].location.latitude , lng : issuesData.issues[i].location.longitude}
                      var icon = "/img/icon_2_42_42.png";
@@ -78,7 +79,8 @@ function showIssue(infoWindow,infoWindowContent){
                       position : latLng,
                       map : map,
                       icon: icon,
-                      title: issuesData.issues[i].title
+                      title: issuesData.issues[i].title,
+                      visible : true
                     };
                     infoWindowContent[i]= "<span style=color:green;>"+issuesData.issues[i].title+"</span><br>"+issuesData.issues[i].type+", "+issuesData.issues[i].status+"<br>"+issuesData.issues[i].location.src_address+"";
                     
@@ -90,7 +92,18 @@ function showIssue(infoWindow,infoWindowContent){
                       return function(){
                       infoWindow.setContent(infoWindowContent[i]);
                       infoWindow.open(map,marker);
+                      map.setCenter(marker.getPosition());
                       }
                     })(marker,i));
+                    markers.push(marker);
                     }
+
+                    google.maps.event.addListener(map, 'zoom_changed', function() {
+                    var zoom = map.getZoom();
+                    // iterate over markers and call setVisible
+                    for (var i = 0; i < issuesData.count ; i++) {
+                        markers[i].setVisible(zoom > 13);
+                    }
+    });
+
 }

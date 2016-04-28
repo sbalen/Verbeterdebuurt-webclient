@@ -21,24 +21,7 @@ function start(){this._map_center = {lat: 52.158367, lng: 4.492999};
         geocodeAddress(geocoder, map);
         cityName=null;
      }
-
-      //marker google map
-       // for(var i= 0 ; i < issuesData.count ; i++){
-       //               var latLng = {lat:issues.issues[i].location.latitude , lng : issues.location.longitude}
-       //               console.log(latLng);
-       //               var markerOption = {
-       //                position : latLng,
-       //                map : map,
-       //              };
-       //              var marker = new google.maps.Marker(markerOption);
-       //  }
-    
-     // document.getElementById('clickSearch').addEventListener('click', function() {
-     //      geocodeAddress(geocoder, map);
-     //    });
-     // $('#clickSearch').click(function(){
-     //      geocodeAddress(geocoder, map);
-     // });
+     
       //start location picker
      map.setOptions({draggable: true, zoomControl: true, scrollwheel: true, disableDoubleClickZoom: true});
      
