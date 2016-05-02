@@ -76,7 +76,7 @@
                     <li><a href="login"><span class="glyphicon glyphicon-log-in"></span> Inloggen</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right" ng-if="loginStatus()" >
-                   {{username}}<a ng-click="logout()">log out</a></span>
+                   {{lusername}}<a ng-click="logout()">log out</a></span>
                 </ul>
             </div>
         </div>
@@ -89,7 +89,7 @@
                 <ul class="pager subnav-pager"> 
                     <div class="btn-group-wrap btn-group">
                        <button type="button" id="map-button" class="{{homeSelected}} btn sub-nav-btn" ng-click="clickMenu('')">Kaart</button>
-                       <button type="button" id="new-button" class="{{mentionSelected}} btn sub-nav-btn" ng-click="clickMenu('mention')">Melding maken</button>
+                       <button type="button" id="new-button" class="{{mentionSelected}} btn sub-nav-btn" ng-click="clickMenu('createissue')">Melding maken</button>
                         <button type="button" id="my-button" class="{{myIssuesSelected}} btn sub-nav-btn" ng-click="clickMenu('myissues')">Mijn meldingen</button>
                      </div>         
                 </ul>   
@@ -116,7 +116,7 @@
 <!-- Page specific js -->
 
 <script src="/js/googlemapjs.js"></script>
-<script src="./js/vdb-start.js"></script>
+<script src="/js/vdb-start.js"></script>
 <script src="js/vdbangular.js"></script>
 
 
