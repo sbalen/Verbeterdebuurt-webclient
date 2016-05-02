@@ -127,7 +127,7 @@
     </div>	
 
 <!-- StemModal -->
-    <div id="StemModal" class="modal fade" role="dialog" ng-controller="commentSubmitCtrl">
+    <div id="StemModal" class="modal fade" role="dialog" ng-controller="commentSubmitCtrl" ng-repeat="newProblem in newProblemList |filter : {id : id()}">
         <div class="modal-dialog">
         <!-- Modal content-->
             <div class="modal-content">
@@ -145,14 +145,14 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Annuleren</button>
-                        <button type="button" class="btn btn-success" data-dismiss="{{dissmissModal}}" ng-click="commentSubmit()">Plaatsen</button>
+                        <button type="button" class="btn btn-success" data-dismiss="{{dissmissModal}}" ng-click="commentSubmit(newProblem.type)">Plaatsen</button>
                     </div>
             </div>
         </div>
     </div>
     
     <!-- CloseModal -->
-    <div id="CloseModal" class="modal fade" role="dialog" >
+    <div id="CloseModal" class="modal fade{{}}" role="dialog" >
         <div class="modal-dialog">
         <!-- Modal content-->
             <div class="modal-content">
