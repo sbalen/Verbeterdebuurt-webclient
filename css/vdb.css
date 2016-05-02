@@ -134,4 +134,8 @@ h6 {
   background-color: red;
   overflow: visible; }
 
+.form-col {
+  padding-right: 5px;
+  padding-left: 0px; }
+
 /*# sourceMappingURL=vdb.css.map */

@@ -48,8 +48,8 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <div class="col-sm-12 form-col" ng-class="{'has-error': errorPassword}">
-                                        <input type="password" class="form-control" id="password-1" placeholder="Wachtwoord" ng-model="password">
+                                    <div class="col-sm-12 form-col" ng-class="{'has-error': errorPassword}" >
+                                        <input type="password" style="margin-bottom: 15px" class="form-control" id="password-1" placeholder="Wachtwoord" ng-model="password">
                                     </div>
                                     <div class="col-sm-12 form-col" ng-class="{'has-error': errorPassword}">
                                         <input type="password" class="form-control" id="password-2" placeholder="Wachtwoord herhalen" ng-model="password2">
@@ -58,38 +58,40 @@
                     </div>
                             <div class="panel-body">
                                 <h4>Persoonsgegevens</h4>
-                                <div class="form-group" ng-class="{'has-error': errorSex }">
-                                        <div class="col-sm-2 form-col">
-                                            <select class="combobox" id="category" style="width:100%;height:34px;" ng-model="sex">
+                                <div class="form-group" >
+                                        <div class="col-sm-2 form-col "  ng-class="{'has-error': errorSex }">
+                                            <select class="combobox" id="category" style="width:100%;height:34px;{{red}} " ng-model="sex">
                                                 <option value="m">Dhr.</option>
                                                 <option value="f">Mw.</option>
                                             </select>
                                         </div>
-                                        <div class="col-sm-3 form-col">
+                                        <div class="col-sm-3 form-col" ng-class="{'has-error': errorInitials }">
                                             <input type="text" class="form-control" id="initials" placeholder="voorletters" ng-model="initials">
                                         </div>
-                                        <div class="col-sm-3 form-col">
+                                        <div class="col-sm-3 form-col" ng-class="{'has-error': errorMiddle }">
                                             <input type="text" class="form-control" id="tussenvoegsel" placeholder="tussenvoegsel" ng-model="tussenvoegsel">
                                         </div>
                                         <div class="col-sm-4 form-col" ng-class="{'has-error': errorSurname }">
                                             <input type="text" class="form-control" id="name" placeholder="Achternaam" ng-model ="surname">
                                         </div>
                                 </div>
-                                <div class="form-group" >
+                                <div class="form-group">
                                     <div class="col-sm-8  form-col" ng-class="{'has-error': errorAddress}">
-                                        <input type="text" class="form-control" id="street" placeholder="Straat" ng-model ="address">
+                                        <input type="text"  class="form-control" id="street" placeholder="Straat" ng-model ="address">
                                     </div>
                                     <div class="col-sm-4 form-col" ng-class="{'has-error': errorAddressN}">
                                         <input type="text" class="form-control" id="number" placeholder="Huisnummer" ng-model ="address_number">
                                     </div>
+                                    </div>
+                                <div class="form-group">
                                     <div class="col-sm-4 form-col" ng-class="{'has-error': errorPost}">
-                                        <input type="text" class="form-control" id="postcode" placeholder="Postcode" ng-model="postcode">
+                                        <input type="text" style="margin-bottom: 15px" class="form-control" id="postcode" placeholder="Postcode" ng-model="postcode">
                                     </div>
                                     <div class="col-sm-8 form-col" ng-class="{'has-error': errorCity}">
                                         <input type="text" class="form-control" id="city" placeholder="Plaats" ng-model="city">
                                     </div>
                                     <div class="col-sm-12 form-col">
-                                        <input type="text" class="form-control" id="telephonenumber" placeholder="Telefoonnummer (optioneel)" ng-model="model">
+                                        <input type="text" class="form-control" id="telephonenumber" placeholder="Telefoonnummer (optioneel)" ng-model="phone">
                                     </div>
                                 </div>
                             </div>
@@ -133,7 +135,7 @@
                             </div>
                             
                             <div class="submit-buttons">
-                                <button type="button" class="btn btn-danger" data-dismiss="modal">Annuleren</button>
+                                <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="home()">Annuleren</button>
                                 <button type="button" class="btn btn-success" data-dismiss="modal" ng-disabled="!agree" ng-click="register()">Registreren</button>
                             </div>
                         </form>
