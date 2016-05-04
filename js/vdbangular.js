@@ -84,6 +84,7 @@ function googleMapCreateIssue(latlng){
 	 sycGoogleMap(map3);
 	 markerCenter(map3,marker);
 	 getMarkerLocation(marker);
+	 markerGetAddress(marker);
 	  
 }
 //to make other map syncronise
@@ -120,6 +121,38 @@ function geocodeAddressCreateIssue(geocoder, resultsMap, address) {
           }
         });
       }
+function markerGetAddress(marker){
+		google.maps.event.addListener(marker, 'drag', function (e) {
+               geocoder.geocode({'latLng': marker.getPosition()} , function (result , status){
+                if (status == google.maps.GeocoderStatus.OK){
+
+                for (var i=0; i<result[0].address_components.length; i++) {
+                for (var b=0;b<result[0].address_components[i].types.length;b++) {
+                  //if you want the change the area ..
+                if (result[0].address_components[i].types[b] == "route") {
+                   // street name
+                    street= result[0].address_components[i].short_name;
+                    console.log(street);
+                    break;
+                        }
+                if (result[0].address_components[i].types[b] == "street_number") {
+                   // street number
+                    street_number= result[0].address_components[i].short_name;
+                    console.log(street_number);
+                    break;
+                        }
+                    }
+             
+                    
+                }
+                }
+                
+
+               });
+				address = street+" "+street_number;
+				document.getElementById('location').value = address;
+            });
+}
 //change menu selected
 function menuSelected($scope,selected){
 	$scope.homeSelected = "";
@@ -139,16 +172,15 @@ function menuSelected($scope,selected){
 	}
 };
 
+
 vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegateProvider', function ($routeProvider,$locationProvider,$httpProvider,$sceDelegateProvider) {
 	$routeProvider
 	.when('/', {
-		templateUrl: 'map.html',
-		controller: 'mainCtrl' 
+		templateUrl: 'map.html'
 		
 	})
 	.when('/city/:cityName', {
-		templateUrl: 'map.html',
-		controller: 'mainCtrl' 
+		templateUrl: 'map.html' 
 	})
 	.when('/issues/:id',{
 		templateUrl :'issues.html',
