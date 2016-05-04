@@ -17,7 +17,7 @@
                                   <fieldset class="gllpLatlonPicker">
                                   <div class="input-group">
                                      <form>
-                                     <input type="text" class="form-control gllpSearchField" placeholder="Vul hier het adres in, of sleep de marker..." ng-model="searchCity" ng-submit="expression">
+                                     <input type="text" class="form-control gllpSearchField" placeholder="Vul hier het adres in, of sleep de marker..." ng-model="searchCityCreate" ng-submit="expression">
                                      </form>
                                      <span class="input-group-btn">
                                         <button class="btn btn-primary gllpSearchButton" type="button" ng-click="clickSearchCreateIssue()"><span class="glyphicon glyphicon-search"></span><span class="hidden-xs">Zoeken</span></button>
@@ -53,7 +53,7 @@
                                 <p>Foto uploaden (optioneel)</p>
                                 <input id="file-input" type="file" class="file">
                             </div>
-                            <div class="panel-body">
+                            <div class="panel-body {{hideNonLogin}}">
                                 <h4>3. Contactgegevens</h4>
                                 Of <a href="#">log in</a> om dit over te slaan
                                 <div class="form-group">
@@ -100,7 +100,7 @@
                         </form>    
 	                <div class="modal-footer">
                                 <button type="button" class="btn btn-danger" data-dismiss="modal">Annuleren</button>
-                                <button type="button" class="btn btn-success" data-dismiss="modal" ng-click="createIssue()">Verzenden</button>
+                                <button type="button" class="btn btn-success" data-dismiss="modal" ng-click="categoriesClick()">Verzenden</button>
                         </div>            
                     </div>
 	    </div>

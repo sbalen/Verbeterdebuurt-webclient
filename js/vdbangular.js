@@ -4,6 +4,8 @@ var geocoder = new google.maps.Geocoder();
 var infoWindow = new google.maps.InfoWindow();
 var infoWindowContent = [];
 var latlngChange;
+
+//define service
 var issuesService = new Object();
 var registerService = new Object();
 var loginService  = new Object();
@@ -15,6 +17,7 @@ var myIssuesService = new Object();
 var commentSubmitService = new Object();
 var profileService = new Object();
 var workLogService = new Object();
+var categoriesService = new Object();
 
 
 //google map
@@ -132,13 +135,11 @@ function markerGetAddress(marker){
                 if (result[0].address_components[i].types[b] == "route") {
                    // street name
                     street= result[0].address_components[i].short_name;
-                    console.log(street);
                     break;
                         }
                 if (result[0].address_components[i].types[b] == "street_number") {
                    // street number
                     street_number= result[0].address_components[i].short_name;
-                    console.log(street_number);
                     break;
                         }
                     }
@@ -176,11 +177,13 @@ function menuSelected($scope,selected){
 vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegateProvider', function ($routeProvider,$locationProvider,$httpProvider,$sceDelegateProvider) {
 	$routeProvider
 	.when('/', {
-		templateUrl: 'map.html'
+		templateUrl: 'map.html',
+		controller : 'mainCtrl'
 		
 	})
 	.when('/city/:cityName', {
-		templateUrl: 'map.html' 
+		templateUrl: 'map.html',
+		controller : 'mainCtrl' 
 	})
 	.when('/issues/:id',{
 		templateUrl :'issues.html',
@@ -396,7 +399,22 @@ vdbApp.factory('workLogService', ['$http',function ($http) {
 	};
 }])
 
-vdbApp.controller('mainCtrl', ['$scope','$window','$location','$rootScope','$routeParams','$http','issuesService','reportService',function ($scope,$window,$location,$rootScope,$routeParams,$http,issuesService,reportService) {
+vdbApp.factory('categoriesService', ['$http',function ($http) {
+	return {
+			getCategories : function( jsondata ){
+				return $http.post(APIURL+'categories', jsondata)
+				.success(function(data){
+					if(angular.isObject(data)){
+						categoriesService.data = data;
+						return categoriesService.data;
+					}
+				});
+				return categoriesService.data;
+			}
+
+	};
+}])
+vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootScope','$routeParams','$http','issuesService','reportService',function ($scope,$timeout,$window,$location,$rootScope,$routeParams,$http,issuesService,reportService) {
 						menuSelected($rootScope,'home');
 						var jsondata = JSON.stringify({"council" : "Groningen"});
 						$rootScope.urlBefore = $location.path();
@@ -409,8 +427,10 @@ vdbApp.controller('mainCtrl', ['$scope','$window','$location','$rootScope','$rou
 								var getdata = data.data;
 								$rootScope.newProblemList = getdata.issues;
 								//initial google map marker
+								$timeout(function(){
 								$window.issuesData = getdata;
 								showIssue(infoWindow,infoWindowContent);
+								},1000);
 						});
 						
 						var getReport = reportService.getReport( jsondata ).then(function (data){
@@ -457,6 +477,7 @@ vdbApp.controller('mainCtrl', ['$scope','$window','$location','$rootScope','$rou
 						}
 						//search
 						$scope.clickSearch= function(){
+							console.log($scope.searchCity);
 							$window.cityName = null;
 							city.long_name = $scope.searchCity;
 							getIssues = issuesService.getIssues( jsondata ).then(function (data){
@@ -464,7 +485,7 @@ vdbApp.controller('mainCtrl', ['$scope','$window','$location','$rootScope','$rou
 							$rootScope.newProblemList = getdata.issues; 
 							$window.issuesData = getdata;
 								});
-							
+							console.log($scope.searchCity);
 							geocodeAddress(geocoder, map);
 							$location.path("city/"+$scope.searchCity);
 						}
@@ -1146,8 +1167,9 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
     
 }])
 
-vdbApp.controller('createissueCtrl', ['$scope','$window', function ($scope,$window) {	
-		if(latlngChange){
+vdbApp.controller('createissueCtrl', ['$scope','$window','$timeout','categoriesService', function ($scope,$window,$timeout,categoriesService) {	
+		$timeout(function(){
+			if(latlngChange){
 			googleMapCreateIssue(latlngChange);
 			latlngChange = null;
 		}else{
@@ -1155,14 +1177,30 @@ vdbApp.controller('createissueCtrl', ['$scope','$window', function ($scope,$wind
 			googleMapCreateIssue(latlngChange);
 			latlngChange = null;
 		}
-
+		},1200);
+		
+		if($window.sessionStorage.username){
+			$scope.hideRegis
+		}
 		$scope.clickSearchCreateIssue= function(){
-							geocodeAddressCreateIssue(geocoder, map3, $scope.searchCity);
-							city.long_name = $scope.searchCity;
+			geocodeAddressCreateIssue(geocoder, map3, $scope.searchCityCreate);
+			city.long_name = $scope.searchCityCreate;
 						}
 		$scope.createIssue = function(){
-							alert(markerLat+" "+markerLng)
+			alert(markerLat+" "+markerLng)
 		}
+
+		$scope.categoriesClick = function(){
+			var latitude = markerLat;
+			var longitude = markerLng;
+			var jsondataCity = JSON.stringify({latitude,longitude});
+			console.log(jsondataCity);
+			var getCategories = categoriesService.getCategories( jsondataCity ).then(function (data){
+				console.log(data.data);
+			})
+		}
+		
+		
 
 }])
 
