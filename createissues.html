@@ -16,9 +16,11 @@
                                 <div class="well well-sm locationpicker-well">
                                   <fieldset class="gllpLatlonPicker">
                                   <div class="input-group">
-                                     <input type="text" class="form-control gllpSearchField" placeholder="Vul hier het adres in, of sleep de marker...">
+                                     <form>
+                                     <input type="text" class="form-control gllpSearchField" placeholder="Vul hier het adres in, of sleep de marker..." ng-model="searchCity" ng-submit="expression">
+                                     </form>
                                      <span class="input-group-btn">
-                                        <button class="btn btn-primary gllpSearchButton" type="button"><span class="glyphicon glyphicon-search"></span><span class="hidden-xs">Zoeken</span></button>
+                                        <button class="btn btn-primary gllpSearchButton" type="button" ng-click="clickSearchCreateIssue()"><span class="glyphicon glyphicon-search"></span><span class="hidden-xs">Zoeken</span></button>
                                      </span>
                                   </div>
                                   <div class="gllpMap" id="googleMapCreateIssue" >Google Maps</div>
