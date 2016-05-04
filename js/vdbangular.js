@@ -1100,6 +1100,9 @@ vdbApp.controller('createissueCtrl', ['$scope','$window', function ($scope,$wind
 							geocodeAddressCreateIssue(geocoder, map3, $scope.searchCity);
 							city.long_name = $scope.searchCity;
 						}
+		$scope.createIssue = function(){
+							alert(markerLat+" "+markerLng)
+		}
 
 }])
 
