@@ -134,4 +134,17 @@ h6 {
   background-color: red;
   overflow: visible; }
 
+.checkbox {
+  margin-bottom: 15px !important; }
+
+#clickSearch {
+  margin-left: 10px;
+  border-radius: 8px; }
+
+#searchCity {
+  border-radius: 8px; }
+
+.container {
+  padding-left: 0px; }
+
 /*# sourceMappingURL=vdb.css.map */

@@ -1,10 +1,13 @@
 
 // The latitude and longitude of your business / place
 
-function start(){this._map_center = {lat: 52.158367, lng: 4.492999};
+function start(){
+      var mainLat = 52.158367;
+      var mainLng = 4.492999;
+      this._map_center = {lat: mainLat , lng: mainLng};
       this._marker_positions = [{lat: 27.1959742, lng: 78.02423269999100}, {lat: 27.1959733, lng: 78.02423269999992}] ;
       var mapOptions = {
-        zoom: 16, // initialize zoom level - the max value is 21
+        zoom: 15, // initialize zoom level - the max value is 21
         disableDefaultUI: true,
         streetViewControl: false, // hide the yellow Street View pegman
         /*scaleControl: false, // allow users to zoom the Google Map*/
@@ -21,27 +24,9 @@ function start(){this._map_center = {lat: 52.158367, lng: 4.492999};
         geocodeAddress(geocoder, map);
         cityName=null;
      }
-
-      //marker google map
-       // for(var i= 0 ; i < issuesData.count ; i++){
-       //               var latLng = {lat:issues.issues[i].location.latitude , lng : issues.location.longitude}
-       //               console.log(latLng);
-       //               var markerOption = {
-       //                position : latLng,
-       //                map : map,
-       //              };
-       //              var marker = new google.maps.Marker(markerOption);
-       //  }
-    
-     // document.getElementById('clickSearch').addEventListener('click', function() {
-     //      geocodeAddress(geocoder, map);
-     //    });
-     // $('#clickSearch').click(function(){
-     //      geocodeAddress(geocoder, map);
-     // });
+     
       //start location picker
      map.setOptions({draggable: true, zoomControl: true, scrollwheel: true, disableDoubleClickZoom: true});
-     
     
 } /*
 class Map {
