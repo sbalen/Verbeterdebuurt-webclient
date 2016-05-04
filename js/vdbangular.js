@@ -845,7 +845,7 @@ vdbApp.controller('forgotconfCtrl', ['$scope','$rootScope','$window','usSpinnerS
 
 
     
-vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileService','$location','usSpinnerService', function ($scope,$rootScope,$window,profileService,$location,usSpinnerService) {
+vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileService','loginService','$location','usSpinnerService', function ($scope,$rootScope,$window,profileService,loginService,$location,usSpinnerService) {
 	$scope.hide = "ng-hide";
 	//$scope.overlay ACTIVE WHENclick and overlay when no event
 	$scope.overlay="overlay";
@@ -874,7 +874,6 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
         
     }
     
-    $scope.sex = $window.sessionStorage.sex;
     $scope.initials = $window.sessionStorage.initials;
     if($window.sessionStorage.tussenvoegsel == 'null')
         { 
@@ -961,6 +960,7 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
         }
     
     
+    
         
         usSpinnerService.spin('spinner-1');
 		$scope.overlay = "overlayactive";
@@ -983,25 +983,53 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                     $scope.errorAddressN = getProfile.errors.address_number;
                     $scope.errorPostcode = getProfile.errors.postcode;
                     $scope.errorCity = getProfile.errors.city;
+                    $scope.errorSex = getProfile.errors.sex;
+                    $scope.errorPasshash = getProfile.errors.password_hash;
                                     
                     usSpinnerService.stop('spinner-1');
 					$scope.hide = "";
 					$scope.overlay="overlay";
 
 				}	
-             usSpinnerService.stop('spinner-1');
+//             usSpinnerService.stop('spinner-1');
+//             $scope.overlay = "overlayactive";
+            
             
             if(getProfile.success)
+                
                 {
-                    $location.path('/');
                     
+                    if($scope.password_old !=null && $scope.password_new !=null ){
+                        var password = $scope.password_new;
+                        var jsondatalogin = JSON.stringify({"user":{"username":""+$window.sessionStorage.username+"",password}});
+                    }else{
+                        var password_hash = $window.sessionStorage.password_hash;
+                        var jsondatalogin = JSON.stringify({"user":{"username":""+$window.sessionStorage.username+"",password_hash}});
+                    }
+                    console.log($window.sessionStorage.password_hash)
+                    
+                    console.log(jsondatalogin);
+                    var getLogin = loginService.getLogin(jsondatalogin).then(function (data){
+				    var getLogin = data.data;
+                    
+                    console.log(getLogin);
+                    $window.sessionStorage.initials = getLogin.user_profile.initials;
+                    $window.sessionStorage.tussenvoegsel = getLogin.user_profile.tussenvoegsel;
+                    $window.sessionStorage.surname = getLogin.user_profile.surname;
+                    $window.sessionStorage.address = getLogin.user_profile.address;
+                    $window.sessionStorage.address_number = getLogin.user_profile.address_number;
+                    $window.sessionStorage.postcode = getLogin.user_profile.postcode;
+                    $window.sessionStorage.city = getLogin.user_profile.city;
+                    $window.sessionStorage.phone = getLogin.user_profile.phone;
                     usSpinnerService.stop('spinner-1');
 					$scope.overlay = "overlay";
-                     
-                    console.log(jsondata);
-                }
+                        
+                    $location.path('/profile');
+                    
+                    //console.log(jsondata);
+                })
             
-           
+            }
             
 		});
 		
