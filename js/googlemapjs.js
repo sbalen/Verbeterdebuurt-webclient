@@ -4,8 +4,6 @@ function getLocation(map) {
             // get the data from center of map
                google.maps.event.addListener(map, 'dragend', function (e) {
                google.maps.event.trigger(map,'resize')
-               var getCoordinate = map.getCenter();
-               console.log(getCoordinate);
                geocoder.geocode({'latLng': map.getCenter()} , function (result , status){
                 if (status == google.maps.GeocoderStatus.OK){
 
@@ -55,9 +53,8 @@ function getLocation(map) {
 
 
             });
-
-            
-    
+                          
+   
         }
 function geocodeAddress(geocoder, resultsMap) {
         var address = document.getElementById('searchCity').value;

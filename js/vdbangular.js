@@ -2,8 +2,8 @@ var vdbApp = angular.module('vdbApp', ['ngRoute','angularSpinner','angularUtils.
 var APIURL = "https://staging.verbeterdebuurt.nl/api.php/json_1_3/";
 var geocoder = new google.maps.Geocoder();
 var infoWindow = new google.maps.InfoWindow();
-var infoWindowContent = []; 
-
+var infoWindowContent = [];
+var latlngChange;
 var issuesService = new Object();
 var registerService = new Object();
 var loginService  = new Object();
@@ -18,6 +18,38 @@ var workLogService = new Object();
 
 
 //google map
+window.onload = function(){
+      var mainLat = 52.158367;
+      var mainLng = 4.492999;
+      this._map_center = {lat: mainLat , lng: mainLng};
+      this._marker_positions = [{lat: 27.1959742, lng: 78.02423269999100}, {lat: 27.1959733, lng: 78.02423269999992}] ;
+      var mapOptions = {
+        zoom: 15, // initialize zoom level - the max value is 21
+        disableDefaultUI: true,
+        streetViewControl: false, // hide the yellow Street View pegman
+        /*scaleControl: false, // allow users to zoom the Google Map*/
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        center:  this._map_center,
+        zoomControlOptions : { 
+          position :google.maps.ControlPosition.RIGHT_CENTER }
+      };
+     map = new google.maps.Map(document.getElementById('googlemaps'), mapOptions);
+     getLocation(map);
+     var geocoder = new google.maps.Geocoder();
+     
+     if(cityName!=null){
+        geocodeAddress(geocoder, map);
+        cityName=null;
+     }
+  	 getLatLng(map);
+      //start location picker
+    
+}
+function getLatLng (map){
+	google.maps.event.addListener(map,'bounds_changed',function(){
+		latlngChange = map.getCenter();
+	})
+}
 function googleMapIssue(lat,lng){
 	var location = {lat: lat , lng: lng};
 	var mapOption2 = {
@@ -34,15 +66,60 @@ function googleMapIssue(lat,lng){
 	marker.setMap(map2);
 }
 
-function googleMapCreateIssue(lat,lng){
-	var location = {lat: lat,lng: lng};
+function googleMapCreateIssue(latlng){
 	var mapOption3 = {
-		center : location,
-		zoom : 18,
+		center : latlng,
+		zoom : 17,
 		mapTypeId: google.maps.MapTypeId.ROADMAP
 	}
-	 var map3 = new google.maps.Map(document.getElementById("googleMapCreateIssue"),mapOption3);
+	 map3 = new google.maps.Map(document.getElementById("googleMapCreateIssue"),mapOption3);
+	 marker = new google.maps.Marker();
+	 marker.setMap(map3);
+	 marker.setPosition(map3.getCenter());
+	 marker.setOptions({draggable:true});
+	 map3.setOptions({draggable:true,zoomControl:true,scrollwheel: true, disableDoubleClickZoom: true,streetViewControl: false,disableDefaultUI:true});
+	 markerLat = marker.getPosition().lat();
+	 markerLng = marker.getPosition().lng();
+	
+	 sycGoogleMap(map3);
+	 markerCenter(map3,marker);
+	 getMarkerLocation(marker);
+	  
 }
+//to make other map syncronise
+function sycGoogleMap(map3){
+	google.maps.event.addListener(map3,'bounds_changed',function (e){
+                    map.setCenter(map3.getCenter());
+                    map.setZoom(map3.getZoom()-2);
+              });
+}
+//marker at center
+function markerCenter (map3,marker){
+	google.maps.event.addListener(map3,'bounds_changed',function (e){
+				marker.setPosition(map3.getCenter());
+				markerLat = marker.getPosition().lat();
+	 			markerLng = marker.getPosition().lng();
+	 			
+	});
+}
+//get location marker
+function getMarkerLocation(marker){
+	google.maps.event.addListener(marker,'dragend',function (e){
+			markerLat = marker.getPosition().lat();
+	 		markerLng = marker.getPosition().lng();
+	});
+}
+// get location search at create issue
+function geocodeAddressCreateIssue(geocoder, resultsMap, address) {
+        var address = address;
+        geocoder.geocode({'address': address}, function(results, status) {
+          if (status === google.maps.GeocoderStatus.OK) {
+            resultsMap.setCenter(results[0].geometry.location);
+          } else {
+            alert('Geocode was not successful for the following reason: ' + status);
+          }
+        });
+      }
 //change menu selected
 function menuSelected($scope,selected){
 	$scope.homeSelected = "";
@@ -66,12 +143,12 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
 	$routeProvider
 	.when('/', {
 		templateUrl: 'map.html',
-		controller: 'mainCtrl'
+		controller: 'mainCtrl' 
 		
 	})
 	.when('/city/:cityName', {
 		templateUrl: 'map.html',
-		controller: 'mainCtrl'
+		controller: 'mainCtrl' 
 	})
 	.when('/issues/:id',{
 		templateUrl :'issues.html',
@@ -379,7 +456,7 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 	$scope.hide = "ng-hide";
 	$scope.overlay = "overlay";
 	$scope.hideStatus = "ng-hide";
-		
+
 	var jsondata = JSON.stringify({"council" : "Groningen"});
 	
 		if($rootScope.lastUrl==null){
@@ -501,7 +578,6 @@ vdbApp.controller('myIssuesCtrl', ['$scope','$rootScope','$window','$location','
 
 vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootScope','$location','$window','myIssuesService','usSpinnerService', function ($scope,$routeParams,$http,$rootScope,$location,$window,myIssuesService,usSpinnerService) {
 		$scope.hide = "";
-		
 		$scope.id = function(){
 			return $routeParams.id;
 		}
@@ -1039,12 +1115,24 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
 }])
 
 vdbApp.controller('createissueCtrl', ['$scope','$window', function ($scope,$window) {	
-		if(window.getCoordinate){
-
+		if(latlngChange){
+			googleMapCreateIssue(latlngChange);
+			latlngChange = null;
 		}else{
-			googleMapCreateIssue(52.158367,4.492999);
+			latlngChange = {lat: 52.158367,lng: 4.492999};
+			googleMapCreateIssue(latlngChange);
+			latlngChange = null;
 		}
-		
-	
+
+		$scope.clickSearchCreateIssue= function(){
+							geocodeAddressCreateIssue(geocoder, map3, $scope.searchCity);
+							city.long_name = $scope.searchCity;
+						}
+		$scope.createIssue = function(){
+							alert(markerLat+" "+markerLng)
+		}
+
 }])
+
+	
 
