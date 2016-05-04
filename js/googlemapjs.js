@@ -4,7 +4,6 @@ function getLocation(map) {
             // get the data from center of map
                google.maps.event.addListener(map, 'dragend', function (e) {
                google.maps.event.trigger(map,'resize')
-               geocoder = new google.maps.Geocoder();
                geocoder.geocode({'latLng': map.getCenter()} , function (result , status){
                 if (status == google.maps.GeocoderStatus.OK){
 
@@ -14,6 +13,7 @@ function getLocation(map) {
                 if (result[0].address_components[i].types[b] == "administrative_area_level_2") {
                    // name of city
                     city= result[0].address_components[i];
+                    
                     break;
                         }
                     }
@@ -29,7 +29,6 @@ function getLocation(map) {
             });
                google.maps.event.addListener(map, 'click', function (e) {
                 google.maps.event.trigger(map,'resize')
-               geocoder = new google.maps.Geocoder();
                geocoder.geocode({'latLng':e.latLng} , function (result , status){
                 if (status == google.maps.GeocoderStatus.OK){
 
@@ -54,9 +53,8 @@ function getLocation(map) {
 
 
             });
-
-            
-    
+                          
+   
         }
 function geocodeAddress(geocoder, resultsMap) {
         var address = document.getElementById('searchCity').value;
@@ -73,26 +71,81 @@ function geocodeAddress(geocoder, resultsMap) {
       }
 
 function showIssue(infoWindow,infoWindowContent){
+    var markers = [];
+    var zoom = map.getZoom();
   for(var i= 0 ; i < issuesData.count ; i++){
                      var latLng = {lat:issuesData.issues[i].location.latitude , lng : issuesData.issues[i].location.longitude}
-                     var icon = "/img/icon_2_42_42.png";
+                     var icon = "";
+
+                     //validate for the icon
+                    if(issuesData.issues[i].status == "resolved" || issuesData.issues[i].status == "closed"){
+                      icon = "/img/flag_2_42_42.png"
+                     }
+                     else if(issuesData.issues[i].type == "problem"){
+                      icon = "/img/icon_2_42_42.png";
+                    }else if(issuesData.issues[i].type == "idea"){
+                      icon = "/img/icon_idea_2_42_42.png"; 
+                    }
                      var markerOption = {
                       position : latLng,
                       map : map,
                       icon: icon,
-                      title: issuesData.issues[i].title
+                      title: issuesData.issues[i].title,
                     };
-                    infoWindowContent[i]= "<span style=color:green;>"+issuesData.issues[i].title+"</span><br>"+issuesData.issues[i].type+", "+issuesData.issues[i].status+"<br>"+issuesData.issues[i].location.src_address+"";
+                    //change to dutch laguage
+                    var tempType = [];
+                    var tempStatus = [];
+                    //type
+                    if(issuesData.issues[i].type=="problem"){
+                      tempType[i] = "probleem"
+                    }
+                    else if(issuesData.issues[i].type == "idea"){
+                      tempType[i] = "idee"
+                    }
+                    //status
+                    if(issuesData.issues[i].status == "open"){
+                      tempStatus[i] = "open"
+                    }
+                    else if(issuesData.issues[i].status == "resolved"){
+                      tempStatus[i] = "opgelost"
+                    }
+                    else if(issuesData.issues[i].status == "confirmed"){
+                      tempStatus[i] = "bevestigd"
+                    }
+                    else if(issuesData.issues[i].status == "closed"){
+                      tempStatus[i] = "gesloten";
+                    }
+                    else if(issuesData.issues[i].status == "accepted"){
+                      tempStatus[i] = "aanvaard"
+                    }
+                    infoWindowContent[i]= "<a href=/issues/"+issuesData.issues[i].id+"><span style=color:green;>"+issuesData.issues[i].title+"</span></a><br>"+tempType[i]+", "+tempStatus[i]+"<br>"+issuesData.issues[i].location.src_address+"";
                     
                     //console.log(infoWindowContent[i]);
                     
                     var marker = new google.maps.Marker(markerOption);
+                    marker.setVisible(zoom > 13);
 
                     google.maps.event.addListener(marker , 'click' , (function (marker,i){
                       return function(){
                       infoWindow.setContent(infoWindowContent[i]);
                       infoWindow.open(map,marker);
+                      map.setCenter(marker.getPosition());
                       }
                     })(marker,i));
+                    markers.push(marker);
                     }
+
+
+                    google.maps.event.addListener(map, 'zoom_changed', function() {
+                    var zoom = map.getZoom();
+                    // iterate over markers and call setVisible
+                    for (var i = 0; i < issuesData.count ; i++) {
+                        markers[i].setVisible(zoom > 13);
+                    }
+                    //validation marker at certain zoom
+                     if(zoom <=13 ){
+                        infoWindow.close(map,marker);
+                    }
+    });
+
 }
