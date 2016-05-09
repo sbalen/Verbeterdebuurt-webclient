@@ -107,32 +107,6 @@ function sycGoogleMap(map3){
 }
 //marker at center
 function markerCenter (map3,marker){
-	 geocoder.geocode({'latLng': marker.getPosition()} , function (result , status){
-                if (status == google.maps.GeocoderStatus.OK){
-
-                for (var i=0; i<result[0].address_components.length; i++) {
-                for (var b=0;b<result[0].address_components[i].types.length;b++) {
-                  //if you want the change the area ..
-                if (result[0].address_components[i].types[b] == "route") {
-                   // street name
-                    street= result[0].address_components[i].short_name;
-                    break;
-                        }
-                // if (result[0].address_components[i].types[b] == "street_number") {
-                //    // street number
-                //     street_number= result[0].address_components[i].short_name;
-                //     break;
-                //         }
-                    }
-             
-                    
-                }
-                }
-                
-
-               });
-				address = street;
-				document.getElementById('location').value = address;
 	google.maps.event.addListener(map3,'bounds_changed',function (e){
 				marker.setPosition(map3.getCenter());
 				markerLat = marker.getPosition().lat();
@@ -145,8 +119,10 @@ function markerCenter (map3,marker){
                   //if you want the change the area ..
                 if (result[0].address_components[i].types[b] == "route") {
                    // street name
-                    street= result[0].address_components[i].short_name;
-                    break;
+                    streetLocation= result[0].address_components[i].short_name;
+                    addressLocation = streetLocation;
+					document.getElementById('location').value = addressLocation;
+	                    break;
                         }
                 // if (result[0].address_components[i].types[b] == "street_number") {
                 //    // street number
@@ -161,8 +137,7 @@ function markerCenter (map3,marker){
                 
 
                });
-				address = street;
-				document.getElementById('location').value = address;
+				
 	 			
 	});
 }
@@ -566,7 +541,17 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 						}
 						//move page
 						$scope.clickMenu = function(selected){
-								$location.path('/'+selected);
+								if(selected == "myissues"|| selected == "createissue"){
+									if(!$window.sessionStorage.username){
+										$location.path('/'+"login");
+									}
+									else{
+										$location.path('/'+selected);	
+									}
+								}else{
+										$location.path('/'+selected);	
+								} 
+								
 						}
 
 
@@ -1242,8 +1227,12 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
     
 }])
 
-vdbApp.controller('createissueCtrl', ['$scope','$window','$timeout','categoriesService','issueSubmitService','myIssuesService', function ($scope,$window,$timeout,categoriesService,issueSubmitService,myIssuesService) {	
+vdbApp.controller('createissueCtrl', ['$scope','$window','$timeout','categoriesService','issueSubmitService','myIssuesService','$location', function ($scope,$window,$timeout,categoriesService,issueSubmitService,myIssuesService,$location) {	
 		$scope.hide = "ng-hide";
+		
+		if(!$window.sessionStorage.username){
+			$location.path("/login");
+		}
 		//show my issue
 		var jsondata = JSON.stringify({"user":{ "username":""+$window.sessionStorage.username+"",
 												"password_hash":""+$window.sessionStorage.password_hash+""
@@ -1362,6 +1351,9 @@ vdbApp.controller('createissueCtrl', ['$scope','$window','$timeout','categoriesS
 				}
 				else{
 					//success
+					var issueId = issueData.issue_id;
+					$location.path(/myIssues/+issueId);
+
 				}
 
 			});
@@ -1370,6 +1362,10 @@ vdbApp.controller('createissueCtrl', ['$scope','$window','$timeout','categoriesS
 		}
 		$scope.close = function(){
 			$scope.hide = "ng-hide";
+		}
+		$scope.reset = function(){
+			$scope.title = "";
+			$scope.description = "";
 		}
 				
 		
