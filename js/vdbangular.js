@@ -1240,8 +1240,11 @@ vdbApp.controller('createissueCtrl', ['$scope','$window','$timeout','categoriesS
 											}});
 		var getMyIssues = myIssuesService.getMyIssues( jsondata ).then(function (data){
 			var getdata = data.data;
-			$scope.count = getdata.count;
+			var count = getdata.count;
 			$scope.myIssuesList = getdata.issues;
+			if(count==0){
+				$scope.hideMyIssue = "ng-hide";
+			}
 		})
 		//first initial
 		$timeout(function(){
