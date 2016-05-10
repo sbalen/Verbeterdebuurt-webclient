@@ -93,7 +93,8 @@ h6 {
   position: absolute;
   border-color: #007AC3;
   border-style: solid;
-  border-width: thin; }
+  border-width: thin;
+  z-index: 1020; }
 
 .footertext {
   width: 100%;
@@ -150,7 +151,9 @@ h6 {
   border-radius: 8px; }
 
 .container {
-  padding-left: 0px; }
+  padding-left: 0px;
+  position: inherit;
+  z-index: 0; }
 
 .input-group {
   width: 94%;
@@ -158,5 +161,37 @@ h6 {
 
 #googleMapCreateIssue {
   background-color: #C7C7C7; }
+
+#navtop {
+  z-index: 1010; }
+
+.form-group {
+  min-height: 25px; }
+
+#global-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.7);
+  display: none;
+  opacity: 0; }
+  #global-overlay.active {
+    display: table;
+    opacity: 1;
+    -webkit-transition: opacity 1s ease;
+    -moz-transition: opacity 1s ease;
+    -ms-transition: opacity 1s ease;
+    -o-transition: opacity 1s ease; }
+  #global-overlay #global-spinner {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center; }
+    #global-overlay #global-spinner img {
+      display: inline-block;
+      height: 32px;
+      width: 32px; }
 
 /*# sourceMappingURL=vdb.css.map */

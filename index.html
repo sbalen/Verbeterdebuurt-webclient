@@ -45,6 +45,8 @@
 </head>
 <body ng-app="vdbApp" ng-controller="mainCtrl" >
     <div id="app-container">
+        
+        
         <!-- map div on the background -->
         <div id="background">
             <div id="googlemaps" class="city" ng-mousemove="alrCity()" ></div>
@@ -98,7 +100,15 @@
             </div>
         </div>
 
-          <div id="main-content" class="container" ng-view>
+        <!-- global overlay for spinner -->
+        <div id="global-overlay" class="{{globaloverlay}}">
+            <div id="global-spinner">
+                <img src="./img/vdb-spin.gif">
+            </div>
+        </div>
+        
+        
+          <div class="container" ng-view>
 
           </div>
         <div class="footer">
