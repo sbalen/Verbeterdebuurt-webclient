@@ -488,8 +488,12 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 								showIssue(infoWindow,infoWindowContent);
 						});
 						},2000);
+						if(!$routeParams.cityName){
+							var jsoncity = JSON.stringify({"council":"Leiden"});	
+						}else{
+							var jsoncity = JSON.stringify({"council":""+$routeParams.cityName+""});
+						}
 						
-						var jsoncity = JSON.stringify({"council":"Leiden"});
 						$rootScope.urlBefore = $location.path();
 						$window.cityName = $routeParams.cityName;
 						$scope.searchCity = $routeParams.cityName;
@@ -525,9 +529,17 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 							getIssues = issuesService.getIssues( jsondata ).then(function (data){
 								var getdata = data.data;
 								$rootScope.newProblemList = getdata.issues; 
-								$window.issuesData = getdata;
+								if(getdata.count != 0){
+									$window.issuesData = getdata;
+								showIssue(infoWindow,infoWindowContent);
+								}
+								
 								});
 							}
+							var getReport = reportService.getReport( jsoncity ).then(function (data){
+								var getdata = data.data;
+								$rootScope.reportList = getdata.report;
+						});
 							
 						}
 						//login session
@@ -550,13 +562,26 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 							console.log($scope.searchCity);
 							$window.cityName = null;
 							city.long_name = $scope.searchCity;
+							var jsondata = JSON.stringify({"coords_criterium":{
+														  	"max_lat":maxlat,
+														    "min_lat":minlat,
+														    "max_long":maxlng,
+														    "min_long":minlng
+														  }
+														});
 							getIssues = issuesService.getIssues( jsondata ).then(function (data){
 							var getdata = data.data;
-							$rootScope.newProblemList = getdata.issues; 
+							$rootScope.newProblemList = getdata.issues;
+							console.log("kuskus"); 
 							$window.issuesData = getdata;
 								});
 							console.log($scope.searchCity);
 							geocodeAddress(geocoder, map);
+							var jsoncity = JSON.stringify({"council":""+city.long_name+""})
+							var getReport = reportService.getReport( jsoncity ).then(function (data){
+								var getdata = data.data;
+								$rootScope.reportList = getdata.report;
+							});
 							$location.path("city/"+$scope.searchCity);
 						}
 						//move page

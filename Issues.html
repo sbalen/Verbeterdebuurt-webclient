@@ -20,7 +20,7 @@
                         </div>
       			<div class="panel-body">
                           <div class="list-group" >
-                            <a href="/issues/{{newProblem.id}}" class="list-group-item clearfix" ng-repeat="newProblem in newProblemList| filter : {type:'problem'} | filter: {status:'!open'} | orderBy : 'created_at' : true |limitTo:3"ng-click="clickIssues()">
+                            <a href="/issues/{{newProblem.id}}" class="list-group-item clearfix" ng-repeat="newProblem in newProblemList| filter : {type:'problem'} | filter: {status:'open'} | orderBy : 'created_at' : true |limitTo:3" ng-click="clickIssues()">
                               <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
                               <strong> {{newProblem.title}}</strong> {{newProblem.location.full_address}}
                               <span class="pull-right">

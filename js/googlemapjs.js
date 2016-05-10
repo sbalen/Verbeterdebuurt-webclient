@@ -101,6 +101,10 @@ function geocodeAddress(geocoder, resultsMap) {
         geocoder.geocode({'address': address}, function(results, status) {
           if (status === google.maps.GeocoderStatus.OK) {
             resultsMap.setCenter(results[0].geometry.location);
+                maxlat  = map.getBounds().getNorthEast().lat();
+                maxlng  = map.getBounds().getNorthEast().lng();
+                minlat = map.getBounds().getSouthWest().lat();
+                minlng = map.getBounds().getSouthWest().lng();
           } else {
             alert('Geocode was not successful for the following reason: ' + status);
           }
