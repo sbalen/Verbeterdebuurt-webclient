@@ -566,7 +566,8 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 
 // }]);
 vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams','issuesService','reportService','usSpinnerService','$location','$anchorScroll','workLogService','commentService', function ($scope,$rootScope,$window,$routeParams,issuesService,reportService,usSpinnerService,$location,$anchorScroll,workLogService,commentService) {
-	$scope.hide = "ng-hide";
+	$rootScope.globaloverlay = "active";
+    $scope.hide = "ng-hide";
 	$scope.overlay = "overlay";
 	$scope.hideStatus = "ng-hide";
 
@@ -581,6 +582,7 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 								$rootScope.newProblemList = getdata.issues;
 								$scope.hide = "";
 								usSpinnerService.stop('spinner-1');
+                                $rootScope.globaloverlay = "";
 						});
 
 	var getReport = reportService.getReport( jsondata ).then(function (data){
@@ -794,16 +796,18 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
 		$scope.hide = "";
 	}
 	$scope.login = function(){
-		usSpinnerService.spin('spinner-1');
-		$scope.overlay = "overlayactive";
+		//usSpinnerService.spin('spinner-1');
+        $rootScope.globaloverlay = "active";
+		//$scope.overlay = "overlayactive";
 		var jsondata = JSON.stringify({"user":{"username":""+$scope.lusername+"","password":""+$scope.lpassword+""}});
 		var getLogin = loginService.getLogin(jsondata).then(function (data){
 				var getLogin = data.data;
 				if(!getLogin.success){
 					$scope.errorMessage = getLogin.error;
-					usSpinnerService.stop('spinner-1');
-					$scope.overlay = "overlay";
+					//usSpinnerService.stop('spinner-1');
+					//$scope.overlay = "overlay";
 					$scope.hide = "";
+                    $rootScope.globaloverlay = "";
 				}else if(getLogin.success){
 					//temp for data session
 					$window.sessionStorage.username = getLogin.user.username;
@@ -823,8 +827,9 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
 					$rootScope.loginStatus = function(){
 						return true;
 					}
-					usSpinnerService.stop('spinner-1');
-					$scope.overlay = "overlay";
+                    $rootScope.globaloverlay = "";
+					//usSpinnerService.stop('spinner-1');
+					//$scope.overlay = "overlay";
 					$rootScope.errorSession="";
 					if($rootScope.urlBefore == '/register'){
 						$location.path('/map');
@@ -861,7 +866,7 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
                 }
     
 	$scope.hide = "ng-hide";
-    $scope.overlay="overlay";
+    //$scope.overlay="overlay";
     $scope.email="";
     $scope.username="";
     $scope.password="";
@@ -880,7 +885,8 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
 	$scope.register = function(){
         $rootScope.errorSession ="";
 
-        usSpinnerService.spin('spinner-1');
+        $rootScope.globaloverlay = "active";
+        //usSpinnerService.spin('spinner-1');
         $scope.overlay = "overlayactive";
 		var jsondata = JSON.stringify({"user":{"username":""+$scope.username+""
                                                ,"password":""+$scope.password+""
@@ -950,19 +956,21 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
                     $scope.errorPost = getRegister.errors.postcode;
                     $scope.errorInitials = getRegister.errors.initials;
                 
-                    usSpinnerService.stop('spinner-1');
+                    //usSpinnerService.stop('spinner-1');
 					$scope.hide = "";
-					$scope.overlay="overlay";
-
+					//$scope.overlay="overlay";
+                    $rootScope.globaloverlay = "";
+                
 				}	
             
             if(getRegister.success)
                 {
                     $location.path('/regisconf');
                     
-                    usSpinnerService.stop('spinner-1');
-					$scope.overlay = "overlay";
-                     
+                    //usSpinnerService.stop('spinner-1');
+					//$scope.overlay = "overlay";
+                    $rootScope.globaloverlay = "";
+                    
                     console.log(jsondata);
                 }
 		});
