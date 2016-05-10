@@ -588,6 +588,12 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 						$scope.clickMenu = function(selected){
 								if(selected == "myissues"|| selected == "createissue"){
 									if(!$window.sessionStorage.username){
+										if(selected == 'myissues'){
+											menuSelected($rootScope,'myIssues');
+										}
+										if( selected == 'createissue'){
+											menuSelected($rootScope,'createissue');
+										}
 										$location.path('/'+"login");
 									}
 									else{
