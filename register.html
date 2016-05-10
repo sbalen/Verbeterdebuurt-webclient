@@ -1,7 +1,4 @@
-<body>
-    
-    
-    <!-- body -->  
+        <!-- body -->  
     <div id="main-content" class="container">
         <span us-spinner spinner-key="spinner-1"></span>
         <!--  sidebar left -->
@@ -10,7 +7,7 @@
         </div>
         <!-- main container -->
         <div class="col-lg-6 main-container" ng-controller="registerCtrl">
-            <div id="{{overlay}}">
+         
             <div class="panel panel-default main-panel" >
                     <div class="alert alert-danger {{hide}}">
                         <a href="#" class="close" data-dismiss="alert" aria-label="close" ng-click="close">&times;</a>
@@ -77,15 +74,15 @@
                                 </div>
                                 <div class="form-group">
                                     <div class="col-sm-8  form-col" ng-class="{'has-error': errorAddress}">
-                                        <input type="text"  class="form-control" id="street" placeholder="Straat" ng-model ="address" style="width:98%">
+                                        <input type="text"  class="form-control" id="street" placeholder="Straat" ng-model ="address" style="width:322px">
                                     </div>
                                     <div class="col-sm-4 form-col" ng-class="{'has-error': errorAddressN}">
-                                        <input type="text" class="form-control" id="number" placeholder="Huisnummer" ng-model ="address_number">
+                                        <input type="text" class="form-control"  style=" width:97%; margin-left: 5px;" id="number" placeholder="Huisnummer" ng-model ="address_number">
                                     </div>
                                     </div>
                                 <div class="form-group">
                                     <div class="col-sm-4 form-col" ng-class="{'has-error': errorPost}">
-                                        <input type="text" style="margin-bottom: 15px; width: 95%;" class="form-control" id="postcode" placeholder="Postcode" ng-model="postcode">
+                                        <input type="text" style="margin-bottom: 15px;  width:155px" class="form-control" id="postcode" placeholder="Postcode" ng-model="postcode">
                                     </div>
                                     <div class="col-sm-8 form-col" ng-class="{'has-error': errorCity}">
                                         <input type="text" class="form-control" id="city" placeholder="Plaats" ng-model="city">
@@ -105,8 +102,8 @@
                                         <td class="hidden-xs"> 
                                            Verbeterdebuurt verbinden met Twitter. Houd je vrienden op de hoogte!
                                         </td>
-                                        <td> 
-                                            <button type="button" class="btn btn-default">Connect Twitter</button>
+                                        <td style="padding-bottom: 10px;"> 
+                                            <button type="button" class="btn btn-default" style="width: 100%;" disabled>Connect Twitter</button>
                                         </td>
                                     </tr>
                                     <tr style="padding-top:10px;">
@@ -117,7 +114,7 @@
                                            Verbeterdebuurt verbinden met Facebook. Houd je vrienden op de hoogte!
                                         </td>
                                         <td> 
-                                           <button type="button" class="btn btn-default">Connect Facebook</button>
+                                           <button type="button" class="btn btn-default" disabled>Connect Facebook</button>
                                         </td>
                                     </tr>
                                 </table>
@@ -141,13 +138,10 @@
                             </div>
                         </form>
                 </div>
-            </div>
+            
         </div>
         
     <!--  sidebar right -->
     <div class="col-lg-3 hidden-xs">
         </div>  
     </div>
-</body>
-<script type='text/javascript'>
-</script>
