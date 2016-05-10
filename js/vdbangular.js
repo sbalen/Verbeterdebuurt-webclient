@@ -43,7 +43,11 @@ window.onload = function(){
      map = new google.maps.Map(document.getElementById('googlemaps'), mapOptions);
      getLocation(map);
      var geocoder = new google.maps.Geocoder();
-     
+     maxlat  = 52.17899981092104;
+     maxlng  = 52.15154422875919;
+     minlat = 4.545096343219029;
+     minlng = 4.487203543841588
+
      if(cityName!=null){
         geocodeAddress(geocoder, map);
         cityName=null;
@@ -466,24 +470,33 @@ vdbApp.factory('issueSubmitService', ['$http',function ($http) {
 }])
 vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootScope','$routeParams','$http','issuesService','reportService',function ($scope,$timeout,$window,$location,$rootScope,$routeParams,$http,issuesService,reportService) {
 						menuSelected($rootScope,'home');
-						var jsondata = JSON.stringify({"council" : "Groningen"});
+						
+						$timeout(function(){
+							var jsondata = JSON.stringify({
+							  		"coords_criterium":{
+								  	"max_lat":maxlat,
+								    "min_lat":minlat,
+								    "max_long":maxlng,
+								    "min_long":minlng
+								  }
+								});
+						var getIssues = issuesService.getIssues( jsondata ).then(function (data){
+								var getdata = data.data;
+								$rootScope.newProblemList = getdata.issues;
+								//initial google map marker
+								$window.issuesData = getdata;
+								showIssue(infoWindow,infoWindowContent);
+						});
+						},2000);
+						
+						var jsoncity = JSON.stringify({"council":"Leiden"});
 						$rootScope.urlBefore = $location.path();
 						$window.cityName = $routeParams.cityName;
 						$scope.searchCity = $routeParams.cityName;
 						$rootScope.errorSession="";
 
 						//promise for make asyncronise data factory to be syncronis first load
-						var getIssues = issuesService.getIssues( jsondata ).then(function (data){
-								var getdata = data.data;
-								$rootScope.newProblemList = getdata.issues;
-								//initial google map marker
-								$timeout(function(){
-								$window.issuesData = getdata;
-								showIssue(infoWindow,infoWindowContent);
-								},1000);
-						});
-						
-						var getReport = reportService.getReport( jsondata ).then(function (data){
+						var getReport = reportService.getReport( jsoncity ).then(function (data){
 								var getdata = data.data;
 								$rootScope.reportList = getdata.report;
 						});
@@ -501,7 +514,14 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 							}
 							
 							//Get city problem when click/drag
-							jsondata = JSON.stringify({"council" : "Groningen"});
+							var jsondata = JSON.stringify({"coords_criterium":{
+														  	"max_lat":maxlat,
+														    "min_lat":minlat,
+														    "max_long":maxlng,
+														    "min_long":minlng
+														  }
+														});
+							var jsoncity = JSON.stringify({"council":""+city.long_name+""})
 							getIssues = issuesService.getIssues( jsondata ).then(function (data){
 								var getdata = data.data;
 								$rootScope.newProblemList = getdata.issues; 

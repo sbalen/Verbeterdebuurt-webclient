@@ -4,6 +4,10 @@ function getLocation(map) {
             // get the data from center of map
                google.maps.event.addListener(map, 'dragend', function (e) {
                google.maps.event.trigger(map,'resize')
+                maxlat  = map.getBounds().getNorthEast().lat();
+                maxlng  = map.getBounds().getNorthEast().lng();
+                minlat = map.getBounds().getSouthWest().lat();
+                minlng = map.getBounds().getSouthWest().lng();
                geocoder.geocode({'latLng': map.getCenter()} , function (result , status){
                 if (status == google.maps.GeocoderStatus.OK){
 
@@ -28,6 +32,10 @@ function getLocation(map) {
             });
                 google.maps.event.addListener(map, 'zoom_changed', function (e) {
                google.maps.event.trigger(map,'resize')
+               maxlat  = map.getBounds().getNorthEast().lat();
+                maxlng  = map.getBounds().getNorthEast().lng();
+                minlat = map.getBounds().getSouthWest().lat();
+                minlng = map.getBounds().getSouthWest().lng();
                geocoder.geocode({'latLng': map.getCenter()} , function (result , status){
                 if (status == google.maps.GeocoderStatus.OK){
 
