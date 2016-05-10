@@ -4,6 +4,38 @@ function getLocation(map) {
             // get the data from center of map
                google.maps.event.addListener(map, 'dragend', function (e) {
                google.maps.event.trigger(map,'resize')
+                maxlat  = map.getBounds().getNorthEast().lat();
+                maxlng  = map.getBounds().getNorthEast().lng();
+                minlat = map.getBounds().getSouthWest().lat();
+                minlng = map.getBounds().getSouthWest().lng();
+               geocoder.geocode({'latLng': map.getCenter()} , function (result , status){
+                if (status == google.maps.GeocoderStatus.OK){
+
+                for (var i=0; i<result[0].address_components.length; i++) {
+                for (var b=0;b<result[0].address_components[i].types.length;b++) {
+                  //if you want the change the area ..
+                if (result[0].address_components[i].types[b] == "administrative_area_level_2") {
+                   // name of city
+                    city= result[0].address_components[i];
+                    break;
+                        }
+                    }
+                }
+                     // console.log("drag googlemap:"+city.long_name);
+                      showIssue(infoWindow,infoWindowContent);
+                }
+                
+
+               });
+
+
+            });
+                google.maps.event.addListener(map, 'zoom_changed', function (e) {
+               google.maps.event.trigger(map,'resize')
+               maxlat  = map.getBounds().getNorthEast().lat();
+                maxlng  = map.getBounds().getNorthEast().lng();
+                minlat = map.getBounds().getSouthWest().lat();
+                minlng = map.getBounds().getSouthWest().lng();
                geocoder.geocode({'latLng': map.getCenter()} , function (result , status){
                 if (status == google.maps.GeocoderStatus.OK){
 
@@ -29,6 +61,11 @@ function getLocation(map) {
             });
                google.maps.event.addListener(map, 'click', function (e) {
                 google.maps.event.trigger(map,'resize')
+                maxlat  = map.getBounds().getNorthEast().lat();
+                maxlng  = map.getBounds().getNorthEast().lng();
+                minlat = map.getBounds().getSouthWest().lat();
+                minlng = map.getBounds().getSouthWest().lng();
+                console.log(maxlat,minlat,maxlng,minlng)
                geocoder.geocode({'latLng':e.latLng} , function (result , status){
                 if (status == google.maps.GeocoderStatus.OK){
 
@@ -64,6 +101,10 @@ function geocodeAddress(geocoder, resultsMap) {
         geocoder.geocode({'address': address}, function(results, status) {
           if (status === google.maps.GeocoderStatus.OK) {
             resultsMap.setCenter(results[0].geometry.location);
+                maxlat  = map.getBounds().getNorthEast().lat();
+                maxlng  = map.getBounds().getNorthEast().lng();
+                minlat = map.getBounds().getSouthWest().lat();
+                minlng = map.getBounds().getSouthWest().lng();
           } else {
             alert('Geocode was not successful for the following reason: ' + status);
           }

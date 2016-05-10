@@ -51,6 +51,15 @@ body {
   height: 100%; 
   background-color: $background-color;
   font-family: $default-font;
+
+    #app-container{
+        position: relative;
+        min-height: 100vh;
+        padding-bottom: 120px;
+        
+        
+    }
+    
 }
 h1,
 h2,
@@ -116,14 +125,16 @@ h6 {
   padding-right: $normal-spacing;
 }
 //the backgrounds
-#background,
-#googlemaps{
+#background{
   top:0;
   bottom:0;
   left:0;
   right:0;
   overflow:hidden;
   z-index:0;
+  position: fixed;
+  height: 100vh;
+    
 }
 //footer
 .footer{
@@ -132,11 +143,12 @@ h6 {
   background-color:white;
   text-align: center;
   margin-left: 10%;
-  margin-bottom: 20px;
-  position: relative;
+  bottom: 20px;
+  position: absolute;
   border-color: #007AC3;
   border-style: solid;
   border-width: thin;
+  z-index: 1020;
   
 }
 .footertext{
@@ -204,4 +216,64 @@ h6 {
 //main container
 .container{
   padding-left:0px;
+  z-index: 0;
+    
+    &.active{
+        position: inherit;
+        
+    }
+    
+}
+// input file
+.input-group{
+  width: 94%;
+  margin-left: 3.5%;
+}
+#googleMapCreateIssue{
+  background-color : #C7C7C7 ;
+}
+
+#navtop{
+    
+    z-index: 1010;
+}
+
+.form-group{
+    min-height: 25px;
+    
+}
+
+#global-overlay{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+    background: rgba(255, 255, 255, 0.7); 
+    display: none;
+    opacity: 0;   
+    
+    &.active{
+        display: table;
+        opacity: 1;
+        -webkit-transition: opacity 1s ease;
+        -moz-transition: opacity 1s ease;
+        -ms-transition: opacity 1s ease;
+        -o-transition: opacity 1s ease;
+    }
+    
+    #global-spinner{
+        
+        display: table-cell;
+        vertical-align: middle;
+        text-align: center;
+
+        img{
+            display: inline-block;
+            height: 32px;
+            width: 32px;
+        }
+
+    }
 }
