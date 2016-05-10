@@ -1264,6 +1264,8 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                                     
                     usSpinnerService.stop('spinner-1');
 					$scope.hide = "";
+                    $scope.successAlert = "";
+                    $scope.successClass = "";
 					$scope.overlay="overlay";
 
 				}	
@@ -1299,6 +1301,10 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                     $window.sessionStorage.phone = getLogin.user_profile.phone;
                     usSpinnerService.stop('spinner-1');
 					$scope.overlay = "overlay";
+                        
+                    $scope.successAlert = "Profile Updated";
+                    $scope.successClass = "successAlert";
+                    $scope.hide = "";
                         
 //                    $location.path('/profile');
                     
