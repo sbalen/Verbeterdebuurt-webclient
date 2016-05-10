@@ -51,6 +51,15 @@ body {
   height: 100%; 
   background-color: $background-color;
   font-family: $default-font;
+
+    #app-container{
+        position: relative;
+        min-height: 100vh;
+        padding-bottom: 120px;
+        
+        
+    }
+    
 }
 h1,
 h2,
@@ -116,14 +125,16 @@ h6 {
   padding-right: $normal-spacing;
 }
 //the backgrounds
-#background,
-#googlemaps{
+#background{
   top:0;
   bottom:0;
   left:0;
   right:0;
   overflow:hidden;
   z-index:0;
+  position: fixed;
+  height: 100vh;
+    
 }
 //footer
 .footer{
@@ -132,8 +143,8 @@ h6 {
   background-color:white;
   text-align: center;
   margin-left: 10%;
-  margin-bottom: 20px;
-  position: relative;
+  bottom: 20px;
+  position: absolute;
   border-color: #007AC3;
   border-style: solid;
   border-width: thin;
@@ -209,4 +220,7 @@ h6 {
 .input-group{
   width: 94%;
   margin-left: 3.5%;
+}
+#googleMapCreateIssue{
+  background-color : #C7C7C7 ;
 }
