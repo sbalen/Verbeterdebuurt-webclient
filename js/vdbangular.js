@@ -1097,10 +1097,12 @@ vdbApp.controller('forgotconfCtrl', ['$scope','$rootScope','$window','usSpinnerS
 
     
 vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileService','loginService','$location','usSpinnerService', function ($scope,$rootScope,$window,profileService,loginService,$location,usSpinnerService) {
-	$scope.hide = "ng-hide";
-	//$scope.overlay ACTIVE WHENclick and overlay when no event
-	$scope.overlay="overlay";
+	    $scope.hide = "ng-hide";
+        $scope.overlay="overlay";
 	
+                    
+    
+    
      $scope.home = function(){
 		        $location.path('/');
 	                                   
@@ -1145,6 +1147,22 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
     
     //console.log({user,password,user_profile});
 	$scope.profile = function(){
+    usSpinnerService.spin('spinner-1');
+    $scope.overlay = "overlayactive";
+    $scope.errorEmail ="";
+    $scope.errorOldPassword =  "";
+                    $scope.errorNewPassword = "";
+                    $scope.errorInitials = "";
+                    $scope.errorSurname = "";
+                    $scope.errorAddress = "";
+                    $scope.errorAddressN = "";
+                    $scope.errorPostcode = "";
+                    $scope.errorCity = "";
+                    $scope.errorSex = "";
+                    $scope.errorPasshash = "";
+        
+    $scope.hide = "ng-hide";
+    
     var user={};
     user.username = $scope.username;
     user.password_hash = $window.sessionStorage.password_hash;
@@ -1213,8 +1231,7 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
     
     
         
-        usSpinnerService.spin('spinner-1');
-		$scope.overlay = "overlayactive";
+        
 		var jsondata = JSON.stringify({user,password,user_profile});
         console.log(jsondata)
 		var getProfile = profileService.getProfile(jsondata).then(function (data){
@@ -1242,11 +1259,10 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
 					$scope.overlay="overlay";
 
 				}	
-//             usSpinnerService.stop('spinner-1');
-//             $scope.overlay = "overlayactive";
+
             
             
-            if(getProfile.success)
+            else if(getProfile.success)
                 
                 {
                     
@@ -1264,6 +1280,7 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
 				    var getLogin = data.data;
                     
                     console.log(getLogin);
+                    $window.sessionStorage.sex = getLogin.user_profile.sex;
                     $window.sessionStorage.initials = getLogin.user_profile.initials;
                     $window.sessionStorage.tussenvoegsel = getLogin.user_profile.tussenvoegsel;
                     $window.sessionStorage.surname = getLogin.user_profile.surname;
@@ -1275,15 +1292,20 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                     usSpinnerService.stop('spinner-1');
 					$scope.overlay = "overlay";
                         
-                    $location.path('/profile');
+//                    $location.path('/profile');
                     
                     //console.log(jsondata);
                 })
             
             }
+//                         usSpinnerService.stop('spinner-1');
+//                         $scope.overlay = "overlayactive";
             
 		});
 		
+        $scope.close = function(){
+		$scope.hide="ng-hide";
+        }
 	}
   
     
