@@ -922,9 +922,8 @@ vdbApp.controller('forgotconfCtrl', ['$scope','$rootScope','$window','usSpinnerS
 
     
 vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileService','loginService','$location','usSpinnerService', function ($scope,$rootScope,$window,profileService,loginService,$location,usSpinnerService) {
-	$scope.hide = "ng-hide";
-	//$scope.overlay ACTIVE WHENclick and overlay when no event
-	$scope.overlay="overlay";
+	    $scope.hide = "ng-hide";
+        $scope.overlay="overlay";
 	
      $scope.home = function(){
 		        $location.path('/');
@@ -970,6 +969,9 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
     
     //console.log({user,password,user_profile});
 	$scope.profile = function(){
+    usSpinnerService.spin('spinner-1');
+    $scope.overlay = "overlayactive";    
+    
     var user={};
     user.username = $scope.username;
     user.password_hash = $window.sessionStorage.password_hash;
@@ -1038,8 +1040,7 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
     
     
         
-        usSpinnerService.spin('spinner-1');
-		$scope.overlay = "overlayactive";
+        
 		var jsondata = JSON.stringify({user,password,user_profile});
         console.log(jsondata)
 		var getProfile = profileService.getProfile(jsondata).then(function (data){
@@ -1062,13 +1063,12 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                     $scope.errorSex = getProfile.errors.sex;
                     $scope.errorPasshash = getProfile.errors.password_hash;
                                     
-                    usSpinnerService.stop('spinner-1');
-					$scope.hide = "";
-					$scope.overlay="overlay";
+//                    usSpinnerService.stop('spinner-1');
+//					$scope.hide = "";
+//					$scope.overlay="overlay";
 
 				}	
-//             usSpinnerService.stop('spinner-1');
-//             $scope.overlay = "overlayactive";
+
             
             
             if(getProfile.success)
@@ -1089,6 +1089,7 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
 				    var getLogin = data.data;
                     
                     console.log(getLogin);
+                    $window.sessionStorage.sex = getLogin.user_profile.sex;
                     $window.sessionStorage.initials = getLogin.user_profile.initials;
                     $window.sessionStorage.tussenvoegsel = getLogin.user_profile.tussenvoegsel;
                     $window.sessionStorage.surname = getLogin.user_profile.surname;
@@ -1097,8 +1098,8 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                     $window.sessionStorage.postcode = getLogin.user_profile.postcode;
                     $window.sessionStorage.city = getLogin.user_profile.city;
                     $window.sessionStorage.phone = getLogin.user_profile.phone;
-                    usSpinnerService.stop('spinner-1');
-					$scope.overlay = "overlay";
+//                    usSpinnerService.stop('spinner-1');
+//					$scope.overlay = "overlay";
                         
                     $location.path('/profile');
                     
@@ -1106,9 +1107,14 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                 })
             
             }
+                         usSpinnerService.stop('spinner-1');
+                         $scope.overlay = "overlayactive";
             
 		});
 		
+        $scope.close = function(){
+		$scope.hide="ng-hide";
+        }
 	}
   
     
