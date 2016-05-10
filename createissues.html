@@ -1,6 +1,7 @@
     <!-- body -->  
     <div id="main-content" class="container">
-	    <div class="col-md-3 hidden-sm hidden-xs hidden-md">
+	   
+      <div class="col-md-3 hidden-sm hidden-xs hidden-md">
 	    </div>
 	    <!-- main container -->
 	    <div class="col-lg-6 main-container">
@@ -103,14 +104,14 @@
                             </div> 
                         </form>    
 	                <div class="modal-footer">
-                                <button type="button" class="btn btn-danger" data-dismiss="modal">Annuleren</button>
+                                <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="reset()">Annuleren</button>
                                 <button type="button" class="btn btn-success" data-dismiss="modal" ng-click="createIssue()">Verzenden</button>
                         </div>            
                     </div>
 	    </div>
 	    
 	    <!--  sidebar right -->
-	    <div class="col-lg-3 hidden-xs">
+	    <div class="col-lg-3 hidden-xs  {{hideMyIssue}}" >
 		    <div class="panel side-panel panel-default">
 	                <div class="panel-heading">
                             <strong>Mijn Meldingen</strong>

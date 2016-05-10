@@ -107,32 +107,6 @@ function sycGoogleMap(map3){
 }
 //marker at center
 function markerCenter (map3,marker){
-	 geocoder.geocode({'latLng': marker.getPosition()} , function (result , status){
-                if (status == google.maps.GeocoderStatus.OK){
-
-                for (var i=0; i<result[0].address_components.length; i++) {
-                for (var b=0;b<result[0].address_components[i].types.length;b++) {
-                  //if you want the change the area ..
-                if (result[0].address_components[i].types[b] == "route") {
-                   // street name
-                    street= result[0].address_components[i].short_name;
-                    break;
-                        }
-                // if (result[0].address_components[i].types[b] == "street_number") {
-                //    // street number
-                //     street_number= result[0].address_components[i].short_name;
-                //     break;
-                //         }
-                    }
-             
-                    
-                }
-                }
-                
-
-               });
-				address = street;
-				document.getElementById('location').value = address;
 	google.maps.event.addListener(map3,'bounds_changed',function (e){
 				marker.setPosition(map3.getCenter());
 				markerLat = marker.getPosition().lat();
@@ -145,8 +119,10 @@ function markerCenter (map3,marker){
                   //if you want the change the area ..
                 if (result[0].address_components[i].types[b] == "route") {
                    // street name
-                    street= result[0].address_components[i].short_name;
-                    break;
+                    streetLocation= result[0].address_components[i].short_name;
+                    addressLocation = streetLocation;
+					document.getElementById('location').value = addressLocation;
+	                    break;
                         }
                 // if (result[0].address_components[i].types[b] == "street_number") {
                 //    // street number
@@ -161,8 +137,7 @@ function markerCenter (map3,marker){
                 
 
                });
-				address = street;
-				document.getElementById('location').value = address;
+				
 	 			
 	});
 }
@@ -566,7 +541,17 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 						}
 						//move page
 						$scope.clickMenu = function(selected){
-								$location.path('/'+selected);
+								if(selected == "myissues"|| selected == "createissue"){
+									if(!$window.sessionStorage.username){
+										$location.path('/'+"login");
+									}
+									else{
+										$location.path('/'+selected);	
+									}
+								}else{
+										$location.path('/'+selected);	
+								} 
+								
 						}
 
 
@@ -1050,10 +1035,12 @@ vdbApp.controller('forgotconfCtrl', ['$scope','$rootScope','$window','usSpinnerS
 
     
 vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileService','loginService','$location','usSpinnerService', function ($scope,$rootScope,$window,profileService,loginService,$location,usSpinnerService) {
-	$scope.hide = "ng-hide";
-	//$scope.overlay ACTIVE WHENclick and overlay when no event
-	$scope.overlay="overlay";
+	    $scope.hide = "ng-hide";
+        $scope.overlay="overlay";
 	
+                    
+    
+    
      $scope.home = function(){
 		        $location.path('/');
 	                                   
@@ -1098,6 +1085,22 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
     
     //console.log({user,password,user_profile});
 	$scope.profile = function(){
+    usSpinnerService.spin('spinner-1');
+    $scope.overlay = "overlayactive";
+    $scope.errorEmail ="";
+    $scope.errorOldPassword =  "";
+                    $scope.errorNewPassword = "";
+                    $scope.errorInitials = "";
+                    $scope.errorSurname = "";
+                    $scope.errorAddress = "";
+                    $scope.errorAddressN = "";
+                    $scope.errorPostcode = "";
+                    $scope.errorCity = "";
+                    $scope.errorSex = "";
+                    $scope.errorPasshash = "";
+        
+    $scope.hide = "ng-hide";
+    
     var user={};
     user.username = $scope.username;
     user.password_hash = $window.sessionStorage.password_hash;
@@ -1166,8 +1169,7 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
     
     
         
-        usSpinnerService.spin('spinner-1');
-		$scope.overlay = "overlayactive";
+        
 		var jsondata = JSON.stringify({user,password,user_profile});
         console.log(jsondata)
 		var getProfile = profileService.getProfile(jsondata).then(function (data){
@@ -1195,11 +1197,10 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
 					$scope.overlay="overlay";
 
 				}	
-//             usSpinnerService.stop('spinner-1');
-//             $scope.overlay = "overlayactive";
+
             
             
-            if(getProfile.success)
+            else if(getProfile.success)
                 
                 {
                     
@@ -1217,6 +1218,7 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
 				    var getLogin = data.data;
                     
                     console.log(getLogin);
+                    $window.sessionStorage.sex = getLogin.user_profile.sex;
                     $window.sessionStorage.initials = getLogin.user_profile.initials;
                     $window.sessionStorage.tussenvoegsel = getLogin.user_profile.tussenvoegsel;
                     $window.sessionStorage.surname = getLogin.user_profile.surname;
@@ -1228,22 +1230,31 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                     usSpinnerService.stop('spinner-1');
 					$scope.overlay = "overlay";
                         
-                    $location.path('/profile');
+//                    $location.path('/profile');
                     
                     //console.log(jsondata);
                 })
             
             }
+//                         usSpinnerService.stop('spinner-1');
+//                         $scope.overlay = "overlayactive";
             
 		});
 		
+        $scope.close = function(){
+		$scope.hide="ng-hide";
+        }
 	}
   
     
 }])
 
-vdbApp.controller('createissueCtrl', ['$scope','$window','$timeout','categoriesService','issueSubmitService','myIssuesService', function ($scope,$window,$timeout,categoriesService,issueSubmitService,myIssuesService) {	
+vdbApp.controller('createissueCtrl', ['$scope','$window','$timeout','categoriesService','issueSubmitService','myIssuesService','$location', function ($scope,$window,$timeout,categoriesService,issueSubmitService,myIssuesService,$location) {	
 		$scope.hide = "ng-hide";
+		
+		if(!$window.sessionStorage.username){
+			$location.path("/login");
+		}
 		//show my issue
 		var jsondata = JSON.stringify({"user":{ "username":""+$window.sessionStorage.username+"",
 												"password_hash":""+$window.sessionStorage.password_hash+""
@@ -1251,8 +1262,11 @@ vdbApp.controller('createissueCtrl', ['$scope','$window','$timeout','categoriesS
 											}});
 		var getMyIssues = myIssuesService.getMyIssues( jsondata ).then(function (data){
 			var getdata = data.data;
-			$scope.count = getdata.count;
+			var count = getdata.count;
 			$scope.myIssuesList = getdata.issues;
+			if(count==0){
+				$scope.hideMyIssue = "ng-hide";
+			}
 		})
 		//first initial
 		$timeout(function(){
@@ -1362,6 +1376,9 @@ vdbApp.controller('createissueCtrl', ['$scope','$window','$timeout','categoriesS
 				}
 				else{
 					//success
+					var issueId = issueData.issue_id;
+					$location.path(/myIssues/+issueId);
+
 				}
 
 			});
@@ -1370,6 +1387,10 @@ vdbApp.controller('createissueCtrl', ['$scope','$window','$timeout','categoriesS
 		}
 		$scope.close = function(){
 			$scope.hide = "ng-hide";
+		}
+		$scope.reset = function(){
+			$scope.title = "";
+			$scope.description = "";
 		}
 				
 		
