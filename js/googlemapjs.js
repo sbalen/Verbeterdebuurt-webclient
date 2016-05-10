@@ -4,6 +4,10 @@ function getLocation(map) {
             // get the data from center of map
                google.maps.event.addListener(map, 'dragend', function (e) {
                google.maps.event.trigger(map,'resize')
+                maxlat  = map.getBounds().getNorthEast().lat();
+                maxlng  = map.getBounds().getNorthEast().lng();
+                minlat = map.getBounds().getSouthWest().lat();
+                minlng = map.getBounds().getSouthWest().lng();
                geocoder.geocode({'latLng': map.getCenter()} , function (result , status){
                 if (status == google.maps.GeocoderStatus.OK){
 
@@ -28,6 +32,10 @@ function getLocation(map) {
             });
                 google.maps.event.addListener(map, 'zoom_changed', function (e) {
                google.maps.event.trigger(map,'resize')
+               maxlat  = map.getBounds().getNorthEast().lat();
+                maxlng  = map.getBounds().getNorthEast().lng();
+                minlat = map.getBounds().getSouthWest().lat();
+                minlng = map.getBounds().getSouthWest().lng();
                geocoder.geocode({'latLng': map.getCenter()} , function (result , status){
                 if (status == google.maps.GeocoderStatus.OK){
 
@@ -93,6 +101,10 @@ function geocodeAddress(geocoder, resultsMap) {
         geocoder.geocode({'address': address}, function(results, status) {
           if (status === google.maps.GeocoderStatus.OK) {
             resultsMap.setCenter(results[0].geometry.location);
+                maxlat  = map.getBounds().getNorthEast().lat();
+                maxlng  = map.getBounds().getNorthEast().lng();
+                minlat = map.getBounds().getSouthWest().lat();
+                minlng = map.getBounds().getSouthWest().lng();
           } else {
             alert('Geocode was not successful for the following reason: ' + status);
           }
