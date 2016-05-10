@@ -1038,6 +1038,9 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
 	    $scope.hide = "ng-hide";
         $scope.overlay="overlay";
 	
+                    
+    
+    
      $scope.home = function(){
 		        $location.path('/');
 	                                   
@@ -1083,7 +1086,20 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
     //console.log({user,password,user_profile});
 	$scope.profile = function(){
     usSpinnerService.spin('spinner-1');
-    $scope.overlay = "overlayactive";    
+    $scope.overlay = "overlayactive";
+    $scope.errorEmail ="";
+    $scope.errorOldPassword =  "";
+                    $scope.errorNewPassword = "";
+                    $scope.errorInitials = "";
+                    $scope.errorSurname = "";
+                    $scope.errorAddress = "";
+                    $scope.errorAddressN = "";
+                    $scope.errorPostcode = "";
+                    $scope.errorCity = "";
+                    $scope.errorSex = "";
+                    $scope.errorPasshash = "";
+        
+    $scope.hide = "ng-hide";
     
     var user={};
     user.username = $scope.username;
@@ -1176,15 +1192,15 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                     $scope.errorSex = getProfile.errors.sex;
                     $scope.errorPasshash = getProfile.errors.password_hash;
                                     
-//                    usSpinnerService.stop('spinner-1');
-//					$scope.hide = "";
-//					$scope.overlay="overlay";
+                    usSpinnerService.stop('spinner-1');
+					$scope.hide = "";
+					$scope.overlay="overlay";
 
 				}	
 
             
             
-            if(getProfile.success)
+            else if(getProfile.success)
                 
                 {
                     
@@ -1211,17 +1227,17 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                     $window.sessionStorage.postcode = getLogin.user_profile.postcode;
                     $window.sessionStorage.city = getLogin.user_profile.city;
                     $window.sessionStorage.phone = getLogin.user_profile.phone;
-//                    usSpinnerService.stop('spinner-1');
-//					$scope.overlay = "overlay";
+                    usSpinnerService.stop('spinner-1');
+					$scope.overlay = "overlay";
                         
-                    $location.path('/profile');
+//                    $location.path('/profile');
                     
                     //console.log(jsondata);
                 })
             
             }
-                         usSpinnerService.stop('spinner-1');
-                         $scope.overlay = "overlayactive";
+//                         usSpinnerService.stop('spinner-1');
+//                         $scope.overlay = "overlayactive";
             
 		});
 		
