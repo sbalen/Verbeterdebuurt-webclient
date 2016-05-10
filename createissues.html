@@ -1,29 +1,32 @@
     <!-- body -->  
     <div id="main-content" class="container">
-	    <div class="col-md-3 hidden-sm hidden-xs hidden-md">
+	   
+      <div class="col-md-3 hidden-sm hidden-xs hidden-md">
 	    </div>
 	    <!-- main container -->
 	    <div class="col-lg-6 main-container">
 	        <div class="panel panel-default main-panel">
-		        <!--<div class="alert alert-danger">
-          			<p>Categorie is verplicht</p>
-			        <p>Postcode is verplicht</p>
-		        </div>-->
+             <div class="alert alert-danger {{hide}}" >
+                                  <a class="close {{hide}}" aria-label="close" ng-click="close()" >&times;</a>
+                                  <p>{{errorTitle}}</p>
+                                  <p>{{errorDescription}}</p>
+                                  <p>{{errorId}}</p>
+                                </div>
 		        <h1>Nieuw Probleem</h1>
 		        <form class="form-horizontal" role="form">
                               <div class="panel-body">
                                 <h4>1. Bepaal de locatie</h4>
                                 <div class="well well-sm locationpicker-well">
                                   <fieldset class="gllpLatlonPicker">
-                                  <div class="input-group">
+                                  <div class="input-group" style="width:100%; margin-left:0; ">
                                      <form>
-                                     <input type="text" class="form-control gllpSearchField" placeholder="Vul hier het adres in, of sleep de marker..." ng-model="searchCity" ng-submit="expression">
+                                     <input type="text" class="form-control gllpSearchField" placeholder="Vul hier het adres in, of sleep de marker..." ng-model="searchCityCreate" ng-submit="expression">
                                      </form>
                                      <span class="input-group-btn">
                                         <button class="btn btn-primary gllpSearchButton" type="button" ng-click="clickSearchCreateIssue()"><span class="glyphicon glyphicon-search"></span><span class="hidden-xs">Zoeken</span></button>
                                      </span>
                                   </div>
-                                  <div class="gllpMap" id="googleMapCreateIssue" >Google Maps</div>
+                                  <div class="gllpMap" id="googleMapCreateIssue" ng-mouseover="categoriesData()">Google Maps</div>
                                   <input type="hidden" class="gllpLatitude" value="52.158367"/>
                                   <input type="hidden" class="gllpLongitude" value="4.492999"/>
                                   <input type="hidden" class="gllpZoom" value="12"/>
@@ -34,108 +37,93 @@
                             </div>
                             <div class="panel-body">
                                 <h4>2. Beschrijf de melding</h4>
-	                        <div class="form-group">
-                                    <div class="col-sm-12 form-col">
-                                        <select class="combobox" id="category">
+	                             <div class="form-group">
+                                    <div class="col-sm-12 form-col" style="margin-bottom: 10px;" ng-class="{'has-error':errorTitle}">
+                                        <input type="text" class="form-control" id="Onderwerp" placeholder="Onderwerp" ng-model="title">
+                                    </div>
+                                </div>
+                               <div class="form-group">
+                                    <div class="col-sm-12 form-col" style="margin-bottom: 10px;" ng-class="{'has-error':errorId}">
+                                        <select class="combobox" id="category" ng-model="categoryId" ng-options="categories.id as categories.title for categories in categoriesList" style="{{errorIdStyle}}">
                                             <option value=""  disabled selected>Categorie</option>
-                                            <option value="122">Onderhoud stoep, straat en fietspad</option>
-                                            <option value="123">Veeg/zwerfvuil</option>
-                                            <option value="124">Verkeerd aangeboden grofvuil</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <div class="col-sm-12 form-col">  
-                                        <textarea class="form-control" rows="5" id="description" placeholder="Beschrijving"></textarea>
+                                    <div class="col-sm-12 form-col" ng-class="{'has-error':errorDescription}">  
+                                        <textarea class="form-control" rows="5" id="description" placeholder="Beschrijving" ng-model="description"></textarea>
                                     </div>
                                 </div>
                                 <!--<label class="control-label">Select File</label>-->
                                 <p>Foto uploaden (optioneel)</p>
-                                <input id="file-input" type="file" class="file">
+                                <input id="file-input" type="file" class="file" style="width: 94%;margin-left: 3%;">
                             </div>
-                            <div class="panel-body">
+                            <div class="panel-body {{hideNonLogin}}">
                                 <h4>3. Contactgegevens</h4>
                                 Of <a href="#">log in</a> om dit over te slaan
                                 <div class="form-group">
-                                    <div class="col-sm-12 form-col">
+                                    <div class="col-sm-12 form-col" style="margin-bottom: 10px;">
                                         <input type="text" class="form-control" id="email" placeholder="E-mailadres">
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                        <div class="col-sm-2 form-col">
-                                            <select class="combobox" id="sex">
+                                        <div class="col-sm-2 form-col" style="margin-bottom: 10px;">
+                                            <select class="combobox" id="sex" style="width:97%;">
                                                 <option value="0"></option>
                                                 <option value="m">Dhr.</option>
                                                 <option value="f">Mw.</option>
                                             </select>
                                         </div>
-                                        <div class="col-sm-3 form-col">
-                                            <input type="text" class="form-control" id="initials" placeholder="voorletters">
+                                        <div class="col-sm-3 form-col" style="margin-bottom: 10px;">
+                                            <input type="text" class="form-control" id="initials" placeholder="voorletters" style="width:97%;">
                                         </div>
-                                        <div class="col-sm-3 form-col">
-                                            <input type="text" class="form-control" id="tussenvoegsel" placeholder="tussenvoegsel">
+                                        <div class="col-sm-3 form-col" style="margin-bottom: 10px;">
+                                            <input type="text" class="form-control" id="tussenvoegsel" placeholder="tussenvoegsel" style="width:97%;">
                                         </div>
-                                        <div class="col-sm-4 form-col">
+                                        <div class="col-sm-4 form-col" style="margin-bottom: 10px;">
                                             <input type="text" class="form-control" id="name" placeholder="Achternaam">
                                         </div>
                                 </div>
                                 <div class="form-group">
-                                    <div class="col-sm-8 form-col">
-                                        <input type="text" class="form-control" id="street" placeholder="Straat">
+                                    <div class="col-sm-8 form-col" style="margin-bottom: 10px;">
+                                        <input type="text" class="form-control" id="street" placeholder="Straat" style="width:98%;">
                                     </div>
-                                    <div class="col-sm-4 form-col">
+                                    <div class="col-sm-4 form-col" style="margin-bottom: 10px;">
                                         <input type="text" class="form-control" id="number" placeholder="Huisnummer">
                                     </div>
-                                    <div class="col-sm-4 form-col">
-                                        <input type="text" class="form-control" id="postcode" placeholder="Postcode">
+                                    <div class="col-sm-4 form-col" style="margin-bottom: 10px;">
+                                        <input type="text" class="form-control" id="postcode" placeholder="Postcode" style="width:97%;">
                                     </div>
-                                    <div class="col-sm-8 form-col">
+                                    <div class="col-sm-8 form-col" style="margin-bottom: 10px;">
                                         <input type="text" class="form-control" id="city" placeholder="Plaats">
                                     </div>
-                                    <div class="col-sm-12 form-col">
+                                    <div class="col-sm-12 form-col" style="margin-bottom: 10px;">
                                         <input type="text" class="form-control" id="telephonenumber" placeholder="Telefoonnummer (optioneel)">
                                     </div>
                                 </div>
                             </div> 
                         </form>    
 	                <div class="modal-footer">
-                                <button type="button" class="btn btn-danger" data-dismiss="modal">Annuleren</button>
+                                <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="reset()">Annuleren</button>
                                 <button type="button" class="btn btn-success" data-dismiss="modal" ng-click="createIssue()">Verzenden</button>
                         </div>            
                     </div>
 	    </div>
 	    
 	    <!--  sidebar right -->
-	    <div class="col-lg-3 hidden-xs">
+	    <div class="col-lg-3 hidden-xs  {{hideMyIssue}}" >
 		    <div class="panel side-panel panel-default">
 	                <div class="panel-heading">
                             <strong>Mijn Meldingen</strong>
                         </div>
       			<div class="panel-body">
-                          <div class="list-group">
-                            <a href="#" class="list-group-item clearfix">
+                          <div class="list-group" >
+                            <a href="/myIssues/{{myIssues.id}}" class="list-group-item clearfix" ng-repeat="myIssues in myIssuesList| filter : {type:'problem'} | filter: {status:'open'} | orderBy : 'created_at' : true |limitTo:3"ng-click="clickIssues()">
                               <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
-                              <strong>Afval: Afval in de straat </strong>Haitsma Mulierstraat 64, Haarlem
+                              <strong> {{myIssues.title}}</strong> {{myIssues.location.full_address}}
+                              {{myIssues.status}}
                               <span class="pull-right">
-                                <button class="btn btn-xs btn-success">
-                                  <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
-                                </button>
-                              </span>
-                            </a>
-                            <a href="#" class="list-group-item clearfix">
-                              <img class="icon" src="./img/flag_2_21_21.png" size="20px"/>
-                              <strong>Afval: Afval in de straat </strong>Haitsma Mulierstraat 64, Haarlem
-                              <span class="pull-right">
-                                <button class="btn btn-xs btn-success">
-                                  <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
-                                </button>
-                              </span>
-                            </a>
-                            <a href="#" class="list-group-item clearfix">
-                              <img class="icon" src="./img/icon_idea_2_21_21.png" size="20px"/>
-                              <strong>Verkeersdrempel </strong>Haitsma Mulierstraat 64, Haarlem
-                              <span class="pull-right">
-                                <button class="btn btn-xs btn-success">
+                                <button class="btn btn-xs btn-success" >
                                   <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
                                 </button>
                               </span>

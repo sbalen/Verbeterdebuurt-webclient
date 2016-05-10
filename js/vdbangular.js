@@ -4,6 +4,8 @@ var geocoder = new google.maps.Geocoder();
 var infoWindow = new google.maps.InfoWindow();
 var infoWindowContent = [];
 var latlngChange;
+
+//define service
 var issuesService = new Object();
 var registerService = new Object();
 var loginService  = new Object();
@@ -15,6 +17,8 @@ var myIssuesService = new Object();
 var commentSubmitService = new Object();
 var profileService = new Object();
 var workLogService = new Object();
+var categoriesService = new Object();
+var issueSubmitService = new Object();
 
 
 //google map
@@ -24,7 +28,10 @@ window.onload = function(){
       this._map_center = {lat: mainLat , lng: mainLng};
       this._marker_positions = [{lat: 27.1959742, lng: 78.02423269999100}, {lat: 27.1959733, lng: 78.02423269999992}] ;
       var mapOptions = {
-        zoom: 15, // initialize zoom level - the max value is 21
+        zoom: 15,
+        maxZoom:17,
+        minZoom:13,
+         // initialize zoom level - the max value is 21
         disableDefaultUI: true,
         streetViewControl: false, // hide the yellow Street View pegman
         /*scaleControl: false, // allow users to zoom the Google Map*/
@@ -56,6 +63,7 @@ function googleMapIssue(lat,lng){
 		center : location,
 		zoom : 18,
 		mapTypeId: google.maps.MapTypeId.ROADMAP
+		
 	}
 	var markerOption2 = {
 		 position : location
@@ -70,6 +78,8 @@ function googleMapCreateIssue(latlng){
 	var mapOption3 = {
 		center : latlng,
 		zoom : 17,
+		maxZoom:19,
+        minZoom:15,
 		mapTypeId: google.maps.MapTypeId.ROADMAP
 	}
 	 map3 = new google.maps.Map(document.getElementById("googleMapCreateIssue"),mapOption3);
@@ -84,6 +94,8 @@ function googleMapCreateIssue(latlng){
 	 sycGoogleMap(map3);
 	 markerCenter(map3,marker);
 	 getMarkerLocation(marker);
+	 markerGetAddress(marker);
+
 	  
 }
 //to make other map syncronise
@@ -99,6 +111,33 @@ function markerCenter (map3,marker){
 				marker.setPosition(map3.getCenter());
 				markerLat = marker.getPosition().lat();
 	 			markerLng = marker.getPosition().lng();
+	 			 geocoder.geocode({'latLng': marker.getPosition()} , function (result , status){
+                if (status == google.maps.GeocoderStatus.OK){
+
+                for (var i=0; i<result[0].address_components.length; i++) {
+                for (var b=0;b<result[0].address_components[i].types.length;b++) {
+                  //if you want the change the area ..
+                if (result[0].address_components[i].types[b] == "route") {
+                   // street name
+                    streetLocation= result[0].address_components[i].short_name;
+                    addressLocation = streetLocation;
+					document.getElementById('location').value = addressLocation;
+	                    break;
+                        }
+                // if (result[0].address_components[i].types[b] == "street_number") {
+                //    // street number
+                //     street_number= result[0].address_components[i].short_name;
+                //     break;
+                //         }
+                    }
+             
+                    
+                }
+                }
+                
+
+               });
+				
 	 			
 	});
 }
@@ -115,11 +154,44 @@ function geocodeAddressCreateIssue(geocoder, resultsMap, address) {
         geocoder.geocode({'address': address}, function(results, status) {
           if (status === google.maps.GeocoderStatus.OK) {
             resultsMap.setCenter(results[0].geometry.location);
+            markerLat = marker.getPosition().lat();
+	 		markerLng = marker.getPosition().lng();
           } else {
             alert('Geocode was not successful for the following reason: ' + status);
           }
         });
       }
+function markerGetAddress(marker){
+		 //first time load
+		google.maps.event.addListener(marker, 'drag', function (e) {
+               geocoder.geocode({'latLng': marker.getPosition()} , function (result , status){
+                if (status == google.maps.GeocoderStatus.OK){
+
+                for (var i=0; i<result[0].address_components.length; i++) {
+                for (var b=0;b<result[0].address_components[i].types.length;b++) {
+                  //if you want the change the area ..
+                if (result[0].address_components[i].types[b] == "route") {
+                   // street name
+                    street= result[0].address_components[i].short_name;
+                    break;
+                        }
+                if (result[0].address_components[i].types[b] == "street_number") {
+                   // street number
+                    street_number= result[0].address_components[i].short_name;
+                    break;
+                        }
+                    }
+             
+                    
+                }
+                }
+                
+
+               });
+				address = street+" "+street_number;
+				document.getElementById('location').value = address;
+            });
+}
 //change menu selected
 function menuSelected($scope,selected){
 	$scope.homeSelected = "";
@@ -139,16 +211,17 @@ function menuSelected($scope,selected){
 	}
 };
 
+
 vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegateProvider', function ($routeProvider,$locationProvider,$httpProvider,$sceDelegateProvider) {
 	$routeProvider
 	.when('/', {
 		templateUrl: 'map.html',
-		controller: 'mainCtrl' 
+		controller : 'mainCtrl'
 		
 	})
 	.when('/city/:cityName', {
 		templateUrl: 'map.html',
-		controller: 'mainCtrl' 
+		controller : 'mainCtrl' 
 	})
 	.when('/issues/:id',{
 		templateUrl :'issues.html',
@@ -364,7 +437,34 @@ vdbApp.factory('workLogService', ['$http',function ($http) {
 	};
 }])
 
-vdbApp.controller('mainCtrl', ['$scope','$window','$location','$rootScope','$routeParams','$http','issuesService','reportService',function ($scope,$window,$location,$rootScope,$routeParams,$http,issuesService,reportService) {
+vdbApp.factory('categoriesService', ['$http',function ($http) {
+	return {
+			getCategories : function( jsondata ){
+				return $http.post(APIURL+'categories', jsondata)
+				.success(function(data){
+					if(angular.isObject(data)){
+						categoriesService.data = data;
+						return categoriesService.data;
+					}
+				});
+				return categoriesService.data;
+			}
+
+	};
+}])
+vdbApp.factory('issueSubmitService', ['$http',function ($http) {
+	return {
+			getIssueSubmit: function ( jsondata ){
+				return $http.post(APIURL+'issueSubmit', jsondata)
+				.success(function(data){
+						issueSubmitService.data = data;
+						return issueSubmitService.data;
+				});
+				return issueSubmitService.data
+			}
+	};
+}])
+vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootScope','$routeParams','$http','issuesService','reportService',function ($scope,$timeout,$window,$location,$rootScope,$routeParams,$http,issuesService,reportService) {
 						menuSelected($rootScope,'home');
 						var jsondata = JSON.stringify({"council" : "Groningen"});
 						$rootScope.urlBefore = $location.path();
@@ -377,8 +477,10 @@ vdbApp.controller('mainCtrl', ['$scope','$window','$location','$rootScope','$rou
 								var getdata = data.data;
 								$rootScope.newProblemList = getdata.issues;
 								//initial google map marker
+								$timeout(function(){
 								$window.issuesData = getdata;
 								showIssue(infoWindow,infoWindowContent);
+								},1000);
 						});
 						
 						var getReport = reportService.getReport( jsondata ).then(function (data){
@@ -425,6 +527,7 @@ vdbApp.controller('mainCtrl', ['$scope','$window','$location','$rootScope','$rou
 						}
 						//search
 						$scope.clickSearch= function(){
+							console.log($scope.searchCity);
 							$window.cityName = null;
 							city.long_name = $scope.searchCity;
 							getIssues = issuesService.getIssues( jsondata ).then(function (data){
@@ -432,13 +535,23 @@ vdbApp.controller('mainCtrl', ['$scope','$window','$location','$rootScope','$rou
 							$rootScope.newProblemList = getdata.issues; 
 							$window.issuesData = getdata;
 								});
-							
+							console.log($scope.searchCity);
 							geocodeAddress(geocoder, map);
 							$location.path("city/"+$scope.searchCity);
 						}
 						//move page
 						$scope.clickMenu = function(selected){
-								$location.path('/'+selected);
+								if(selected == "myissues"|| selected == "createissue"){
+									if(!$window.sessionStorage.username){
+										$location.path('/'+"login");
+									}
+									else{
+										$location.path('/'+selected);	
+									}
+								}else{
+										$location.path('/'+selected);	
+								} 
+								
 						}
 
 
@@ -1120,23 +1233,151 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
     
 }])
 
-vdbApp.controller('createissueCtrl', ['$scope','$window', function ($scope,$window) {	
-		if(latlngChange){
+vdbApp.controller('createissueCtrl', ['$scope','$window','$timeout','categoriesService','issueSubmitService','myIssuesService','$location', function ($scope,$window,$timeout,categoriesService,issueSubmitService,myIssuesService,$location) {	
+		$scope.hide = "ng-hide";
+		
+		if(!$window.sessionStorage.username){
+			$location.path("/login");
+		}
+		//show my issue
+		var jsondata = JSON.stringify({"user":{ "username":""+$window.sessionStorage.username+"",
+												"password_hash":""+$window.sessionStorage.password_hash+""
+
+											}});
+		var getMyIssues = myIssuesService.getMyIssues( jsondata ).then(function (data){
+			var getdata = data.data;
+			var count = getdata.count;
+			$scope.myIssuesList = getdata.issues;
+			if(count==0){
+				$scope.hideMyIssue = "ng-hide";
+			}
+		})
+		//first initial
+		$timeout(function(){
+			if(latlngChange){
 			googleMapCreateIssue(latlngChange);
 			latlngChange = null;
-		}else{
+			var latitude = markerLat;
+			var longitude = markerLng;
+			var jsondataCity = JSON.stringify({latitude,longitude});
+			var getCategories = categoriesService.getCategories( jsondataCity ).then(function (data){
+				$scope.categoriesList = data.data.categories;
+			});
+
+			}else{
 			latlngChange = {lat: 52.158367,lng: 4.492999};
 			googleMapCreateIssue(latlngChange);
 			latlngChange = null;
+			var latitude = markerLat;
+			var longitude = markerLng;
+			var jsondataCity = JSON.stringify({latitude,longitude});
+			var getCategories = categoriesService.getCategories( jsondataCity ).then(function (data){
+				$scope.categoriesList = data.data.categories;
+			});
 		}
-
+		},1200);
+		
+		if($window.sessionStorage.username){
+			$scope.hideNonLogin = "ng-hide"
+		}
 		$scope.clickSearchCreateIssue= function(){
-							geocodeAddressCreateIssue(geocoder, map3, $scope.searchCity);
-							city.long_name = $scope.searchCity;
-						}
-		$scope.createIssue = function(){
-							alert(markerLat+" "+markerLng)
+			geocodeAddressCreateIssue(geocoder, map3, $scope.searchCityCreate);
+			city.long_name = $scope.searchCityCreate;
+	 		var latitude = markerLat;
+			var longitude = markerLng;
+			var jsondataCity = JSON.stringify({latitude,longitude});
+	 		var getCategories = categoriesService.getCategories( jsondataCity ).then(function (data){
+				$scope.categoriesList = data.data.categories;
+			});
 		}
+		$scope.categoriesData = function(){
+			var latitude = markerLat;
+			var longitude = markerLng;
+			var jsondataCity = JSON.stringify({latitude,longitude});
+			var getCategories = categoriesService.getCategories( jsondataCity ).then(function (data){
+				$scope.categoriesList = data.data.categories;
+			});
+		}
+		$scope.createIssue = function(){
+			$scope.errorTitle = "";
+			$scope.errorDescription = "";
+			$scope.errorId = "";
+			$scope.errorIdStyle = "";
+			//initial data for request
+			var user = {};
+			var issue = {};
+			var location = {};
+
+			//login
+			user.username = $window.sessionStorage.username;
+			user.password_hash = $window.sessionStorage.password_hash;
+
+			//description
+			issue.type = "problem";
+			if($scope.categoryId){
+			issue.category_id = $scope.categoryId;	
+			}else{
+			issue.category_id = -1;	
+			}
+			
+			if($scope.title){
+				issue.title = $scope.title;
+			}
+			else {
+				issue.title = "";
+			}
+			if($scope.description){
+				issue.description = $scope.description;
+			}
+			else{
+				issue.description = "";
+			}
+			//location
+			location.latitude = markerLat;
+			location.longitude = markerLng;
+			
+			var jsondataSubmit = JSON.stringify({user,issue,location});
+			
+			var getIssueSubmit = issueSubmitService.getIssueSubmit( jsondataSubmit ).then(function (data){
+				var issueData = data.data;
+				console.log(issueData.success);
+				if(!issueData.success){
+					$scope.hide = "";
+					if(issueData.errors.title){
+						$scope.errorTitle ="Onderwerp "+issueData.errors.title;
+					}
+					if(issueData.errors.description){
+						$scope.errorDescription ="Beschrijving "+issueData.errors.description;
+					}
+					if(issueData.errors.category_id){
+						$scope.errorId = issueData.errors.category_id;
+						$scope.errorIdStyle = 'border-color: #a94442';
+						console.log($scope.errorIdStyle);
+					}
+					
+					
+
+				}
+				else{
+					//success
+					var issueId = issueData.issue_id;
+					$location.path(/myIssues/+issueId);
+
+				}
+
+			});
+			
+			
+		}
+		$scope.close = function(){
+			$scope.hide = "ng-hide";
+		}
+		$scope.reset = function(){
+			$scope.title = "";
+			$scope.description = "";
+		}
+				
+		
 
 }])
 
