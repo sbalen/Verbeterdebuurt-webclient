@@ -107,8 +107,8 @@
             </div>
         </div>
         
-        
-          <div class="container" ng-view>
+        <!-- I put globaloverlay, because the position need to be present in order z-index working -->
+          <div class="container {{globaloverlay}}" ng-view>
 
           </div>
         <div class="footer">

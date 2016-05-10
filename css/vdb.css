@@ -152,8 +152,9 @@ h6 {
 
 .container {
   padding-left: 0px;
-  position: inherit;
   z-index: 0; }
+  .container.active {
+    position: inherit; }
 
 .input-group {
   width: 94%;

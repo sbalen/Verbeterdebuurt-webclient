@@ -216,8 +216,13 @@ h6 {
 //main container
 .container{
   padding-left:0px;
-  position: inherit;
   z-index: 0;
+    
+    &.active{
+        position: inherit;
+        
+    }
+    
 }
 // input file
 .input-group{
