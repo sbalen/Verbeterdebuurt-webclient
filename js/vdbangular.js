@@ -561,8 +561,15 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 						//logOut
 						$scope.logout = function(){
 							$window.sessionStorage.clear();
+                            $('.dropdown-menu').hide();
 							$location.path('/');
 						}
+                        $scope.show= function()
+                        {   
+                            $('.dropdown-menu').show();
+                            
+                        }
+                        
 						//search
 						$scope.clickSearch= function(){
 							console.log($scope.searchCity);
