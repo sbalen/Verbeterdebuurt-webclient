@@ -39,7 +39,7 @@
                         </div>
       			<div class="panel-body">
                           <div class="list-group">
-                            <a href="/issues/{{newProblem.id}}" class="list-group-item clearfix" ng-repeat="newProblem in newProblemList| filter : {type:'idea'} | filter: {status:'open'} | orderBy : 'created_at' : true |limitTo:3|filter:x as results2" ng-click="clickIssues()">
+                            <a href="/issues/{{newProblem.id}}" class="list-group-item clearfix" ng-repeat="newProblem in newProblemList| filter : {type:'idea'} | filter: {status:'Open'} | orderBy : 'created_at' : true |limitTo:3|filter:x as results2" ng-click="clickIssues()">
                               <img class="icon" src="./img/icon_idea_2_21_21.png" size="20px"/>
                               <strong>{{newProblem.title}}</strong> {{newProblem.location.full_address}}
                               <span class="pull-right">
