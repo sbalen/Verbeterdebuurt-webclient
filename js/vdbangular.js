@@ -931,7 +931,13 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
     $scope.postcode="";
     $scope.city="";
     $scope.phone="";
-	
+    $scope.sexoption = [
+        {'name': 'Dhr.',
+         'value': 'm'},
+        {'name': 'Mw.',
+         'value': 'f'}
+    ];
+    $scope.sex = $scope.sexoption[0].value;
     
 	$scope.register = function(){
         $rootScope.errorSession ="";
@@ -984,15 +990,15 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
           
             if (!getRegister.success){
                       
-            if(getRegister.errors.sex !== " "){
-                    $scope.errorSex = "Gender "+getRegister.errors.sex;
-                    $scope.red="border-color:red";
-                
-                    }else if(getRegister.success) {
-                    $scope.errorSex="";
-                    $scope.red="";
-                    }
-            
+//            if(getRegister.errors.sex !== " "){
+//                    $scope.errorSex = "Gender "+getRegister.errors.sex;
+//                    $scope.red="border-color:red";
+//                
+//                    }else if(getRegister.success) {
+//                    $scope.errorSex="";
+//                    $scope.red="";
+//                    }
+//            
                    
 					$scope.errorEmail = getRegister.errors.email;
                     $scope.errorNewPassword =  getRegister.errors.password;
