@@ -57,9 +57,8 @@
                                 <h4>Persoonsgegevens</h4>
                                 <div class="form-group" style="padding-left: -15px; width:108%;" >
                                         <div class="col-sm-2 form-col "   ng-class="{'has-error': errorSex }">
-                                            <select class="combobox" id="category" style="width:92%;height:34px;{{red}} " ng-model="sex">
-                                                <option value="m">Dhr.</option>
-                                                <option value="f">Mw.</option>
+                                            <select class="combobox" id="category" style="width:92%;height:34px;{{red}} " ng-model="sex" ng-options="template.value as template.name for template in sexoption" >
+                                                
                                             </select>
                                         </div>
                                         <div class="col-sm-3 form-col" ng-class="{'has-error': errorInitials }">
