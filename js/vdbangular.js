@@ -4,7 +4,8 @@ var geocoder = new google.maps.Geocoder();
 var infoWindow = new google.maps.InfoWindow();
 var infoWindowContent = [];
 var latlngChange;
-
+var marker;
+var map;
 //define service
 var issuesService = new Object();
 var registerService = new Object();
@@ -529,8 +530,8 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 							getIssues = issuesService.getIssues( jsondata ).then(function (data){
 								var getdata = data.data;
 								$rootScope.newProblemList = getdata.issues; 
-								if(getdata.count != 0){
-									$window.issuesData = getdata;
+								if(getdata.count != 0 || !getdata){
+								$window.issuesData = getdata;
 								showIssue(infoWindow,infoWindowContent);
 								}
 								
@@ -574,6 +575,7 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 							$rootScope.newProblemList = getdata.issues;
 							console.log("kuskus"); 
 							$window.issuesData = getdata;
+							showIssue(infoWindow,infoWindowContent);
 								});
 							console.log($scope.searchCity);
 							geocodeAddress(geocoder, map);
@@ -622,7 +624,7 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 	$scope.overlay = "overlay";
 	$scope.hideStatus = "ng-hide";
 
-	var jsondata = JSON.stringify({"council" : "Groningen"});
+	var jsondata = JSON.stringify({"issue_id":$routeParams.id});
 	
 		if($rootScope.lastUrl==null){
 			$rootScope.lastUrl=='/';
@@ -630,16 +632,12 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 	$rootScope.urlBefore = $location.path();
 	var getIssues = issuesService.getIssues( jsondata ).then(function (data){
 								var getdata = data.data;
-								$rootScope.newProblemList = getdata.issues;
+								$rootScope.problemIdList = getdata.issues;
 								$scope.hide = "";
 								usSpinnerService.stop('spinner-1');
                                 $rootScope.globaloverlay = "";
 						});
 
-	var getReport = reportService.getReport( jsondata ).then(function (data){
-								var getdata = data.data;
-								$rootScope.reportList = getdata.report;
-						});
 	$scope.id = function(){
 		return $routeParams.id;
 	}
