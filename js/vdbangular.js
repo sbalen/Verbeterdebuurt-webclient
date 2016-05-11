@@ -4,7 +4,8 @@ var geocoder = new google.maps.Geocoder();
 var infoWindow = new google.maps.InfoWindow();
 var infoWindowContent = [];
 var latlngChange;
-
+var marker;
+var map;
 //define service
 var issuesService = new Object();
 var registerService = new Object();
@@ -31,6 +32,11 @@ window.onload = function(){
         zoom: 15,
         maxZoom:17,
         minZoom:13,
+        scrollwheel: false,
+        zoomControl: true,
+        zoomControlOptions: {
+          position: google.maps.ControlPosition.RIGHT_TOP
+         },
          // initialize zoom level - the max value is 21
         disableDefaultUI: true,
         streetViewControl: false, // hide the yellow Street View pegman
@@ -38,7 +44,7 @@ window.onload = function(){
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         center:  this._map_center,
         zoomControlOptions : { 
-          position :google.maps.ControlPosition.RIGHT_CENTER }
+          position :google.maps.ControlPosition.RIGHT_BOTTOM }
       };
      map = new google.maps.Map(document.getElementById('googlemaps'), mapOptions);
      getLocation(map);
@@ -529,8 +535,8 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 							getIssues = issuesService.getIssues( jsondata ).then(function (data){
 								var getdata = data.data;
 								$rootScope.newProblemList = getdata.issues; 
-								if(getdata.count != 0){
-									$window.issuesData = getdata;
+								if(getdata.count != 0 || !getdata){
+								$window.issuesData = getdata;
 								showIssue(infoWindow,infoWindowContent);
 								}
 								
@@ -581,6 +587,7 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 							$rootScope.newProblemList = getdata.issues;
 							console.log("kuskus"); 
 							$window.issuesData = getdata;
+							showIssue(infoWindow,infoWindowContent);
 								});
 							console.log($scope.searchCity);
 							geocodeAddress(geocoder, map);
@@ -629,7 +636,7 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 	$scope.overlay = "overlay";
 	$scope.hideStatus = "ng-hide";
 
-	var jsondata = JSON.stringify({"council" : "Groningen"});
+	var jsondata = JSON.stringify({"issue_id":$routeParams.id});
 	
 		if($rootScope.lastUrl==null){
 			$rootScope.lastUrl=='/';
@@ -637,16 +644,12 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 	$rootScope.urlBefore = $location.path();
 	var getIssues = issuesService.getIssues( jsondata ).then(function (data){
 								var getdata = data.data;
-								$rootScope.newProblemList = getdata.issues;
+								$rootScope.problemIdList = getdata.issues;
 								$scope.hide = "";
 								usSpinnerService.stop('spinner-1');
                                 $rootScope.globaloverlay = "";
 						});
 
-	var getReport = reportService.getReport( jsondata ).then(function (data){
-								var getdata = data.data;
-								$rootScope.reportList = getdata.report;
-						});
 	$scope.id = function(){
 		return $routeParams.id;
 	}
@@ -938,7 +941,13 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
     $scope.postcode="";
     $scope.city="";
     $scope.phone="";
-	
+    $scope.sexoption = [
+        {'name': 'Dhr.',
+         'value': 'm'},
+        {'name': 'Mw.',
+         'value': 'f'}
+    ];
+    $scope.sex = $scope.sexoption[0].value;
     
 	$scope.register = function(){
         $rootScope.errorSession ="";
@@ -991,15 +1000,15 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
           
             if (!getRegister.success){
                       
-            if(getRegister.errors.sex !== " "){
-                    $scope.errorSex = "Gender "+getRegister.errors.sex;
-                    $scope.red="border-color:red";
-                
-                    }else if(getRegister.success) {
-                    $scope.errorSex="";
-                    $scope.red="";
-                    }
-            
+//            if(getRegister.errors.sex !== " "){
+//                    $scope.errorSex = "Gender "+getRegister.errors.sex;
+//                    $scope.red="border-color:red";
+//                
+//                    }else if(getRegister.success) {
+//                    $scope.errorSex="";
+//                    $scope.red="";
+//                    }
+//            
                    
 					$scope.errorEmail = getRegister.errors.email;
                     $scope.errorNewPassword =  getRegister.errors.password;

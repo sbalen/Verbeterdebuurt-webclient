@@ -8,19 +8,19 @@
                         </div>
             <div class="panel-body">
                           <div class="list-group" >
-                            <strong>Stad: {{reportList.council}}</strong></br>
+                            <strong>Stad : {{reportList.council}}</strong></br>
                                    {{reportList.reports}} rapporten per maand</br>
                                    {{reportList.solutions}} oplossing per maand
                           </div>
             </div>  
                     </div>
-                    <div class="panel side-panel panel-default" id="new-problem-widget">
+                    <div class="panel side-panel panel-default" id="new-problem-widget" ng-hide="results.length == 0 || newProblemList==null">
                         <div class="panel-heading">
                             <strong>Nieuwste problemen</strong>
                         </div>
       			<div class="panel-body">
                           <div class="list-group" >
-                            <a href="/issues/{{newProblem.id}}" class="list-group-item clearfix" ng-repeat="newProblem in newProblemList| filter : {type:'problem'} | filter: {status:'open'} | orderBy : 'created_at' : true |limitTo:3" ng-click="clickIssues()">
+                            <a href="/issues/{{newProblem.id}}" class="list-group-item clearfix" ng-repeat="newProblem in newProblemList| filter : {type:'problem'} | filter: {status:'Open'} | orderBy : 'created_at' : true |limitTo:3|filter:x as results" ng-click="clickIssues()">
                               <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
                               <strong> {{newProblem.title}}</strong> {{newProblem.location.full_address}}
                               <span class="pull-right">
@@ -32,13 +32,13 @@
                           </div>
             </div>  
 		                </div>
-                    <div class="panel side-panel panel-default">
+                    <div class="panel side-panel panel-default" ng-hide="results2.length == 0|| newProblemList==null">
                         <div class="panel-heading" id="active-idea-widget">
                             <strong>Actieve Ideeen</strong>
                         </div>
       			<div class="panel-body">
                           <div class="list-group">
-                            <a href="/issues/{{newProblem.id}}" class="list-group-item clearfix" ng-repeat="newProblem in newProblemList| filter : {type:'idea'} | filter: {status:'!open'} | orderBy : 'created_at' : true |limitTo:3" 
+                            <a href="/issues/{{newProblem.id}}" class="list-group-item clearfix" ng-repeat="newProblem in newProblemList| filter : {type:'idea'} | filter: {status:'Open'} | orderBy : 'created_at' : true |limitTo:3|filter:x as results2" 
                             ng-click="clickIssues()">
                               <img class="icon" src="./img/icon_idea_2_21_21.png" size="20px"/>
                               <strong>{{newProblem.title}}</strong> {{newProblem.location.full_address}}
@@ -56,7 +56,7 @@
 	    <div class="col-lg-6 main-container">
 
                 <span us-spinner spinner-key="spinner-1"></span>
-                <div class="panel panel-default main-panel {{hide}}" ng-repeat="newProblem in newProblemList |filter : {id : id()}" >
+                <div class="panel panel-default main-panel {{hide}}" ng-repeat="newProblem in problemIdList |filter : {id : id()}" >
                   <a href="{{lastUrl}}" class="close" aria-label="close" >&times;</a>
             <h1>{{newProblem.title}}<br><small>{{newProblem.location.full_address}}</small></h1>
             <div class="thumbnail right-caption span4">

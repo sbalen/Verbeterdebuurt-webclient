@@ -150,12 +150,34 @@ h6 {
   border-width: thin;
   z-index: 1020;
   
+    .footertext{
+        width: 100%;
+        height: 60%;
+        padding-top:40px;
+        text-align: center;
+        
+        .footer-element{
+            font-size:12px;
+            display: inline-block;
+            padding-left: 20px;
+            padding-right: 20px;
+            
+            a{
+                text-decoration: none;
+                color: $grey-lighter;
+                &:hover{
+                    color: $green-light;
+                    
+                }
+                
+            }
+            
+        }
+        
+    }
+    
 }
-.footertext{
-  width: 100%;
-  height: 60%;
-  padding-top:40px;
-}
+
 //report box
 #reportBox{
   width: 100%;
