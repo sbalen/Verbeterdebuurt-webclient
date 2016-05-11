@@ -32,6 +32,11 @@ window.onload = function(){
         zoom: 15,
         maxZoom:17,
         minZoom:13,
+        scrollwheel: false,
+        zoomControl: true,
+        zoomControlOptions: {
+          position: google.maps.ControlPosition.RIGHT_TOP
+         },
          // initialize zoom level - the max value is 21
         disableDefaultUI: true,
         streetViewControl: false, // hide the yellow Street View pegman
@@ -39,7 +44,7 @@ window.onload = function(){
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         center:  this._map_center,
         zoomControlOptions : { 
-          position :google.maps.ControlPosition.RIGHT_CENTER }
+          position :google.maps.ControlPosition.RIGHT_BOTTOM }
       };
      map = new google.maps.Map(document.getElementById('googlemaps'), mapOptions);
      getLocation(map);
