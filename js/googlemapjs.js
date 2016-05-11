@@ -192,19 +192,20 @@ function callMarker (markers,zoom,map){
                     //console.log(infoWindowContent[i]);
                     
                       marker = new google.maps.Marker(markerOption);
-                    if(zoom >= 14){
+                      markers.push(marker);
                       google.maps.event.addListener(marker , 'click' , (function (marker,i){
                       return function(){
                       infoWindow.setContent(infoWindowContent[i]);
                       infoWindow.open(map,marker);
                       map.setCenter(marker.getPosition());
                       }
-                    })(marker,i));
-                      markers.push(marker);
-                      }else{
-                       marker.setMap(null);
-                       marker = null;
-                      }
+                      })(marker,i));
                     
+                    if(zoom < 14){
+                        for(var x=0 ; x< markers.length ; x++){
+                          markers[x].setMap(null);
+                        }
+                      }
+                      
                     }
 }

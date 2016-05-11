@@ -573,11 +573,9 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 							getIssues = issuesService.getIssues( jsondata ).then(function (data){
 							var getdata = data.data;
 							$rootScope.newProblemList = getdata.issues;
-							console.log("kuskus"); 
 							$window.issuesData = getdata;
 							showIssue(infoWindow,infoWindowContent);
 								});
-							console.log($scope.searchCity);
 							geocodeAddress(geocoder, map);
 							var jsoncity = JSON.stringify({"council":""+city.long_name+""})
 							var getReport = reportService.getReport( jsoncity ).then(function (data){
