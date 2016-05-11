@@ -852,6 +852,10 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 
 vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','$location','usSpinnerService', function ($scope,$rootScope,$window,loginService,$location,usSpinnerService) {
 	$scope.hide = "ng-hide";
+    $scope.lusername="";
+    $scope.lpassword="";
+    
+    
 	//$scope.overlay ACTIVE WHENclick and overlay when no event
 	$scope.overlay="overlay";
 	
