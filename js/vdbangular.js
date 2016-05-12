@@ -4,7 +4,8 @@ var geocoder = new google.maps.Geocoder();
 var infoWindow = new google.maps.InfoWindow();
 var infoWindowContent = [];
 var latlngChange;
-
+var marker;
+var map;
 //define service
 var issuesService = new Object();
 var registerService = new Object();
@@ -31,6 +32,11 @@ window.onload = function(){
         zoom: 15,
         maxZoom:17,
         minZoom:13,
+        scrollwheel: false,
+        zoomControl: true,
+        zoomControlOptions: {
+          position: google.maps.ControlPosition.RIGHT_TOP
+         },
          // initialize zoom level - the max value is 21
         disableDefaultUI: true,
         streetViewControl: false, // hide the yellow Street View pegman
@@ -38,7 +44,7 @@ window.onload = function(){
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         center:  this._map_center,
         zoomControlOptions : { 
-          position :google.maps.ControlPosition.RIGHT_CENTER }
+          position :google.maps.ControlPosition.RIGHT_BOTTOM }
       };
      map = new google.maps.Map(document.getElementById('googlemaps'), mapOptions);
      getLocation(map);
@@ -471,6 +477,8 @@ vdbApp.factory('issueSubmitService', ['$http',function ($http) {
 vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootScope','$routeParams','$http','issuesService','reportService',function ($scope,$timeout,$window,$location,$rootScope,$routeParams,$http,issuesService,reportService) {
 						menuSelected($rootScope,'home');
 						
+                        $scope.userpanel=1;
+    
 						$timeout(function(){
 							var jsondata = JSON.stringify({
 							  		"coords_criterium":{
@@ -525,21 +533,26 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 														    "min_long":minlng
 														  }
 														});
-							var jsoncity = JSON.stringify({"council":""+city.long_name+""})
+							
+						
+								var jsoncity = JSON.stringify({"council":""+$routeParams.cityName+""});
+							var getReport = reportService.getReport( jsoncity ).then(function (data){
+								var getdata = data.data;
+								$rootScope.reportList = getdata.report;
+							});
+							
+							
 							getIssues = issuesService.getIssues( jsondata ).then(function (data){
 								var getdata = data.data;
 								$rootScope.newProblemList = getdata.issues; 
-								if(getdata.count != 0){
-									$window.issuesData = getdata;
+								if(getdata.count != 0 || !getdata){
+								$window.issuesData = getdata;
 								showIssue(infoWindow,infoWindowContent);
 								}
 								
 								});
 							}
-							var getReport = reportService.getReport( jsoncity ).then(function (data){
-								var getdata = data.data;
-								$rootScope.reportList = getdata.report;
-						});
+							
 							
 						}
 						//login session
@@ -549,14 +562,30 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 							}
 							else{
 								$rootScope.lusername = $window.sessionStorage.username;
+                               
+                                
 								return true;
 							}
 						}
 						//logOut
 						$scope.logout = function(){
 							$window.sessionStorage.clear();
-							$location.path('/');
+                           // $('.dropdown-menu').hide();
+                            $scope.userpanel=0;
+                            
+                            $location.path('/');
 						}
+                        
+                        $scope.showuserpanel= function(){
+                           
+                            if($scope.userpanel==0)
+                                $scope.userpanel=1;
+                            
+                        //    $('.dropdown-menu').show();
+                            
+                        }
+                        
+                        
 						//search
 						$scope.clickSearch= function(){
 							console.log($scope.searchCity);
@@ -572,10 +601,9 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 							getIssues = issuesService.getIssues( jsondata ).then(function (data){
 							var getdata = data.data;
 							$rootScope.newProblemList = getdata.issues;
-							console.log("kuskus"); 
 							$window.issuesData = getdata;
+							showIssue(infoWindow,infoWindowContent);
 								});
-							console.log($scope.searchCity);
 							geocodeAddress(geocoder, map);
 							var jsoncity = JSON.stringify({"council":""+city.long_name+""})
 							var getReport = reportService.getReport( jsoncity ).then(function (data){
@@ -616,13 +644,13 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 // vdbApp.controller('mainCtrl', ['$scope','issues', function ($scope,issues) {
 
 // }]);
-vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams','issuesService','reportService','usSpinnerService','$location','$anchorScroll','workLogService','commentService', function ($scope,$rootScope,$window,$routeParams,issuesService,reportService,usSpinnerService,$location,$anchorScroll,workLogService,commentService) {
+vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams','issuesService','reportService','usSpinnerService','$location','$anchorScroll','workLogService','commentService','$timeout', function ($scope,$rootScope,$window,$routeParams,issuesService,reportService,usSpinnerService,$location,$anchorScroll,workLogService,commentService,$timeout) {
 	$rootScope.globaloverlay = "active";
     $scope.hide = "ng-hide";
 	$scope.overlay = "overlay";
 	$scope.hideStatus = "ng-hide";
 
-	var jsondata = JSON.stringify({"council" : "Groningen"});
+	var jsondata = JSON.stringify({"issue_id":$routeParams.id});
 	
 		if($rootScope.lastUrl==null){
 			$rootScope.lastUrl=='/';
@@ -630,16 +658,19 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 	$rootScope.urlBefore = $location.path();
 	var getIssues = issuesService.getIssues( jsondata ).then(function (data){
 								var getdata = data.data;
-								$rootScope.newProblemList = getdata.issues;
+								$rootScope.problemIdList = getdata.issues;
 								$scope.hide = "";
 								usSpinnerService.stop('spinner-1');
                                 $rootScope.globaloverlay = "";
-						});
-
-	var getReport = reportService.getReport( jsondata ).then(function (data){
+                                var jsoncity = JSON.stringify({"council":""+getdata.issues[0].council+""});
+								var getReport = reportService.getReport( jsoncity ).then(function (data){
 								var getdata = data.data;
 								$rootScope.reportList = getdata.report;
+                                                               
 						});
+						
+						});
+
 	$scope.id = function(){
 		return $routeParams.id;
 	}
@@ -832,6 +863,10 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 
 vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','$location','usSpinnerService', function ($scope,$rootScope,$window,loginService,$location,usSpinnerService) {
 	$scope.hide = "ng-hide";
+    $scope.lusername="";
+    $scope.lpassword="";
+    
+    
 	//$scope.overlay ACTIVE WHENclick and overlay when no event
 	$scope.overlay="overlay";
 	
@@ -875,6 +910,9 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
 					$window.sessionStorage.postcode = getLogin.user_profile.postcode;
 					$window.sessionStorage.city = getLogin.user_profile.city;
 					$window.sessionStorage.phone = getLogin.user_profile.phone;
+                   
+                
+                    
 					$rootScope.loginStatus = function(){
 						return true;
 					}

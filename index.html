@@ -42,6 +42,8 @@
     <!--PAGE SPECIFIC SCRIPTS -->
     <script src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
    
+    
+    
 </head>
 <body ng-app="vdbApp" ng-controller="mainCtrl" >
     <div id="app-container">
@@ -56,17 +58,7 @@
         <!-- navigation -->
         <nav id="navtop" class="navbar navbar-default">
             <div class="container-fluid">
-<!--
-                <div class="dropdown">
-  <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Dropdown Example
-  <span class="caret"></span></button>
-  <ul class="dropdown-menu">
-    <li><a href="#">HTML</a></li>
-    <li><a href="#">CSS</a></li>
-    <li><a href="#">JavaScript</a></li>
-  </ul>
-</div>
--->
+
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#Navbar">
                         <span class="icon-bar"></span>
@@ -89,9 +81,16 @@
                         <li><a href="register"><span class="glyphicon glyphicon-user"></span> Registreren</a></li>
                         <li><a href="login"><span class="glyphicon glyphicon-log-in"></span> Inloggen</a></li>
                     </ul>
-                    <ul class="nav navbar-nav navbar-right" ng-if="loginStatus()" >
-                       {{lusername}}<a ng-click="logout()">log out</a>
-                    </ul>
+                    <div class="nav navbar-nav navbar-right">
+                        <button id="userpanelbtn" class="btn1 btn-default1 dropdown-toggle navbar-right " ng-click="showuserpanel()" ng-if="loginStatus()" type="button" data-toggle="dropdown">{{lusername}}
+  <span  class="caret" ></span></button>
+                        <ul ng-show="userpanel" class="dropdown-menu  navbar-right" style="margin-right: 24px;margin-top: -5px;">
+                            <li><a href="profile" style="color: white;" >Profiel</a></li>
+                            <li><a href="#" style="color: white;">Opt In</a></li>
+                            <li><a href="#" style="color: white;" ng-click="logout()">Log out</a></li>    
+                        </ul>
+                    
+                    </div>
                 </div>
             </div>
         </nav>
@@ -125,12 +124,12 @@
           </div>
         <div class="footer">
             <div class="footertext">
-            <a href="http://blog.verbeterdebuurt.nl/apps/">Apps</a>*
-            <a href="http://blog.verbeterdebuurt.nl/hoe-werkt-verbeterdebuurt-2/">Hoe werkt het</a>*
-            <a href="http://blog.verbeterdebuurt.nl/">Blog</a>*
-            <a href="http://blog.verbeterdebuurt.nl/contact/">Contact</a>*
-            <a href="https://www.facebook.com/verbeterdebuurt/">Facebook</a>*
-            <a href="https://twitter.com/verbeterdebuurt">Twitter</a>*
+                <div class="footer-element"><a href="http://blog.verbeterdebuurt.nl/apps/">Apps</a></div>&middot;
+                <div class="footer-element"><a href="http://blog.verbeterdebuurt.nl/hoe-werkt-verbeterdebuurt-2/">Hoe werkt het</a></div>&middot;
+                <div class="footer-element"><a href="http://blog.verbeterdebuurt.nl/">Blog</a></div>&middot;
+                <div class="footer-element"><a href="http://blog.verbeterdebuurt.nl/contact/">Contact</a></div>&middot;
+                <div class="footer-element"><a href="https://www.facebook.com/verbeterdebuurt/">Facebook</a></div>&middot;
+                <div class="footer-element"><a href="https://twitter.com/verbeterdebuurt">Twitter</a></div>
             </div>
         </div>
     </div>

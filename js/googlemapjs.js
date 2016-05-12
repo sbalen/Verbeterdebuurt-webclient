@@ -114,10 +114,38 @@ function geocodeAddress(geocoder, resultsMap) {
 function showIssue(infoWindow,infoWindowContent){
     var markers = [];
     var zoom = map.getZoom();
-  for(var i= 0 ; i < issuesData.count ; i++){
+
+    if(zoom >= 14){
+        callMarker(markers,zoom,map);
+    }
+
+    google.maps.event.addListener(map, 'zoom_changed', function() {
+      var zoom = map.getZoom();
+      callMarker(markers,zoom,map);
+    });
+   
+
+
+                    
+
+}
+//backup
+// google.maps.event.addListener(map, 'zoom_changed', function() {
+//                     var zoomChanged = map.getZoom();
+//                     // iterate over markers and call setVisible
+//                     for (var i = 0; i < issuesData.count ; i++) {
+//                         markers[i].setVisible(zoomChanged > 13);
+//                         console.log(markers.length+" "+markers[i]);
+//                     }
+//                     //validation marker at certain zoom
+//                      if(zoom <=13 ){
+//                         infoWindow.close(map,marker);
+//                     }
+//                     });
+function callMarker (markers,zoom,map){
+   for(var i= 0 ; i < issuesData.count ; i++){
                      var latLng = {lat:issuesData.issues[i].location.latitude , lng : issuesData.issues[i].location.longitude}
                      var icon = "";
-
                      //validate for the icon
                     if(issuesData.issues[i].status == "resolved" || issuesData.issues[i].status == "closed"){
                       icon = "/img/flag_2_42_42.png"
@@ -163,30 +191,21 @@ function showIssue(infoWindow,infoWindowContent){
                     
                     //console.log(infoWindowContent[i]);
                     
-                    var marker = new google.maps.Marker(markerOption);
-                    marker.setVisible(zoom > 13);
-
-                    google.maps.event.addListener(marker , 'click' , (function (marker,i){
+                      marker = new google.maps.Marker(markerOption);
+                      markers.push(marker);
+                      google.maps.event.addListener(marker , 'click' , (function (marker,i){
                       return function(){
                       infoWindow.setContent(infoWindowContent[i]);
                       infoWindow.open(map,marker);
                       map.setCenter(marker.getPosition());
                       }
-                    })(marker,i));
-                    markers.push(marker);
+                      })(marker,i));
+                    
+                    if(zoom < 14){
+                        for(var x=0 ; x< markers.length ; x++){
+                          markers[x].setMap(null);
+                        }
+                      }
+                      
                     }
-
-
-                    google.maps.event.addListener(map, 'zoom_changed', function() {
-                    var zoom = map.getZoom();
-                    // iterate over markers and call setVisible
-                    for (var i = 0; i < issuesData.count ; i++) {
-                        markers[i].setVisible(zoom > 13);
-                    }
-                    //validation marker at certain zoom
-                     if(zoom <=13 ){
-                        infoWindow.close(map,marker);
-                    }
-    });
-
 }
