@@ -4,7 +4,7 @@ html {
 
 body {
   height: 100%;
-  background-color: #grey-lighter;
+  background-color: #666666;
   font-family: "Merriweather", serif; }
   body #app-container {
     position: relative;
@@ -212,11 +212,11 @@ h6 {
   z-index: 1000; }
 
 .btn1 {
-  min-width: 160px;
+  width: 192px;
   display: inline-block;
   margin-bottom: 0;
   font-weight: normal;
-  text-align: center;
+  text-align: right;
   vertical-align: middle;
   touch-action: manipulation;
   cursor: pointer;
@@ -224,6 +224,7 @@ h6 {
   border: 1px solid transparent;
   white-space: nowrap;
   padding: 6px 12px;
+  padding-left: 13px;
   font-size: 14px;
   line-height: 1.42857;
   border-radius: 4px;
@@ -231,9 +232,8 @@ h6 {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none; }
-
-.caret {
-  margin-left: 100px; }
+  .btn1 .username-display {
+    float: left; }
 
 .dropdown-menu {
   min-width: 192px;
@@ -253,6 +253,69 @@ h6 {
   border-color: #3AB53A;
   color: #3AB53A; }
 
+.form-group {
+  padding-left: -15px;
+  width: 100%; }
+
+.margin1 {
+  margin-left: 12px; }
+
+.field {
+  width: 96%; }
+
+.field1 {
+  width: 91%; }
+
+.register {
+  margin-left: 13px; }
+
+@media (max-width: 1199px) {
+  .container {
+    width: 750px; }
+
+  .registeri {
+    margin-left: 38px; }
+
+  .margin2 {
+    margin-left: 6px; }
+
+  .margin3 {
+    margin-left: 13px; }
+
+  .margin4 {
+    margin-left: 10px; } }
+@media (max-width: 767px) {
+  .hidden-xs {
+    display: none !important; }
+
+  .container {
+    width: 100%; }
+
+  .margin2m {
+    margin-left: -12px; }
+
+  .margin3m {
+    margin-left: -12px; }
+
+  .margin4m {
+    margin-left: -12px; }
+
+  .marginwidth {
+    width: 100%;
+    margin-bottom: 15px; }
+
+  .marginwidth1 {
+    width: 100%; }
+
+  .panel-body {
+    padding: 15px;
+    margin-left: 25px; }
+
+  .registerm {
+    margin-left: 38px; }
+
+  .submitm {
+    margin-left: 22px; } }
 .switchButton {
   width: 50%;
   height: 50px; }
