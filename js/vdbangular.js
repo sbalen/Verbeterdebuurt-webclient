@@ -234,7 +234,7 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
 		controller : 'mainCtrl' 
 	})
 	.when('/issues/:id',{
-		templateUrl :'issues.html',
+		templateUrl :'issuesView.html',
 		controller : 'issuesCtrl'
 	})
 	.when('/mention', {
