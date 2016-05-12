@@ -312,11 +312,11 @@ h6 {
     .btn1
     {
         
-    min-width: 160px;
+    width: 192px;
     display: inline-block;
     margin-bottom: 0;
     font-weight: normal;
-    text-align: center;
+    text-align: right;
     vertical-align: middle;
     touch-action: manipulation;
     cursor: pointer;
@@ -324,6 +324,7 @@ h6 {
     border: 1px solid transparent;
     white-space: nowrap;
     padding: 6px 12px;
+    padding-left: 13px;
     font-size: 14px;
     line-height: 1.42857;
     border-radius: 4px;
@@ -331,13 +332,16 @@ h6 {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    }
-
-.caret
-    {
-        margin-left: 100px;
         
-    }
+        
+        .username-display{
+            float: left;
+            
+        }
+
+        
+}
+
     
 .dropdown-menu
     {
@@ -363,7 +367,6 @@ margin-right: 10px; margin-top: 10px;
     color: #3AB53A;
 }
 
-HEAD
 .form-group
 {
     padding-left: -15px; 
