@@ -170,7 +170,10 @@ h6 {
   width: 94%;
   margin-left: 3.5%; }
 
-#googleMapCreateIssue {
+#googleMapCreateProblem {
+  background-color: #C7C7C7; }
+
+#googleMapCreateIdea {
   background-color: #C7C7C7; }
 
 #navtop {
@@ -236,7 +239,7 @@ h6 {
   min-width: 192px;
   background-color: #21a81e; }
   .dropdown-menu li a {
-    margin-left: -10px; }
+    padding-left: 13px; }
 
 .dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus {
   background-color: #FFFFFF;
@@ -249,5 +252,56 @@ h6 {
   background-color: #FFFFFF;
   border-color: #3AB53A;
   color: #3AB53A; }
+
+.switchButton {
+  width: 50%;
+  height: 50px; }
+
+.toggle-button {
+  background-color: white;
+  margin: 5px 0;
+  border-radius: 20px;
+  border: 2px solid #D0D0D0;
+  height: 24px;
+  cursor: pointer;
+  width: 50px;
+  position: relative;
+  display: inline-block;
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  -moz-user-select: none; }
+
+.toggle-button button {
+  cursor: pointer;
+  outline: 0;
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 100%;
+  width: 30px;
+  height: 30px;
+  background-color: white;
+  float: left;
+  margin: -3px 0 0 -3px;
+  border: 2px solid #D0D0D0;
+  transition: left 0.3s; }
+
+.toggle-button-selected {
+  background-color: #83B152;
+  border: 2px solid #7DA652; }
+
+.toggle-button-selected button {
+  left: 26px;
+  top: 0;
+  margin: 0;
+  border: none;
+  width: 24px;
+  height: 24px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1); }
+
+.center {
+  text-align: center; }
 
 /*# sourceMappingURL=vdb.css.map */

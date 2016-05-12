@@ -22,7 +22,7 @@ function getLocation(map) {
                     }
                 }
                      // console.log("drag googlemap:"+city.long_name);
-                      showIssue(infoWindow,infoWindowContent);
+                      // showIssue(infoWindow,infoWindowContent);
                 }
                 
 
@@ -51,7 +51,7 @@ function getLocation(map) {
                     }
                 }
                      // console.log("drag googlemap:"+city.long_name);
-                      showIssue(infoWindow,infoWindowContent);
+                      // showIssue(infoWindow,infoWindowContent);
                 }
                 
 
@@ -82,7 +82,7 @@ function getLocation(map) {
                     }
                 }
                      // console.log("click googlemap:"+city.long_name);
-                     showIssue(infoWindow,infoWindowContent);
+                     // showIssue(infoWindow,infoWindowContent);
                     }
                 
 
@@ -156,6 +156,7 @@ function callMarker (markers,zoom,map){
                     }else if(issuesData.issues[i].type == "idea"){
                       icon = "/img/icon_idea_2_42_42.png"; 
                     }
+                    console.log(issuesData.issues[i].type+"no"+i);
                      var markerOption = {
                       position : latLng,
                       map : map,
@@ -202,11 +203,12 @@ function callMarker (markers,zoom,map){
                       }
                       })(marker,i));
                     
+                      
+                    }
+
                     if(zoom < 14){
                         for(var x=0 ; x< markers.length ; x++){
                           markers[x].setMap(null);
                         }
                       }
-                      
-                    }
 }
