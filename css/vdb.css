@@ -4,7 +4,7 @@ html {
 
 body {
   height: 100%;
-  background-color: #grey-lighter;
+  background-color: #666666;
   font-family: "Merriweather", serif; }
   body #app-container {
     position: relative;
@@ -233,8 +233,10 @@ h6 {
   margin-left: 100px; }
 
 .dropdown-menu {
-  min-width: 207px;
+  min-width: 192px;
   background-color: #21a81e; }
+  .dropdown-menu li a {
+    margin-left: -10px; }
 
 .dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus {
   background-color: #FFFFFF;
