@@ -84,7 +84,7 @@ function googleMapIssue(lat,lng){
 	marker.setMap(map2);
 }
 
-function googleMapCreateIssue(latlng){
+function googleMapCreateProblem(latlng){
 	var mapOption3 = {
 		center : latlng,
 		zoom : 17,
@@ -92,7 +92,7 @@ function googleMapCreateIssue(latlng){
         minZoom:15,
 		mapTypeId: google.maps.MapTypeId.ROADMAP
 	}
-	 map3 = new google.maps.Map(document.getElementById("googleMapCreateIssue"),mapOption3);
+	 map3 = new google.maps.Map(document.getElementById("googleMapCreateProblem"),mapOption3);
 	 marker = new google.maps.Marker();
 	 marker.setMap(map3);
 	 marker.setPosition(map3.getCenter());
@@ -101,24 +101,57 @@ function googleMapCreateIssue(latlng){
 	 markerLat = marker.getPosition().lat();
 	 markerLng = marker.getPosition().lng();
 	
-	 sycGoogleMap(map3);
+	 sycGoogleMap3(map3);
 	 markerCenter(map3,marker);
 	 getMarkerLocation(marker);
 	 markerGetAddress(marker);
 
 	  
 }
+function googleMapCreateIdea(latlng){
+	var mapOption4 = {
+		center : latlng,
+		zoom : 17,
+		maxZoom:19,
+        minZoom:15,
+		mapTypeId: google.maps.MapTypeId.ROADMAP
+	}
+	 map4 = new google.maps.Map(document.getElementById("googleMapCreateIdea"),mapOption4);
+	 marker = new google.maps.Marker();
+	 marker.setMap(map4);
+	 marker.setPosition(map4.getCenter());
+	 marker.setOptions({draggable:true});
+	 map3.setOptions({draggable:true,zoomControl:true,scrollwheel: true, disableDoubleClickZoom: true,streetViewControl: false,disableDefaultUI:true});
+	 markerLat = marker.getPosition().lat();
+	 markerLng = marker.getPosition().lng();
+	
+	 sycGoogleMap4(map4);
+	 markerCenter(map4,marker);
+	 getMarkerLocation(marker);
+	 markerGetAddress(marker);
+
+	  
+}
+
 //to make other map syncronise
-function sycGoogleMap(map3){
+function sycGoogleMap3(map3){
 	google.maps.event.addListener(map3,'bounds_changed',function (e){
+					google.maps.event.trigger(map3,'resize')
                     map.setCenter(map3.getCenter());
                     map.setZoom(map3.getZoom());
               });
 }
+function sycGoogleMap4(map4){
+	google.maps.event.addListener(map4,'bounds_changed',function (e){
+					 google.maps.event.trigger(map4,'resize')
+                    map.setCenter(map4.getCenter());
+                    map.setZoom(map4.getZoom());
+              });
+}
 //marker at center
-function markerCenter (map3,marker){
-	google.maps.event.addListener(map3,'bounds_changed',function (e){
-				marker.setPosition(map3.getCenter());
+function markerCenter (map,marker){
+	google.maps.event.addListener(map,'bounds_changed',function (e){
+				marker.setPosition(map.getCenter());
 				markerLat = marker.getPosition().lat();
 	 			markerLng = marker.getPosition().lng();
 	 			 geocoder.geocode({'latLng': marker.getPosition()} , function (result , status){
@@ -159,13 +192,14 @@ function getMarkerLocation(marker){
 	});
 }
 // get location search at create issue
-function geocodeAddressCreateIssue(geocoder, resultsMap, address) {
+function geocodeAddressCreateProblem(geocoder, resultsMap, address) {
         var address = address;
         geocoder.geocode({'address': address}, function(results, status) {
           if (status === google.maps.GeocoderStatus.OK) {
             resultsMap.setCenter(results[0].geometry.location);
             markerLat = marker.getPosition().lat();
 	 		markerLng = marker.getPosition().lng();
+	 		showIssue(infoWindow,infoWindowContent);
           } else {
             alert('Geocode was not successful for the following reason: ' + status);
           }
@@ -492,8 +526,11 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 								var getdata = data.data;
 								$rootScope.newProblemList = getdata.issues;
 								//initial google map marker
+								if(getdata.count != 0 || !getdata){
 								$window.issuesData = getdata;
+								console.log(getdata);
 								showIssue(infoWindow,infoWindowContent);
+							}
 						});
 						},2000);
 						if(!$routeParams.cityName){
@@ -601,9 +638,12 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 							getIssues = issuesService.getIssues( jsondata ).then(function (data){
 							var getdata = data.data;
 							$rootScope.newProblemList = getdata.issues;
+							if(getdata.count != 0 || !getdata){
 							$window.issuesData = getdata;
 							showIssue(infoWindow,infoWindowContent);
+							}
 								});
+
 							geocodeAddress(geocoder, map);
 							var jsoncity = JSON.stringify({"council":""+city.long_name+""})
 							var getReport = reportService.getReport( jsoncity ).then(function (data){
@@ -1422,12 +1462,17 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
 
 vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout','categoriesService','issueSubmitService','myIssuesService','$location', function ($scope,$rootScope,$window,$timeout,categoriesService,issueSubmitService,myIssuesService,$location) {	
 		$scope.hide = "ng-hide";
+		$scope.slide = ""
+		$scope.issueName = "Probleem"
+		$scope.hideProblem = ""
+		$scope.hideIdea = "ng-hide"
 		
 		menuSelected($rootScope,'createissue');
 		
 		if(!$window.sessionStorage.username){
 			$location.path("/login");
 		}
+		$scope.hideMyIssue = "ng-hide";
 		//show my issue
 		var jsondata = JSON.stringify({"user":{ "username":""+$window.sessionStorage.username+"",
 												"password_hash":""+$window.sessionStorage.password_hash+""
@@ -1437,14 +1482,17 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 			var getdata = data.data;
 			var count = getdata.count;
 			$scope.myIssuesList = getdata.issues;
-			if(count==0){
+			if(count != 0){
+				$scope.hideMyIssue = "";
+			}else{
 				$scope.hideMyIssue = "ng-hide";
 			}
 		})
 		//first initial
 		$timeout(function(){
 			if(latlngChange){
-			googleMapCreateIssue(latlngChange);
+			googleMapCreateProblem(latlngChange);
+			googleMapCreateIdea(latlngChange);
 			latlngChange = null;
 			var latitude = markerLat;
 			var longitude = markerLng;
@@ -1455,7 +1503,8 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 
 			}else{
 			latlngChange = {lat: 52.158367,lng: 4.492999};
-			googleMapCreateIssue(latlngChange);
+			googleMapCreateProblem(latlngChange);
+			googleMapCreateIdea(latlngChange);
 			latlngChange = null;
 			var latitude = markerLat;
 			var longitude = markerLng;
@@ -1478,14 +1527,17 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 			$scope.hideNonLogin = "ng-hide"
 		}
 		$scope.clickSearchCreateIssue= function(){
-			geocodeAddressCreateIssue(geocoder, map3, $scope.searchCityCreate);
+			geocodeAddressCreateProblem(geocoder, map3, $scope.searchCityCreate);
+			geocodeAddressCreateProblem(geocoder, map4, $scope.searchCityCreate);
 			city.long_name = $scope.searchCityCreate;
 	 		var latitude = markerLat;
 			var longitude = markerLng;
+
 			var jsondataCity = JSON.stringify({latitude,longitude});
 	 		var getCategories = categoriesService.getCategories( jsondataCity ).then(function (data){
 				$scope.categoriesList = data.data.categories;
 			});
+
 		}
 		$scope.createIssue = function(){
 			$scope.errorTitle = "";
@@ -1524,12 +1576,14 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 			//location
 			location.latitude = markerLat;
 			location.longitude = markerLng;
+			console.log(location.latitude);
+			console.log(location.longitude);
 			
 			var jsondataSubmit = JSON.stringify({user,issue,location});
 			
 			var getIssueSubmit = issueSubmitService.getIssueSubmit( jsondataSubmit ).then(function (data){
 				var issueData = data.data;
-				console.log(issueData.success);
+				console.log(issueData);
 				if(!issueData.success){
 					$scope.hide = "";
 					if(issueData.errors.title){
@@ -1542,6 +1596,84 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 						$scope.errorId = issueData.errors.category_id;
 						$scope.errorIdStyle = 'border-color: #a94442';
 						console.log($scope.errorIdStyle);
+					}
+					if(issueData.errors.location){
+						$scope.errorLocation =issueData.errors.location;
+					}
+					
+					
+
+				}
+				else{
+					//success
+					var issueId = issueData.issue_id;
+					$location.path(/myIssues/+issueId);
+
+				}
+
+			});
+			
+			
+		}
+		$scope.createIdea = function(){
+			$scope.errorTitle = "";
+			$scope.errorDescription = "";
+			$scope.errorId = "";
+			$scope.errorIdStyle = "";
+			//initial data for request
+			var user = {};
+			var issue = {};
+			var location = {};
+
+			//login
+			user.username = $window.sessionStorage.username;
+			user.password_hash = $window.sessionStorage.password_hash;
+
+			//description
+			issue.type = "idea";
+			if($scope.ideaRealization){
+				issue.realization = $scope.ideaRealization;
+			}
+			else{
+				issue.realization = "";
+			}
+			
+			if($scope.ideaTitle){
+				issue.title = $scope.ideaTitle;
+			}
+			else {
+				issue.title = "";
+			}
+			if($scope.ideaDescription){
+				issue.description = $scope.ideaDescription;
+			}
+			else{
+				issue.description = "";
+			}
+			//location
+			location.latitude = markerLat;
+			location.longitude = markerLng;
+			console.log(location.latitude);
+			console.log(location.longitude);
+			console.log({user,issue,location});
+			var jsondataSubmit = JSON.stringify({user,issue,location});
+			
+			var getIssueSubmit = issueSubmitService.getIssueSubmit( jsondataSubmit ).then(function (data){
+				var issueData = data.data;
+				console.log(issueData);
+				if(!issueData.success){
+					$scope.hide = "";
+					if(issueData.errors.title){
+						$scope.errorTitle ="Onderwerp "+issueData.errors.title;
+					}
+					if(issueData.errors.description){
+						$scope.errorDescription ="Beschrijving "+issueData.errors.description;
+					}
+					if(issueData.errors.category_id){
+						$scope.errorRealization ="Realisatie "+issueData.errors.realization;
+					}
+					if(issueData.errors.location){
+						$scope.errorLocation =issueData.errors.location;
 					}
 					
 					
@@ -1564,6 +1696,26 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 		$scope.reset = function(){
 			$scope.title = "";
 			$scope.description = "";
+		}
+		//switch bar change
+		$scope.switchButton = function (){
+			if($scope.slide==""){
+				$scope.slide = "toggle-button-selected";
+				$scope.hideProblem = "ng-hide";
+				$scope.hideIdea = "";
+				$scope.issueName = "Idee";
+			}else{
+				$scope.slide = "";
+				$scope.hideProblem = "";
+				$scope.hideIdea = "ng-hide;"
+				$scope.issueName = "Probleem";
+				
+
+			}
+			$timeout(function(){
+				google.maps.event.trigger(map4,'resize');
+			},0)
+			
 		}
 				
 		
