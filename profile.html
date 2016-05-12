@@ -38,7 +38,7 @@
                         
             </div>
                 
-            <h1 style="margin-left: 13px;">Profiel</h1>
+            <h1 class="registerm registeri register">Profiel</h1>
                         <form class="form-horizontal" role="form">
                             <div class="panel-body">
                                 <h4>Profiel Informatie</h4>
@@ -65,33 +65,33 @@
                                 <h4>Persoonsgegevens</h4>
                                 <h5 style="color:green">This information will not be used are not visible to the public products.It for marketing purposes, is to work for the town to help report.</h5>
                                 <div class="form-group" ng-class="{'has-error': errorSex }" style="padding-left: -15px; width:108%;">
-                                        <div class="col-sm-2 form-col">
+                                        <div class="col-sm-2 form-col marginwidth">
                                             <select class="combobox" id="category" style="width:92%;height:34px;" ng-model ="sex">
                                                 <option value="m" ng-selected="selected1" >Dhr.</option>
                                                 <option value="f" ng-selected="selected2" >Mw.</option>
                                             </select>
                                         </div>
-                                        <div class="col-sm-3 form-col" ng-class="{'has-error': errorInitials }">
-                                            <input type="text" class="form-control" id="initials" placeholder="voorletters" ng-model="initials" style="width:95%">
+                                        <div class="col-sm-3 form-col margin1 marginwidth" ng-class="{'has-error': errorInitials }">
+                                            <input type="text" class="form-control margin2 margin2m" id="initials" placeholder="voorletters" ng-model="initials" >
                                         </div>
-                                        <div class="col-sm-3 form-col">
-                                            <input type="text" class="form-control" id="tussenvoegsel" placeholder="tussenvoegsel" ng-model="tussenvoegsel" style="width:95%">
+                                        <div class="col-sm-3 form-col margin1 marginwidth">
+                                            <input type="text" class="form-control  margin4 margin4m" id="tussenvoegsel" placeholder="tussenvoegsel" ng-model="tussenvoegsel" >
                                         </div>
-                                        <div class="col-sm-4 form-col" ng-class="{'has-error': errorSurname }">
-                                            <input type="text" class="form-control" id="name" placeholder="Achternaam" ng-model ="surname"
-                                                   style="width:95%">
+                                        <div class="col-sm-3 form-col margin1 marginwidth1" ng-class="{'has-error': errorSurname }">
+                                            <input type="text" class="form-control margin3 margin3m" id="name" placeholder="Achternaam" ng-model ="surname"
+                                                   >
                                         </div>
                                 </div>
                                 <div class="form-group" >
                                     <div class="col-sm-8  form-col" ng-class="{'has-error': errorAddress}" >
-                                        <input type="text" class="form-control" id="street" placeholder="Straat" ng-model ="address"
+                                        <input type="text" class="form-control field marginwidth" id="street" placeholder="Straat" ng-model ="address"
                                         style="width:322px">
                                     </div>
                                     <div class="col-sm-4 form-col" ng-class="{'has-error': errorAddressN}">
-                                        <input type="text" style="margin-bottom: 15px; width:97%; margin-left: 5px; "  class="form-control" id="number" placeholder="Huisnummer" ng-model ="address_number">
+                                        <input type="text"  class="form-control" id="number" placeholder="Huisnummer" ng-model ="address_number">
                                     </div>
                                     <div class="col-sm-4 form-col" ng-class="{'has-error': errorPostcode}">
-                                        <input type="text" style="margin-bottom: 15px; width:155px" class="form-control" id="postcode" placeholder="Postcode" ng-model="postcode">
+                                        <input type="text"  class="form-control field1 marginwidth" id="postcode" placeholder="Postcode" ng-model="postcode">
                                     </div>
                                     <div class="col-sm-8 form-col" ng-class="{'has-error': errorCity}">
                                         <input type="text" class="form-control" id="city" placeholder="Plaats" ng-model="city">
@@ -136,7 +136,7 @@
                             </div>
                             
                             <div class="submit-buttons">
-                                <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="home()"  style="
+                                <button type="button" class="btn btn-danger submitm" data-dismiss="modal" ng-click="home()"  style="
                                 margin-left: 20px;">Annuleren</button>
                                 <button type="button" class="btn btn-success" ng-class="{successAlert}" data-dismiss="modal" ng-disabled="!agree" ng-click="profile()"  >Opslaan</button>
                             </div>
