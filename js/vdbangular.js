@@ -651,12 +651,12 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 								$scope.hide = "";
 								usSpinnerService.stop('spinner-1');
                                 $rootScope.globaloverlay = "";
-                                var jsoncity = JSON.stringify({"council":""+getdata.issues[0].council+""});
-								var getReport = reportService.getReport( jsoncity ).then(function (data){
-								var getdata = data.data;
-								$rootScope.reportList = getdata.report;
+      //                           var jsoncity = JSON.stringify({"council":""+getdata.issues[0].council+""});
+						// 		var getReport = reportService.getReport( jsoncity ).then(function (data){
+						// 		var getdata = data.data;
+						// 		$rootScope.reportList = getdata.report;
                                                                
-						});
+						// });
 						
 						});
 

@@ -338,8 +338,13 @@ h6 {
     
 .dropdown-menu
     {
-        min-width: 207px;
+        min-width: 192px;
         background-color: #21a81e;
+        li{
+            a{
+              margin-left: -10px;
+            }
+        }
     }
 .dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus {
     
