@@ -82,9 +82,9 @@
                         <li><a href="login"><span class="glyphicon glyphicon-log-in"></span> Inloggen</a></li>
                     </ul>
                     <div class="nav navbar-nav navbar-right">
-  <button class="btn1 btn-default1 dropdown-toggle navbar-right " ng-if="loginStatus()"  type="button" data-toggle="dropdown">{{lusername}}
-  <span ng-click="show()" class="caret" ></span></button>
-                        <ul class="dropdown-menu  navbar-right"style="margin-right: 24px;margin-top: -5px;">
+                        <button id="userpanelbtn" class="btn1 btn-default1 dropdown-toggle navbar-right " ng-click="showuserpanel()" ng-if="loginStatus()" type="button" data-toggle="dropdown">{{lusername}}
+  <span  class="caret" ></span></button>
+                        <ul ng-show="userpanel" class="dropdown-menu  navbar-right" style="margin-right: 24px;margin-top: -5px;">
                             <li><a href="profile" style="color: white;" >Profiel</a></li>
                             <li><a href="#" style="color: white;">Opt In</a></li>
                             <li><a href="#" style="color: white;" ng-click="logout()">Log out</a></li>    
@@ -128,8 +128,8 @@
                 <div class="footer-element"><a href="http://blog.verbeterdebuurt.nl/hoe-werkt-verbeterdebuurt-2/">Hoe werkt het</a></div>&middot;
                 <div class="footer-element"><a href="http://blog.verbeterdebuurt.nl/">Blog</a></div>&middot;
                 <div class="footer-element"><a href="http://blog.verbeterdebuurt.nl/contact/">Contact</a></div>&middot;
-                <div class="footer-element"><a href="https://www.facebook.com/verbeterdebuurt/">Facebook</a></div>&middot;
-                <div class="footer-element"><a href="https://twitter.com/verbeterdebuurt">Twitter</a></div>
+                <div class="footer-element"><a target="_blank" href="https://www.facebook.com/verbeterdebuurt/">Facebook</a></div>&middot;
+                <div class="footer-element"><a target="_blank" href="https://twitter.com/verbeterdebuurt">Twitter</a></div>
             </div>
         </div>
     </div>

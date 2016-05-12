@@ -234,7 +234,7 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
 		controller : 'mainCtrl' 
 	})
 	.when('/issues/:id',{
-		templateUrl :'issues.html',
+		templateUrl :'issuesView.html',
 		controller : 'issuesCtrl'
 	})
 	.when('/mention', {
@@ -477,6 +477,8 @@ vdbApp.factory('issueSubmitService', ['$http',function ($http) {
 vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootScope','$routeParams','$http','issuesService','reportService',function ($scope,$timeout,$window,$location,$rootScope,$routeParams,$http,issuesService,reportService) {
 						menuSelected($rootScope,'home');
 						
+                        $scope.userpanel=1;
+    
 						$timeout(function(){
 							var jsondata = JSON.stringify({
 							  		"coords_criterium":{
@@ -560,20 +562,29 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 							}
 							else{
 								$rootScope.lusername = $window.sessionStorage.username;
+                               
+                                
 								return true;
 							}
 						}
 						//logOut
 						$scope.logout = function(){
 							$window.sessionStorage.clear();
-                            $('.dropdown-menu').hide();
-							$location.path('/');
+                           // $('.dropdown-menu').hide();
+                            $scope.userpanel=0;
+                            
+                            $location.path('/');
 						}
-                        $scope.show= function()
-                        {   
-                            $('.dropdown-menu').show();
+                        
+                        $scope.showuserpanel= function(){
+                           
+                            if($scope.userpanel==0)
+                                $scope.userpanel=1;
+                            
+                        //    $('.dropdown-menu').show();
                             
                         }
+                        
                         
 						//search
 						$scope.clickSearch= function(){
@@ -899,6 +910,9 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
 					$window.sessionStorage.postcode = getLogin.user_profile.postcode;
 					$window.sessionStorage.city = getLogin.user_profile.city;
 					$window.sessionStorage.phone = getLogin.user_profile.phone;
+                   
+                
+                    
 					$rootScope.loginStatus = function(){
 						return true;
 					}
