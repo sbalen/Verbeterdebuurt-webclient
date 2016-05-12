@@ -35,7 +35,7 @@ $grey-light:             lighten($grey, 10%) !default;
 $grey-lighter:           lighten($grey, 20%) !default;
 
 $primary-color: $grey;
-$background-color: #grey-lighter;
+$background-color: $grey-lighter;
 $white-normal: #eee;
 $white-light: #fff;
 

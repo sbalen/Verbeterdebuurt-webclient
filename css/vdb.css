@@ -4,7 +4,7 @@ html {
 
 body {
   height: 100%;
-  background-color: #grey-lighter;
+  background-color: #666666;
   font-family: "Merriweather", serif; }
   body #app-container {
     position: relative;
