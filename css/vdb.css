@@ -4,7 +4,7 @@ html {
 
 body {
   height: 100%;
-  background-color: #grey-lighter;
+  background-color: #666666;
   font-family: "Merriweather", serif; }
   body #app-container {
     position: relative;
@@ -249,5 +249,69 @@ h6 {
   background-color: #FFFFFF;
   border-color: #3AB53A;
   color: #3AB53A; }
+
+.form-group {
+  padding-left: -15px;
+  width: 100%; }
+
+.margin1 {
+  margin-left: 12px; }
+
+.field {
+  width: 96%; }
+
+.field1 {
+  width: 91%; }
+
+.register {
+  margin-left: 13px; }
+
+@media (max-width: 1199px) {
+  .container {
+    width: 750px; }
+
+  .registeri {
+    margin-left: 38px; }
+
+  .margin2 {
+    margin-left: 6px; }
+
+  .margin3 {
+    margin-left: 13px; }
+
+  .margin4 {
+    margin-left: 10px; } }
+@media (max-width: 767px) {
+  .hidden-xs {
+    display: none !important; }
+
+  .container {
+    width: 100%; }
+
+  .margin2m {
+    margin-left: -12px; }
+
+  .margin3m {
+    margin-left: -12px; }
+
+  .margin4m {
+    margin-left: -12px; }
+
+  .marginwidth {
+    width: 100%;
+    margin-bottom: 15px; }
+
+  .marginwidth1 {
+    width: 100%; }
+
+  .panel-body {
+    padding: 15px;
+    margin-left: 25px; }
+
+  .registerm {
+    margin-left: 38px; }
+
+  .submitm {
+    margin-left: 22px; } }
 
 /*# sourceMappingURL=vdb.css.map */
