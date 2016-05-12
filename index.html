@@ -82,8 +82,11 @@
                         <li><a href="login"><span class="glyphicon glyphicon-log-in"></span> Inloggen</a></li>
                     </ul>
                     <div class="nav navbar-nav navbar-right">
-                        <button id="userpanelbtn" class="btn1 btn-default1 dropdown-toggle navbar-right " ng-click="showuserpanel()" ng-if="loginStatus()" type="button" data-toggle="dropdown">{{lusername}}
-  <span  class="caret" ></span></button>
+                        <button id="userpanelbtn" class="btn1 btn-default1 dropdown-toggle navbar-right " ng-click="showuserpanel()" ng-if="loginStatus()" type="button" data-toggle="dropdown">
+                            <span class="username-display">{{lusername}}</span>
+                            
+                            <span class="caret" ></span>
+                        </button>
                         <ul ng-show="userpanel" class="dropdown-menu  navbar-right" style="margin-right: 24px;margin-top: -5px;">
                             <li><a href="profile" style="color: white;" >Profiel</a></li>
                             <li><a href="#" style="color: white;">Opt In</a></li>
