@@ -1,317 +1,41 @@
-html {
-  min-height: 100%;
-  position: relative; }
+/*
+Error: Invalid CSS after "...1aeea0d997a2bbc": expected "{", was ""
+        on line 485 of vdb.scss
 
-body {
-  height: 100%;
-  background-color: #666666;
-  font-family: "Merriweather", serif; }
-  body #app-container {
-    position: relative;
-    min-height: 100vh;
-    padding-bottom: 120px; }
+480: .toggle-button button { cursor: pointer; outline: 0; display:block; position: absolute; left: 0; top: 0; border-radius: 100%; width: 30px; height: 30px; background-color: white; float: left; margin: -3px 0 0 -3px; border: 2px solid #D0D0D0; transition: left 0.3s; }
+481: .toggle-button-selected { background-color: #83B152; border: 2px solid #7DA652; }
+482: .toggle-button-selected button { left: 26px; top: 0; margin: 0; border: none; width: 24px; height: 24px; box-shadow: 0 0 4px rgba(0,0,0,0.1); }
+483: .center { text-align:center; }
+484:  d39161eb7bf9c35ca854d384e1aeea0d997a2bbc
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: "Merriweather Sans", sans-serif; }
-
-#main-content {
-  margin-top: 15px; }
-
-.main-panel {
-  padding: 15px;
-  border-radius: 0 !important;
-  position: relative;
-  z-index: -1; }
-
-.alert,
-.navbar {
-  font-family: "Arial", sans-serif; }
-
-.navbar-default .navbar-brand {
-  color: #eee; }
-  .navbar-default .navbar-brand :hover, .navbar-default .navbar-brand focus {
-    color: #fff; }
-.navbar-default .navbar-nav > li > a {
-  color: #58ca58; }
-  .navbar-default .navbar-nav > li > a :hover, .navbar-default .navbar-nav > li > a focus {
-    color: #fff; }
-.navbar-default .navbar-nav > .active > a,
-.navbar-default .navbar-nav > .active > a:hover,
-.navbar-default .navbar-nav > .active > a:focus,
-.navbar-default .navbar-nav > .open > a,
-.navbar-default .navbar-nav > .open > a:hover,
-.navbar-default .navbar-nav > .open > a:focus {
-  color: #fff;
-  background-color: #3AB53A; }
-.navbar-default .navbar-nav > .dropdown > a .caret {
-  border-top-color: #eee;
-  border-bottom-color: #eee; }
-  .navbar-default .navbar-nav > .dropdown > a .caret :hover, .navbar-default .navbar-nav > .dropdown > a .caret focus {
-    border-top-color: #fff; }
-  .navbar-default .navbar-nav > .dropdown > a .caret :hover, .navbar-default .navbar-nav > .dropdown > a .caret focus {
-    border-bottom-color: #fff; }
-.navbar-default .navbar-nav > .open > a .caret,
-.navbar-default .navbar-nav > .open > a:hover .caret,
-.navbar-default .navbar-nav > .open > a:focus .caret {
-  border-top-color: #fff;
-  border-bottom-color: #3AB53A; }
-
-.detail-table {
-  font-family: "Fira Mono";
-  font-size: 12px;
-  margin-top: 0px;
-  padding-top: small-spacing;
-  padding-right: 15px;
-  padding-bottom: 15px;
-  padding-left: 15px; }
-
-.icon {
-  padding-right: 15px; }
-
-#background {
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  overflow: hidden;
-  z-index: 0;
-  position: fixed;
-  height: 100vh; }
-
-.footer {
-  width: 80%;
-  height: 100px;
-  background-color: white;
-  text-align: center;
-  margin-left: 10%;
-  bottom: 20px;
-  position: absolute;
-  border-color: #007AC3;
-  border-style: solid;
-  border-width: thin;
-  z-index: 1020; }
-  .footer .footertext {
-    width: 100%;
-    height: 60%;
-    padding-top: 40px;
-    text-align: center; }
-    .footer .footertext .footer-element {
-      font-size: 12px;
-      display: inline-block;
-      padding-left: 20px;
-      padding-right: 20px; }
-      .footer .footertext .footer-element a {
-        text-decoration: none;
-        color: #666666; }
-        .footer .footertext .footer-element a:hover {
-          color: #58ca58; }
-
-#reportBox {
-  width: 100%;
-  height: auto;
-  position: relative;
-  z-index: 3;
-  border-radius: 5px;
-  border-color: blue;
-  border-style: solid;
-  border-width: thin;
-  margin-bottom: 20px; }
-
-#reportBoxHeader {
-  width: 100%;
-  height: auto;
-  background-color: #3AB53A; }
-
-#reportBoxBody {
-  width: 100%;
-  height: auto;
-  background-color: white; }
-
-#overlayactive {
-  z-index: 999;
-  background-color: rgba(52, 56, 36, 0.6); }
-
-#overlay {
-  position: relative;
-  z-index: 0; }
-
-.col-lg-6 {
-  position: relative;
-  z-index: 5; }
-
-#googleMapIssue {
-  width: 100%;
-  height: 200px;
-  background-color: red;
-  overflow: visible; }
-
-.checkbox {
-  margin-bottom: 15px !important; }
-
-#clickSearch {
-  margin-left: 10px;
-  border-radius: 8px; }
-
-#searchCity {
-  border-radius: 8px; }
-
-.container {
-  padding-left: 0px;
-  z-index: 0; }
-  .container.active {
-    position: inherit; }
-
-.input-group {
-  width: 94%;
-  margin-left: 3.5%; }
-
-#googleMapCreateIssue {
-  background-color: #C7C7C7; }
-
-#navtop {
-  z-index: 1010; }
-
-.form-group {
-  min-height: 25px; }
-
-#global-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 1;
-  background: rgba(255, 255, 255, 0.7);
-  display: none;
-  opacity: 0; }
-  #global-overlay.active {
-    display: table;
-    opacity: 1;
-    -webkit-transition: opacity 1s ease;
-    -moz-transition: opacity 1s ease;
-    -ms-transition: opacity 1s ease;
-    -o-transition: opacity 1s ease; }
-  #global-overlay #global-spinner {
-    display: table-cell;
-    vertical-align: middle;
-    text-align: center; }
-    #global-overlay #global-spinner img {
-      display: inline-block;
-      height: 32px;
-      width: 32px; }
-
-.subnav {
-  z-index: 1000; }
-
-.btn1 {
-  min-width: 160px;
-  display: inline-block;
-  margin-bottom: 0;
-  font-weight: normal;
-  text-align: center;
-  vertical-align: middle;
-  touch-action: manipulation;
-  cursor: pointer;
-  background-image: none;
-  border: 1px solid transparent;
-  white-space: nowrap;
-  padding: 6px 12px;
-  font-size: 14px;
-  line-height: 1.42857;
-  border-radius: 4px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none; }
-
-.caret {
-  margin-left: 100px; }
-
-.dropdown-menu {
-  min-width: 192px;
-  background-color: #21a81e; }
-  .dropdown-menu li a {
-    margin-left: -10px; }
-
-.dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus {
-  background-color: #FFFFFF;
-  color: #3AB53A !important; }
-
-.btn-default1 {
-  margin-right: 10px;
-  margin-top: 10px;
-  color: #fff;
-  background-color: #FFFFFF;
-  border-color: #3AB53A;
-  color: #3AB53A; }
-
-.form-group {
-  padding-left: -15px;
-  width: 100%; }
-
-.margin1 {
-  margin-left: 12px; }
-
-.field {
-  width: 96%; }
-
-.field1 {
-  width: 91%; }
-
-.register {
-  margin-left: 13px; }
-
-@media (max-width: 1199px) {
-  .container {
-    width: 750px; }
-
-  .registeri {
-    margin-left: 38px; }
-
-  .margin2 {
-    margin-left: 6px; }
-
-  .margin3 {
-    margin-left: 13px; }
-
-  .margin4 {
-    margin-left: 10px; } }
-@media (max-width: 767px) {
-  .hidden-xs {
-    display: none !important; }
-
-  .container {
-    width: 100%; }
-
-  .margin2m {
-    margin-left: -12px; }
-
-  .margin3m {
-    margin-left: -12px; }
-
-  .margin4m {
-    margin-left: -12px; }
-
-  .marginwidth {
-    width: 100%;
-    margin-bottom: 15px; }
-
-  .marginwidth1 {
-    width: 100%; }
-
-  .panel-body {
-    padding: 15px;
-    margin-left: 25px; }
-
-  .registerm {
-    margin-left: 38px; }
-
-  .submitm {
-    margin-left: 22px; } }
-
-/*# sourceMappingURL=vdb.css.map */
+Backtrace:
+vdb.scss:485
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.21/lib/sass/scss/parser.rb:1179:in `expected'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.21/lib/sass/scss/parser.rb:1115:in `expected'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.21/lib/sass/scss/parser.rb:1110:in `tok!'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.21/lib/sass/scss/parser.rb:654:in `block'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.21/lib/sass/scss/parser.rb:647:in `ruleset'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.21/lib/sass/scss/parser.rb:673:in `block_child'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.21/lib/sass/scss/parser.rb:666:in `block_contents'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.21/lib/sass/scss/parser.rb:123:in `stylesheet'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.21/lib/sass/scss/parser.rb:39:in `parse'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.21/lib/sass/engine.rb:403:in `_to_tree'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.21/lib/sass/engine.rb:378:in `_render_with_sourcemap'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.21/lib/sass/engine.rb:295:in `render_with_sourcemap'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.21/lib/sass/plugin/compiler.rb:490:in `update_stylesheet'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.21/lib/sass/plugin/compiler.rb:215:in `block in update_stylesheets'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.21/lib/sass/plugin/compiler.rb:209:in `each'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.21/lib/sass/plugin/compiler.rb:209:in `update_stylesheets'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.21/lib/sass/plugin/compiler.rb:471:in `on_file_changed'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.21/lib/sass/plugin/compiler.rb:328:in `block in watch'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.21/vendor/listen/lib/listen/listener.rb:252:in `call'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.21/vendor/listen/lib/listen/listener.rb:252:in `on_change'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.21/vendor/listen/lib/listen/listener.rb:290:in `block in initialize_adapter'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.21/vendor/listen/lib/listen/adapters/polling.rb:48:in `call'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.21/vendor/listen/lib/listen/adapters/polling.rb:48:in `poll_changed_directories'
+C:/Ruby22/lib/ruby/gems/2.2.0/gems/sass-3.4.21/vendor/listen/lib/listen/adapter.rb:299:in `block in start_poller'
+*/
+body:before {
+  white-space: pre;
+  font-family: monospace;
+  content: "Error: Invalid CSS after \"...1aeea0d997a2bbc\": expected \"{\", was \"\"\A         on line 485 of vdb.scss\A \A 480: .toggle-button button { cursor: pointer; outline: 0; display:block; position: absolute; left: 0; top: 0; border-radius: 100%; width: 30px; height: 30px; background-color: white; float: left; margin: -3px 0 0 -3px; border: 2px solid #D0D0D0; transition: left 0.3s; }\A 481: .toggle-button-selected { background-color: #83B152; border: 2px solid #7DA652; }\A 482: .toggle-button-selected button { left: 26px; top: 0; margin: 0; border: none; width: 24px; height: 24px; box-shadow: 0 0 4px rgba(0,0,0,0.1); }\A 483: .center { text-align:center; }\A 484:  d39161eb7bf9c35ca854d384e1aeea0d997a2bbc"; }
