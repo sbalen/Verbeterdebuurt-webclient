@@ -112,6 +112,7 @@ function geocodeAddress(geocoder, resultsMap) {
       }
 
 function showIssue(infoWindow,infoWindowContent){
+    var markers = null;
     var markers = [];
     var zoom = map.getZoom();
 
