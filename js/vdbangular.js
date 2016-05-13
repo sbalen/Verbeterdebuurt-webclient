@@ -1285,8 +1285,11 @@ vdbApp.controller('forgotCtrl', ['$scope','$rootScope','$window','forgotService'
         
     
     $scope.forgotpass = function(){
-        usSpinnerService.spin('spinner-1');
-        $scope.overlay = "overlayactive";
+//        usSpinnerService.spin('spinner-1');
+//        $scope.overlay = "overlayactive";
+        $rootScope.globaloverlay = "active";
+        
+         $scope.overlay = "overlayactive";
 		var jsondata = JSON.stringify({"email":""+$scope.femail+""});
         
         $rootScope.tempemail1=$scope.femail;
@@ -1316,8 +1319,9 @@ vdbApp.controller('forgotCtrl', ['$scope','$rootScope','$window','forgotService'
                
 
                 
-         usSpinnerService.stop('spinner-1');
-					$scope.overlay = "overlay";
+//         usSpinnerService.stop('spinner-1');
+//					$scope.overlay = "overlay";
+         $rootScope.globaloverlay = "";
          });
         
         

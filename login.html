@@ -16,24 +16,24 @@
                     <p>{{errorSession}}</p>
 		            </div>
                     <div id="side_bar" class="clearfix" style="margin-bottom:15px;">
-                        <h1 style="float: left;">Login</h1>
-                        <button class="btn btn-primary" style="float: right; position: relative; top: 25px; right: 0px;" ng-click="register()" >Registreren</button>
+                        <h1 style="margin-left: 15px;float: left;">Login</h1>
+                        <button class="btn btn-primary" style=" margin-right: 17px;float: right; position: relative; top: 25px; right: 0px;" ng-click="register()" >Registreren</button>
                     </div>		    
                     <form class="form-horizontal" role="form">
                     
                     <div class="form-group">
                         <div class="col-sm-12 form-col">
-                            <input type="text" class="form-control" id="username" placeholder="Gebruikersnaam of e-mailadres" ng-model="lusername">
+                            <input type="text" class="form-control" id="username" placeholder="Gebruikersnaam of e-mailadres" ng-model="lusername" style="margin-left: 15px;">
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-sm-12 form-col">
                             <form ng-submit="login()">
-                                <input type="password" class="form-control" id="password-1" placeholder="Wachtwoord" ng-model="lpassword">
+                                <input type="password" class="form-control" id="password-1" placeholder="Wachtwoord" ng-model="lpassword" style="margin-left: 15px;">
                             </form>
                         </div>
                     </div>
-                    <div class="checkbox">
+                    <div class="checkbox" style="margin-left: 20px;">
                         <label disabled>
                             <input type="checkbox" disabled> Onthoud me
                         </label>
