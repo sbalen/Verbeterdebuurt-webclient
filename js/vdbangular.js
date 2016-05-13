@@ -1197,6 +1197,11 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
 					//$scope.overlay="overlay";
                     $rootScope.globaloverlay = "";
                 
+                   
+                    $(window).scrollTop(0);
+            
+    
+                
 				}	
             
             if(getRegister.success)
