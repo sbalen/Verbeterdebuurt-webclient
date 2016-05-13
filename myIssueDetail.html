@@ -7,8 +7,6 @@
             </div>
 	    <!-- main container -->
 	    <div class="col-lg-6 main-container">
-
-                <span us-spinner spinner-key="spinner-1" spinner-start-active="true"></span>
                 <div class="panel panel-default main-panel {{hide}}" ng-repeat="myIssues in myIssuesList | filter : {id : id()} ">
                   <a href="/myissues" class="close" aria-label="close" >&times;</a>
             <h1>{{myIssues.title}}<br><small>{{myIssues.location.full_address}}</small></h1>

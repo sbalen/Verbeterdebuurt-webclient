@@ -21,7 +21,7 @@
                 <button></button>
                 </div>
             </div>
-            <div class="problem {{hideProblem}}">
+            <div class="problem" ng-show="hideIssue">
 		        <form class="form-horizontal" role="form">
                             
                               <div class="panel-body">
@@ -36,7 +36,7 @@
                                         <button class="btn btn-primary gllpSearchButton" type="button" ng-click="clickSearchCreateIssue()"><span class="glyphicon glyphicon-search"></span><span class="hidden-xs">Zoeken</span></button>
                                      </span>
                                   </div>
-                                  <div class="gllpMap" id="googleMapCreateProblem" ng-mousemove="categoriesData()"></div>
+                                  <div class="gllpMap" id="googleMapCreateProblem" ng-click="categoriesData()"></div>
                                   <input type="hidden" class="gllpLatitude" value="52.158367"/>
                                   <input type="hidden" class="gllpLongitude" value="4.492999"/>
                                   <input type="hidden" class="gllpZoom" value="12"/>
@@ -120,10 +120,10 @@
                         </div>            
                     </div> 
                           
-                          <div class="idea {{hideIdea}}">
+                          <div class="idea" ng-hide="hideIssue"> 
                             <form class="form-horizontal" role="form">
                               <div class="panel-body">
-                                <h4>1. Bepaal de locatie kus</h4>
+                                <h4>1. Bepaal de locatie</h4>
                                 <div class="well well-sm locationpicker-well">
                                   <fieldset class="gllpLatlonPicker">
                                   <div class="input-group" style="width:100%; margin-left:0; ">
@@ -134,7 +134,7 @@
                                         <button class="btn btn-primary gllpSearchButton" type="button" ng-click="clickSearchCreateIssue()"><span class="glyphicon glyphicon-search"></span><span class="hidden-xs">Zoeken</span></button>
                                      </span>
                                   </div>
-                                  <div class="gllpMap" id="googleMapCreateIdea" ng-mousemove="categoriesData()"></div>
+                                  <div class="gllpMap" id="googleMapCreateIdea" ng-click="categoriesData()"></div>
                                   <input type="hidden" class="gllpLatitude" value="52.158367"/>
                                   <input type="hidden" class="gllpLongitude" value="4.492999"/>
                                   <input type="hidden" class="gllpZoom" value="12"/>
