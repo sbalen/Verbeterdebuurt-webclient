@@ -1351,11 +1351,7 @@ vdbApp.controller('forgotconfCtrl', ['$scope','$rootScope','$window','usSpinnerS
     
 vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileService','loginService','$location','usSpinnerService', function ($scope,$rootScope,$window,profileService,loginService,$location,usSpinnerService) {
 	    $scope.hide = "ng-hide";
-        $scope.overlay="overlay";
 	
-                    
-    
-    
      $scope.home = function(){
 		        $location.path('/');
 	                                   
@@ -1400,8 +1396,7 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
     
     //console.log({user,password,user_profile});
 	$scope.profile = function(){
-    usSpinnerService.spin('spinner-1');
-    $scope.overlay = "overlayactive";
+    $rootScope.globaloverlay = "active";
     $scope.errorEmail ="";
     $scope.errorOldPassword =  "";
                     $scope.errorNewPassword = "";
@@ -1507,11 +1502,11 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                     $scope.errorSex = getProfile.errors.sex;
                     $scope.errorPasshash = getProfile.errors.password_hash;
                                     
-                    usSpinnerService.stop('spinner-1');
 					$scope.hide = "";
                     $scope.successAlert = "";
                     $scope.successClass = "";
 					$scope.overlay="overlay";
+					$rootScope.globaloverlay = "";
 
 				}	
 
@@ -1544,9 +1539,8 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                     $window.sessionStorage.postcode = getLogin.user_profile.postcode;
                     $window.sessionStorage.city = getLogin.user_profile.city;
                     $window.sessionStorage.phone = getLogin.user_profile.phone;
-                    usSpinnerService.stop('spinner-1');
-					$scope.overlay = "overlay";
-                        
+                    
+                    $rootScope.globaloverlay = "";    
                     $scope.successAlert = "Profile Updated";
                     $scope.successClass = "successAlert";
                     $scope.hide = "";
