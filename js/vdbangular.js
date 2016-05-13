@@ -1507,7 +1507,10 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                     $scope.successAlert = "";
                     $scope.successClass = "";
 					$scope.overlay="overlay";
+                    $(window).scrollTop(0);
+
 					$rootScope.globaloverlay = "";
+
 
 				}	
 
