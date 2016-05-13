@@ -370,6 +370,10 @@ h6 {
 .center {
   text-align: center; }
 
+.notice-no-issue {
+  padding-top: 50px;
+  padding-bottom: 50px; }
+
 #location2 {
   padding-top: 16px;
   margin-left: 16px;

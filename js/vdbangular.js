@@ -1572,6 +1572,7 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 		$scope.hideProblem = ""
 		$scope.hideIssue = 1;
 		$scope.slide = "";
+        $scope.myIssueCount = 0;
 		
 		menuSelected($rootScope,'createissue');
 		
@@ -1587,6 +1588,7 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 		var getMyIssues = myIssuesService.getMyIssues( jsondata ).then(function (data){
 			var getdata = data.data;
 			var count = getdata.count;
+            $scope.myIssueCount = count;
 			$scope.myIssuesList = getdata.issues;
 		})
 		//first initial
