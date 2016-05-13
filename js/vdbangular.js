@@ -1285,8 +1285,11 @@ vdbApp.controller('forgotCtrl', ['$scope','$rootScope','$window','forgotService'
         
     
     $scope.forgotpass = function(){
-        usSpinnerService.spin('spinner-1');
-        $scope.overlay = "overlayactive";
+//        usSpinnerService.spin('spinner-1');
+//        $scope.overlay = "overlayactive";
+        $rootScope.globaloverlay = "active";
+        
+         $scope.overlay = "overlayactive";
 		var jsondata = JSON.stringify({"email":""+$scope.femail+""});
         
         $rootScope.tempemail1=$scope.femail;
@@ -1316,8 +1319,9 @@ vdbApp.controller('forgotCtrl', ['$scope','$rootScope','$window','forgotService'
                
 
                 
-         usSpinnerService.stop('spinner-1');
-					$scope.overlay = "overlay";
+//         usSpinnerService.stop('spinner-1');
+//					$scope.overlay = "overlay";
+         $rootScope.globaloverlay = "";
          });
         
         
@@ -1572,6 +1576,7 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 		$scope.hideProblem = ""
 		$scope.hideIssue = 1;
 		$scope.slide = "";
+        $scope.myIssueCount = 0;
 		
 		menuSelected($rootScope,'createissue');
 		
@@ -1587,6 +1592,7 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 		var getMyIssues = myIssuesService.getMyIssues( jsondata ).then(function (data){
 			var getdata = data.data;
 			var count = getdata.count;
+            $scope.myIssueCount = count;
 			$scope.myIssuesList = getdata.issues;
 		})
 		//first initial
