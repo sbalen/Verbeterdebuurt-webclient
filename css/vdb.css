@@ -160,6 +160,9 @@ h6 {
 #searchCity {
   border-radius: 8px; }
 
+.glyphicon-search {
+  padding-right: 5px; }
+
 .container {
   padding-left: 0px;
   z-index: 0; }
