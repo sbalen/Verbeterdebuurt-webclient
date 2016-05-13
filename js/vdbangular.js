@@ -768,6 +768,7 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 				if(!getvoteSummit.success){
 					$scope.hideError = 0;
 					$scope.errorVote = ""+getvoteSummit.error+"";
+					$(window).scrollTop(0);
 				}else {
 					var jsondata = JSON.stringify({"issue_id":$routeParams.id});
 				    var getIssues = issuesService.getIssues( jsondata ).then(function (data){
@@ -1241,7 +1242,7 @@ vdbApp.controller('regisconfCtrl', ['$scope','$rootScope','$window','usSpinnerSe
 			else {
 				$scope.tempIssueType = "reaction";
 			}
-			usSpinnerService.spin('spinner-2');
+			$rootScope.globaloverlay = "active";
 			var jsondata = JSON.stringify(
 				{"user":{"username":""+$window.sessionStorage.username+"",
 				"password_hash":""+$window.sessionStorage.password_hash+""
@@ -1254,11 +1255,10 @@ vdbApp.controller('regisconfCtrl', ['$scope','$rootScope','$window','usSpinnerSe
 			var getCommentSubmit = commentSubmitService.getCommentSubmit( jsondata ).then(function (data){
 				var getCommentSubmit = data.data;
 				if(!getCommentSubmit.success){
-				usSpinnerService.stop('spinner-2');
+				$rootScope.globaloverlay = "";
 				}
 				else{
-				usSpinnerService.stop('spinner-2');
-				$scope.dissmissModal="modal";
+				$rootScope.globaloverlay = "";
 				//bad practice hide modal
 				$('#StemModal').modal('hide');
 				$('.modal-backdrop').hide();
@@ -1597,10 +1597,10 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 			latlngChange = null;
 			var latitude = markerLat;
 			var longitude = markerLng;
-			var jsondataCity = JSON.stringify({latitude,longitude});
-			var getCategories = categoriesService.getCategories( jsondataCity ).then(function (data){
-				$scope.categoriesList = data.data.categories;
-			});
+			// var jsondataCity = JSON.stringify({latitude,longitude});
+			// var getCategories = categoriesService.getCategories( jsondataCity ).then(function (data){
+			// 	$scope.categoriesList = data.data.categories;
+			// });
 
 			}else{
 			latlngChange = {lat: 52.158367,lng: 4.492999};
@@ -1609,10 +1609,10 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 			latlngChange = null;
 			var latitude = markerLat;
 			var longitude = markerLng;
-			var jsondataCity = JSON.stringify({latitude,longitude});
-			var getCategories = categoriesService.getCategories( jsondataCity ).then(function (data){
-				$scope.categoriesList = data.data.categories;
-			});
+			// var jsondataCity = JSON.stringify({latitude,longitude});
+			// var getCategories = categoriesService.getCategories( jsondataCity ).then(function (data){
+			// 	$scope.categoriesList = data.data.categories;
+			// });
 		}
 		},1200);
 		
@@ -1620,11 +1620,13 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 			var latitude = markerLat;
 			var longitude = markerLng;
 			var jsondataCity = JSON.stringify({latitude,longitude});
+			console.log(jsondataCity);
 			$timeout(function(){
+			$scope.categoriesList = null;
 			var getCategories = categoriesService.getCategories( jsondataCity ).then(function (data){
 				$scope.categoriesList = data.data.categories;
 			});	
-			},0)
+			},1000)
 		}
 
 
@@ -1801,7 +1803,7 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 					}
 					
 					$rootScope.globaloverlay = "";
-
+					$(window).scrollTop(0);
 				}
 				else{
 					//success
