@@ -20,6 +20,7 @@ var profileService = new Object();
 var workLogService = new Object();
 var categoriesService = new Object();
 var issueSubmitService = new Object();
+var voteSubmitService = new Object();
 
 
 //google map
@@ -102,9 +103,9 @@ function googleMapCreateProblem(latlng){
 	 markerLng = marker.getPosition().lng();
 	
 	 sycGoogleMap3(map3);
-	 markerCenter(map3,marker);
+	 markerCenter(map3,marker,"location");
 	 getMarkerLocation(marker);
-	 markerGetAddress(marker);
+	 markerGetAddress(marker,"location");
 
 	  
 }
@@ -126,9 +127,9 @@ function googleMapCreateIdea(latlng){
 	 markerLng = marker.getPosition().lng();
 	
 	 sycGoogleMap4(map4);
-	 markerCenter(map4,marker);
+	 markerCenter(map4,marker,"location2");
 	 getMarkerLocation(marker);
-	 markerGetAddress(marker);
+	 markerGetAddress(marker,"location2");
 
 	  
 }
@@ -149,7 +150,7 @@ function sycGoogleMap4(map4){
               });
 }
 //marker at center
-function markerCenter (map,marker){
+function markerCenter (map,marker,location){
 	google.maps.event.addListener(map,'bounds_changed',function (e){
 				marker.setPosition(map.getCenter());
 				markerLat = marker.getPosition().lat();
@@ -164,7 +165,7 @@ function markerCenter (map,marker){
                    // street name
                     streetLocation= result[0].address_components[i].short_name;
                     addressLocation = streetLocation;
-					document.getElementById('location').value = addressLocation;
+					document.getElementById(location).value = addressLocation;
 	                    break;
                         }
                 // if (result[0].address_components[i].types[b] == "street_number") {
@@ -209,7 +210,7 @@ function geocodeAddressCreateProblem(geocoder, resultsMap, address) {
           }
         });
       }
-function markerGetAddress(marker){
+function markerGetAddress(marker,location){
 		 //first time load
 		google.maps.event.addListener(marker, 'drag', function (e) {
                geocoder.geocode({'latLng': marker.getPosition()} , function (result , status){
@@ -237,7 +238,7 @@ function markerGetAddress(marker){
 
                });
 				address = street+" "+street_number;
-				document.getElementById('location').value = address;
+				document.getElementById(location).value = address;
             });
 }
 //change menu selected
@@ -508,10 +509,26 @@ vdbApp.factory('issueSubmitService', ['$http',function ($http) {
 						issueSubmitService.data = data;
 						return issueSubmitService.data;
 				});
-				return issueSubmitService.data
+				return issueSubmitService.data;
 			}
 	};
 }])
+
+vdbApp.factory('voteSubmitService', ['$http',function ($http) {
+	return {
+			getvoteSummit : function ( jsondata ){
+				return $http.post(APIURL+'voteSubmit', jsondata)
+				.success(function(data){
+					voteSubmitService.data = data;
+					return voteSubmitService.data;
+				});
+				return voteSubmitService.data;
+			}
+
+	};
+}])
+
+
 vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootScope','$routeParams','$http','issuesService','reportService',function ($scope,$timeout,$window,$location,$rootScope,$routeParams,$http,issuesService,reportService) {
 						menuSelected($rootScope,'home');
 						
@@ -687,11 +704,13 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 // vdbApp.controller('mainCtrl', ['$scope','issues', function ($scope,issues) {
 
 // }]);
-vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams','issuesService','reportService','usSpinnerService','$location','$anchorScroll','workLogService','commentService','$timeout', function ($scope,$rootScope,$window,$routeParams,issuesService,reportService,usSpinnerService,$location,$anchorScroll,workLogService,commentService,$timeout) {
+vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams','issuesService','reportService','usSpinnerService','$location','$anchorScroll','workLogService','commentService','$timeout','voteSubmitService', function ($scope,$rootScope,$window,$routeParams,issuesService,reportService,usSpinnerService,$location,$anchorScroll,workLogService,commentService,$timeout,voteSubmitService) {
 	$rootScope.globaloverlay = "active";
     $scope.hide = "ng-hide";
 	$scope.overlay = "overlay";
 	$scope.hideStatus = "ng-hide";
+	$scope.errorVote = "";
+	$scope.hideError = 1;
 
 	var jsondata = JSON.stringify({"issue_id":$routeParams.id});
 	
@@ -729,6 +748,40 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 			$scope.stemModal = "#StemModal";
 		}	
 	};
+
+	//validation for submit vote
+	$scope.voteSubmit = function(){
+		if(!$window.sessionStorage.username){
+			$location.path("/login");
+			$rootScope.errorSession="je moet ingelogd zijn om commentaar te geven of de snelheid"
+		}
+		else{
+			$rootScope.globaloverlay = "active";
+			var jsonVoteSubmit = JSON.stringify({"user":{
+														"username":""+$window.sessionStorage.username+"",
+													    "password_hash":""+window.sessionStorage.password_hash+""
+													  },
+													  "issue_id":$routeParams.id});
+			var getvoteSummit = voteSubmitService.getvoteSummit( jsonVoteSubmit ).then(function(data){
+				var getvoteSummit = data.data;
+				console.log(getvoteSummit);
+				if(!getvoteSummit.success){
+					$scope.hideError = 0;
+					$scope.errorVote = ""+getvoteSummit.error+"";
+				}else {
+					var jsondata = JSON.stringify({"issue_id":$routeParams.id});
+				    var getIssues = issuesService.getIssues( jsondata ).then(function (data){
+								var getdata = data.data;
+								$rootScope.problemIdList = getdata.issues;
+						});
+
+				}
+				//vote reload
+				
+				$rootScope.globaloverlay = "";
+			});
+		}	
+	}
 	
 	//close the detail;
 	$scope.close = function(){
@@ -778,6 +831,11 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 		var getComment = data.data;
 		$rootScope.commentList = getComment.comments;
 	});
+	//close error
+	$scope.closeError = function(){
+		$scope.hideError = 1;
+		$scope.errorVote = "";
+	}
 
 
 }])
@@ -817,9 +875,12 @@ vdbApp.controller('myIssuesCtrl', ['$scope','$rootScope','$window','$location','
 
 }])
 
-vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootScope','$location','$window','myIssuesService','usSpinnerService','workLogService','commentService', function ($scope,$routeParams,$http,$rootScope,$location,$window,myIssuesService,usSpinnerService,workLogService,commentService) {
+vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootScope','$location','$window','myIssuesService','usSpinnerService','workLogService','commentService','voteSubmitService', function ($scope,$routeParams,$http,$rootScope,$location,$window,myIssuesService,usSpinnerService,workLogService,commentService,voteSubmitService) {
 		$scope.hide = "";
 		$scope.hideStatus="ng-hide";
+		$scope.errorVote = "";
+		$scope.hideError = 1;
+		
 		$rootScope.globaloverlay = "active";
 		$scope.id = function(){
 			return $routeParams.id;
@@ -895,13 +956,49 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 		}	
 		};
 
+		//voteSubmit
+		$scope.voteSubmit = function(){
+		if(!$window.sessionStorage.username){
+			$location.path("/login");
+			$rootScope.errorSession="je moet ingelogd zijn om commentaar te geven of de snelheid"
+		}
+		else{
+			$rootScope.globaloverlay = "active";
+			var jsonVoteSubmit = JSON.stringify({"user":{
+														"username":""+$window.sessionStorage.username+"",
+													    "password_hash":""+window.sessionStorage.password_hash+""
+													  },
+													  "issue_id":$routeParams.id});
+			var getvoteSummit = voteSubmitService.getvoteSummit( jsonVoteSubmit ).then(function(data){
+				var getvoteSummit = data.data;
+				console.log(getvoteSummit);
+				if(!getvoteSummit.success){
+					$scope.hideError = 0;
+					$scope.errorVote = ""+getvoteSummit.error+"";
+				}else {
+					var getMyIssues = myIssuesService.getMyIssues( jsondata ).then(function (data){
+						var getdata = data.data;
+						$scope.myIssuesList = getdata.issues;
+					});
+
+				}
+				//vote reload
+				
+				$rootScope.globaloverlay = "";
+			});
+		}	
+	}
 		//show comment
 		var commentjsondata = JSON.stringify({"issue_id" : ""+$routeParams.id+""});
 		var getComment = commentService.getComment( commentjsondata ).then(function (data){
 		var getComment = data.data;
 		$rootScope.commentList = getComment.comments;
 	});
-		
+		//close error
+		$scope.closeError = function(){
+		$scope.hideError = 1;
+		$scope.errorVote = "";
+	}
 
 }])
 
@@ -1486,11 +1583,6 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 			var getdata = data.data;
 			var count = getdata.count;
 			$scope.myIssuesList = getdata.issues;
-			if(count != 0){
-				$scope.hideMyIssue = "";
-			}else{
-				$scope.hideMyIssue = "ng-hide";
-			}
 		})
 		//first initial
 		$timeout(function(){
@@ -1517,16 +1609,20 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 				$scope.categoriesList = data.data.categories;
 			});
 		}
+		},1200);
+		
 		$scope.categoriesData = function(){
 			var latitude = markerLat;
 			var longitude = markerLng;
 			var jsondataCity = JSON.stringify({latitude,longitude});
+			$timeout(function(){
 			var getCategories = categoriesService.getCategories( jsondataCity ).then(function (data){
 				$scope.categoriesList = data.data.categories;
-			});
+			});	
+			},0)
 		}
-		},1200);
-		
+
+
 		if($window.sessionStorage.username){
 			$scope.hideNonLogin = "ng-hide"
 		}
@@ -1538,10 +1634,10 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 			var longitude = markerLng;
 
 			var jsondataCity = JSON.stringify({latitude,longitude});
-	 		var getCategories = categoriesService.getCategories( jsondataCity ).then(function (data){
-				$scope.categoriesList = data.data.categories;
-			});
 			$timeout(function(){
+				var getCategories = categoriesService.getCategories( jsondataCity ).then(function (data){
+				$scope.categoriesList = data.data.categories;
+				});
 				var jsondata = JSON.stringify({"coords_criterium":{
 														  	"max_lat":maxlat,
 														    "min_lat":minlat,
@@ -1679,9 +1775,8 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 			location.longitude = markerLng;
 			console.log(location.latitude);
 			console.log(location.longitude);
-			console.log({user,issue,location});
 			var jsondataSubmit = JSON.stringify({user,issue,location});
-			
+			console.log(jsondataSubmit);
 			var getIssueSubmit = issueSubmitService.getIssueSubmit( jsondataSubmit ).then(function (data){
 				var issueData = data.data;
 				console.log(issueData);
