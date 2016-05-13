@@ -13,7 +13,7 @@
                                   <p>{{errorId}}</p>
                                   <p>{{errorLocation}}</p>
                                   <p>{{errorRealization}}<p>
-                                </div>
+              </div>
 
 		        <h1>Nieuw {{issueName}}</h1>
             <div class="switchButton center">
@@ -36,7 +36,7 @@
                                         <button class="btn btn-primary gllpSearchButton" type="button" ng-click="clickSearchCreateIssue()"><span class="glyphicon glyphicon-search"></span><span class="hidden-xs">Zoeken</span></button>
                                      </span>
                                   </div>
-                                  <div class="gllpMap" id="googleMapCreateProblem" ng-click="categoriesData()"></div>
+                                  <div class="gllpMap" id="googleMapCreateProblem"></div>
                                   <input type="hidden" class="gllpLatitude" value="52.158367"/>
                                   <input type="hidden" class="gllpLongitude" value="4.492999"/>
                                   <input type="hidden" class="gllpZoom" value="12"/>
@@ -54,7 +54,7 @@
                                 </div>
                                <div class="form-group">
                                     <div class="col-sm-12 form-col" style="margin-bottom: 10px;" ng-class="{'has-error':errorId}">
-                                        <select class="combobox" id="category" ng-model="categoryId" ng-options="categories.id as categories.title for categories in categoriesList" style="{{errorIdStyle}}">
+                                        <select class="combobox" id="category" ng-model="categoryId" ng-click="categoriesData()" ng-options="categories.id as categories.title for categories in categoriesList" style="{{errorIdStyle}}">
                                             <option value=""  disabled selected>Categorie</option>
                                         </select>
                                     </div>
@@ -134,11 +134,11 @@
                                         <button class="btn btn-primary gllpSearchButton" type="button" ng-click="clickSearchCreateIssue()"><span class="glyphicon glyphicon-search"></span><span class="hidden-xs">Zoeken</span></button>
                                      </span>
                                   </div>
-                                  <div class="gllpMap" id="googleMapCreateIdea" ng-click="categoriesData()"></div>
+                                  <div class="gllpMap" id="googleMapCreateIdea"></div>
                                   <input type="hidden" class="gllpLatitude" value="52.158367"/>
                                   <input type="hidden" class="gllpLongitude" value="4.492999"/>
                                   <input type="hidden" class="gllpZoom" value="12"/>
-                                  <input type="text" class="gllpLocationName noborder" id="location" readonly size=42/>
+                                  <input type="text" class="gllpLocationName noborder" id="location2" readonly size=42/>
                                   <p class=" warning-text text-primary">Deze gemeente heeft niet aangegeven dat ze uw melding binnenin behandeling nemen binnen 4 weken"</p>
                                 </fieldset> 
                               </div>
@@ -175,14 +175,14 @@
 	    </div>
 	    
 	    <!--  sidebar right -->
-	    <div class="col-lg-3 hidden-xs  {{hideMyIssue}}" >
+	    <div class="col-lg-3 hidden-xs " ng-hide="results.length == 0 || myIssuesList == null">
 		    <div class="panel side-panel panel-default">
 	                <div class="panel-heading">
                             <strong>Mijn Meldingen</strong>
                         </div>
       			<div class="panel-body">
                           <div class="list-group" >
-                            <a href="/myIssues/{{myIssues.id}}" class="list-group-item clearfix" ng-repeat="myIssues in myIssuesList| filter : {type:'problem'} | filter: {status:'open'} | orderBy : 'created_at' : true |limitTo:3"ng-click="clickIssues()">
+                            <a href="/myIssues/{{myIssues.id}}" class="list-group-item clearfix" ng-repeat="myIssues in myIssuesList| orderBy : 'created_at' : true |limitTo:3  | filter : x as results" ng-click="clickIssues()">
                               <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
                               <strong> {{myIssues.title}}</strong> {{myIssues.location.full_address}}
                               {{myIssues.status}}

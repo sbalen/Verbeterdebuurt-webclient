@@ -55,9 +55,16 @@
 <!-- main container -->
 <div class="col-lg-6 main-container">
 
-    <span us-spinner spinner-key="spinner-1"></span>
     <div class="panel panel-default main-panel {{hide}}" ng-repeat="newProblem in problemIdList |filter : {id : id()}" >
         <a href="{{lastUrl}}" class="close" aria-label="close" >&times;</a>
+         
+         <div class="errorMessage">
+             <div class="alert alert-danger" ng-hide="hideError" >
+                                      <a class="close " aria-label="close" ng-click="closeError()" ng-hide="hideError" >&times;</a>
+                                      <p>{{errorVote}}</p>
+             </div>    
+         </div>
+
         <h1>{{newProblem.title}}<br><small>{{newProblem.location.full_address}}</small></h1>
         <div class="thumbnail right-caption span4">
             <img class="img-responsive" src="./img/20130913_151618_1.jpg" alt="Plaatje van de situatie" ng-if="newProblem.image">
@@ -87,7 +94,7 @@
                         </tr>
                         <tr>
                             <td>Status:</td>
-                            <td>Open <a class="{{hideLogStatus}}" ng-click="logStatus()">Meer >> </a></td>
+                            <td>{{newProblem.status}} <a class="{{hideLogStatus}}" ng-click="logStatus()">Meer >> </a></td>
                         </tr>
                         <tr class="{{hideStatus}}">
                             <td colspan="3">
@@ -108,7 +115,7 @@
         <h2>Beschrijving</h2>
         <p>{{newProblem.description}} </p>
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="{{stemModal}}" ng-click="sessionValid()">Reageer <span class="badge">{{newProblem.comments}}</span></button>
-        <button type="button" class="btn btn-primary" ng-click="sessionValid()">Stem <span class="badge">{{newProblem.votes}}</span></button>
+        <button type="button" class="btn btn-primary" ng-click="voteSubmit()">Stem <span class="badge">{{newProblem.votes}}</span></button>
         <h2>Reacties</h2>
         <ul class="commentList" >
             <li ng-repeat="comment in commentList">

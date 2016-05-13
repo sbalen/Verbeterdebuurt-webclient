@@ -235,6 +235,12 @@ h6 {
 #searchCity{
    border-radius: 8px;
 }
+
+.glyphicon-search{
+    padding-right: 5px;
+    
+}
+
 //main container
 .container{
   padding-left:0px;
@@ -577,3 +583,19 @@ margin-right: 10px; margin-top: 10px;
                                }
 .center { text-align:center; }
 
+//create issue
+#location2 {
+    padding-top: 16px;
+    margin-left: 16px;
+    padding-bottom: 10px;
+    border-color: #fff;
+    border: 0;
+    outline: none;
+    font-family: "Merriweather",serif;
+    font-size: 12px;
+}
+
+// error message
+.errorMessage{
+    margin-top: 24px;
+}
