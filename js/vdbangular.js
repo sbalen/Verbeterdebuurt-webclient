@@ -1552,9 +1552,13 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                     $scope.successAlert = "";
                     $scope.successClass = "";
 					$scope.overlay="overlay";
-                    $(window).scrollTop(0);
+
+                     $(window).scrollTop(0);
+
+               
 
 					$rootScope.globaloverlay = "";
+
 
 
 				}	
@@ -1588,9 +1592,13 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                     $window.sessionStorage.postcode = getLogin.user_profile.postcode;
                     $window.sessionStorage.city = getLogin.user_profile.city;
                     $window.sessionStorage.phone = getLogin.user_profile.phone;
-                    
-                    $rootScope.globaloverlay = "";    
-                    $scope.successAlert = "Profile Updated";
+
+                    usSpinnerService.stop('spinner-1');
+					$scope.overlay = "overlay";
+                            
+                    $rootScope.globaloverlay = "";  
+                    $(window).scrollTop(0);
+                    $scope.successAlert = "Profiel geüpdatet"; 
                     $scope.successClass = "successAlert";
                     $scope.hide = "";
                         
