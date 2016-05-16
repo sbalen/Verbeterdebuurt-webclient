@@ -21,7 +21,7 @@
                                  <img src="./img/IMG_0007.JPG" height="100px" width="100px" style="padding-right:10px;">
                                </div>
                                <div>
-                               <p><strong>{{myIssues.title}}</strong><img class="icon" src="./img/icon_2_21_21.png" /></p>
+                               <p><strong>{{myIssues.title}}</strong><img class="icon" ng-if="myIssues.type === 'problem' " src="./img/icon_2_21_21.png" /><img class="icon" ng-if="myIssues.type === 'idea' " src="./img/icon_idea_2_21_21.png" /></p>
 			                           {{myIssues.location.full_address}}<br/>
                                <span class="text-muted">{{myIssues.created_at}}</span>
                               </div></div>
