@@ -1729,6 +1729,7 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 						$scope.errorLocation =issueData.errors.location;
 					}
 					$rootScope.globaloverlay = "";
+                    $(window).scrollTop(0);
 					
 
 				}
