@@ -69,7 +69,7 @@
         <h1>{{newProblem.title}}<br><small>{{newProblem.location.full_address}}</small></h1>
         <div class="thumbnail right-caption span4">
             <img class="img-responsive" src="./img/20130913_151618_1.jpg" alt="Plaatje van de situatie" ng-if="newProblem.image">
-            <div  class = "img-resposive" ng-if="!newProblem.image" id = "googleMapIssue" ng-init="googleMapIssue(newProblem.location.latitude,newProblem.location.longitude)"></div>
+            <div  class = "img-resposive" ng-if="!newProblem.image" id = "googleMapIssue" ng-init="googleMapIssue(newProblem.location.latitude,newProblem.location.longitude,newProblem.type)"></div>
             <div class="detail-table hidden-xs">
                 <table width="100%">
                     <tbody> 
@@ -144,16 +144,16 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h1 class="modal-title">Reactie plaatsen</h1>
+                <div class="alert alert-danger {{hide}}" >
+                                  <a class="close {{hide}}" aria-label="close" ng-click="close()" >&times;</a>
+                                  <p>{{errorBody}}</p>
+              </div>
             </div>
             <div class="modal-body">
-                <div class="alert alert-danger ng-hide" >
-                    <a class="close" aria-label="close" ng-click="close()" >&times;</a>
-                    <p>{{errorMessage}}</p>
-                </div>
                 <textarea class="form-control" rows="5" id="comment" ng-model="comment"></textarea>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Annuleren</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="close()">Annuleren</button>
                 <button type="button" class="btn btn-success" data-dismiss="{{dissmissModal}}" ng-click="commentSubmit(newProblem.type)">Plaatsen</button>
             </div>
         </div>
