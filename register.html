@@ -3,7 +3,6 @@
 
 
     <div id="main-content" class="container">
-        <span us-spinner spinner-key="spinner-1"></span>
         <!--  sidebar left -->
         <div class="col-md-3 hidden-sm hidden-xs hidden-md">
           
@@ -34,7 +33,7 @@
                         
             </div>
             <h1 class="registerm registeri register">Registreren</h1>
-                        <form class="form-horizontal" role="form">
+                        <form class="form-horizontal position1" role="form" >
                             <div class="panel-body">
                                 <h4>Inloggegevens</h4>
                                 <div class="form-group">
@@ -96,7 +95,7 @@
                             </div>
                             <div class="panel-body">
                                 <h4 style="margin-left: 5px;">Verbinden met social media</h4>
-                                <table style="margin:15px;">
+                                <table class="mediamargin mediamobile">
                                     <tr>
                                         <td style="padding-left:10px;padding-right:10px;"> 
                                            <img class="img-rounded" alt="Twitter" width="49" height="49" src="./img/twitter_s.png">
@@ -105,7 +104,7 @@
                                            Verbeterdebuurt verbinden met Twitter. Houd je vrienden op de hoogte!
                                         </td>
                                         <td style="padding-bottom: 10px;"> 
-                                            <button type="button" class="btn btn-default" style="width: 100%;" disabled>Connect Twitter</button>
+                                            <button type="button" class="btn btn-default " style="width: 100%;" disabled>Connect Twitter</button>
                                         </td>
                                     </tr>
                                     <tr style="padding-top:10px;">
@@ -116,7 +115,7 @@
                                            Verbeterdebuurt verbinden met Facebook. Houd je vrienden op de hoogte!
                                         </td>
                                         <td> 
-                                           <button type="button" class="btn btn-default" disabled>Connect Facebook</button>
+                                           <button type="button" class="btn btn-default "  disabled>Connect Facebook</button>
                                         </td>
                                     </tr>
                                 </table>
@@ -134,7 +133,7 @@
                             </div>
                             
                             <div class="submit-buttons ">
-                                <button type="button" class="btn btn-danger submitm" data-dismiss="modal" ng-click="home()" >Annuleren</button>
+                                <button type="button" class="btn btn-danger submitm bsubmit bmsubmit" data-dismiss="modal" ng-click="home()" >Annuleren</button>
                                 <button type="button" class="btn btn-success" data-dismiss="modal" ng-disabled="!agree" ng-click="register()">Registreren</button>
                             </div>
                         </form>

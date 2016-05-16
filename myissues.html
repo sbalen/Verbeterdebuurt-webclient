@@ -14,14 +14,14 @@
 	        <div class="panel panel-default main-panel">
 		    <h1>Mijn meldingen</h1>
                     <div class="list-group">
-                            <a href="/myIssues/{{myIssues.id}}" class="list-group-item clearfix" dir-paginate="myIssues in myIssuesList | itemsPerPage:totalPage" current-page="currentPage">
+                        <a href="/mijn-meldingen/{{myIssues.id}}" class="list-group-item clearfix" dir-paginate="myIssues in myIssuesList | itemsPerPage:totalPage" current-page="currentPage">
                                 <input type="hidden" ng-model="page" value="{{currentPage}}">
                                <div width="100%" class="clearfix">
                                <div class="pull-left">
                                  <img src="./img/IMG_0007.JPG" height="100px" width="100px" style="padding-right:10px;">
                                </div>
                                <div>
-                               <p><strong>{{myIssues.title}}</strong><img class="icon" src="./img/icon_2_21_21.png" /></p>
+                               <p><strong>{{myIssues.title}}</strong><img class="icon" ng-if="myIssues.type === 'problem' " src="./img/icon_2_21_21.png" /><img class="icon" ng-if="myIssues.type === 'idea' " src="./img/icon_idea_2_21_21.png" /></p>
 			                           {{myIssues.location.full_address}}<br/>
                                <span class="text-muted">{{myIssues.created_at}}</span>
                               </div></div>
@@ -34,6 +34,10 @@
                               </span>
                             </a>
                      </div> 
+                    <div class="notice-no-issue" ng-show="count<=0">
+                        Je hebt nog geen meldingen. <a href="createissue">Klik hier</a> om een melding te maken.
+                    </div>
+                
                      <span class="clearfix">
                                     <div class="submit-buttons pull-right">
 				        <nav>
