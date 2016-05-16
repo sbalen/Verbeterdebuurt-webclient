@@ -268,11 +268,11 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
 		controller : 'mainCtrl'
 		
 	})
-	.when('/city/:cityName', {
+    .when('/gemeente/:cityName', {
 		templateUrl: 'map.html',
 		controller : 'mainCtrl' 
 	})
-	.when('/issues/:id',{
+    .when('/meldingen/:id',{
 		templateUrl :'issuesView.html',
 		controller : 'issuesCtrl'
 	})
@@ -281,11 +281,11 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
 		controller : 'mentionCtrl'
 	})
 
-    .when('/myissues', {
+    .when('/mijn-meldingen', {
 		templateUrl: 'myissues.html',
 		controller : 'myIssuesCtrl'	
 	})
-	.when('/myIssues/:id', {
+    .when('/mijn-meldingen/:id', {
 		templateUrl: 'myIssueDetail.html',
 		controller: 'myIssuesDetailCtrl'
 	})
@@ -295,28 +295,28 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
 		
 	})
     
-    .when('/register', {
+    .when('/registratie', {
 		templateUrl: 'register.html'
         
     })
     
-    .when('/regisconf',{
+    .when('/bevestiging-registratie',{
         templateUrl: 'regisconf.html',
         controller : 'regisconfCtrl'
 	})
-    .when('/forgotpass',{
+    .when('/wachtwoord-vergeten',{
         templateUrl: 'forgotpass.html',
         controller : 'forgotCtrl'
 	})
-    .when('/forgotconf',{
+    .when('/bevestiging-wachtwoord-vergeten',{
         templateUrl: 'forgotconf.html',
         controller : 'forgotconfCtrl'
 	})
-    .when('/createissue',{
+    .when('/nieuwe-melding',{
         templateUrl: 'createissues.html',
         controller : 'createissueCtrl'
 	})
-    .when('/profile',{
+    .when('/profiel',{
         templateUrl: 'profile.html',
         controller : 'profileCtrl'
 	})
@@ -576,8 +576,8 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 							if($window.city.long_name !=null){
 							
 							//url change validation	
-							if($location.path().includes("/city/") || $location.path().endsWith("/") ){
-								$location.path("/city/"+$window.city.long_name);
+                                if($location.path().includes("/gemeente/") || $location.path().endsWith("/") ){
+                                $location.path("/gemeente/"+$window.city.long_name);
 								$rootScope.lastUrl = $location.path();
 								$scope.searchCity = city.long_name;	
 							}
@@ -670,7 +670,7 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 								var getdata = data.data;
 								$rootScope.reportList = getdata.report;
 							});
-							$location.path("city/"+$scope.searchCity);
+                            $location.path("gemeente/"+$scope.searchCity);
 						}
 						//move page
 						$scope.clickMenu = function(selected){
@@ -685,7 +685,17 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 										$location.path('/'+"login");
 									}
 									else{
-										$location.path('/'+selected);	
+                                        if(selected == "createissue"){
+                                            $location.path('/nieuwe-melding');
+                                        
+                                        }else if(selected == "myissues"){
+                                            $location.path('/mijn-meldingen');
+                                        }else{
+                
+                                            $location.path('/'+selected);    
+                                        }
+        
+											
 									}
 								}else{
 										$location.path('/'+selected);	
@@ -1062,7 +1072,7 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
 					//usSpinnerService.stop('spinner-1');
 					//$scope.overlay = "overlay";
 					$rootScope.errorSession="";
-					if($rootScope.urlBefore == '/register'){
+                    if($rootScope.urlBefore == '/registratie'){
 						$location.path('/map');
 					}
 					else{
@@ -1079,12 +1089,12 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
 	}
 	//move to register page
 	$scope.register = function(){
-		$location.path('/register');
+        $location.path('/registratie');
 	}
     
       $scope.forgotpass=function()
     {
-        $location.path('/forgotpass');
+          $location.path('/wachtwoord-vergeten');
         
     }
     
@@ -1207,7 +1217,7 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
             
             if(getRegister.success)
                 {
-                    $location.path('/regisconf');
+                    $location.path('/bevestiging-registratie');
                     
                     //usSpinnerService.stop('spinner-1');
 					//$scope.overlay = "overlay";
@@ -1289,7 +1299,7 @@ vdbApp.controller('forgotCtrl', ['$scope','$rootScope','$window','forgotService'
 //        $scope.overlay = "overlayactive";
         $rootScope.globaloverlay = "active";
         
-         $scope.overlay = "overlayactive";
+//         $scope.overlay = "overlayactive";
 		var jsondata = JSON.stringify({"email":""+$scope.femail+""});
         
         $rootScope.tempemail1=$scope.femail;
@@ -1306,14 +1316,14 @@ vdbApp.controller('forgotCtrl', ['$scope','$rootScope','$window','forgotService'
                 
                 if (getForgot.success=="false"){
                 $scope.errorFEmail = getForgot.error;
-                usSpinnerService.stop("spinner-1");
-                $scope.overlay="overlay";
+                //usSpinnerService.stop("spinner-1");
+                //$scope.overlay="overlay";
                 $scope.hide = "";
                 }
 
                 else{
                         
-                        $location.path('/forgotconf');
+                $location.path('/bevestiging-wachtwoord-vergeten');
                         
                     }
                
@@ -1736,7 +1746,7 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 				else{
 					//success
 					var issueId = issueData.issue_id;
-					$location.path(/myIssues/+issueId);
+                    $location.path(/mijn-meldingen/+issueId);
 					$rootScope.globaloverlay = "";
 
 				}
@@ -1812,7 +1822,7 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 				else{
 					//success
 					var issueId = issueData.issue_id;
-					$location.path(/myIssues/+issueId);
+                    $location.path(/mijn-meldingen/+issueId);
 					$rootScope.globaloverlay = "";
 
 				}
