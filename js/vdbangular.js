@@ -1411,8 +1411,7 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
 		$scope.hide = "";
 	}
     
-    $scope.u
-    sername = $window.sessionStorage.username ;
+    $scope.username = $window.sessionStorage.username ;
     $scope.email = $window.sessionStorage.email;
     if($window.sessionStorage.sex == 'man')
         {
