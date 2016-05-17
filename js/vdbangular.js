@@ -1425,8 +1425,8 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
 	}
     
     $scope.$on('fb.auth.authResponseChange', function() {
-        $scope.status = $facebook.isConnected();
-        if($scope.status) {
+        $scope.fbstatus = $facebook.isConnected();
+        if($scope.fbstatus) {
             $facebook.api('/me').then(function(user) {
                 $scope.facebook = user;
                 console.log(user);
