@@ -1925,6 +1925,7 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 vdbApp.controller('deleteIssueCtrl', ['$scope','$rootScope','$routeParams','$window','statusChangeService','myIssuesService',function ($scope,$rootScope,$routeParams,$window,statusChangeService,myIssuesService) {
 		
 		$scope.deleteIssue = function(){
+			$rootScope.globaloverlay="active";
 			var user = {};
 			user.username = $window.sessionStorage.username;
 			user.password_hash = $window.sessionStorage.password_hash;
@@ -1943,6 +1944,9 @@ vdbApp.controller('deleteIssueCtrl', ['$scope','$rootScope','$routeParams','$win
 						var count = getdata.count;
 			            $rootScope.myIssueCount = count;
 						$rootScope.myIssuesList = getdata.issues;
+						$('#DeleteModal').modal('hide');
+						$('.modal-backdrop').hide();
+						$rootScope.globaloverlay = "";
 					})
 			});	
 		}
