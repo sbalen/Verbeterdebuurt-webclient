@@ -889,9 +889,11 @@ vdbApp.controller('myIssuesCtrl', ['$scope','$rootScope','$window','$location','
 			$scope.count = getdata.count;
 			$scope.myIssuesList = getdata.issues;
 		})
+		$scope.myIssueDetailClick = function(id){
+			alert(id);
+			$location.path("/mijn-meldingen/"+id);
+		}
 		
-
-
 }])
 
 vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootScope','$location','$window','myIssuesService','usSpinnerService','workLogService','commentService','voteSubmitService', function ($scope,$routeParams,$http,$rootScope,$location,$window,myIssuesService,usSpinnerService,workLogService,commentService,voteSubmitService) {
