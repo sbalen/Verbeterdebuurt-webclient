@@ -549,7 +549,7 @@ vdbApp.run(['$rootScope', '$window', function($rootScope, $window) {
     
     }]);
 
-vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootScope','$routeParams','$http','issuesService','reportService',function ($scope,$timeout,$window,$location,$rootScope,$routeParams,$http,issuesService,reportService) {
+vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootScope','$routeParams','$http','issuesService','reportService', '$facebook', function ($scope,$timeout,$window,$location,$rootScope,$routeParams,$http,issuesService,reportService,$facebook) {
 						    
                         menuSelected($rootScope,'home');
 						
@@ -645,11 +645,22 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 								return true;
 							}
 						}
+                        
+                        
+                       
+                        
+                        
 						//logOut
 						$scope.logout = function(){
 							$window.sessionStorage.clear();
                            // $('.dropdown-menu').hide();
                             $scope.userpanel=0;
+                            
+                            
+                            $scope.fbstatus = $facebook.isConnected();
+                            if($scope.fbstatus) {
+                                $facebook.logout();
+                            }
                             
                             $location.path('/');
 						}
@@ -1036,7 +1047,7 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 
 }])
 
-vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','$location','usSpinnerService', function ($scope,$rootScope,$window,loginService,$location,usSpinnerService) {
+vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','$location','usSpinnerService', '$facebook', function ($scope,$rootScope,$window,loginService,$location,usSpinnerService,$facebook) {
 	$scope.hide = "ng-hide";
     $scope.lusername="";
     $scope.lpassword="";
@@ -1056,6 +1067,33 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
 	if($rootScope.errorSession){
 		$scope.hide = "";
 	}
+    
+    //facebook login
+    //this is the function to do the login or do redirect to registration
+    $scope.$on('fb.auth.authResponseChange', function() {
+        $scope.fbstatus = $facebook.isConnected();
+        if($scope.fbstatus) {
+            alert("am I logged in?");
+            
+            $facebook.api('/me').then(function(user) {
+                
+                
+                
+                
+            });
+        }
+        else{
+            alert("hell no, I'm not login");
+        }
+    });
+    
+    $scope.FBlogin = function(){
+        $facebook.login();
+    }
+    
+    
+    
+    
 	$scope.login = function(){
 		//usSpinnerService.spin('spinner-1');
         $rootScope.globaloverlay = "active";
@@ -1424,12 +1462,16 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
 		$scope.hide = "";
 	}
     
+    //this is the function to sync the profile
     $scope.$on('fb.auth.authResponseChange', function() {
         $scope.fbstatus = $facebook.isConnected();
         if($scope.fbstatus) {
+            alert("am I synced in?");
+            
+            //sync data here
             $facebook.api('/me').then(function(user) {
-                $scope.facebook = user;
-                console.log(user);
+                $scope.facebookuser = user;
+                
             });
         }
     });
