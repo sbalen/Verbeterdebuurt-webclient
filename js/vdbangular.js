@@ -21,6 +21,7 @@ var workLogService = new Object();
 var categoriesService = new Object();
 var issueSubmitService = new Object();
 var voteSubmitService = new Object();
+var statusChangeService = new Object();
 
 
 //google map
@@ -534,6 +535,19 @@ vdbApp.factory('voteSubmitService', ['$http',function ($http) {
 	};
 }])
 
+vdbApp.factory('statusChangeService', ['$http',function ($http) {
+	return {
+			getStatusChange : function (jsondata){
+				return $http.post(APIURL+'statusChange',jsondata)
+				.success(function (data){
+					statusChangeService.data = data;
+					return statusChangeService.data;
+				})
+				return statusChangeService.data
+			}
+	};
+}])
+
 
 vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootScope','$routeParams','$http','issuesService','reportService',function ($scope,$timeout,$window,$location,$rootScope,$routeParams,$http,issuesService,reportService) {
 						menuSelected($rootScope,'home');
@@ -886,12 +900,17 @@ vdbApp.controller('myIssuesCtrl', ['$scope','$rootScope','$window','$location','
 		// console.log(jsondata);
 		var getMyIssues = myIssuesService.getMyIssues( jsondata ).then(function (data){
 			var getdata = data.data;
-			$scope.count = getdata.count;
-			$scope.myIssuesList = getdata.issues;
+			$rootScope.count = getdata.count;
+			$rootScope.myIssuesList = getdata.issues;
 		})
+		$scope.myIssueDetailClick = function(id){
+			alert(id);
+			$location.path("/mijn-meldingen/"+id);
+		}
 		
-
-
+		$scope.deletePopup = function(id){
+			$rootScope.deleteId = id;
+		}
 }])
 
 vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootScope','$location','$window','myIssuesService','usSpinnerService','workLogService','commentService','voteSubmitService', function ($scope,$routeParams,$http,$rootScope,$location,$window,myIssuesService,usSpinnerService,workLogService,commentService,voteSubmitService) {
@@ -915,7 +934,7 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 
 		var getMyIssues = myIssuesService.getMyIssues( jsondata ).then(function (data){
 			var getdata = data.data;
-			$scope.count = getdata.count;
+			$rootScope.count = getdata.count;
 			$rootScope.myIssuesList = getdata.issues;
 			$rootScope.globaloverlay = "";
 		})
@@ -997,7 +1016,7 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 				}else {
 					var getMyIssues = myIssuesService.getMyIssues( jsondata ).then(function (data){
 						var getdata = data.data;
-						$scope.myIssuesList = getdata.issues;
+						$rootScope.myIssuesList = getdata.issues;
 					});
 
 				}
@@ -1409,8 +1428,7 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
 		$scope.hide = "";
 	}
     
-    $scope.u
-    sername = $window.sessionStorage.username ;
+    $scope.username = $window.sessionStorage.username ;
     $scope.email = $window.sessionStorage.email;
     if($window.sessionStorage.sex == 'man')
         {
@@ -1643,8 +1661,8 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 		var getMyIssues = myIssuesService.getMyIssues( jsondata ).then(function (data){
 			var getdata = data.data;
 			var count = getdata.count;
-            $scope.myIssueCount = count;
-			$scope.myIssuesList = getdata.issues;
+            $rootScope.myIssueCount = count;
+			$rootScope.myIssuesList = getdata.issues;
 		})
 		//first initial
 		$timeout(function(){
@@ -1901,8 +1919,36 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 			alert("upload haha");
 		}
 				
-		
+		}])
 
+vdbApp.controller('deleteIssueCtrl', ['$scope','$rootScope','$routeParams','$window','statusChangeService','myIssuesService',function ($scope,$rootScope,$routeParams,$window,statusChangeService,myIssuesService) {
+		
+		$scope.deleteIssue = function(){
+			$rootScope.globaloverlay="active";
+			var user = {};
+			user.username = $window.sessionStorage.username;
+			user.password_hash = $window.sessionStorage.password_hash;
+			var issue_id = $rootScope.deleteId;
+			var status = "deleted";
+			var jsondata = JSON.stringify({user,issue_id,status});
+			var getStatusChange = statusChangeService.getStatusChange( jsondata ).then(function(data){
+				var getStatusChange = data.data;
+				console.log(getStatusChange);
+				//load myissue
+				var jsondata = JSON.stringify({"user":{ "username":""+$window.sessionStorage.username+"",
+												"password_hash":""+$window.sessionStorage.password_hash+""
+											}});
+				var getMyIssues = myIssuesService.getMyIssues( jsondata ).then(function (data){
+						var getdata = data.data;
+						var count = getdata.count;
+			            $rootScope.myIssueCount = count;
+						$rootScope.myIssuesList = getdata.issues;
+						$('#DeleteModal').modal('hide');
+						$('.modal-backdrop').hide();
+						$rootScope.globaloverlay = "";
+					})
+			});	
+		}
 }])
 
 	
