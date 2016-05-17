@@ -683,9 +683,11 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 								if(selected == "myissues"|| selected == "createissue"){
 									if(!$window.sessionStorage.username){
 										if(selected == 'myissues'){
+											$rootScope.urlBefore = "/mijn-meldingen";
 											menuSelected($rootScope,'myIssues');
 										}
 										if( selected == 'createissue'){
+											$rootScope.urlBefore = "/nieuwe-melding";
 											menuSelected($rootScope,'createissue');
 										}
 										$location.path('/'+"login");
@@ -897,7 +899,7 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 		$scope.hideStatus="ng-hide";
 		$scope.errorVote = "";
 		$scope.hideError = 1;
-		
+		menuSelected($rootScope,'myIssues');
 		$rootScope.globaloverlay = "active";
 		$scope.id = function(){
 			return $routeParams.id;
@@ -1894,6 +1896,9 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 				google.maps.event.trigger(map3,'resize');
 			},0)
 			
+		}
+		$scope.upload = function (){
+			alert("upload haha");
 		}
 				
 		
