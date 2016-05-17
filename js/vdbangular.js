@@ -1954,7 +1954,7 @@ vdbApp.controller('deleteIssueCtrl', ['$scope','$rootScope','$routeParams','$win
 vdbApp.controller('closeIssueCtrl', ['$scope','$rootScope','$routeParams','$window','statusChangeService','myIssuesService', function ($scope,$rootScope,$routeParams,$window,statusChangeService,myIssuesService) {
 	
 		$scope.closeIssueClick = function(){
-			// $rootScope.globaloverlay = "active";
+			$rootScope.globaloverlay = "active";
 			var user = {};
 			user.username = $window.sessionStorage.username;
 			user.password_hash = $window.sessionStorage.password_hash;
