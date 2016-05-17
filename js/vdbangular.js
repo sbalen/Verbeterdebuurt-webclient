@@ -908,8 +908,8 @@ vdbApp.controller('myIssuesCtrl', ['$scope','$rootScope','$window','$location','
 			$location.path("/mijn-meldingen/"+id);
 		}
 		
-		$scope.deletePopup = function(id){
-			$rootScope.deleteId = id;
+		$scope.getIdStatus = function(id){
+			$rootScope.getStatusId = id;
 		}
 }])
 
@@ -1928,7 +1928,7 @@ vdbApp.controller('deleteIssueCtrl', ['$scope','$rootScope','$routeParams','$win
 			var user = {};
 			user.username = $window.sessionStorage.username;
 			user.password_hash = $window.sessionStorage.password_hash;
-			var issue_id = $rootScope.deleteId;
+			var issue_id = $rootScope.getStatusId;
 			var status = "deleted";
 			var jsondata = JSON.stringify({user,issue_id,status});
 			var getStatusChange = statusChangeService.getStatusChange( jsondata ).then(function(data){
@@ -1951,5 +1951,37 @@ vdbApp.controller('deleteIssueCtrl', ['$scope','$rootScope','$routeParams','$win
 		}
 }])
 
+vdbApp.controller('closeIssueCtrl', ['$scope','$rootScope','$routeParams','$window','statusChangeService','myIssuesService', function ($scope,$rootScope,$routeParams,$window,statusChangeService,myIssuesService) {
+	
+		$scope.closeIssueClick = function(){
+			// $rootScope.globaloverlay = "active";
+			var user = {};
+			user.username = $window.sessionStorage.username;
+			user.password_hash = $window.sessionStorage.password_hash;
+			var issue_id = $rootScope.getStatusId;
+			var result = $scope.feedback;
+			var appreciation = $scope.rate;
+			var status = "closed";
+			console.log({user,issue_id,result,appreciation,status});
+				var jsondata = JSON.stringify({user,issue_id,result,appreciation,status});
+				var getStatusChange = statusChangeService.getStatusChange( jsondata ).then(function(data){
+					var getStatusChange = data.data;
+					console.log(getStatusChange);
+					//load myissue
+					var jsondata = JSON.stringify({"user":{ "username":""+$window.sessionStorage.username+"",
+													"password_hash":""+$window.sessionStorage.password_hash+""
+												}});
+					var getMyIssues = myIssuesService.getMyIssues( jsondata ).then(function (data){
+							var getdata = data.data;
+							var count = getdata.count;
+				            $rootScope.myIssueCount = count;
+							$rootScope.myIssuesList = getdata.issues;
+							$('#CloseModal').modal('hide');
+							$('.modal-backdrop').hide();
+							$rootScope.globaloverlay = "";
+						})
+				});
+		}
+}])
 	
 
