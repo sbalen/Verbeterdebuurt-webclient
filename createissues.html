@@ -184,7 +184,7 @@
                         </div>
       			<div class="panel-body">
                           <div class="list-group" >
-                              <a href="/mijn-meldingen/{{myIssues.id}}" class="list-group-item clearfix" ng-repeat="myIssues in myIssuesList| orderBy : 'created_at' : true |limitTo:3  | filter : x as results" ng-click="clickIssues()">
+                            <a href="/mijn-meldingen/{{myIssues.id}}" class="list-group-item clearfix" ng-repeat="myIssues in myIssuesList| orderBy : 'created_at' : true |limitTo:3  | filter : x as results" ng-click="clickIssues()">
                               <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
                               <strong> {{myIssues.title}}</strong> {{myIssues.location.full_address}}
                               {{myIssues.status}}
@@ -214,5 +214,5 @@
 		});	
         });
         $("#file-input").fileinput();
-        $("#file-input").fileinput({'showUpload':'false'});
+        $("#file-input").fileinput({'showUpload':'true'});
 </script>

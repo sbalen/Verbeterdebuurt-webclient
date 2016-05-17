@@ -21,6 +21,7 @@ var workLogService = new Object();
 var categoriesService = new Object();
 var issueSubmitService = new Object();
 var voteSubmitService = new Object();
+var statusChangeService = new Object();
 
 
 //google map
@@ -28,7 +29,7 @@ window.onload = function(){
       var mainLat = 52.158367;
       var mainLng = 4.492999;
       this._map_center = {lat: mainLat , lng: mainLng};
-      this._marker_positions = [{lat: 27.1959742, lng: 78.02423269999100}, {lat: 27.1959733, lng: 78.02423269999992}] ;
+      //this._marker_positions = [{lat: 27.1959742, lng: 78.02423269999100}, {lat: 27.1959733, lng: 78.02423269999992}] ;
       var mapOptions = {
         zoom: 15,
         maxZoom:17,
@@ -108,16 +109,14 @@ function googleMapCreateProblem(latlng){
 	 marker.setMap(map3);
 	 marker.setPosition(map3.getCenter());
 	 marker.setOptions({draggable:true,icon:"/img/icon_2_42_42.png"});
-	 map3.setOptions({draggable:true,zoomControl:true,scrollwheel: true, disableDoubleClickZoom: true,streetViewControl: false,disableDefaultUI:true});
+	 map3.setOptions({draggable:true,zoomControl:true,scrollwheel: false, disableDoubleClickZoom: true,streetViewControl: false,disableDefaultUI:true});
 	 markerLat = marker.getPosition().lat();
 	 markerLng = marker.getPosition().lng();
-	
+	 console.log("problem"+map3.getCenter().lat()+" "+map3.getCenter().lng());
 	 sycGoogleMap3(map3);
 	 markerCenter(map3,marker,"location");
 	 getMarkerLocation(marker);
 	 markerGetAddress(marker,"location");
-
-	  
 }
 function googleMapCreateIdea(latlng){
 	var mapOption4 = {
@@ -132,16 +131,14 @@ function googleMapCreateIdea(latlng){
 	 marker.setMap(map4);
 	 marker.setPosition(map4.getCenter());
 	 marker.setOptions({draggable:true,icon:"/img/icon_idea_2_42_42.png"});
-	 map3.setOptions({draggable:true,zoomControl:true,scrollwheel: true, disableDoubleClickZoom: true,streetViewControl: false,disableDefaultUI:true});
+	 map4.setOptions({draggable:true,zoomControl:true,scrollwheel: false, disableDoubleClickZoom: true,streetViewControl: false,disableDefaultUI:true});
 	 markerLat = marker.getPosition().lat();
 	 markerLng = marker.getPosition().lng();
-	
+	 console.log("idea"+map4.getCenter().lat()+" "+map4.getCenter().lng());
 	 sycGoogleMap4(map4);
 	 markerCenter(map4,marker,"location2");
 	 getMarkerLocation(marker);
 	 markerGetAddress(marker,"location2");
-
-	  
 }
 
 //to make other map syncronise
@@ -538,6 +535,19 @@ vdbApp.factory('voteSubmitService', ['$http',function ($http) {
 	};
 }])
 
+vdbApp.factory('statusChangeService', ['$http',function ($http) {
+	return {
+			getStatusChange : function (jsondata){
+				return $http.post(APIURL+'statusChange',jsondata)
+				.success(function (data){
+					statusChangeService.data = data;
+					return statusChangeService.data;
+				})
+				return statusChangeService.data
+			}
+	};
+}])
+
 
 vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootScope','$routeParams','$http','issuesService','reportService',function ($scope,$timeout,$window,$location,$rootScope,$routeParams,$http,issuesService,reportService) {
 						menuSelected($rootScope,'home');
@@ -687,9 +697,11 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 								if(selected == "myissues"|| selected == "createissue"){
 									if(!$window.sessionStorage.username){
 										if(selected == 'myissues'){
+											$rootScope.urlBefore = "/mijn-meldingen";
 											menuSelected($rootScope,'myIssues');
 										}
 										if( selected == 'createissue'){
+											$rootScope.urlBefore = "/nieuwe-melding";
 											menuSelected($rootScope,'createissue');
 										}
 										$location.path('/'+"login");
@@ -888,12 +900,17 @@ vdbApp.controller('myIssuesCtrl', ['$scope','$rootScope','$window','$location','
 		// console.log(jsondata);
 		var getMyIssues = myIssuesService.getMyIssues( jsondata ).then(function (data){
 			var getdata = data.data;
-			$scope.count = getdata.count;
-			$scope.myIssuesList = getdata.issues;
+			$rootScope.count = getdata.count;
+			$rootScope.myIssuesList = getdata.issues;
 		})
+		$scope.myIssueDetailClick = function(id){
+			alert(id);
+			$location.path("/mijn-meldingen/"+id);
+		}
 		
-
-
+		$scope.deletePopup = function(id){
+			$rootScope.deleteId = id;
+		}
 }])
 
 vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootScope','$location','$window','myIssuesService','usSpinnerService','workLogService','commentService','voteSubmitService', function ($scope,$routeParams,$http,$rootScope,$location,$window,myIssuesService,usSpinnerService,workLogService,commentService,voteSubmitService) {
@@ -901,7 +918,7 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 		$scope.hideStatus="ng-hide";
 		$scope.errorVote = "";
 		$scope.hideError = 1;
-		
+		menuSelected($rootScope,'myIssues');
 		$rootScope.globaloverlay = "active";
 		$scope.id = function(){
 			return $routeParams.id;
@@ -917,8 +934,8 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 
 		var getMyIssues = myIssuesService.getMyIssues( jsondata ).then(function (data){
 			var getdata = data.data;
-			$scope.count = getdata.count;
-			$scope.myIssuesList = getdata.issues;
+			$rootScope.count = getdata.count;
+			$rootScope.myIssuesList = getdata.issues;
 			$rootScope.globaloverlay = "";
 		})
 		$scope.id = function(){
@@ -999,7 +1016,7 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 				}else {
 					var getMyIssues = myIssuesService.getMyIssues( jsondata ).then(function (data){
 						var getdata = data.data;
-						$scope.myIssuesList = getdata.issues;
+						$rootScope.myIssuesList = getdata.issues;
 					});
 
 				}
@@ -1627,7 +1644,6 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
 vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout','categoriesService','issueSubmitService','myIssuesService','$location','issuesService', function ($scope,$rootScope,$window,$timeout,categoriesService,issueSubmitService,myIssuesService,$location,issuesService) {	
 		$scope.hide = "ng-hide";
 		$scope.issueName = "Probleem"
-		$scope.hideProblem = ""
 		$scope.hideIssue = 1;
 		$scope.slide = "";
         $scope.myIssueCount = 0;
@@ -1637,7 +1653,6 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 		if(!$window.sessionStorage.username){
 			$location.path("/login");
 		}
-		$scope.hideMyIssue = "ng-hide";
 		//show my issue
 		var jsondata = JSON.stringify({"user":{ "username":""+$window.sessionStorage.username+"",
 												"password_hash":""+$window.sessionStorage.password_hash+""
@@ -1646,8 +1661,8 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 		var getMyIssues = myIssuesService.getMyIssues( jsondata ).then(function (data){
 			var getdata = data.data;
 			var count = getdata.count;
-            $scope.myIssueCount = count;
-			$scope.myIssuesList = getdata.issues;
+            $rootScope.myIssueCount = count;
+			$rootScope.myIssuesList = getdata.issues;
 		})
 		//first initial
 		$timeout(function(){
@@ -1900,9 +1915,36 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 			},0)
 			
 		}
+		$scope.upload = function (){
+			alert("upload haha");
+		}
 				
-		
+		}])
 
+vdbApp.controller('deleteIssueCtrl', ['$scope','$rootScope','$routeParams','$window','statusChangeService','myIssuesService',function ($scope,$rootScope,$routeParams,$window,statusChangeService,myIssuesService) {
+		
+		$scope.deleteIssue = function(){
+			var user = {};
+			user.username = $window.sessionStorage.username;
+			user.password_hash = $window.sessionStorage.password_hash;
+			var issue_id = $rootScope.deleteId;
+			var status = "deleted";
+			var jsondata = JSON.stringify({user,issue_id,status});
+			var getStatusChange = statusChangeService.getStatusChange( jsondata ).then(function(data){
+				var getStatusChange = data.data;
+				console.log(getStatusChange);
+				//load myissue
+				var jsondata = JSON.stringify({"user":{ "username":""+$window.sessionStorage.username+"",
+												"password_hash":""+$window.sessionStorage.password_hash+""
+											}});
+				var getMyIssues = myIssuesService.getMyIssues( jsondata ).then(function (data){
+						var getdata = data.data;
+						var count = getdata.count;
+			            $rootScope.myIssueCount = count;
+						$rootScope.myIssuesList = getdata.issues;
+					})
+			});	
+		}
 }])
 
 	
