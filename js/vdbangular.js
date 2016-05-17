@@ -1,4 +1,4 @@
-var vdbApp = angular.module('vdbApp', ['ngRoute','angularSpinner','angularUtils.directives.dirPagination'])
+var vdbApp = angular.module('vdbApp', ['ngRoute','angularSpinner','angularUtils.directives.dirPagination','ngFacebook'])
 var APIURL = "https://staging.verbeterdebuurt.nl/api.php/json_1_3/";
 var geocoder = new google.maps.Geocoder();
 var infoWindow = new google.maps.InfoWindow();
@@ -539,8 +539,23 @@ vdbApp.factory('voteSubmitService', ['$http',function ($http) {
 }])
 
 
+vdbApp.run(['$rootScope', '$window', function($rootScope, $window) {
+        (function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = "//connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+        $rootScope.$on('fb.load', function() {
+            $window.dispatchEvent(new Event('fb.load'));
+        });
+    
+    }]);
+
 vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootScope','$routeParams','$http','issuesService','reportService',function ($scope,$timeout,$window,$location,$rootScope,$routeParams,$http,issuesService,reportService) {
-						menuSelected($rootScope,'home');
+						    
+                        menuSelected($rootScope,'home');
 						
                         $scope.userpanel=1;
     
@@ -1398,8 +1413,8 @@ vdbApp.controller('forgotconfCtrl', ['$scope','$rootScope','$window','usSpinnerS
 
 
     
-vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileService','loginService','$location','usSpinnerService', function ($scope,$rootScope,$window,profileService,loginService,$location,usSpinnerService) {
-	    $scope.hide = "ng-hide";
+vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileService','loginService','$location','usSpinnerService', '$facebook', function ($scope,$rootScope,$window,profileService,loginService,$location,usSpinnerService,$facebook) {
+     $scope.hide = "ng-hide";
 	
      $scope.home = function(){
 		        $location.path('/');
@@ -1411,8 +1426,34 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
 		$scope.hide = "";
 	}
     
-    $scope.u
-    sername = $window.sessionStorage.username ;
+    $scope.$on('fb.auth.authResponseChange', function() {
+        $scope.status = $facebook.isConnected();
+        if($scope.status) {
+            $facebook.api('/me').then(function(user) {
+                $scope.facebook = user;
+                console.log(user);
+            });
+        }
+    });
+
+    
+     
+    $scope.connectFacebook = function(){
+        $facebook.login();
+
+    }
+
+    //                        $scope.loginToggle = function() {
+    //                            if($scope.status) {
+    //                                $facebook.logout();
+    //                            } else {
+    //                                $facebook.login();
+    //                            }
+    //                        };
+
+
+    
+    $scope.username = $window.sessionStorage.username ;
     $scope.email = $window.sessionStorage.email;
     if($window.sessionStorage.sex == 'man')
         {
@@ -1614,6 +1655,7 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
         }
 	}
   
+    
     
 }])
 
