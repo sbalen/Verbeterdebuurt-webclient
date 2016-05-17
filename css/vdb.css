@@ -351,7 +351,35 @@ h6 {
     border-width: thin;
     z-index: 1020;
     margin-left: 0px;
-    width: 100%; } }
+    width: 100%; }
+
+  .btn-default1 {
+    margin-right: 10px;
+    margin-top: -10px;
+    border-color: #FFFFFF; }
+
+  .btn1 {
+    width: 98%; }
+
+  .dropdown-menu {
+    width: 100%;
+    position: absolute;
+    top: 100%;
+    z-index: 1000;
+    display: none;
+    float: left;
+    padding: 5px 0;
+    list-style: none;
+    font-size: 14px;
+    text-align: left;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+    border-radius: 0px; }
+
+  .dropdown-menu li a {
+    padding-bottom: 10px; } }
+@media (max-width: 477px) {
+  .btn1 {
+    width: 96%; } }
 .switchButton {
   width: 50%;
   height: 50px;
