@@ -27,6 +27,7 @@
                         <p>{{errorPost}}</p>
                         <p>{{errorCity}}</p>
                         <p>{{errorMiddle}}</p>
+                        <p>{{errorFB}}</p>  
                         
                        
                       
@@ -115,7 +116,7 @@
                                            Verbeterdebuurt verbinden met Facebook. Houd je vrienden op de hoogte!
                                         </td>
                                         <td> 
-                                           <button type="button" class="btn btn-default "  disabled>Connect Facebook</button>
+                                            <button type="button" class="btn btn-default "  ng-click="connectFacebook()" ng-disabled="facebookExist">{{facebookMessages}}</button>
                                         </td>
                                     </tr>
                                 </table>
