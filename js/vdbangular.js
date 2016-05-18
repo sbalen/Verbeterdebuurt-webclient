@@ -1137,7 +1137,6 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
         $scope.fbstatus = $facebook.isConnected();
         if($scope.fbstatus) {
             alert("am I logged in?");
-            
             $facebook.api('/me').then(function(user) {
                 
                 
@@ -1620,16 +1619,16 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
     $rootScope.globaloverlay = "active";
     $scope.errorEmail ="";
     $scope.errorOldPassword =  "";
-                    $scope.errorNewPassword = "";
-                    $scope.errorInitials = "";
-                    $scope.errorSurname = "";
-                    $scope.errorAddress = "";
-                    $scope.errorAddressN = "";
-                    $scope.errorPostcode = "";
-                    $scope.errorCity = "";
-                    $scope.errorSex = "";
-                    $scope.errorPasshash = "";
-                    $scope.errorFB = "";
+    $scope.errorNewPassword = "";
+    $scope.errorInitials = "";
+    $scope.errorSurname = "";
+    $scope.errorAddress = "";
+    $scope.errorAddressN = "";
+    $scope.errorPostcode = "";
+    $scope.errorCity = "";
+    $scope.errorSex = "";
+    $scope.errorPasshash = "";
+    $scope.errorFB = "";
         
         
     $scope.hide = "ng-hide";
