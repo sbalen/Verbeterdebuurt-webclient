@@ -1139,6 +1139,7 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
           
             $facebook.api('/me').then(function(user) {
                 
+                $rootScope.globaloverlay = "active";
                 $scope.facebookuser = user;
 
                 
@@ -1159,26 +1160,41 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
                     }
                     else if (result.success){
                         //we got user data here, please log me in!
-                    $window.sessionStorage.username = getLogin.user.username;
-					$window.sessionStorage.email = getLogin.user.email;
-					$window.sessionStorage.password_hash = getLogin.user.password_hash;
-					$window.sessionStorage.name = getLogin.user_profile.name;
-					$window.sessionStorage.initials = getLogin.user_profile.initials;
-					$window.sessionStorage.surname = getLogin.user_profile.surname;
-					$window.sessionStorage.tussenvoegsel = getLogin.user_profile.tussenvoegsel;
-					$window.sessionStorage.sex = getLogin.user_profile.sex;
-					$window.sessionStorage.address = getLogin.user_profile.address;
-					$window.sessionStorage.address_number = getLogin.user_profile.address_number;
-					$window.sessionStorage.address_suffix = getLogin.user_profile.address_suffix;
-					$window.sessionStorage.postcode = getLogin.user_profile.postcode;
-					$window.sessionStorage.city = getLogin.user_profile.city;
-					$window.sessionStorage.phone = getLogin.user_profile.phone;
-					$window.sessionStorage.facebookId = getLogin.user_profile.facebookID;
+                        $window.sessionStorage.username = result.user.username;
+                        $window.sessionStorage.email = result.user.email;
+                        $window.sessionStorage.password_hash = result.user.password_hash;
+                        $window.sessionStorage.name = result.user_profile.name;
+                        $window.sessionStorage.initials = result.user_profile.initials;
+                        $window.sessionStorage.surname = result.user_profile.surname;
+                        $window.sessionStorage.tussenvoegsel = result.user_profile.tussenvoegsel;
+                        $window.sessionStorage.sex = result.user_profile.sex;
+                        $window.sessionStorage.address = result.user_profile.address;
+                        $window.sessionStorage.address_number = result.user_profile.address_number;
+                        $window.sessionStorage.address_suffix = result.user_profile.address_suffix;
+                        $window.sessionStorage.postcode = result.user_profile.postcode;
+                        $window.sessionStorage.city = result.user_profile.city;
+                        $window.sessionStorage.phone = result.user_profile.phone;
+                        $window.sessionStorage.facebookId = result.user_profile.facebookID;
+                        
+                        
+                        $rootScope.loginStatus = function(){
+                            return true;
+                        }
+                        $rootScope.globaloverlay = "";
+                        $rootScope.errorSession="";
+                        if($rootScope.urlBefore == '/registratie'){
+                            $location.path('/map');
+                        }
+                        else{
+                            $location.path($rootScope.urlBefore);
+                        }
+
+                        
                         
                     }
                     
                     
-                    
+                    $rootScope.globaloverlay = "";
                     
                 });
                 
