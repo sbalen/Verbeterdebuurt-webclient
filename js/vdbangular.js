@@ -1159,7 +1159,21 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
                     }
                     else if (result.success){
                         //we got user data here, please log me in!
-                        
+                    $window.sessionStorage.username = getLogin.user.username;
+					$window.sessionStorage.email = getLogin.user.email;
+					$window.sessionStorage.password_hash = getLogin.user.password_hash;
+					$window.sessionStorage.name = getLogin.user_profile.name;
+					$window.sessionStorage.initials = getLogin.user_profile.initials;
+					$window.sessionStorage.surname = getLogin.user_profile.surname;
+					$window.sessionStorage.tussenvoegsel = getLogin.user_profile.tussenvoegsel;
+					$window.sessionStorage.sex = getLogin.user_profile.sex;
+					$window.sessionStorage.address = getLogin.user_profile.address;
+					$window.sessionStorage.address_number = getLogin.user_profile.address_number;
+					$window.sessionStorage.address_suffix = getLogin.user_profile.address_suffix;
+					$window.sessionStorage.postcode = getLogin.user_profile.postcode;
+					$window.sessionStorage.city = getLogin.user_profile.city;
+					$window.sessionStorage.phone = getLogin.user_profile.phone;
+					$window.sessionStorage.facebookId = getLogin.user_profile.facebookID;
                         
                     }
                     
