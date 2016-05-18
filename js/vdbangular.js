@@ -1136,16 +1136,43 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
     $scope.$on('fb.auth.authResponseChange', function() {
         $scope.fbstatus = $facebook.isConnected();
         if($scope.fbstatus) {
-            alert("am I logged in?");
+          
             $facebook.api('/me').then(function(user) {
                 
+                $scope.facebookuser = user;
+
                 
+                //here we create the json to login
+                var facebookID = $scope.facebookuser.id;                
+                var jsondata = JSON.stringify({"user":{facebookID}});
+                
+                console.log(jsondata);
+                
+                var getLogin = loginService.getLogin(jsondata).then(function (data){
+                    
+                    var result = data.data;
+                    console.log(result);
+                    if(result.success == "false"){
+                        //fix this if false
+                        
+                        
+                    }
+                    else if (result.success){
+                        //we got user data here, please log me in!
+                        
+                        
+                    }
+                    
+                    
+                    
+                    
+                });
                 
                 
             });
         }
         else{
-            alert("hell no, I'm not login");
+            
         }
     });
     
