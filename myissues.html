@@ -23,18 +23,14 @@
                               <span class="pull-right">
                                 <div class="submit-buttons"><div class="btn-group">
                                     <button type="button" class="btn btn-success" ng-click="myIssueDetailClick(myIssues.id)">Bekijken</button>
-                        				    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#CloseModal">Afsluiten</button>
-                        				    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#DeleteModal" ng-click="deletePopup(myIssues.id)">Verwijderen</button>
+                        				    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#CloseModal" ng-click="getIdStatus(myIssues.id)">Afsluiten</button>
+                        				    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#DeleteModal" ng-click="getIdStatus(myIssues.id)">Verwijderen</button>
                                 </div></div>
                               </span>
                             </a>
                      </div> 
                     <div class="notice-no-issue" ng-show="count<=0">
-<<<<<<< HEAD
-                        Je hebt nog geen meldingen. <a href="nieuwe-melding">Klik hier</a> om een melding te maken.
-=======
                         Je hebt nog geen meldingen. <a href="/nieuwe-melding">Klik hier</a> om een melding te maken.
->>>>>>> e41f45a80a511d50ce4b9675ebe5d97ae7933caa
                     </div>
                 
                      <span class="clearfix">
@@ -61,23 +57,27 @@
     </div>
 
      <!-- CloseModal -->
-    <div id="CloseModal" class="modal fade" role="dialog">
+    <div id="CloseModal" class="modal fade" role="dialog" ng-controller="closeIssueCtrl">
         <div class="modal-dialog">
         <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h1 class="modal-title">Melding afsluiten</h1>
+                    <div class="alert alert-danger {{hideError}}" >
+                                  <a class="close {{hideError}}" aria-label="close" ng-click="close()" >&times;</a>
+                                  <p>{{errorClose}}</p>
+              </div>
                 </div>
                 <div class="modal-body">
                     Waardering:
-                    <input id="issue-start-rating" type="number" class="rating" min="0" max="5" step="1" style="showCaption:false;">
+                    <input id="issue-start-rating" type="number" class="rating" min="0" max="5" step="1" style="showCaption:false;" ng-model="rate">
                     Feedback:
-                    <textarea class="form-control" rows="5" id="comment"></textarea>
+                    <textarea class="form-control" rows="5" id="comment" ng-model="feedback"></textarea>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Annuleren</button>
-                    <button type="button" class="btn btn-success" data-dismiss="modal">Afsluiten</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" >Annuleren</button>
+                    <button type="button" class="btn btn-success" ng-click="closeIssueClick()">Afsluiten</button>
                 </div>
             </div>
         </div>
@@ -96,7 +96,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Annuleren</button>
-                    <button type="button" class="btn btn-success" data-dismiss="modal" ng-click="deleteIssue()">Verwijderen</button>
+                    <button type="button" class="btn btn-success" ng-click="deleteIssue()">Verwijderen</button>
                 </div>
             </div>
         </div>
