@@ -21,6 +21,7 @@ var workLogService = new Object();
 var categoriesService = new Object();
 var issueSubmitService = new Object();
 var voteSubmitService = new Object();
+var syncFBService = new Object();
 
 
 //google map
@@ -476,6 +477,22 @@ vdbApp.factory('profileService', ['$http',function ($http) {
     			}
 	};
 }])
+
+vdbApp.factory('syncFBService', ['$http',function ($http) {
+    return {
+        getFBSync : function( jsondata ){
+            return $http.post(APIURL+'connectFacebook', jsondata)
+                .success(function(data){
+                if(angular.isObject(data)){
+                    syncFBService.data=data;
+                    return syncFBService.data;
+                }
+            });
+            return syncFBService.data;
+        }
+    };
+}])
+
 
 vdbApp.factory('workLogService', ['$http',function ($http) {
 	return {
@@ -1449,12 +1466,11 @@ vdbApp.controller('forgotconfCtrl', ['$scope','$rootScope','$window','usSpinnerS
 
 
     
-vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileService','loginService','$location','usSpinnerService', '$facebook', function ($scope,$rootScope,$window,profileService,loginService,$location,usSpinnerService,$facebook) {
+vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileService','loginService','$location','usSpinnerService', '$facebook', 'syncFBService', function ($scope,$rootScope,$window,profileService,loginService,$location,usSpinnerService,$facebook,syncFBService) {
      $scope.hide = "ng-hide";
 	
      $scope.home = function(){
-		        $location.path('/');
-	                                   
+		        $location.path('/');                      
                 }
 	
 	//error session
@@ -1466,19 +1482,63 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
     $scope.$on('fb.auth.authResponseChange', function() {
         $scope.fbstatus = $facebook.isConnected();
         if($scope.fbstatus) {
-            alert("am I synced in?");
-            
+            $rootScope.globaloverlay = "active";
             //sync data here
             $facebook.api('/me').then(function(user) {
                 $scope.facebookuser = user;
+           
                 
+                //here we create the json     
+                var username = $scope.username;
+                var facebookID = $scope.facebookuser.id;                
+                var jsondata = JSON.stringify({username,facebookID});
+                
+                //API call to connectFB
+                var connectFB = syncFBService.getFBSync(jsondata).then(function (data){
+            
+                    var result = data.data;
+                    console.log(result);
+                    
+                    if(result.success == 'false'){
+                        var error = result.error;
+                        $scope.errorFB = error;
+                        $facebook.logout();
+                        $scope.hide = "";
+                        $scope.successAlert = "";
+                        $scope.successClass = "";
+                        $scope.errorEmail ="";
+                        $scope.errorOldPassword =  "";
+                        $scope.errorNewPassword = "";
+                        $scope.errorInitials = "";
+                        $scope.errorSurname = "";
+                        $scope.errorAddress = "";
+                        $scope.errorAddressN = "";
+                        $scope.errorPostcode = "";
+                        $scope.errorCity = "";
+                        $scope.errorSex = "";
+                        $scope.errorPasshash = "";
+                        
+                        $(window).scrollTop(0);
+                        
+                            
+                    }else if(result.success){
+                        $scope.errorFB = "";
+                        
+                        //set button to connected
+                        alert("success to connectFB");   
+                    }
+                    
+                    $rootScope.globaloverlay = "";
+                });
             });
-        }
-    });
+            }
+        });
+       
 
     
      
     $scope.connectFacebook = function(){
+       
         $facebook.login();
 
     }
@@ -1539,6 +1599,8 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                     $scope.errorCity = "";
                     $scope.errorSex = "";
                     $scope.errorPasshash = "";
+                    $scope.errorFB = "";
+        
         
     $scope.hide = "ng-hide";
     
@@ -1632,6 +1694,7 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                     $scope.errorCity = getProfile.errors.city;
                     $scope.errorSex = getProfile.errors.sex;
                     $scope.errorPasshash = getProfile.errors.password_hash;
+                    $scope.errorFB = "";
                                     
 					$scope.hide = "";
                     $scope.successAlert = "";
@@ -1699,7 +1762,8 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
 		});
 		
         $scope.close = function(){
-		$scope.hide="ng-hide";
+         
+		  $scope.hide="ng-hide";
         }
 	}
   
