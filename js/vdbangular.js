@@ -820,6 +820,16 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 	$scope.close = function(){
 		$scope.hide = "ng-hide";
 	}
+    
+    //facebook & twitter share
+    $scope.sharefacebook = function(){
+        alert("facebook");
+    }
+    
+    $scope.sharetwitter = function(){
+        alert("twitter");
+    }
+    
 
 	//googlemap
 	$scope.googleMapIssue = function(lat,lng,type){
