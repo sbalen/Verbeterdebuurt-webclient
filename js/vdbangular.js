@@ -1181,6 +1181,7 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
 					$window.sessionStorage.postcode = getLogin.user_profile.postcode;
 					$window.sessionStorage.city = getLogin.user_profile.city;
 					$window.sessionStorage.phone = getLogin.user_profile.phone;
+					$window.sessionStorage.facebookId = getLogin.user_profile.facebookID;
                    
                 
                     
