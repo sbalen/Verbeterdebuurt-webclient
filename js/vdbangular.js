@@ -1137,7 +1137,7 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
         $scope.fbstatus = $facebook.isConnected();
         if($scope.fbstatus) {
           
-            $facebook.api('/me').then(function(user) {
+            $facebook.api('/me?fields=first_name,last_name,email').then(function(user) {
                 
                 $rootScope.globaloverlay = "active";
                 $scope.facebookuser = user;
@@ -1147,15 +1147,23 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
                 var facebookID = $scope.facebookuser.id;                
                 var jsondata = JSON.stringify({"user":{facebookID}});
                 
-                console.log(jsondata);
+                console.log($scope.facebookuser);
+                
+                //console.log(jsondata);
                 
                 var getLogin = loginService.getLogin(jsondata).then(function (data){
                     
                     var result = data.data;
                     console.log(result);
-                    if(result.success == "false"){
+                    if(!result.success){
                         //fix this if false
-                        
+                        $location.path('/registratie');
+                        //in here we already had our facebook session!
+                        $window.sessionStorage.facebookID = $scope.facebookuser.id;
+                        $window.sessionStorage.name = $scope.facebookuser.first_name;
+                        $window.sessionStorage.email  = $scope.facebookuser.email;
+                        $window.sessionStorage.surname =  $scope.facebookuser.last_name;
+                        $rootScope.globaloverlay = "";
                         
                     }
                     else if (result.success){
@@ -1274,7 +1282,7 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
     
 }])
 
-vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerService','usSpinnerService','$location', function ($scope,$rootScope,$window,registerService,usSpinnerService,$location) {
+vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerService','usSpinnerService','$location', '$facebook', function ($scope,$rootScope,$window,registerService,usSpinnerService,$location,$facebook) {
     $scope.home = function(){
 		        $location.path('/');
 	                                   
@@ -1295,19 +1303,73 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
     $scope.postcode="";
     $scope.city="";
     $scope.phone="";
+    $scope.errorFB="";
+    $scope.facebookID = "";
     $scope.sexoption = [
         {'name': 'Dhr.',
          'value': 'm'},
         {'name': 'Mw.',
          'value': 'f'}
     ];
+    
+
+    //if facebook session is present from previous login with facebook
+    $scope.fbstatus = $facebook.isConnected();
+    if($scope.fbstatus) {
+
+        if($window.sessionStorage.name)$scope.initials=$window.sessionStorage.name;
+        if($window.sessionStorage.email)$scope.email=$window.sessionStorage.email;
+        if($window.sessionStorage.surname)$scope.surname=$window.sessionStorage.surname;
+        $scope.facebookID = $window.sessionStorage.facebookID;
+    }
+    
+
+    //set default message for facebook button
+    $scope.facebookMessages = "Connect Facebook";
+    $scope.facebookExist = ($scope.fbstatus)? 1 : 0;
+    if($scope.facebookExist) $scope.facebookMessages = "Already Connected";
+
+    
+    //this is the function to get the facebook ID for new user
+    $scope.$on('fb.auth.authResponseChange', function() {
+        $scope.fbstatus = $facebook.isConnected();
+        if($scope.fbstatus) {
+            $facebook.api('/me?fields=first_name,last_name,email').then(function(user) {
+                $scope.facebookuser = user;
+                $scope.errorFB = "";
+
+                //set button to connected
+                $scope.facebookMessages = "Connected";
+                $scope.facebookExist = 1;
+                $scope.facebookID = $scope.facebookuser.id;
+                
+                //set value of the field if still blank
+                if($scope.email == "")$scope.email = $scope.facebookuser.email;
+                if($scope.initials == "")$scope.initials = $scope.facebookuser.first_name;
+                if($scope.surname == "")$scope.surname = $scope.facebookuser.last_name;
+                
+
+            });
+        }
+    });
+
+
+
+
+    $scope.connectFacebook = function(){
+
+        $facebook.login();
+
+    }
+    
+        
     $scope.sex = $scope.sexoption[0].value;
     
-    	if($rootScope.errorSession){
+    if($rootScope.errorSession){
 		$scope.hide = "";
-	}
+    }
     
-    $scope.facebookID = "";
+    
     
 	$scope.register = function(){
        
@@ -1382,7 +1444,7 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
                     $scope.errorMiddle = getRegister.errors.tussenvoegsel;
                     $scope.errorPost = getRegister.errors.postcode;
                     $scope.errorInitials = getRegister.errors.initials;
-                
+                   
 					$scope.hide = "";
                     $rootScope.globaloverlay = "";
                     $(window).scrollTop(0);
