@@ -64,6 +64,10 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h1 class="modal-title">Melding afsluiten</h1>
+                    <div class="alert alert-danger {{hideError}}" >
+                                  <a class="close {{hideError}}" aria-label="close" ng-click="close()" >&times;</a>
+                                  <p>{{errorClose}}</p>
+              </div>
                 </div>
                 <div class="modal-body">
                     Waardering:
