@@ -1156,8 +1156,12 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
     ];
     $scope.sex = $scope.sexoption[0].value;
     
+    	if($rootScope.errorSession){
+		$scope.hide = "";
+	}
+    
 	$scope.register = function(){
-        $rootScope.errorSession ="";
+       
 
         $rootScope.globaloverlay = "active";
         //usSpinnerService.spin('spinner-1');
@@ -1252,8 +1256,16 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
                     
                     console.log(jsondata);
                 }
-		});
+            
+		})
+        
+        
 		
+	}
+    
+    $scope.close = function(){
+		$scope.hide="ng-hide";
+
 	}
   
     
@@ -1433,7 +1445,7 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
     if($window.sessionStorage.sex == 'man')
         {
             $scope.selected1=1;
-            $scope.selected2=0;
+            $scope.selected2=0; 
         }
     else{
             
