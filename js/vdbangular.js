@@ -1184,7 +1184,6 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
 					$window.sessionStorage.facebookId = getLogin.user_profile.facebookID;
                    
                 
-                    
 					$rootScope.loginStatus = function(){
 						return true;
 					}
@@ -1497,7 +1496,7 @@ vdbApp.controller('forgotconfCtrl', ['$scope','$rootScope','$window','usSpinnerS
     
 vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileService','loginService','$location','usSpinnerService', '$facebook', 'syncFBService', function ($scope,$rootScope,$window,profileService,loginService,$location,usSpinnerService,$facebook,syncFBService) {
      $scope.hide = "ng-hide";
-	
+	 alert($window.sessionStorage.facebookId);
      $scope.home = function(){
 		        $location.path('/');                      
                 }
