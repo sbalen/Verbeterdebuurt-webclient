@@ -22,6 +22,7 @@ var categoriesService = new Object();
 var issueSubmitService = new Object();
 var voteSubmitService = new Object();
 var syncFBService = new Object();
+var loginFBService = new Object();
 
 
 //google map
@@ -492,6 +493,23 @@ vdbApp.factory('syncFBService', ['$http',function ($http) {
         }
     };
 }])
+
+vdbApp.factory('loginFBService', ['$http',function ($http) {
+    return {
+        getFBLogin : function( jsondata ){
+            return $http.post(APIURL+'connectFacebook', jsondata)
+                .success(function(data){
+                if(angular.isObject(data)){
+                    loginFBService.data=data;
+                    return loginFBService.data;
+                }
+            });
+            return loginFBService.data;
+        }
+    };
+}])
+
+
 
 
 vdbApp.factory('workLogService', ['$http',function ($http) {
