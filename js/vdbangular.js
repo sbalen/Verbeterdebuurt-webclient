@@ -23,6 +23,8 @@ var issueSubmitService = new Object();
 var voteSubmitService = new Object();
 var syncFBService = new Object();
 var loginFBService = new Object();
+var statusChangeService = new Object();
+
 
 
 //google map
@@ -569,6 +571,19 @@ vdbApp.factory('voteSubmitService', ['$http',function ($http) {
 	};
 }])
 
+vdbApp.factory('statusChangeService', ['$http',function ($http) {
+	return {
+			getStatusChange : function (jsondata){
+				return $http.post(APIURL+'statusChange',jsondata)
+				.success(function (data){
+					statusChangeService.data = data;
+					return statusChangeService.data;
+				})
+				return statusChangeService.data
+			}
+	};
+}])
+
 
 vdbApp.run(['$rootScope', '$window', function($rootScope, $window) {
         (function(d, s, id) {
@@ -801,7 +816,6 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 								var getdata = data.data;
 								$rootScope.problemIdList = getdata.issues;
 								$scope.hide = "";
-								usSpinnerService.stop('spinner-1');
                                 $rootScope.globaloverlay = "";
       //                           var jsoncity = JSON.stringify({"council":""+getdata.issues[0].council+""});
 						// 		var getReport = reportService.getReport( jsoncity ).then(function (data){
@@ -867,6 +881,16 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 	$scope.close = function(){
 		$scope.hide = "ng-hide";
 	}
+    
+    //facebook & twitter share
+    $scope.sharefacebook = function(){
+        alert("facebook");
+    }
+    
+    $scope.sharetwitter = function(){
+        alert("twitter");
+    }
+    
 
 	//googlemap
 	$scope.googleMapIssue = function(lat,lng,type){
@@ -947,12 +971,16 @@ vdbApp.controller('myIssuesCtrl', ['$scope','$rootScope','$window','$location','
 		// console.log(jsondata);
 		var getMyIssues = myIssuesService.getMyIssues( jsondata ).then(function (data){
 			var getdata = data.data;
-			$scope.count = getdata.count;
-			$scope.myIssuesList = getdata.issues;
+			$rootScope.count = getdata.count;
+			$rootScope.myIssuesList = getdata.issues;
 		})
+		$scope.myIssueDetailClick = function(id){
+			$location.path("/mijn-meldingen/"+id);
+		}
 		
-
-
+		$scope.getIdStatus = function(id){
+			$rootScope.getStatusId = id;
+		}
 }])
 
 vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootScope','$location','$window','myIssuesService','usSpinnerService','workLogService','commentService','voteSubmitService', function ($scope,$routeParams,$http,$rootScope,$location,$window,myIssuesService,usSpinnerService,workLogService,commentService,voteSubmitService) {
@@ -976,7 +1004,7 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 
 		var getMyIssues = myIssuesService.getMyIssues( jsondata ).then(function (data){
 			var getdata = data.data;
-			$scope.count = getdata.count;
+			$rootScope.count = getdata.count;
 			$rootScope.myIssuesList = getdata.issues;
 			$rootScope.globaloverlay = "";
 		})
@@ -1058,7 +1086,7 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 				}else {
 					var getMyIssues = myIssuesService.getMyIssues( jsondata ).then(function (data){
 						var getdata = data.data;
-						$scope.myIssuesList = getdata.issues;
+						$rootScope.myIssuesList = getdata.issues;
 					});
 
 				}
@@ -1130,16 +1158,12 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
     
     
 	$scope.login = function(){
-		//usSpinnerService.spin('spinner-1');
         $rootScope.globaloverlay = "active";
-		//$scope.overlay = "overlayactive";
 		var jsondata = JSON.stringify({"user":{"username":""+$scope.lusername+"","password":""+$scope.lpassword+""}});
 		var getLogin = loginService.getLogin(jsondata).then(function (data){
 				var getLogin = data.data;
 				if(!getLogin.success){
 					$scope.errorMessage = getLogin.error;
-					//usSpinnerService.stop('spinner-1');
-					//$scope.overlay = "overlay";
 					$scope.hide = "";
                     $rootScope.globaloverlay = "";
 				}else if(getLogin.success){
@@ -1165,8 +1189,6 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
 						return true;
 					}
                     $rootScope.globaloverlay = "";
-					//usSpinnerService.stop('spinner-1');
-					//$scope.overlay = "overlay";
 					$rootScope.errorSession="";
                     if($rootScope.urlBefore == '/registratie'){
 						$location.path('/map');
@@ -1225,12 +1247,14 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
     ];
     $scope.sex = $scope.sexoption[0].value;
     
+    	if($rootScope.errorSession){
+		$scope.hide = "";
+	}
+    
 	$scope.register = function(){
-        $rootScope.errorSession ="";
+       
 
         $rootScope.globaloverlay = "active";
-        //usSpinnerService.spin('spinner-1');
-        $scope.overlay = "overlayactive";
 		var jsondata = JSON.stringify({"user":{"username":""+$scope.username+""
                                                ,"password":""+$scope.password+""
                                                ,"email":""+$scope.email+""},
@@ -1299,30 +1323,28 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
                     $scope.errorPost = getRegister.errors.postcode;
                     $scope.errorInitials = getRegister.errors.initials;
                 
-                    //usSpinnerService.stop('spinner-1');
 					$scope.hide = "";
-					//$scope.overlay="overlay";
                     $rootScope.globaloverlay = "";
-                
-                   
                     $(window).scrollTop(0);
-            
-    
-                
 				}	
             
             if(getRegister.success)
                 {
                     $location.path('/bevestiging-registratie');
-                    
-                    //usSpinnerService.stop('spinner-1');
-					//$scope.overlay = "overlay";
                     $rootScope.globaloverlay = "";
                     
                     console.log(jsondata);
                 }
-		});
+            
+		})
+        
+        
 		
+	}
+    
+    $scope.close = function(){
+		$scope.hide="ng-hide";
+
 	}
   
     
@@ -1420,11 +1442,7 @@ vdbApp.controller('forgotCtrl', ['$scope','$rootScope','$window','forgotService'
         
     
     $scope.forgotpass = function(){
-//        usSpinnerService.spin('spinner-1');
-//        $scope.overlay = "overlayactive";
         $rootScope.globaloverlay = "active";
-        
-//         $scope.overlay = "overlayactive";
 		var jsondata = JSON.stringify({"email":""+$scope.femail+""});
         
         $rootScope.tempemail1=$scope.femail;
@@ -1441,8 +1459,6 @@ vdbApp.controller('forgotCtrl', ['$scope','$rootScope','$window','forgotService'
                 
                 if (getForgot.success=="false"){
                 $scope.errorFEmail = getForgot.error;
-                //usSpinnerService.stop("spinner-1");
-                //$scope.overlay="overlay";
                 $scope.hide = "";
                 }
 
@@ -1451,11 +1467,6 @@ vdbApp.controller('forgotCtrl', ['$scope','$rootScope','$window','forgotService'
                 $location.path('/bevestiging-wachtwoord-vergeten');
                         
                     }
-               
-
-                
-//         usSpinnerService.stop('spinner-1');
-//					$scope.overlay = "overlay";
          $rootScope.globaloverlay = "";
          });
         
@@ -1496,6 +1507,7 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
 		$scope.hide = "";
 	}
     
+
     //this is the function to sync the profile
     $scope.$on('fb.auth.authResponseChange', function() {
         $scope.fbstatus = $facebook.isConnected();
@@ -1570,13 +1582,13 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
     //                        };
 
 
-    
+
     $scope.username = $window.sessionStorage.username ;
     $scope.email = $window.sessionStorage.email;
     if($window.sessionStorage.sex == 'man')
         {
             $scope.selected1=1;
-            $scope.selected2=0;
+            $scope.selected2=0; 
         }
     else{
             
@@ -1758,10 +1770,6 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                     $window.sessionStorage.postcode = getLogin.user_profile.postcode;
                     $window.sessionStorage.city = getLogin.user_profile.city;
                     $window.sessionStorage.phone = getLogin.user_profile.phone;
-
-                    usSpinnerService.stop('spinner-1');
-					$scope.overlay = "overlay";
-                            
                     $rootScope.globaloverlay = "";  
                     $(window).scrollTop(0);
                     $scope.successAlert = "Profiel geüpdatet"; 
@@ -1774,9 +1782,6 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                 })
             
             }
-//                         usSpinnerService.stop('spinner-1');
-//                         $scope.overlay = "overlayactive";
-            
 		});
 		
         $scope.close = function(){
@@ -1809,8 +1814,8 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 		var getMyIssues = myIssuesService.getMyIssues( jsondata ).then(function (data){
 			var getdata = data.data;
 			var count = getdata.count;
-            $scope.myIssueCount = count;
-			$scope.myIssuesList = getdata.issues;
+            $rootScope.myIssueCount = count;
+			$rootScope.myIssuesList = getdata.issues;
 		})
 		//first initial
 		$timeout(function(){
@@ -2067,9 +2072,82 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 			alert("upload haha");
 		}
 				
-		
+		}])
 
+vdbApp.controller('deleteIssueCtrl', ['$scope','$rootScope','$routeParams','$window','statusChangeService','myIssuesService',function ($scope,$rootScope,$routeParams,$window,statusChangeService,myIssuesService) {
+		
+		$scope.deleteIssue = function(){
+			$rootScope.globaloverlay="active";
+			var user = {};
+			user.username = $window.sessionStorage.username;
+			user.password_hash = $window.sessionStorage.password_hash;
+			var issue_id = $rootScope.getStatusId;
+			var status = "deleted";
+			var jsondata = JSON.stringify({user,issue_id,status});
+			var getStatusChange = statusChangeService.getStatusChange( jsondata ).then(function(data){
+				var getStatusChange = data.data;
+				console.log(getStatusChange);
+				//load myissue
+				var jsondata = JSON.stringify({"user":{ "username":""+$window.sessionStorage.username+"",
+												"password_hash":""+$window.sessionStorage.password_hash+""
+											}});
+				var getMyIssues = myIssuesService.getMyIssues( jsondata ).then(function (data){
+						var getdata = data.data;
+						var count = getdata.count;
+			            $rootScope.myIssueCount = count;
+						$rootScope.myIssuesList = getdata.issues;
+						$('#DeleteModal').modal('hide');
+						$('.modal-backdrop').hide();
+						$rootScope.globaloverlay = "";
+					})
+			});	
+		}
 }])
 
+vdbApp.controller('closeIssueCtrl', ['$scope','$rootScope','$routeParams','$window','statusChangeService','myIssuesService', function ($scope,$rootScope,$routeParams,$window,statusChangeService,myIssuesService) {
+		$scope.hideError = "ng-hide";
+
+		$scope.closeIssueClick = function(){
+			$rootScope.globaloverlay = "active";
+			var user = {};
+			user.username = $window.sessionStorage.username;
+			user.password_hash = $window.sessionStorage.password_hash;
+			var issue_id = $rootScope.getStatusId;
+			var result = $scope.feedback;
+			var appreciation = $scope.rate;
+			var status = "closed";
+			console.log({user,issue_id,result,appreciation,status});
+				var jsondata = JSON.stringify({user,issue_id,result,appreciation,status});
+				var getStatusChange = statusChangeService.getStatusChange( jsondata ).then(function(data){
+					var getStatusChange = data.data;
+					console.log(getStatusChange);
+					if(!getStatusChange.success){
+						$scope.hideError = "";
+						$scope.errorClose = getStatusChange.error;
+						$rootScope.globaloverlay = "";
+					}else{
+					//load myissue
+					var jsondata = JSON.stringify({"user":{ "username":""+$window.sessionStorage.username+"",
+													"password_hash":""+$window.sessionStorage.password_hash+""
+												}});
+					var getMyIssues = myIssuesService.getMyIssues( jsondata ).then(function (data){
+							var getdata = data.data;
+							var count = getdata.count;
+				            $rootScope.myIssueCount = count;
+							$rootScope.myIssuesList = getdata.issues;
+							$('#CloseModal').modal('hide');
+							$('.modal-backdrop').hide();
+							$rootScope.globaloverlay = "";
+						})
+					}
+					
+				});
+		}
+		$scope.close = function(){
+			$scope.hideError = "ng-hide";
+			$scope.errorClose = "";
+		}
+
+}])
 	
 
