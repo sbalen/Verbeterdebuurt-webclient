@@ -884,11 +884,19 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
     
     //facebook & twitter share
     $scope.sharefacebook = function(){
-        alert("facebook");
+        var text=encodeURI($location.absUrl());
+        var url = "http://www.facebook.com/sharer/sharer.php?u="+text;
+        var win = window.open(url, '_blank');
+        win.focus();
+        
     }
     
     $scope.sharetwitter = function(){
-        alert("twitter");
+        var text=encodeURI($location.absUrl());
+        var url = "https://twitter.com/intent/tweet?text="+text;
+        var win = window.open(url, '_blank');
+        win.focus();
+        
     }
     
 
