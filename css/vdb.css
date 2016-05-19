@@ -260,6 +260,9 @@ h6 {
   padding-left: -15px;
   width: 100%; }
 
+.meldingheader {
+  margin-left: 5px; }
+
 .position1 {
   margin-left: 30px; }
 
@@ -305,6 +308,9 @@ h6 {
 
   .container {
     width: 100%; }
+
+  .marginheader {
+    margin-left: 40px; }
 
   .margin2m {
     margin-left: -12px; }
@@ -379,7 +385,14 @@ h6 {
     padding-bottom: 10px; } }
 @media (max-width: 477px) {
   .btn1 {
-    width: 96%; } }
+    width: 96%; }
+
+  .marginheader {
+    margin-left: 40px; }
+
+  .marginmedia {
+    width: 100%;
+    font-size: 10px; } }
 .switchButton {
   width: 50%;
   height: 50px;
