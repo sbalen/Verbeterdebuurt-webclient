@@ -680,11 +680,13 @@ margin-right: 10px; margin-top: 10px;
     padding: 0;
     margin: 0 0 0 -16px;
     opacity: 0;
+    cursor: pointer;
 }
 .rating:hover .rating-star:hover,
 .rating:hover .rating-star:hover ~ .rating-star,
 .rating-input:checked ~ .rating-star {
     background-position: 0 0;
+    cursor: pointer;
 }
 .rating-star,
 .rating:hover .rating-star {
@@ -694,6 +696,7 @@ margin-right: 10px; margin-top: 10px;
     width: 16px;
     height: 16px;
     background: url('../img/star.png') 0 -16px;
+    cursor: pointer;
 }
 .ratingWarp{
   margin-top: 5px;
