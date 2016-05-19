@@ -1341,7 +1341,7 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
     //set default message for facebook button
     $scope.facebookMessages = "Connect Facebook";
     $scope.facebookExist = ($scope.fbstatus)? 1 : 0;
-    if($scope.facebookExist) $scope.facebookMessages = "Already Connected";
+    if($scope.facebookExist) $scope.facebookMessages = "Gekoppeld met Facebook";
 
     
     //this is the function to get the facebook ID for new user
@@ -1646,7 +1646,7 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
     //set default message for facebook button
     $scope.facebookMessages = "Connect Facebook";
     $scope.facebookExist = ($window.sessionStorage.facebookID)? 1 : 0;
-    if($scope.facebookExist) $scope.facebookMessages = "Already Connected";
+    if($scope.facebookExist) $scope.facebookMessages = "Gekoppeld met Facebook";
     
     
     

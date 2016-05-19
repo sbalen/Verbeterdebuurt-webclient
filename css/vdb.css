@@ -388,7 +388,11 @@ h6 {
     width: 96%; }
 
   .marginheader {
-    margin-left: 40px; } }
+    margin-left: 40px; }
+
+  .marginmedia {
+    width: 100%;
+    font-size: 10px; } }
 .switchButton {
   width: 50%;
   height: 50px;
