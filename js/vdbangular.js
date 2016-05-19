@@ -1,4 +1,4 @@
-var vdbApp = angular.module('vdbApp', ['ngRoute','angularSpinner','angularUtils.directives.dirPagination'])
+var vdbApp = angular.module('vdbApp', ['ngRoute','angularSpinner','angularUtils.directives.dirPagination','ngFacebook','ngCookies'])
 var APIURL = "https://staging.verbeterdebuurt.nl/api.php/json_1_3/";
 var geocoder = new google.maps.Geocoder();
 var infoWindow = new google.maps.InfoWindow();
@@ -21,7 +21,10 @@ var workLogService = new Object();
 var categoriesService = new Object();
 var issueSubmitService = new Object();
 var voteSubmitService = new Object();
+var syncFBService = new Object();
+var loginFBService = new Object();
 var statusChangeService = new Object();
+
 
 
 //google map
@@ -478,6 +481,39 @@ vdbApp.factory('profileService', ['$http',function ($http) {
 	};
 }])
 
+vdbApp.factory('syncFBService', ['$http',function ($http) {
+    return {
+        getFBSync : function( jsondata ){
+            return $http.post(APIURL+'connectFacebook', jsondata)
+                .success(function(data){
+                if(angular.isObject(data)){
+                    syncFBService.data=data;
+                    return syncFBService.data;
+                }
+            });
+            return syncFBService.data;
+        }
+    };
+}])
+
+vdbApp.factory('loginFBService', ['$http',function ($http) {
+    return {
+        getFBLogin : function( jsondata ){
+            return $http.post(APIURL+'connectFacebook', jsondata)
+                .success(function(data){
+                if(angular.isObject(data)){
+                    loginFBService.data=data;
+                    return loginFBService.data;
+                }
+            });
+            return loginFBService.data;
+        }
+    };
+}])
+
+
+
+
 vdbApp.factory('workLogService', ['$http',function ($http) {
 	return {
 			getWorkLog : function( jsondata ){
@@ -549,8 +585,23 @@ vdbApp.factory('statusChangeService', ['$http',function ($http) {
 }])
 
 
-vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootScope','$routeParams','$http','issuesService','reportService',function ($scope,$timeout,$window,$location,$rootScope,$routeParams,$http,issuesService,reportService) {
-						menuSelected($rootScope,'home');
+vdbApp.run(['$rootScope', '$window', function($rootScope, $window) {
+        (function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = "//connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+        $rootScope.$on('fb.load', function() {
+            $window.dispatchEvent(new Event('fb.load'));
+        });
+    
+    }]);
+
+vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootScope','$routeParams','$http','issuesService','reportService', '$facebook', function ($scope,$timeout,$window,$location,$rootScope,$routeParams,$http,issuesService,reportService,$facebook) {
+						    
+                        menuSelected($rootScope,'home');
 						
                         $scope.userpanel=1;
     
@@ -644,11 +695,22 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 								return true;
 							}
 						}
+                        
+                        
+                       
+                        
+                        
 						//logOut
 						$scope.logout = function(){
 							$window.sessionStorage.clear();
                            // $('.dropdown-menu').hide();
                             $scope.userpanel=0;
+                            
+                            
+                            $scope.fbstatus = $facebook.isConnected();
+                            if($scope.fbstatus) {
+                                $facebook.logout();
+                            }
                             
                             $location.path('/');
 						}
@@ -819,6 +881,16 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 	$scope.close = function(){
 		$scope.hide = "ng-hide";
 	}
+    
+    //facebook & twitter share
+    $scope.sharefacebook = function(){
+        alert("facebook");
+    }
+    
+    $scope.sharetwitter = function(){
+        alert("twitter");
+    }
+    
 
 	//googlemap
 	$scope.googleMapIssue = function(lat,lng,type){
@@ -1038,7 +1110,7 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 
 }])
 
-vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','$location','usSpinnerService', function ($scope,$rootScope,$window,loginService,$location,usSpinnerService) {
+vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','$location','usSpinnerService', '$facebook','$cookies', function ($scope,$rootScope,$window,loginService,$location,usSpinnerService,$facebook,$cookies) {
 	$scope.hide = "ng-hide";
     $scope.lusername="";
     $scope.lpassword="";
@@ -1058,6 +1130,102 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
 	if($rootScope.errorSession){
 		$scope.hide = "";
 	}
+    //remember me
+    if($cookies.get('username') && $cookies.get('password')){
+    	$scope.rememberMe = true;
+    	$scope.lusername = $cookies.get('username');
+    	$scope.lpassword = $cookies.get('password');
+    }
+    //facebook login
+    //this is the function to do the login or do redirect to registration
+    $scope.$on('fb.auth.authResponseChange', function() {
+        $scope.fbstatus = $facebook.isConnected();
+        if($scope.fbstatus) {
+          
+            $facebook.api('/me?fields=first_name,last_name,email').then(function(user) {
+                
+                $rootScope.globaloverlay = "active";
+                $scope.facebookuser = user;
+
+                
+                //here we create the json to login
+                var facebookID = $scope.facebookuser.id;                
+                var jsondata = JSON.stringify({"user":{facebookID}});
+                
+                console.log($scope.facebookuser);
+                
+                //console.log(jsondata);
+                
+                var getLogin = loginService.getLogin(jsondata).then(function (data){
+                    
+                    var result = data.data;
+                    console.log(result);
+                    if(!result.success){
+                        //fix this if false
+                        $location.path('/registratie');
+                        //in here we already had our facebook session!
+                        $window.sessionStorage.facebookID = $scope.facebookuser.id;
+                        $window.sessionStorage.name = $scope.facebookuser.first_name;
+                        $window.sessionStorage.email  = $scope.facebookuser.email;
+                        $window.sessionStorage.surname =  $scope.facebookuser.last_name;
+                        $rootScope.globaloverlay = "";
+                        
+                    }
+                    else if (result.success){
+                        //we got user data here, please log me in!
+                        $window.sessionStorage.username = result.user.username;
+                        $window.sessionStorage.email = result.user.email;
+                        $window.sessionStorage.password_hash = result.user.password_hash;
+                        $window.sessionStorage.name = result.user_profile.name;
+                        $window.sessionStorage.initials = result.user_profile.initials;
+                        $window.sessionStorage.surname = result.user_profile.surname;
+                        $window.sessionStorage.tussenvoegsel = result.user_profile.tussenvoegsel;
+                        $window.sessionStorage.sex = result.user_profile.sex;
+                        $window.sessionStorage.address = result.user_profile.address;
+                        $window.sessionStorage.address_number = result.user_profile.address_number;
+                        $window.sessionStorage.address_suffix = result.user_profile.address_suffix;
+                        $window.sessionStorage.postcode = result.user_profile.postcode;
+                        $window.sessionStorage.city = result.user_profile.city;
+                        $window.sessionStorage.phone = result.user_profile.phone;
+                        $window.sessionStorage.facebookID = result.user_profile.facebookID;
+                        
+                        
+                        $rootScope.loginStatus = function(){
+                            return true;
+                        }
+                        $rootScope.globaloverlay = "";
+                        $rootScope.errorSession="";
+                        if($rootScope.urlBefore == '/registratie'){
+                            $location.path('/map');
+                        }
+                        else{
+                            $location.path($rootScope.urlBefore);
+                        }
+
+                        
+                        
+                    }
+                    
+                    
+                    $rootScope.globaloverlay = "";
+                    
+                });
+                
+                
+            });
+        }
+        else{
+            
+        }
+    });
+    
+    $scope.FBlogin = function(){
+        $facebook.login();
+    }
+    
+    
+    
+    
 	$scope.login = function(){
         $rootScope.globaloverlay = "active";
 		var jsondata = JSON.stringify({"user":{"username":""+$scope.lusername+"","password":""+$scope.lpassword+""}});
@@ -1083,9 +1251,18 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
 					$window.sessionStorage.postcode = getLogin.user_profile.postcode;
 					$window.sessionStorage.city = getLogin.user_profile.city;
 					$window.sessionStorage.phone = getLogin.user_profile.phone;
-                   
+					$window.sessionStorage.facebookID = getLogin.user_profile.facebookID;
+                   		
+                   	//remember me
+                   		if($scope.rememberMe === true){
+                   			$cookies.put('username',$scope.lusername);
+                   			$cookies.put('password',$scope.lpassword);
+                   		}
+                   		else{
+                   			$cookies.remove('username');
+                   			$cookies.remove('password');
+                   		}
                 
-                    
 					$rootScope.loginStatus = function(){
 						return true;
 					}
@@ -1119,7 +1296,7 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
     
 }])
 
-vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerService','usSpinnerService','$location', function ($scope,$rootScope,$window,registerService,usSpinnerService,$location) {
+vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerService','usSpinnerService','$location', '$facebook', function ($scope,$rootScope,$window,registerService,usSpinnerService,$location,$facebook) {
     $scope.home = function(){
 		        $location.path('/');
 	                                   
@@ -1140,17 +1317,73 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
     $scope.postcode="";
     $scope.city="";
     $scope.phone="";
+    $scope.errorFB="";
+    $scope.facebookID = "";
     $scope.sexoption = [
         {'name': 'Dhr.',
          'value': 'm'},
         {'name': 'Mw.',
          'value': 'f'}
     ];
+    
+
+    //if facebook session is present from previous login with facebook
+    $scope.fbstatus = $facebook.isConnected();
+    if($scope.fbstatus) {
+
+        if($window.sessionStorage.name)$scope.initials=$window.sessionStorage.name;
+        if($window.sessionStorage.email)$scope.email=$window.sessionStorage.email;
+        if($window.sessionStorage.surname)$scope.surname=$window.sessionStorage.surname;
+        $scope.facebookID = $window.sessionStorage.facebookID;
+    }
+    
+
+    //set default message for facebook button
+    $scope.facebookMessages = "Connect Facebook";
+    $scope.facebookExist = ($scope.fbstatus)? 1 : 0;
+    if($scope.facebookExist) $scope.facebookMessages = "Already Connected";
+
+    
+    //this is the function to get the facebook ID for new user
+    $scope.$on('fb.auth.authResponseChange', function() {
+        $scope.fbstatus = $facebook.isConnected();
+        if($scope.fbstatus) {
+            $facebook.api('/me?fields=first_name,last_name,email').then(function(user) {
+                $scope.facebookuser = user;
+                $scope.errorFB = "";
+
+                //set button to connected
+                $scope.facebookMessages = "Connected";
+                $scope.facebookExist = 1;
+                $scope.facebookID = $scope.facebookuser.id;
+                
+                //set value of the field if still blank
+                if($scope.email == "")$scope.email = $scope.facebookuser.email;
+                if($scope.initials == "")$scope.initials = $scope.facebookuser.first_name;
+                if($scope.surname == "")$scope.surname = $scope.facebookuser.last_name;
+                
+
+            });
+        }
+    });
+
+
+
+
+    $scope.connectFacebook = function(){
+
+        $facebook.login();
+
+    }
+    
+        
     $scope.sex = $scope.sexoption[0].value;
     
-    	if($rootScope.errorSession){
+    if($rootScope.errorSession){
 		$scope.hide = "";
-	}
+    }
+    
+    
     
 	$scope.register = function(){
        
@@ -1160,16 +1393,18 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
                                                ,"password":""+$scope.password+""
                                                ,"email":""+$scope.email+""},
                                        
-                                       "user_profile":{"initials":""+$scope.initials+""
-                                                      ,"tussenvoegsel":""+$scope.tussenvoegsel+""
-                                                      ,"surname":""+$scope.surname+""
-                                                      ,"sex":""+$scope.sex+""
-                                                      ,"address":""+$scope.address+""
-                                                      ,"address_number":""+$scope.address_number+""
-                                                      ,"address_suffix":""+$scope.address_suffix+""
-                                                      ,"postcode":""+$scope.postcode+""
-                                                      ,"city":""+$scope.city+""
-                                                      ,"phone":""+$scope.phone+""}
+                           "user_profile":{"initials":""+$scope.initials+""
+                                          ,"tussenvoegsel":""+$scope.tussenvoegsel+""
+                                          ,"surname":""+$scope.surname+""
+                                          ,"sex":""+$scope.sex+""
+                                          ,"address":""+$scope.address+""
+                                          ,"address_number":""+$scope.address_number+""
+                                          ,"address_suffix":""+$scope.address_suffix+""
+                                          ,"postcode":""+$scope.postcode+""
+                                          ,"city":""+$scope.city+""
+                                          ,"phone":""+$scope.phone+""
+                                          ,"facebookID":""+$scope.facebookID
+                                          }
                                       
         
                                        
@@ -1223,7 +1458,7 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
                     $scope.errorMiddle = getRegister.errors.tussenvoegsel;
                     $scope.errorPost = getRegister.errors.postcode;
                     $scope.errorInitials = getRegister.errors.initials;
-                
+                   
 					$scope.hide = "";
                     $rootScope.globaloverlay = "";
                     $(window).scrollTop(0);
@@ -1396,12 +1631,11 @@ vdbApp.controller('forgotconfCtrl', ['$scope','$rootScope','$window','usSpinnerS
 
 
     
-vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileService','loginService','$location','usSpinnerService', function ($scope,$rootScope,$window,profileService,loginService,$location,usSpinnerService) {
-	    $scope.hide = "ng-hide";
+vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileService','loginService','$location','usSpinnerService', '$facebook', 'syncFBService', function ($scope,$rootScope,$window,profileService,loginService,$location,usSpinnerService,$facebook,syncFBService) {
+     $scope.hide = "ng-hide";
 	
      $scope.home = function(){
-		        $location.path('/');
-	                                   
+		        $location.path('/');                      
                 }
 	
 	//error session
@@ -1409,6 +1643,91 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
 		$scope.hide = "";
 	}
     
+    //set default message for facebook button
+    $scope.facebookMessages = "Connect Facebook";
+    $scope.facebookExist = ($window.sessionStorage.facebookID)? 1 : 0;
+    if($scope.facebookExist) $scope.facebookMessages = "Already Connected";
+    
+    
+    
+    //this is the function to sync the profile
+    $scope.$on('fb.auth.authResponseChange', function() {
+        $scope.fbstatus = $facebook.isConnected();
+        if($scope.fbstatus) {
+            $rootScope.globaloverlay = "active";
+            //sync data here
+            $facebook.api('/me').then(function(user) {
+                $scope.facebookuser = user;
+           
+                
+                //here we create the json     
+                var username = $scope.username;
+                var facebookID = $scope.facebookuser.id;                
+                var jsondata = JSON.stringify({username,facebookID});
+                
+                //API call to connectFB
+                var connectFB = syncFBService.getFBSync(jsondata).then(function (data){
+            
+                    var result = data.data;
+                    console.log(result);
+                    
+                    if(result.success == 'false'){
+                        var error = result.error;
+                        $scope.errorFB = error;
+                        $facebook.logout();
+                        $scope.hide = "";
+                        $scope.successAlert = "";
+                        $scope.successClass = "";
+                        $scope.errorEmail ="";
+                        $scope.errorOldPassword =  "";
+                        $scope.errorNewPassword = "";
+                        $scope.errorInitials = "";
+                        $scope.errorSurname = "";
+                        $scope.errorAddress = "";
+                        $scope.errorAddressN = "";
+                        $scope.errorPostcode = "";
+                        $scope.errorCity = "";
+                        $scope.errorSex = "";
+                        $scope.errorPasshash = "";
+                        
+                        $(window).scrollTop(0);
+                        
+                            
+                    }else if(result.success){
+                        $scope.errorFB = "";
+                        
+                        //set button to connected
+                        $scope.facebookMessages = "Connected";
+                        $scope.facebookExist = 1;
+                        $window.sessionStorage.facebookID = facebookID;
+                        
+                    }
+                    
+                    $rootScope.globaloverlay = "";
+                });
+            });
+            }
+        });
+       
+
+    
+     
+    $scope.connectFacebook = function(){
+       
+        $facebook.login();
+
+    }
+
+    //                        $scope.loginToggle = function() {
+    //                            if($scope.status) {
+    //                                $facebook.logout();
+    //                            } else {
+    //                                $facebook.login();
+    //                            }
+    //                        };
+
+
+
     $scope.username = $window.sessionStorage.username ;
     $scope.email = $window.sessionStorage.email;
     if($window.sessionStorage.sex == 'man')
@@ -1446,15 +1765,17 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
     $rootScope.globaloverlay = "active";
     $scope.errorEmail ="";
     $scope.errorOldPassword =  "";
-                    $scope.errorNewPassword = "";
-                    $scope.errorInitials = "";
-                    $scope.errorSurname = "";
-                    $scope.errorAddress = "";
-                    $scope.errorAddressN = "";
-                    $scope.errorPostcode = "";
-                    $scope.errorCity = "";
-                    $scope.errorSex = "";
-                    $scope.errorPasshash = "";
+    $scope.errorNewPassword = "";
+    $scope.errorInitials = "";
+    $scope.errorSurname = "";
+    $scope.errorAddress = "";
+    $scope.errorAddressN = "";
+    $scope.errorPostcode = "";
+    $scope.errorCity = "";
+    $scope.errorSex = "";
+    $scope.errorPasshash = "";
+    $scope.errorFB = "";
+        
         
     $scope.hide = "ng-hide";
     
@@ -1548,6 +1869,7 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                     $scope.errorCity = getProfile.errors.city;
                     $scope.errorSex = getProfile.errors.sex;
                     $scope.errorPasshash = getProfile.errors.password_hash;
+                    $scope.errorFB = "";
                                     
 					$scope.hide = "";
                     $scope.successAlert = "";
@@ -1608,10 +1930,12 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
 		});
 		
         $scope.close = function(){
-		$scope.hide="ng-hide";
+         
+		  $scope.hide="ng-hide";
         }
 	}
   
+    
     
 }])
 

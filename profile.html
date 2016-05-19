@@ -18,11 +18,12 @@
           
         </div>
         <!-- main container -->
-        <div class="col-lg-6 main-container" ng-controller="profileCtrl">
+        <div class="col-lg-6 main-container" >
             <div class="panel panel-default main-panel" >
                     <div class="alert alert-danger  {{hide}} {{successClass}}">
                         <a href="#" class="close"  aria-label="close" ng-click="close()">&times;</a>
                     
+                        <p>{{errorFB}}</p>  
                 <p>{{errorOldPassword}}</p>
                 <p>{{errorNewPassword}}</p>
                 <p>{{errorInitials}}</p>      
@@ -122,7 +123,7 @@
                                            Verbeterdebuurt verbinden met Facebook. Houd je vrienden op de hoogte!
                                         </td>
                                         <td> 
-                                           <button type="button" class="btn btn-default" disabled>Connect Facebook</button>
+                                            <button type="button" class="btn btn-default" ng-click="connectFacebook()" ng-disabled="facebookExist">{{facebookMessages}}</button>
                                         </td>
                                     </tr>
                                 </table>
