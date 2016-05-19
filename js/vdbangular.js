@@ -884,11 +884,19 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
     
     //facebook & twitter share
     $scope.sharefacebook = function(){
-        alert("facebook");
+        var text=encodeURI($location.absUrl());
+        var url = "http://www.facebook.com/sharer/sharer.php?u="+text;
+        var win = window.open(url, '_blank');
+        win.focus();
+        
     }
     
     $scope.sharetwitter = function(){
-        alert("twitter");
+        var text=encodeURI($location.absUrl());
+        var url = "https://twitter.com/intent/tweet?text="+text;
+        var win = window.open(url, '_blank');
+        win.focus();
+        
     }
     
 
@@ -1353,7 +1361,7 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
                 $scope.errorFB = "";
 
                 //set button to connected
-                $scope.facebookMessages = "Connected";
+                $scope.facebookMessages = "Gekoppeld met Facebook";
                 $scope.facebookExist = 1;
                 $scope.facebookID = $scope.facebookuser.id;
                 
@@ -1697,7 +1705,7 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                         $scope.errorFB = "";
                         
                         //set button to connected
-                        $scope.facebookMessages = "Connected";
+                        $scope.facebookMessages = "Gekoppeld met Facebook";
                         $scope.facebookExist = 1;
                         $window.sessionStorage.facebookID = facebookID;
                         
