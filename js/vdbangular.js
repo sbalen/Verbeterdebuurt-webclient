@@ -2259,6 +2259,7 @@ vdbApp.controller('deleteIssueCtrl', ['$scope','$rootScope','$routeParams','$win
 
 vdbApp.controller('closeIssueCtrl', ['$scope','$rootScope','$routeParams','$window','statusChangeService','myIssuesService', function ($scope,$rootScope,$routeParams,$window,statusChangeService,myIssuesService) {
 		$scope.hideError = "ng-hide";
+		$scope.errorClose = "";
 
 		$scope.closeIssueClick = function(){
 			$rootScope.globaloverlay = "active";
@@ -2266,8 +2267,17 @@ vdbApp.controller('closeIssueCtrl', ['$scope','$rootScope','$routeParams','$wind
 			user.username = $window.sessionStorage.username;
 			user.password_hash = $window.sessionStorage.password_hash;
 			var issue_id = $rootScope.getStatusId;
-			var result = $scope.feedback;
-			var appreciation = $scope.rate;
+			if(!$scope.feedback){
+				var result = null;
+			}else{
+			var result = $scope.feedback;	
+			}
+			if(!$scope.rating){
+			var appreciation = null;	
+			}
+			else{
+			var appreciation = parseInt($scope.rating);	
+			}
 			var status = "closed";
 			console.log({user,issue_id,result,appreciation,status});
 				var jsondata = JSON.stringify({user,issue_id,result,appreciation,status});
@@ -2291,6 +2301,9 @@ vdbApp.controller('closeIssueCtrl', ['$scope','$rootScope','$routeParams','$wind
 							$('#CloseModal').modal('hide');
 							$('.modal-backdrop').hide();
 							$rootScope.globaloverlay = "";
+							$scope.errorClose = "";
+							$scope.feedback = "";
+							$scope.rating = null;
 						})
 					}
 					
@@ -2299,6 +2312,8 @@ vdbApp.controller('closeIssueCtrl', ['$scope','$rootScope','$routeParams','$wind
 		$scope.close = function(){
 			$scope.hideError = "ng-hide";
 			$scope.errorClose = "";
+			$scope.feedback = "";
+			$scope.rating = null;
 		}
 
 }])
