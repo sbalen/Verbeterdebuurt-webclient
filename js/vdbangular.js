@@ -1,4 +1,4 @@
-var vdbApp = angular.module('vdbApp', ['ngRoute','angularSpinner','angularUtils.directives.dirPagination','ngFacebook'])
+var vdbApp = angular.module('vdbApp', ['ngRoute','angularSpinner','angularUtils.directives.dirPagination','ngFacebook','ngCookies'])
 var APIURL = "https://staging.verbeterdebuurt.nl/api.php/json_1_3/";
 var geocoder = new google.maps.Geocoder();
 var infoWindow = new google.maps.InfoWindow();
@@ -1110,7 +1110,7 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 
 }])
 
-vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','$location','usSpinnerService', '$facebook', function ($scope,$rootScope,$window,loginService,$location,usSpinnerService,$facebook) {
+vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','$location','usSpinnerService', '$facebook','$cookies', function ($scope,$rootScope,$window,loginService,$location,usSpinnerService,$facebook,$cookies) {
 	$scope.hide = "ng-hide";
     $scope.lusername="";
     $scope.lpassword="";
@@ -1130,7 +1130,12 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
 	if($rootScope.errorSession){
 		$scope.hide = "";
 	}
-    
+    //remember me
+    if($cookies.get('username') && $cookies.get('password')){
+    	$scope.rememberMe = true;
+    	$scope.lusername = $cookies.get('username');
+    	$scope.lpassword = $cookies.get('password');
+    }
     //facebook login
     //this is the function to do the login or do redirect to registration
     $scope.$on('fb.auth.authResponseChange', function() {
@@ -1247,7 +1252,16 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
 					$window.sessionStorage.city = getLogin.user_profile.city;
 					$window.sessionStorage.phone = getLogin.user_profile.phone;
 					$window.sessionStorage.facebookID = getLogin.user_profile.facebookID;
-                   
+                   		
+                   	//remember me
+                   		if($scope.rememberMe === true){
+                   			$cookies.put('username',$scope.lusername);
+                   			$cookies.put('password',$scope.lpassword);
+                   		}
+                   		else{
+                   			$cookies.remove('username');
+                   			$cookies.remove('password');
+                   		}
                 
 					$rootScope.loginStatus = function(){
 						return true;
