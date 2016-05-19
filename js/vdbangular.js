@@ -1,4 +1,4 @@
-var vdbApp = angular.module('vdbApp', ['ngRoute','angularSpinner','angularUtils.directives.dirPagination','ngFacebook'])
+var vdbApp = angular.module('vdbApp', ['ngRoute','angularSpinner','angularUtils.directives.dirPagination','ngFacebook','ngCookies'])
 var APIURL = "https://staging.verbeterdebuurt.nl/api.php/json_1_3/";
 var geocoder = new google.maps.Geocoder();
 var infoWindow = new google.maps.InfoWindow();
@@ -884,11 +884,19 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
     
     //facebook & twitter share
     $scope.sharefacebook = function(){
-        alert("facebook");
+        var text=encodeURI($location.absUrl());
+        var url = "http://www.facebook.com/sharer/sharer.php?u="+text;
+        var win = window.open(url, '_blank');
+        win.focus();
+        
     }
     
     $scope.sharetwitter = function(){
-        alert("twitter");
+        var text=encodeURI($location.absUrl());
+        var url = "https://twitter.com/intent/tweet?text="+text;
+        var win = window.open(url, '_blank');
+        win.focus();
+        
     }
     
 
@@ -1110,7 +1118,7 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 
 }])
 
-vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','$location','usSpinnerService', '$facebook', function ($scope,$rootScope,$window,loginService,$location,usSpinnerService,$facebook) {
+vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','$location','usSpinnerService', '$facebook','$cookies', function ($scope,$rootScope,$window,loginService,$location,usSpinnerService,$facebook,$cookies) {
 	$scope.hide = "ng-hide";
     $scope.lusername="";
     $scope.lpassword="";
@@ -1130,7 +1138,12 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
 	if($rootScope.errorSession){
 		$scope.hide = "";
 	}
-    
+    //remember me
+    if($cookies.get('username') && $cookies.get('password')){
+    	$scope.rememberMe = true;
+    	$scope.lusername = $cookies.get('username');
+    	$scope.lpassword = $cookies.get('password');
+    }
     //facebook login
     //this is the function to do the login or do redirect to registration
     $scope.$on('fb.auth.authResponseChange', function() {
@@ -1247,7 +1260,16 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
 					$window.sessionStorage.city = getLogin.user_profile.city;
 					$window.sessionStorage.phone = getLogin.user_profile.phone;
 					$window.sessionStorage.facebookID = getLogin.user_profile.facebookID;
-                   
+                   		
+                   	//remember me
+                   		if($scope.rememberMe === true){
+                   			$cookies.put('username',$scope.lusername);
+                   			$cookies.put('password',$scope.lpassword);
+                   		}
+                   		else{
+                   			$cookies.remove('username');
+                   			$cookies.remove('password');
+                   		}
                 
 					$rootScope.loginStatus = function(){
 						return true;
@@ -1327,7 +1349,7 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
     //set default message for facebook button
     $scope.facebookMessages = "Connect Facebook";
     $scope.facebookExist = ($scope.fbstatus)? 1 : 0;
-    if($scope.facebookExist) $scope.facebookMessages = "Already Connected";
+    if($scope.facebookExist) $scope.facebookMessages = "Gekoppeld met Facebook";
 
     
     //this is the function to get the facebook ID for new user
@@ -1339,7 +1361,7 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
                 $scope.errorFB = "";
 
                 //set button to connected
-                $scope.facebookMessages = "Connected";
+                $scope.facebookMessages = "Gekoppeld met Facebook";
                 $scope.facebookExist = 1;
                 $scope.facebookID = $scope.facebookuser.id;
                 
@@ -1632,7 +1654,7 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
     //set default message for facebook button
     $scope.facebookMessages = "Connect Facebook";
     $scope.facebookExist = ($window.sessionStorage.facebookID)? 1 : 0;
-    if($scope.facebookExist) $scope.facebookMessages = "Already Connected";
+    if($scope.facebookExist) $scope.facebookMessages = "Gekoppeld met Facebook";
     
     
     
@@ -1683,7 +1705,7 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                         $scope.errorFB = "";
                         
                         //set button to connected
-                        $scope.facebookMessages = "Connected";
+                        $scope.facebookMessages = "Gekoppeld met Facebook";
                         $scope.facebookExist = 1;
                         $window.sessionStorage.facebookID = facebookID;
                         
@@ -2237,6 +2259,7 @@ vdbApp.controller('deleteIssueCtrl', ['$scope','$rootScope','$routeParams','$win
 
 vdbApp.controller('closeIssueCtrl', ['$scope','$rootScope','$routeParams','$window','statusChangeService','myIssuesService', function ($scope,$rootScope,$routeParams,$window,statusChangeService,myIssuesService) {
 		$scope.hideError = "ng-hide";
+		$scope.errorClose = "";
 
 		$scope.closeIssueClick = function(){
 			$rootScope.globaloverlay = "active";
@@ -2244,8 +2267,17 @@ vdbApp.controller('closeIssueCtrl', ['$scope','$rootScope','$routeParams','$wind
 			user.username = $window.sessionStorage.username;
 			user.password_hash = $window.sessionStorage.password_hash;
 			var issue_id = $rootScope.getStatusId;
-			var result = $scope.feedback;
-			var appreciation = $scope.rate;
+			if(!$scope.feedback){
+				var result = null;
+			}else{
+			var result = $scope.feedback;	
+			}
+			if(!$scope.rating){
+			var appreciation = null;	
+			}
+			else{
+			var appreciation = parseInt($scope.rating);	
+			}
 			var status = "closed";
 			console.log({user,issue_id,result,appreciation,status});
 				var jsondata = JSON.stringify({user,issue_id,result,appreciation,status});
@@ -2269,6 +2301,9 @@ vdbApp.controller('closeIssueCtrl', ['$scope','$rootScope','$routeParams','$wind
 							$('#CloseModal').modal('hide');
 							$('.modal-backdrop').hide();
 							$rootScope.globaloverlay = "";
+							$scope.errorClose = "";
+							$scope.feedback = "";
+							$scope.rating = null;
 						})
 					}
 					
@@ -2277,6 +2312,8 @@ vdbApp.controller('closeIssueCtrl', ['$scope','$rootScope','$routeParams','$wind
 		$scope.close = function(){
 			$scope.hideError = "ng-hide";
 			$scope.errorClose = "";
+			$scope.feedback = "";
+			$scope.rating = null;
 		}
 
 }])
