@@ -68,7 +68,7 @@
                                 </div>
                                 <!--<label class="control-label">Select File</label>-->
                                 <p>Foto uploaden (optioneel)</p>
-                                <input id="file-input" type="file" class="file" style="width: 94%;margin-left: 3%;">
+                                <input id="file-input-problem" type="file" style="width: 94%;margin-left: 3%;" data-show-upload="false" ng-model="imgData" base-sixty-four-input>
                             </div>
                             <div class="panel-body {{hideNonLogin}}">
                                 <h4>3. Contactgegevens</h4>
@@ -164,7 +164,7 @@
                                 </div>
                                 <!--<label class="control-label">Select File</label>-->
                                 <p>Foto uploaden (optioneel)</p>
-                                <input id="file-input" type="file" class="file" style="width: 94%;margin-left: 3%;">
+                                <input id="file-input-idea" type="file" class="file" style="width: 94%;margin-left: 3%;" data-show-upload="false">
                             </div>
                           </form>
                           <div class="modal-footer">
@@ -213,6 +213,8 @@
       			}
 		});	
         });
-        $("#file-input").fileinput();
-        $("#file-input").fileinput({'showUpload':'true'});
+        $("#file-input-problem").fileinput();
+        $("#file-input-problem").fileinput({'showUpload':false});
+        $("#file-input-idea").fileinput();
+        $("#file-input-idea").fileinput({'showUpload':false});
 </script>
