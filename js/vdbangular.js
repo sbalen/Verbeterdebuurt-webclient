@@ -577,7 +577,20 @@ vdbApp.factory('issueSubmitService', ['$http',function ($http) {
 vdbApp.factory('issueSubmitServiceWithImage', ['$http',function ($http) {
 	return{
 		getIssueSubmit : function(jsondata,img){
-			console.log({jsondata,img});
+			console.log(jsondata);
+			console.log(img);
+			var dataForm = new FormData();
+			dataForm.append('json',jsondata);
+			dataForm.append('image',img);
+			return $http.post(APIURL+'issueSubmit',dataForm,{
+				transformRequest: angular.identity,
+				headers:{'Content-Type' : undefined}
+			})
+			.success(function(data){
+				issueSubmitService.data = data;
+				return issueSubmitService.data;
+			});
+			return issueSubmitService.data;
 		}
 
 	}
@@ -2091,7 +2104,6 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 			var issue = {};
 			var location = {};
 			var file = $scope.imgData;
-			console.log(file);
 			//login
 			user.username = $window.sessionStorage.username;
 			user.password_hash = $window.sessionStorage.password_hash;
@@ -2120,40 +2132,75 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 			location.latitude = markerLat;
 			location.longitude = markerLng;
 			var jsondataSubmit = JSON.stringify({user,issue,location});
-			// var getIssueSubmit = issueSubmitService.getIssueSubmit( jsondataSubmit ).then(function (data){
-			// 	var issueData = data.data;
-			// 	console.log(issueData);
-			// 	if(!issueData.success){
-			// 		$scope.hide = "";
-			// 		if(issueData.errors.title){
-			// 			$scope.errorTitle ="Onderwerp "+issueData.errors.title;
-			// 		}
-			// 		if(issueData.errors.description){
-			// 			$scope.errorDescription ="Beschrijving "+issueData.errors.description;
-			// 		}
-			// 		if(issueData.errors.category_id){
-			// 			$scope.errorId = issueData.errors.category_id;
-			// 			$scope.errorIdStyle = 'border-color: #a94442';
-			// 			console.log($scope.errorIdStyle);
-			// 		}
-			// 		if(issueData.errors.location){
-			// 			$scope.errorLocation =issueData.errors.location;
-			// 		}
-			// 		$rootScope.globaloverlay = "";
-			// 		$(window).scrollTop(0);
-			// 	}
-			// 	else{
-			// 		//success
-			// 		var issueId = issueData.issue_id;
-   //                  $location.path(/mijn-meldingen/+issueId);
-			// 		$rootScope.globaloverlay = "";
-
-			// 	}
-
-			// });
 			
-			//test img
-			issueSubmitServiceWithImage.getIssueSubmit( jsondataSubmit,file);
+			if(!file){
+				//without image
+					var getIssueSubmit = issueSubmitService.getIssueSubmit( jsondataSubmit ).then(function (data){
+					var issueData = data.data;
+					console.log(issueData);
+					if(!issueData.success){
+						$scope.hide = "";
+						if(issueData.errors.title){
+							$scope.errorTitle ="Onderwerp "+issueData.errors.title;
+						}
+						if(issueData.errors.description){
+							$scope.errorDescription ="Beschrijving "+issueData.errors.description;
+						}
+						if(issueData.errors.category_id){
+							$scope.errorId = issueData.errors.category_id;
+							$scope.errorIdStyle = 'border-color: #a94442';
+							console.log($scope.errorIdStyle);
+						}
+						if(issueData.errors.location){
+							$scope.errorLocation =issueData.errors.location;
+						}
+						$rootScope.globaloverlay = "";
+						$(window).scrollTop(0);
+					}
+					else{
+						//success
+						var issueId = issueData.issue_id;
+	                    $location.path(/mijn-meldingen/+issueId);
+						$rootScope.globaloverlay = "";
+
+					}
+
+					});
+			}else if(file){
+				//with image
+					issueSubmitServiceWithImage.getIssueSubmit( jsondataSubmit,file).then(function (data){
+					var issueData = data.data;
+					console.log(issueData);
+					if(!issueData.success){
+						$scope.hide = "";
+						if(issueData.errors.title){
+							$scope.errorTitle ="Onderwerp "+issueData.errors.title;
+						}
+						if(issueData.errors.description){
+							$scope.errorDescription ="Beschrijving "+issueData.errors.description;
+						}
+						if(issueData.errors.category_id){
+							$scope.errorId = issueData.errors.category_id;
+							$scope.errorIdStyle = 'border-color: #a94442';
+							console.log($scope.errorIdStyle);
+						}
+						if(issueData.errors.location){
+							$scope.errorLocation =issueData.errors.location;
+						}
+						$rootScope.globaloverlay = "";
+						$(window).scrollTop(0);
+					}
+					else{
+						//success
+						var issueId = issueData.issue_id;
+	                    $location.path(/mijn-meldingen/+issueId);
+						$rootScope.globaloverlay = "";
+
+					}
+			});
+			}
+			
+
 			
 			
 		}
