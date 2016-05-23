@@ -300,7 +300,6 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
 		templateUrl: 'myIssueDetail.html',
 		controller: 'myIssuesDetailCtrl'
 	})
-    
     .when('/login', {
 		templateUrl: 'login.html'
 		
@@ -326,6 +325,10 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
     .when('/nieuwe-melding',{
         templateUrl: 'createissues.html',
         controller : 'createissueCtrl'
+	})
+	.when('/createIdea',{
+		templateUrl: 'createIdea.html',
+		controller : 'createIdeaCtrl'
 	})
     .when('/profiel',{
         templateUrl: 'profile.html',
@@ -586,11 +589,10 @@ vdbApp.factory('issueSubmitServiceWithImage', ['$http',function ($http) {
 				transformRequest: angular.identity,
 				headers:{'Content-Type' : undefined}
 			})
-			.success(function(data){
-				issueSubmitService.data = data;
-				return issueSubmitService.data;
-			});
-			return issueSubmitService.data;
+			.success(function(data,headers){
+				console.log(data);
+				console.log(headers);
+			})
 		}
 
 	}
@@ -2002,6 +2004,7 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 		$scope.hideIssue = 1;
 		$scope.slide = "";
         $scope.myIssueCount = 0;
+        $scope.slide = "";
 		
 		menuSelected($rootScope,'createissue');
 		
@@ -2023,8 +2026,6 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 		$timeout(function(){
 			if(latlngChange){
 			googleMapCreateProblem(latlngChange);
-			googleMapCreateIdea(latlngChange);
-			latlngChange = null;
 			var latitude = markerLat;
 			var longitude = markerLng;
 			// var jsondataCity = JSON.stringify({latitude,longitude});
@@ -2035,7 +2036,6 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 			}else{
 			latlngChange = {lat: 52.158367,lng: 4.492999};
 			googleMapCreateProblem(latlngChange);
-			googleMapCreateIdea(latlngChange);
 			latlngChange = null;
 			var latitude = markerLat;
 			var longitude = markerLng;
@@ -2167,7 +2167,7 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 
 					});
 			}else if(file){
-				//with image
+				//with
 					issueSubmitServiceWithImage.getIssueSubmit( jsondataSubmit,file).then(function (data){
 					var issueData = data.data;
 					console.log(issueData);
@@ -2204,12 +2204,112 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 			
 			
 		}
+		$scope.close = function(){
+			$scope.hide = "ng-hide";
+		}
+		$scope.reset = function(){
+			$scope.title = "";
+			$scope.description = "";
+		}
+		//switch bar change
+		$scope.switchButton = function (){
+			$location.path('/createIdea');
+			markerLat = marker.getPosition().lat();
+	 		markerLng = marker.getPosition().lng();
+		}
+		$scope.upload = function (){
+			alert("upload haha");
+		}
+				
+		}])
+
+vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout','categoriesService','issueSubmitService','myIssuesService','$location','issuesService','issueSubmitServiceWithImage', function ($scope,$rootScope,$window,$timeout,categoriesService,issueSubmitService,myIssuesService,$location,issuesService,issueSubmitServiceWithImage) {
+		$scope.hide = "ng-hide";
+		$scope.issueName = "Probleem"
+		$scope.hideIssue = 1;
+		$scope.slide = "";
+        $scope.myIssueCount = 0;
+		$scope.slide = "toggle-button-selected";
+
+		menuSelected($rootScope,'createissue');
+		
+		if(!$window.sessionStorage.username){
+			$location.path("/login");
+		}
+		//show my issue
+		var jsondata = JSON.stringify({"user":{ "username":""+$window.sessionStorage.username+"",
+												"password_hash":""+$window.sessionStorage.password_hash+""
+
+											}});
+		var getMyIssues = myIssuesService.getMyIssues( jsondata ).then(function (data){
+			var getdata = data.data;
+			var count = getdata.count;
+            $rootScope.myIssueCount = count;
+			$rootScope.myIssuesList = getdata.issues;
+		})
+		//first initial
+		$timeout(function(){
+			if(latlngChange){
+			googleMapCreateIdea(latlngChange);
+			var latitude = markerLat;
+			var longitude = markerLng;
+			// var jsondataCity = JSON.stringify({latitude,longitude});
+			// var getCategories = categoriesService.getCategories( jsondataCity ).then(function (data){
+			// 	$scope.categoriesList = data.data.categories;
+			// });
+
+			}else{
+			latlngChange = {lat: 52.158367,lng: 4.492999};
+			googleMapCreateIdea(latlngChange);
+			latlngChange = null;
+			var latitude = markerLat;
+			var longitude = markerLng;
+			// var jsondataCity = JSON.stringify({latitude,longitude});
+			// var getCategories = categoriesService.getCategories( jsondataCity ).then(function (data){
+			// 	$scope.categoriesList = data.data.categories;
+			// });
+		}
+		},1200);
+		
+
+		if($window.sessionStorage.username){
+			$scope.hideNonLogin = "ng-hide"
+		}
+		$scope.clickSearchCreateIssue= function(){
+			geocodeAddressCreateProblem(geocoder, map4, $scope.searchCityCreate);
+			city.long_name = $scope.searchCityCreate;
+	 		var latitude = markerLat;
+			var longitude = markerLng;
+
+			var jsondataCity = JSON.stringify({latitude,longitude});
+			$timeout(function(){
+				var jsondata = JSON.stringify({"coords_criterium":{
+														  	"max_lat":maxlat,
+														    "min_lat":minlat,
+														    "max_long":maxlng,
+														    "min_long":minlng
+														  }
+														});
+			getIssues = issuesService.getIssues( jsondata ).then(function (data){
+			var getdata = data.data;
+			if(getdata.count != 0 || !getdata){
+			$window.issuesData = getdata;
+			showIssue(infoWindow,infoWindowContent);
+			}
+			});
+		},1000)
+			 
+
+		}
+
 		$scope.createIdea = function(){
 			$rootScope.globaloverlay = "active";
 			$scope.errorTitle = "";
 			$scope.errorDescription = "";
 			$scope.errorId = "";
 			$scope.errorIdStyle = "";
+			var file = $scope.imgData;
+
 			//initial data for request
 			var user = {};
 			var issue = {};
@@ -2247,7 +2347,8 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 			console.log(location.longitude);
 			var jsondataSubmit = JSON.stringify({user,issue,location});
 			console.log(jsondataSubmit);
-			var getIssueSubmit = issueSubmitService.getIssueSubmit( jsondataSubmit ).then(function (data){
+			if(!file){
+				var getIssueSubmit = issueSubmitService.getIssueSubmit( jsondataSubmit ).then(function (data){
 				var issueData = data.data;
 				console.log(issueData);
 				if(!issueData.success){
@@ -2277,9 +2378,45 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 				}
 
 			});
+			}else if(file){
+				issueSubmitServiceWithImage.getIssueSubmit( jsondataSubmit,file).then(function (data){
+					var issueData = data.data;
+					console.log(issueData);
+					if(!issueData.success){
+						$scope.hide = "";
+						if(issueData.errors.title){
+							$scope.errorTitle ="Onderwerp "+issueData.errors.title;
+						}
+						if(issueData.errors.description){
+							$scope.errorDescription ="Beschrijving "+issueData.errors.description;
+						}
+						if(issueData.errors.category_id){
+							$scope.errorId = issueData.errors.category_id;
+							$scope.errorIdStyle = 'border-color: #a94442';
+							console.log($scope.errorIdStyle);
+						}
+						if(issueData.errors.location){
+							$scope.errorLocation =issueData.errors.location;
+						}
+						$rootScope.globaloverlay = "";
+						$(window).scrollTop(0);
+					}
+					else{
+						//success
+						var issueId = issueData.issue_id;
+	                    $location.path(/mijn-meldingen/+issueId);
+						$rootScope.globaloverlay = "";
+
+					}
+			});
+
+			}
+			
 			
 			
 		}
+
+
 		$scope.close = function(){
 			$scope.hide = "ng-hide";
 		}
@@ -2289,26 +2426,12 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 		}
 		//switch bar change
 		$scope.switchButton = function (){
-			if($scope.hideIssue ==1 ){
-				$scope.hideIssue = 0;
-				$scope.issueName = "Idee";
-				$scope.slide = "toggle-button-selected";
-			}else{
-				$scope.hideIssue = 1;
-				$scope.issueName = "Probleem";
-				$scope.slide = "";
-				}
-			$timeout(function(){
-				google.maps.event.trigger(map4,'resize');
-				google.maps.event.trigger(map3,'resize');
-			},0)
-			
-		}
-		$scope.upload = function (){
-			alert("upload haha");
-		}
-				
-		}])
+			$location.path('/nieuwe-melding');
+			markerLat = marker.getPosition().lat();
+	 		markerLng = marker.getPosition().lng();
+		}	
+
+}]);
 
 vdbApp.controller('deleteIssueCtrl', ['$scope','$rootScope','$routeParams','$window','statusChangeService','myIssuesService',function ($scope,$rootScope,$routeParams,$window,statusChangeService,myIssuesService) {
 		
