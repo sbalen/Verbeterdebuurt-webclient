@@ -12,7 +12,7 @@
          
             <div class="panel panel-default main-panel" >
                     <div class="alert alert-danger {{hide}}">
-                        <a href="#" class="close" data-dismiss="alert" aria-label="close" ng-click="close">&times;</a>
+                        <a href="#" class="close"  aria-label="close" ng-click="close()">&times;</a>
                        
                         <p>{{errorInitials}}</p>
                         <p>{{errorEmail}}</p>
@@ -27,6 +27,7 @@
                         <p>{{errorPost}}</p>
                         <p>{{errorCity}}</p>
                         <p>{{errorMiddle}}</p>
+                        <p>{{errorFB}}</p>  
                         
                        
                       
@@ -104,7 +105,7 @@
                                            Verbeterdebuurt verbinden met Twitter. Houd je vrienden op de hoogte!
                                         </td>
                                         <td style="padding-bottom: 10px;"> 
-                                            <button type="button" class="btn btn-default " style="width: 100%;" disabled>Connect Twitter</button>
+                                            <button type="button" class="btn btn-default marginmedia " style="width: 100%;" disabled>Connect Twitter</button>
                                         </td>
                                     </tr>
                                     <tr style="padding-top:10px;">
@@ -115,7 +116,7 @@
                                            Verbeterdebuurt verbinden met Facebook. Houd je vrienden op de hoogte!
                                         </td>
                                         <td> 
-                                           <button type="button" class="btn btn-default "  disabled>Connect Facebook</button>
+                                            <button type="button" class="btn btn-default marginmedia"  ng-click="connectFacebook()" ng-disabled="facebookExist">{{facebookMessages}}</button>
                                         </td>
                                     </tr>
                                 </table>

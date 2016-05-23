@@ -81,8 +81,8 @@
                             <td>Door:</td>
                             <td>{{newProblem.owner.username}}</td>
                             <td rowspan="3" colspan="2" align="right"> 
-                                <img class="img-rounded" alt="Twitter" width="49" height="49" src="./img/twitter_s.png">
-                                <img class="img-rounded" alt="Facebook" width="49" height="49" src="./img/facebook_s.png">
+                                <img ng-click="sharetwitter()" class="img-rounded" alt="Twitter" width="49" height="49" src="./img/twitter_s.png">
+                                <img ng-click="sharefacebook()" class="img-rounded" alt="Facebook" width="49" height="49" src="./img/facebook_s.png">
                             </td>
                         </tr>
                         <tr>
@@ -99,13 +99,8 @@
                         </tr>
                         <tr class="{{hideStatus}}">
                             <td colspan="3">
-                                <ul class="status-log">
-                                    <li class="list-group-item status-log-item"><span class="text-muted">04-09-2015 13:06: </span>De melding is afgehandeld verklaard door Hillegom Koppeling</li>
-                                    <li class="list-group-item status-log-item"><span class="text-muted">25-08-2015 13:23: </span>De melding is in behandeling genomen door Hillegom Koppeling</li>
-                                    <li class="list-group-item status-log-item"><span class="text-muted">25-08-2015 11:47: </span>De melding is automatisch geaccepteerd</li>
-                                    <li class="list-group-item status-log-item"><span class="text-muted">25-08-2015 11:46: </span>De melding is nu actief</li>
-                                    <li class="list-group-item status-log-item"><span class="text-muted">25-08-2015 11:46: </span>De melding is bevestigd</li>
-                                    <li class="list-group-item status-log-item"><span class="text-muted">25-08-2015 11:45: </span>Melding toegevoegd</li>
+                                <ul class="status-log" ng-repeat="issueLog in issueLogList">
+                                    <li class="list-group-item status-log-item"><span class="text-muted">{{issueLog.createdAt}}: </span>{{issueLog.message}}</li>
                                 </ul>
                             </td>
                         </tr> 
@@ -161,7 +156,7 @@
 </div>
 
 <!-- CloseModal -->
-<div id="CloseModal" class="modal fade{{}}" role="dialog" >
+<div id="CloseModal" class="modal fade" role="dialog" >
     <div class="modal-dialog">
         <!-- Modal content-->
         <div class="modal-content">
@@ -222,6 +217,7 @@
         </div>
     </div>
 </div>
+
 
 <!-- Page specific js -->
 <!-- <script src="./js/vdb-start.js"></script> -->
