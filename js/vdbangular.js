@@ -326,7 +326,7 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
         templateUrl: 'createissues.html',
         controller : 'createissueCtrl'
 	})
-	.when('/createIdea',{
+	.when('/nieuwe-idea',{
 		templateUrl: 'createIdea.html',
 		controller : 'createIdeaCtrl'
 	})
@@ -965,8 +965,13 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 	}
 	//hide log Status
 	if($window.sessionStorage.username){
-		var logjsondata = JSON.stringify({"issue_id":""+$routeParams.id+""	
+		var logjsondata = JSON.stringify({"user" : {
+						"username":""+$window.sessionStorage.username+"",
+						"password_hash":""+$window.sessionStorage.password_hash+""
+					},
+			"issue_id":""+$routeParams.id+""	
 											});
+		console.log(logjsondata);
 		var getIssueLog = issueLogService.getIssueLog( logjsondata ).then(function (data){
 				var getdata = data.data;
 				if(!getdata.success){
@@ -1082,7 +1087,11 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 
 		//hidelog
 		if($window.sessionStorage.username){
-		var logjsondata = JSON.stringify({"issue_id":""+$routeParams.id+""	
+		var logjsondata = JSON.stringify({"user" : {
+						"username":""+$window.sessionStorage.username+"",
+						"password_hash":""+$window.sessionStorage.password_hash+""
+					},
+			"issue_id":""+$routeParams.id+""	
 									});
 		var getIssueLog = issueLogService.getIssueLog( logjsondata ).then(function (data){
 				var getdata = data.data;
@@ -2004,7 +2013,7 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 		$scope.hideIssue = 1;
 		$scope.slide = "";
         $scope.myIssueCount = 0;
-        $scope.slide = "";
+        $scope.slide = " ";
 		
 		menuSelected($rootScope,'createissue');
 		
@@ -2213,14 +2222,10 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 		}
 		//switch bar change
 		$scope.switchButton = function (){
-			$location.path('/createIdea');
+			$location.path('/nieuwe-idea');
 			markerLat = marker.getPosition().lat();
 	 		markerLng = marker.getPosition().lng();
 		}
-		$scope.upload = function (){
-			alert("upload haha");
-		}
-				
 		}])
 
 vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout','categoriesService','issueSubmitService','myIssuesService','$location','issuesService','issueSubmitServiceWithImage', function ($scope,$rootScope,$window,$timeout,categoriesService,issueSubmitService,myIssuesService,$location,issuesService,issueSubmitServiceWithImage) {
