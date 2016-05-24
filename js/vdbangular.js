@@ -1050,6 +1050,7 @@ vdbApp.controller('myIssuesCtrl', ['$scope','$rootScope','$window','$location','
 		$scope.getIdStatus = function(id){
 			$rootScope.getStatusId = id;
 		}
+		
 }])
 
 vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootScope','$location','$window','myIssuesService','usSpinnerService','issueLogService','commentService','voteSubmitService', function ($scope,$routeParams,$http,$rootScope,$location,$window,myIssuesService,usSpinnerService,issueLogService,commentService,voteSubmitService) {
@@ -2440,7 +2441,8 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
 }]);
 
 vdbApp.controller('deleteIssueCtrl', ['$scope','$rootScope','$routeParams','$window','statusChangeService','myIssuesService',function ($scope,$rootScope,$routeParams,$window,statusChangeService,myIssuesService) {
-		
+		$scope.hideError = "ng-hide";
+		$scope.error = "";
 		$scope.deleteIssue = function(){
 			$rootScope.globaloverlay="active";
 			var user = {};
@@ -2452,7 +2454,8 @@ vdbApp.controller('deleteIssueCtrl', ['$scope','$rootScope','$routeParams','$win
 			var getStatusChange = statusChangeService.getStatusChange( jsondata ).then(function(data){
 				var getStatusChange = data.data;
 				console.log(getStatusChange);
-				//load myissue
+				//validate error or not
+				if(getStatusChange.success){
 				var jsondata = JSON.stringify({"user":{ "username":""+$window.sessionStorage.username+"",
 												"password_hash":""+$window.sessionStorage.password_hash+""
 											}});
@@ -2464,8 +2467,26 @@ vdbApp.controller('deleteIssueCtrl', ['$scope','$rootScope','$routeParams','$win
 						$('#DeleteModal').modal('hide');
 						$('.modal-backdrop').hide();
 						$rootScope.globaloverlay = "";
+						$scope.error = "";
+						$scope.hideError = "ng-hide";
 					})
+				}
+				else{
+					$scope.error = getStatusChange.error;
+					$scope.hideError = "";
+					$rootScope.globaloverlay = "";
+				}
+				//load myissue
+				
 			});	
+		}
+		$scope.close = function(){
+			$scope.hideError = "ng-hide";
+			$scope.error = "";
+		}
+		$scope.cancel = function(){
+			$scope.error = "";
+			$scope.hideError = "ng-hide";
 		}
 }])
 

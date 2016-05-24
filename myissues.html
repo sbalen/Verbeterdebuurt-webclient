@@ -37,7 +37,7 @@
                      <span class="clearfix">
                                     <div class="submit-buttons pull-right">
 				        <nav>
-                  <dir-pagination-controls boundary-links="true" template-url="node_modules/angular-utils-pagination/dirPagination.tpl.html" max-size="6"></dir-pagination-controls>
+                  <dir-pagination-controls boundary-links="true" template-url="node_modules/angular-utils-pagination/dirPagination.tpl.html" max-size="6" ng-hide="count<=0"></dir-pagination-controls>
 				            <!-- <ul class="pagination">
 				                <li class="active"><a href="#">1</a></li>
 				                <li><a href="#">2</a></li>
@@ -107,14 +107,18 @@
         <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <button type="button" class="close" data-dismiss="modal" ng-click="cancel()">&times;</button>
                     <h1 class="modal-title">Melding verwijderen</h1>
+                    <div class="alert alert-danger {{hideError}}" >
+                                  <a class="close {{hideError}}" aria-label="close" ng-click="close()" >&times;</a>
+                                  <p>{{error}}</p>
+                    </div>
                 </div>
                 <div class="modal-body">
                     Weet je zeker dat je deze melding wil verwijderen?
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Annuleren</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="cancel()">Annuleren</button>
                     <button type="button" class="btn btn-success" ng-click="deleteIssue()">Verwijderen</button>
                 </div>
             </div>
