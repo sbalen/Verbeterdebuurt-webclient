@@ -657,13 +657,7 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
                         menuSelected($rootScope,'home');
 						
                         $scope.userpanel=1;
-    					
-    					if(maxlat=null){
-    						 maxlat  = 52.17899981092104;
-						     maxlng  = 52.15154422875919;
-						     minlat = 4.545096343219029;
-						     minlng = 4.487203543841588;
-    					}
+    			
 						$timeout(function(){
 							var jsondata = JSON.stringify({
 							  		"coords_criterium":{
@@ -683,9 +677,13 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 							}
 						});
 						},2000);
-						if(!$routeParams.cityName){
+						if(!$routeParams.cityName && !$rootScope.lastCity){
 							var jsoncity = JSON.stringify({"council":"Leiden"});	
-						}else{
+						}
+						else if($rootScope.lastCity && !$routeParams.cityName){
+							var jsoncity = JSON.stringify({"council":""+$rootScope.lastCity+""});
+						}
+						else{
 							var jsoncity = JSON.stringify({"council":""+$routeParams.cityName+""});
 						}
 						
@@ -710,6 +708,7 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
                                 $location.path("/gemeente/"+$window.city.long_name);
 								$rootScope.lastUrl = $location.path();
 								$scope.searchCity = city.long_name;	
+								
 							}
 							
 							//Get city problem when click/drag
@@ -723,6 +722,7 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 							
 						
 								var jsoncity = JSON.stringify({"council":""+$routeParams.cityName+""});
+								$rootScope.lastCity = $routeParams.cityName;
 							var getReport = reportService.getReport( jsoncity ).then(function (data){
 								var getdata = data.data;
 								$rootScope.reportList = getdata.report;
@@ -789,6 +789,7 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 							console.log($scope.searchCity);
 							$window.cityName = null;
 							city.long_name = $scope.searchCity;
+							$rootScope.lastCity = $scope.searchCity;
 							var jsondata = JSON.stringify({"coords_criterium":{
 														  	"max_lat":maxlat,
 														    "min_lat":minlat,
