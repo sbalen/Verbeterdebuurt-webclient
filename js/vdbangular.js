@@ -657,7 +657,7 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
                         menuSelected($rootScope,'home');
 						
                         $scope.userpanel=1;
-    			
+    					console.log($rootScope.lastCity);
 						$timeout(function(){
 							var jsondata = JSON.stringify({
 							  		"coords_criterium":{
@@ -2080,11 +2080,11 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 		}
 		$scope.clickSearchCreateIssue= function(){
 			geocodeAddressCreateProblem(geocoder, map3, $scope.searchCityCreate);
-			geocodeAddressCreateProblem(geocoder, map4, $scope.searchCityCreate);
 			city.long_name = $scope.searchCityCreate;
 	 		var latitude = markerLat;
 			var longitude = markerLng;
-
+			$rootScope.lastCity = $scope.searchCityCreate;
+			console.log($rootScope.lastCity);
 			var jsondataCity = JSON.stringify({latitude,longitude});
 			$timeout(function(){
 				var getCategories = categoriesService.getCategories( jsondataCity ).then(function (data){
@@ -2293,7 +2293,8 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
 			city.long_name = $scope.searchCityCreate;
 	 		var latitude = markerLat;
 			var longitude = markerLng;
-
+			$rootScope.lastCity = $scope.searchCityCreate;
+			console.log($rootScope.lastCity);
 			var jsondataCity = JSON.stringify({latitude,longitude});
 			$timeout(function(){
 				var jsondata = JSON.stringify({"coords_criterium":{
