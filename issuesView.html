@@ -68,7 +68,7 @@
 
         <h1>{{newProblem.title}}<br><small>{{newProblem.location.full_address}}</small></h1>
         <div class="thumbnail right-caption span4">
-            <img class="img-responsive" src="./img/20130913_151618_1.jpg" alt="Plaatje van de situatie" ng-if="newProblem.image">
+            <img class="img-responsive" src="{{newProblem.image.image_url}}" alt="Plaatje van de situatie" ng-if="newProblem.image">
             <div  class = "img-resposive" ng-if="!newProblem.image" id = "googleMapIssue" ng-init="googleMapIssue(newProblem.location.latitude,newProblem.location.longitude,newProblem.type)"></div>
             <div class="detail-table hidden-xs">
                 <table width="100%">
