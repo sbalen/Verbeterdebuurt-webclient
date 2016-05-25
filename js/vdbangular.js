@@ -2013,10 +2013,14 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 		$scope.hide = "ng-hide";
 		$scope.issueName = "Probleem"
 		$scope.hideIssue = 1;
-		$scope.slide = "";
         $scope.myIssueCount = 0;
-        $scope.slide = " ";
+        $scope.slide = "";
+		$scope.initslide = "toggle-button";
+        $timeout(function(){
+        	$scope.slide = "toggle-button-selected-left";
+        },0)
 		
+
 		menuSelected($rootScope,'createissue');
 		
 		if(!$window.sessionStorage.username){
@@ -2234,10 +2238,12 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
 		$scope.hide = "ng-hide";
 		$scope.issueName = "Probleem"
 		$scope.hideIssue = 1;
-		$scope.slide = "";
         $scope.myIssueCount = 0;
-		$scope.slide = "toggle-button-selected";
-
+        $scope.initslide = "toggle-button2 ";
+        $timeout(function(){
+        	$scope.slide = "toggle-button-selected-right";
+        },0)
+	
 		menuSelected($rootScope,'createissue');
 		
 		if(!$window.sessionStorage.username){
