@@ -89,9 +89,13 @@
                             <td>Datum:</td>
                             <td>{{newProblem.created_at}}</td>
                         </tr>
-                        <tr>
+                        <tr ng-if="newProblem.type=='problem'">
                             <td>Categorie:</td>
                             <td>{{newProblem.category}}</td>
+                        </tr>
+                        <tr ng-if="newProblem.type=='idea'">
+                            <td>Reactie:</td>
+                            <td>{{newProblem.realization}}</td>
                         </tr>
                         <tr>
                             <td>Status:</td>
