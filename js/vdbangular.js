@@ -27,6 +27,7 @@ var statusChangeService = new Object();
 var issueLogService = new Object();
 var newsletterService = new Object();
 var agreementSevice = new Object();
+var duplicateIssuesService = new Object();
 
 
 
@@ -668,6 +669,18 @@ vdbApp.factory('agreementSevice', ['$http',function ($http) {
 	};
 }])
 
+vdbApp.factory('duplicateIssuesService', ['$http',function ($http) {
+	return {
+			getDuplicateIssue : function(jsondata){
+				return $http.post(APIURL+'duplicateIssues',jsondata)
+				.success(function (data){
+					duplicateIssuesService.data = data;
+					return duplicateIssuesService.data;
+				});
+				return duplicateIssuesService.data;
+			}
+	};
+}])
 vdbApp.run(['$rootScope', '$window', function($rootScope, $window) {
         (function(d, s, id) {
             var js, fjs = d.getElementsByTagName(s)[0];
@@ -2072,17 +2085,20 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
     
 }])
 
-vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout','categoriesService','issueSubmitService','myIssuesService','$location','issuesService','issueSubmitServiceWithImage', function ($scope,$rootScope,$window,$timeout,categoriesService,issueSubmitService,myIssuesService,$location,issuesService,issueSubmitServiceWithImage) {	
+vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout','categoriesService','issueSubmitService','myIssuesService','$location','issuesService','issueSubmitServiceWithImage','duplicateIssuesService', function ($scope,$rootScope,$window,$timeout,categoriesService,issueSubmitService,myIssuesService,$location,issuesService,issueSubmitServiceWithImage,duplicateIssuesService) {	
 		$scope.hide = "ng-hide";
 		$scope.issueName = "Probleem"
 		$scope.hideIssue = 1;
         $scope.myIssueCount = 0;
         $scope.slide = "";
 		$scope.initslide = "toggle-button";
+		$scope.loadCategory = 1;
+		$scope.count = 0;
         $timeout(function(){
         	$scope.slide = "toggle-button-selected-left";
         },0)
-		
+		$rootScope.lastUrl = $location.path();
+		console.log($rootScope.lastUrl);
 
 		menuSelected($rootScope,'createissue');
 		
@@ -2125,6 +2141,9 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 		},1200);
 		
 		$scope.categoriesData = function(){
+			$scope.loadCategory = 1;
+			$scope.count = 0;
+			$scope.duplicateDataList = null;
 			var latitude = markerLat;
 			var longitude = markerLng;
 			var jsondataCity = JSON.stringify({latitude,longitude});
@@ -2133,8 +2152,13 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 			$scope.categoriesList = null;
 			var getCategories = categoriesService.getCategories( jsondataCity ).then(function (data){
 				$scope.categoriesList = data.data.categories;
-			});	
-			},1000)
+				$timeout(function(){
+					$scope.loadCategory = 0;
+				})
+			});
+				
+		
+			},3000)
 		}
 
 
@@ -2143,6 +2167,7 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 		}
 		$scope.clickSearchCreateIssue= function(){
 			geocodeAddressCreateProblem(geocoder, map3, $scope.searchCityCreate);
+			$scope.loadCategory = 1;
 			city.long_name = $scope.searchCityCreate;
 	 		var latitude = markerLat;
 			var longitude = markerLng;
@@ -2152,6 +2177,7 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 			$timeout(function(){
 				var getCategories = categoriesService.getCategories( jsondataCity ).then(function (data){
 				$scope.categoriesList = data.data.categories;
+				$scope.loadCategory = 0;
 				});
 				var jsondata = JSON.stringify({"coords_criterium":{
 														  	"max_lat":maxlat,
@@ -2167,7 +2193,7 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 			showIssue(infoWindow,infoWindowContent);
 			}
 			});
-		},1000)
+		})
 			 
 
 		}
@@ -2295,6 +2321,28 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 			markerLat = marker.getPosition().lat();
 	 		markerLng = marker.getPosition().lng();
 		}
+		//dulicate data
+		$scope.duplicateData = function(){
+			var user = {};
+			user.username = $window.sessionStorage.username;
+			user.password_hash = $window.sessionStorage.password_hash;
+			var lat = markerLat;
+			var long = markerLng;
+			var category_id = $scope.categoryId;
+			$rootScope.currentPage = 1;
+  			$scope.totalPage = 5;
+
+			var jsondataDuplicate = JSON.stringify({user,lat,long,category_id});
+			console.log(jsondataDuplicate);
+			var getDuplicateIssue = duplicateIssuesService.getDuplicateIssue(jsondataDuplicate).then(function (data){
+					var getDuplicateIssue = data.data;
+					$scope.count = data.data.count;
+					$scope.duplicateDataList = getDuplicateIssue.issues;
+					console.log(getDuplicateIssue);
+				});
+		}
+
+
 		}])
 
 vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout','categoriesService','issueSubmitService','myIssuesService','$location','issuesService','issueSubmitServiceWithImage', function ($scope,$rootScope,$window,$timeout,categoriesService,issueSubmitService,myIssuesService,$location,issuesService,issueSubmitServiceWithImage) {
