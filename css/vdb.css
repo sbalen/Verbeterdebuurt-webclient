@@ -522,4 +522,11 @@ h6 {
 .ratingWarp {
   margin-top: 5px; }
 
+.issueLog {
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-touch-callout: none; }
+
 /*# sourceMappingURL=vdb.css.map */
