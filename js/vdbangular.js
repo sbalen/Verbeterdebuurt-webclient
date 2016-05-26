@@ -25,6 +25,8 @@ var syncFBService = new Object();
 var loginFBService = new Object();
 var statusChangeService = new Object();
 var issueLogService = new Object();
+var newsletterService = new Object();
+
 
 
 
@@ -436,6 +438,22 @@ vdbApp.factory('registerService', ['$http',function ($http) {
 			}
 	};
 }])
+
+vdbApp.factory('newsletterService', ['$http',function ($http) {
+		return {
+			getNewsletter : function( jsonnewsletter ){
+				return $http.post(APIURL+'subscribeNewsletter', jsonnewsletter)
+				.success(function(data){
+					if(angular.isObject(data)){
+						newsletterService.data=data;
+						return newsletterService.data;
+					}
+				});
+				return newsletterService.data;
+			}
+	};
+}])
+
 
 
 vdbApp.factory('forgotService', ['$http',function ($http) {
@@ -1366,7 +1384,7 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
     
 }])
 
-vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerService','usSpinnerService','$location', '$facebook', function ($scope,$rootScope,$window,registerService,usSpinnerService,$location,$facebook) {
+vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerService','newsletterService','usSpinnerService','$location', '$facebook', function ($scope,$rootScope,$window,registerService,newsletterService,usSpinnerService,$location,$facebook) {
     $scope.home = function(){
 		        $location.path('/');
 	                                   
@@ -1528,6 +1546,9 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
                     $scope.errorMiddle = getRegister.errors.tussenvoegsel;
                     $scope.errorPost = getRegister.errors.postcode;
                     $scope.errorInitials = getRegister.errors.initials;
+                
+         
+                
                    
 					$scope.hide = "";
                     $rootScope.globaloverlay = "";
@@ -1539,7 +1560,21 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
                     $location.path('/bevestiging-registratie');
                     $rootScope.globaloverlay = "";
                     
+                    if($scope.newsletter == true)
+                        {
+                            
+                            var jsonnewsletter = JSON.stringify({"user":{"username":""+$scope.username+""
+                                               ,"password":""+$scope.password+""
+                                               }})
+                            
+                            var getNewsletter = newsletterService.getNewsletter(jsonnewsletter).then(function (data){
+				            var getNewsletter = data.data;
+                            console.log(getNewsletter);
+                            })
+                        }
+                    
                     console.log(jsondata);
+                    console.log(jsonnewsletter);
                 }
             
 		})
