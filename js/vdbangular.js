@@ -25,6 +25,7 @@ var syncFBService = new Object();
 var loginFBService = new Object();
 var statusChangeService = new Object();
 var issueLogService = new Object();
+var agreementSevice = new Object();
 
 
 
@@ -580,8 +581,6 @@ vdbApp.factory('issueSubmitService', ['$http',function ($http) {
 vdbApp.factory('issueSubmitServiceWithImage', ['$http',function ($http) {
 	return{
 		getIssueSubmit : function(jsondata,img){
-			console.log(jsondata);
-			console.log(img);
 			var dataForm = new FormData();
 			dataForm.append('json',jsondata);
 			dataForm.append('image',img);
@@ -638,6 +637,19 @@ vdbApp.factory('issueLogService', ['$http',function ($http) {
 	};
 }])
 
+vdbApp.factory('agreementSevice', ['$http',function ($http) {
+	return {
+			getAgreement : function(jsondata){
+				return $http.post(APIURL+'agreement',jsondata)
+				.success(function (data){
+					agreementSevice.data = data;
+					return agreementSevice.data;
+				});
+				return agreementSevice.data;
+			}
+	};
+}])
+
 vdbApp.run(['$rootScope', '$window', function($rootScope, $window) {
         (function(d, s, id) {
             var js, fjs = d.getElementsByTagName(s)[0];
@@ -652,12 +664,13 @@ vdbApp.run(['$rootScope', '$window', function($rootScope, $window) {
     
     }]);
 
-vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootScope','$routeParams','$http','issuesService','reportService', '$facebook', function ($scope,$timeout,$window,$location,$rootScope,$routeParams,$http,issuesService,reportService,$facebook) {
-						    
+vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootScope','$routeParams','$http','issuesService','reportService', '$facebook','$cacheFactory','agreementSevice',function ($scope,$timeout,$window,$location,$rootScope,$routeParams,$http,issuesService,reportService,$facebook,$cacheFactory,agreementSevice) {
+						 
                         menuSelected($rootScope,'home');
 						
                         $scope.userpanel=1;
     					console.log($rootScope.lastCity);
+    					console.log($routeParams.cityName);
 						$timeout(function(){
 							var jsondata = JSON.stringify({
 							  		"coords_criterium":{
@@ -677,11 +690,13 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 							}
 						});
 						},2000);
-						if(!$routeParams.cityName && !$rootScope.lastCity){
+						if(!$routeParams.cityName){
+						if(!$rootScope.lastCity){
 							var jsoncity = JSON.stringify({"council":"Leiden"});	
 						}
-						else if($rootScope.lastCity && !$routeParams.cityName){
+						else if($rootScope.lastCity){
 							var jsoncity = JSON.stringify({"council":""+$rootScope.lastCity+""});
+						}
 						}
 						else{
 							var jsoncity = JSON.stringify({"council":""+$routeParams.cityName+""});
@@ -693,11 +708,16 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 						$rootScope.errorSession="";
 
 						//promise for make asyncronise data factory to be syncronis first load
-						var getReport = reportService.getReport( jsoncity ).then(function (data){
+							var getReport = reportService.getReport( jsoncity ).then(function (data){
 								var getdata = data.data;
 								$rootScope.reportList = getdata.report;
 						});
-						
+
+						var getAgreement = agreementSevice.getAgreement (jsoncity).then(function(data){
+								var getdata = data.data;
+								$rootScope.agreement = getdata;
+						});
+			
 						
 						//click function at map
 						$scope.alrCity = function(){
@@ -723,10 +743,14 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 						
 								var jsoncity = JSON.stringify({"council":""+$routeParams.cityName+""});
 								$rootScope.lastCity = $routeParams.cityName;
-							var getReport = reportService.getReport( jsoncity ).then(function (data){
+								var getReport = reportService.getReport( jsoncity ).then(function (data){
 								var getdata = data.data;
 								$rootScope.reportList = getdata.report;
-							});
+								});
+								var getAgreement = agreementSevice.getAgreement (jsoncity).then(function(data){
+								var getdata = data.data;
+								$rootScope.agreement = getdata;
+								});
 							
 							
 							getIssues = issuesService.getIssues( jsondata ).then(function (data){
@@ -812,6 +836,10 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 								var getdata = data.data;
 								$rootScope.reportList = getdata.report;
 							});
+							var getAgreement = agreementSevice.getAgreement (jsoncity).then(function(data){
+								var getdata = data.data;
+								$rootScope.agreement = getdata;
+								});
                             $location.path("gemeente/"+$scope.searchCity);
 						}
 						//move page
