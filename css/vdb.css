@@ -529,4 +529,27 @@ h6 {
   -ms-user-select: none;
   -webkit-touch-callout: none; }
 
+.vdblogo {
+  margin-left: -16px;
+  margin-top: -16px; }
+
+.citylogo {
+  height: 40px;
+  margin-top: -10px;
+  margin-left: 5px; }
+
+@media (max-width: 370px) {
+  .mvdblogo {
+    margin-left: -11px;
+    margin-top: -11px;
+    width: 150px; }
+
+  .mcitylogo {
+    height: 25px;
+    margin-top: -2px;
+    margin-left: 5px; }
+
+  .btn {
+    font-size: 10px; } }
+
 /*# sourceMappingURL=vdb.css.map */
