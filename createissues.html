@@ -84,7 +84,7 @@
                                 <p>Foto uploaden (optioneel)</p>
                                 <input id="file-input-problem" type="file" style="width: 94%;margin-left: 3%;" data-show-upload="false" img-upload='imgData'>
                             </div>
-                            <div class="panel-body {{hideNonLogin}}">
+                            <div class="panel-body" ng-hide="true">
                                 <h4>3. Contactgegevens</h4>
                                 Of <a href="#">log in</a> om dit over te slaan
                                 <div class="form-group">
@@ -95,7 +95,6 @@
                                 <div class="form-group">
                                         <div class="col-sm-2 form-col" style="margin-bottom: 10px;">
                                             <select class="combobox" id="sex" style="width:97%;">
-                                                <option value="0"></option>
                                                 <option value="m">Dhr.</option>
                                                 <option value="f">Mw.</option>
                                             </select>
