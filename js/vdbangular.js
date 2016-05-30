@@ -54,7 +54,17 @@ window.onload = function(){
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         center:  this._map_center,
         zoomControlOptions : { 
-          position :google.maps.ControlPosition.RIGHT_BOTTOM }
+          position :google.maps.ControlPosition.RIGHT_BOTTOM },
+        styles: [
+				    {
+				        featureType: "poi",
+				        elementType: "labels",
+				        stylers:[
+				              { visibility: "off" }
+				        		]
+				    }
+			    ]
+
       };
      map = new google.maps.Map(document.getElementById('googlemaps'), mapOptions);
      getLocation(map);
@@ -91,7 +101,16 @@ function googleMapIssue(lat,lng,type){
 	var mapOption2 = {
 		center : location,
 		zoom : 18,
-		mapTypeId: google.maps.MapTypeId.ROADMAP
+		mapTypeId: google.maps.MapTypeId.ROADMAP,
+        styles: [
+				    {
+				        featureType: "poi",
+				        elementType: "labels",
+				        stylers:[
+				              { visibility: "off" }
+				        		]
+				    }
+			    ]
 		
 	}
 	var markerOption2 = {
@@ -110,7 +129,16 @@ function googleMapCreateProblem(latlng){
 		zoom : 17,
 		maxZoom:19,
         minZoom:15,
-		mapTypeId: google.maps.MapTypeId.ROADMAP
+		mapTypeId: google.maps.MapTypeId.ROADMAP,
+        styles: [
+				    {
+				        featureType: "poi",
+				        elementType: "labels",
+				        stylers:[
+				              { visibility: "off" }
+				        		]
+				    }
+			    ]
 	}
 	 map3 = new google.maps.Map(document.getElementById("googleMapCreateProblem"),mapOption3);
 	 marker = new google.maps.Marker();
@@ -132,7 +160,16 @@ function googleMapCreateIdea(latlng){
 		zoom : 17,
 		maxZoom:19,
         minZoom:15,
-		mapTypeId: google.maps.MapTypeId.ROADMAP
+		mapTypeId: google.maps.MapTypeId.ROADMAP,
+        styles: [
+				    {
+				        featureType: "poi",
+				        elementType: "labels",
+				        stylers:[
+				              { visibility: "off" }
+				        		]
+				    }
+			    ]
 	}
 	 map4 = new google.maps.Map(document.getElementById("googleMapCreateIdea"),mapOption4);
 	 marker = new google.maps.Marker();
@@ -2122,21 +2159,26 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 			googleMapCreateProblem(latlngChange);
 			var latitude = markerLat;
 			var longitude = markerLng;
-			// var jsondataCity = JSON.stringify({latitude,longitude});
-			// var getCategories = categoriesService.getCategories( jsondataCity ).then(function (data){
-			// 	$scope.categoriesList = data.data.categories;
-			// });
+			var jsondataCity = JSON.stringify({latitude,longitude});
+			var getCategories = categoriesService.getCategories( jsondataCity ).then(function (data){
+				$scope.categoriesList = data.data.categories;
+				$timeout(function(){
+					$scope.loadCategory = 0;
+				})
+			});
 
 			}else{
 			latlngChange = {lat: 52.158367,lng: 4.492999};
 			googleMapCreateProblem(latlngChange);
-			latlngChange = null;
 			var latitude = markerLat;
 			var longitude = markerLng;
-			// var jsondataCity = JSON.stringify({latitude,longitude});
-			// var getCategories = categoriesService.getCategories( jsondataCity ).then(function (data){
-			// 	$scope.categoriesList = data.data.categories;
-			// });
+			var jsondataCity = JSON.stringify({latitude,longitude});
+			var getCategories = categoriesService.getCategories( jsondataCity ).then(function (data){
+				$scope.categoriesList = data.data.categories;
+				$timeout(function(){
+					$scope.loadCategory = 0;
+				})
+			});
 		}
 		},1200);
 		
