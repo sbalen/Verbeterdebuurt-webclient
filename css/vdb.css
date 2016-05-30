@@ -398,6 +398,22 @@ h6 {
   height: 50px;
   font-size: 12px; }
 
+.icon-problem {
+  display: inline-block;
+  height: 42px;
+  width: 42px;
+  background: url(../img/icon_2_42_42.png) no-repeat center;
+  background-size: cover;
+  margin-bottom: -15px; }
+
+.icon-idea {
+  display: inline-block;
+  height: 42px;
+  width: 42px;
+  background: url(../img/icon_idea_2_42_42.png) no-repeat center;
+  background-size: cover;
+  margin-bottom: -15px; }
+
 .toggle-button {
   background-color: white;
   margin: 5px 0;
