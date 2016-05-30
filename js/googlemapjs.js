@@ -9,6 +9,8 @@ function getLocation(map) {
                 minlat = map.getBounds().getSouthWest().lat();
                 minlng = map.getBounds().getSouthWest().lng();
                geocoder.geocode({'latLng': map.getCenter()} , function (result , status){
+                sendLatitude = map.getCenter().lng();
+                sendLongitude = map.getCenter().lat();
                 if (status == google.maps.GeocoderStatus.OK){
 
                 for (var i=0; i<result[0].address_components.length; i++) {
