@@ -567,5 +567,12 @@ h6 {
 
   .btn {
     font-size: 10px; } }
+.issueDetailTable {
+  width: 100%; }
+  .issueDetailTable .issueDetailTableContent {
+    width: 100%; }
+
+.word-break {
+  word-break: break-all; }
 
 /*# sourceMappingURL=vdb.css.map */
