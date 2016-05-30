@@ -594,6 +594,8 @@ margin-right: 10px; margin-top: 10px;
 
 
 
+
+
 //toggle button
 .switchButton{
   width: 50%;
@@ -616,7 +618,39 @@ margin-right: 10px; margin-top: 10px;
                   -moz-user-select: none;
                   top: 10px;
 }
+.toggle-button2 {  background-color: white; 
+                  margin: 5px 0; 
+                  border-radius: 20px; 
+                  border: 2px solid #D0D0D0; 
+                  height: 25px; 
+                  cursor: pointer; 
+                  width: 50px; 
+                  position: relative; 
+                  display: inline-block; 
+                  user-select: none; 
+                  -webkit-user-select: none; 
+                  -ms-user-select: none; 
+                  -moz-user-select: none;
+                  top: 10px;
+}
+
 .toggle-button button { cursor: pointer; 
+                        outline: 0; 
+                        display:block; 
+                        position: absolute; 
+                        left: 28px;
+                        top: 3px;
+                        border-radius: 100%;
+                        width: 21px;
+                        height: 21px;
+                        background-color: #3AB53A;
+                        float: left; 
+                        margin: -3px 0 0 -3px; 
+                        border: 2px solid white;
+                        transition: left 0.3s;
+                  
+                      }
+.toggle-button2 button { cursor: pointer; 
                         outline: 0; 
                         display:block; 
                         position: absolute; 
@@ -629,18 +663,15 @@ margin-right: 10px; margin-top: 10px;
                         float: left; 
                         margin: -3px 0 0 -3px; 
                         border: 2px solid white;
-                        
-                        transition: left 0.3s; 
+                        transition: left 0.3s;
+                  
                       }
 
+.toggle-button-selected-right button { left: 28px; 
+                                      }
+.toggle-button-selected-left button { left: 3px;
+                                    }
 
-
-.toggle-button-selected button { left: 28px; 
-                              
-                                 
-                                 
-                                
-                               }
 .center { text-align:center; }
 
 .notice-no-issue{
@@ -701,3 +732,51 @@ margin-right: 10px; margin-top: 10px;
 .ratingWarp{
   margin-top: 5px;
 }
+
+//issueLog
+.issueLog{
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;  
+  -webkit-touch-callout: none; 
+}
+//vdb & city logo
+.vdblogo
+{
+    margin-left: -16px;
+    margin-top: -16px;
+    
+}
+
+.citylogo
+{
+    
+    height: 40px;
+    margin-top: -10px;
+    margin-left: 5px; 
+}
+
+@media (max-width: 370px)
+{
+    .mvdblogo {
+    margin-left: -11px;
+    margin-top: -11px;
+    width: 150px;
+    }
+    
+    .mcitylogo {
+    height: 25px;
+    margin-top: -2px;
+    margin-left: 5px;
+    }
+        
+    .btn {
+    
+    font-size: 10px;
+    
+}
+
+    
+}
+
