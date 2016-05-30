@@ -2159,21 +2159,26 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 			googleMapCreateProblem(latlngChange);
 			var latitude = markerLat;
 			var longitude = markerLng;
-			// var jsondataCity = JSON.stringify({latitude,longitude});
-			// var getCategories = categoriesService.getCategories( jsondataCity ).then(function (data){
-			// 	$scope.categoriesList = data.data.categories;
-			// });
+			var jsondataCity = JSON.stringify({latitude,longitude});
+			var getCategories = categoriesService.getCategories( jsondataCity ).then(function (data){
+				$scope.categoriesList = data.data.categories;
+				$timeout(function(){
+					$scope.loadCategory = 0;
+				})
+			});
 
 			}else{
 			latlngChange = {lat: 52.158367,lng: 4.492999};
 			googleMapCreateProblem(latlngChange);
-			latlngChange = null;
 			var latitude = markerLat;
 			var longitude = markerLng;
-			// var jsondataCity = JSON.stringify({latitude,longitude});
-			// var getCategories = categoriesService.getCategories( jsondataCity ).then(function (data){
-			// 	$scope.categoriesList = data.data.categories;
-			// });
+			var jsondataCity = JSON.stringify({latitude,longitude});
+			var getCategories = categoriesService.getCategories( jsondataCity ).then(function (data){
+				$scope.categoriesList = data.data.categories;
+				$timeout(function(){
+					$scope.loadCategory = 0;
+				})
+			});
 		}
 		},1200);
 		
