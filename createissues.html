@@ -51,15 +51,29 @@
                                 <h4>2. Beschrijf de melding</h4>
 	                             <div class="form-group">
                                     <div class="col-sm-12 form-col" style="margin-bottom: 10px;" ng-class="{'has-error':errorTitle}">
-                                        <input type="text" class="form-control" id="Onderwerp" placeholder="Onderwerp" ng-model="title" ng-keydown="categoriesData()">
+                                        <input type="text" class="form-control" id="Onderwerp" placeholder="Onderwerp" ng-model="title">
                                     </div>
                                 </div>
-                               <div class="form-group">
+                                <div class="form-group" ng-show="loadCategory">
+                                    <div class="col-sm-12 form-col" style="margin-bottom: 10px;">
+                                       categorieën worden opgehaald...
+                                    </div>
+                                </div>
+                               <div class="form-group" ng-hide="loadCategory">
                                     <div class="col-sm-12 form-col" style="margin-bottom: 10px;" ng-class="{'has-error':errorId}">
-                                        <select class="combobox" id="category" ng-model="categoryId" ng-options="categories.id as categories.title for categories in categoriesList" style="{{errorIdStyle}}">
+                                        <select class="combobox" id="category" ng-model="categoryId" ng-options="categories.id as categories.title for categories in categoriesList" style="{{errorIdStyle}}" ng-click="duplicateData(categories.id)">
                                             <option value=""  disabled selected>Categorie</option>
                                         </select>
                                     </div>
+                                </div>
+                                <div class="form-group" ng-hide="count==0||count==null">
+                                    <p>Mogelijke dubbele meldingen. Bekijk of bij deze meldingen misschien jouw probleem al gemeld is. Klik er dan op om deze melding te steunen</p>
+                                    <div class="col-sm-12 form-col" style="margin-bottom: 10px;" dir-paginate="duplicateData in duplicateDataList | itemsPerPage:totalPage" current-page="currentPage" >
+                                       <li>
+                                       <ul><a href="meldingen/{{duplicateData.id}}">{{duplicateData.title}}</a><ul>
+                                     </li>
+                                    </div>
+                                     <dir-pagination-controls boundary-links="true" template-url="node_modules/angular-utils-pagination/dirPagination.tpl.html" max-size="1" ></dir-pagination-controls>
                                 </div>
                                 <div class="form-group">
                                     <div class="col-sm-12 form-col" ng-class="{'has-error':errorDescription}">  
