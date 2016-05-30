@@ -38,23 +38,22 @@
                                     <td>Datum:</td>
                                     <td>{{myIssues.created_at}}</td>
                                 </tr>
-                                <tr>
+                                <tr ng-if="myIssues.type=='problem'">
                                     <td>Categorie:</td>
                                     <td>{{myIssues.category}}</td>
                                 </tr>
+                                <tr ng-if="myIssues.type=='idea'">
+                                    <td>Reactie:</td>
+                                    <td>{{myIssues.realization}}</td>
+                                </tr>
                                 <tr>
                                     <td>Status:</td>
-                                    <td>{{myIssues.status}} <a class="{{hideLogStatus}}" ng-click="logStatus()">Meer >> </a></td>
+                                    <td>{{myIssues.status}} <a class="{{hideLogStatus}} issueLog" ng-click="logStatus()" >Meer >> </a></td>
                                 </tr>
                                 <tr  class="{{hideStatus}}">
                                     <td colspan="3">
-                                        <ul class="status-log">
-                                            <li class="list-group-item status-log-item"><span class="text-muted">04-09-2015 13:06: </span>De melding is afgehandeld verklaard door Hillegom Koppeling</li>
-                                            <li class="list-group-item status-log-item"><span class="text-muted">25-08-2015 13:23: </span>De melding is in behandeling genomen door Hillegom Koppeling</li>
-                                            <li class="list-group-item status-log-item"><span class="text-muted">25-08-2015 11:47: </span>De melding is automatisch geaccepteerd</li>
-                                            <li class="list-group-item status-log-item"><span class="text-muted">25-08-2015 11:46: </span>De melding is nu actief</li>
-                                            <li class="list-group-item status-log-item"><span class="text-muted">25-08-2015 11:46: </span>De melding is bevestigd</li>
-                                            <li class="list-group-item status-log-item"><span class="text-muted">25-08-2015 11:45: </span>Melding toegevoegd</li>
+                                        <ul class="status-log" ng-repeat="issueLog in issueLogList">
+                                            <li class="list-group-item status-log-item"><span class="text-muted">{{issueLog.createdAt}}: </span>{{issueLog.message}}</li>
                                         </ul>
                                     </td>
                                 </tr> 

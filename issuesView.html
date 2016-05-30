@@ -68,7 +68,7 @@
 
         <h1>{{newProblem.title}}<br><small>{{newProblem.location.full_address}}</small></h1>
         <div class="thumbnail right-caption span4">
-            <img class="img-responsive" src="./img/20130913_151618_1.jpg" alt="Plaatje van de situatie" ng-if="newProblem.image">
+            <img class="img-responsive" src="{{newProblem.image.image_url}}" alt="Plaatje van de situatie" ng-if="newProblem.image">
             <div  class = "img-resposive" ng-if="!newProblem.image" id = "googleMapIssue" ng-init="googleMapIssue(newProblem.location.latitude,newProblem.location.longitude,newProblem.type)"></div>
             <div class="detail-table hidden-xs">
                 <table width="100%">
@@ -89,23 +89,22 @@
                             <td>Datum:</td>
                             <td>{{newProblem.created_at}}</td>
                         </tr>
-                        <tr>
+                        <tr ng-if="newProblem.type=='problem'">
                             <td>Categorie:</td>
                             <td>{{newProblem.category}}</td>
                         </tr>
+                        <tr ng-if="newProblem.type=='idea'">
+                            <td>Reactie:</td>
+                            <td>{{newProblem.realization}}</td>
+                        </tr>
                         <tr>
                             <td>Status:</td>
-                            <td>{{newProblem.status}} <a class="{{hideLogStatus}}" ng-click="logStatus()">Meer >> </a></td>
+                            <td>{{newProblem.status}} <a class="{{hideLogStatus}}  issueLog" ng-click="logStatus()">Meer >> </a></td>
                         </tr>
                         <tr class="{{hideStatus}}">
                             <td colspan="3">
-                                <ul class="status-log">
-                                    <li class="list-group-item status-log-item"><span class="text-muted">04-09-2015 13:06: </span>De melding is afgehandeld verklaard door Hillegom Koppeling</li>
-                                    <li class="list-group-item status-log-item"><span class="text-muted">25-08-2015 13:23: </span>De melding is in behandeling genomen door Hillegom Koppeling</li>
-                                    <li class="list-group-item status-log-item"><span class="text-muted">25-08-2015 11:47: </span>De melding is automatisch geaccepteerd</li>
-                                    <li class="list-group-item status-log-item"><span class="text-muted">25-08-2015 11:46: </span>De melding is nu actief</li>
-                                    <li class="list-group-item status-log-item"><span class="text-muted">25-08-2015 11:46: </span>De melding is bevestigd</li>
-                                    <li class="list-group-item status-log-item"><span class="text-muted">25-08-2015 11:45: </span>Melding toegevoegd</li>
+                                <ul class="status-log" ng-repeat="issueLog in issueLogList">
+                                    <li class="list-group-item status-log-item"><span class="text-muted">{{issueLog.createdAt}}: </span>{{issueLog.message}}</li>
                                 </ul>
                             </td>
                         </tr> 
