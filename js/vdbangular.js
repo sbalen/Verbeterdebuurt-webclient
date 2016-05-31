@@ -739,6 +739,7 @@ vdbApp.run(['$rootScope', '$window', function($rootScope, $window) {
 vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootScope','$routeParams','$http','issuesService','reportService', '$facebook','$cacheFactory','agreementSevice',function ($scope,$timeout,$window,$location,$rootScope,$routeParams,$http,issuesService,reportService,$facebook,$cacheFactory,agreementSevice) {
 						 
                         menuSelected($rootScope,'home');
+                        $scope.hideLogo = 1;
 						
                         $scope.userpanel=1;
     					console.log($rootScope.lastCity);
@@ -788,6 +789,12 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 						var getAgreement = agreementSevice.getAgreement (jsoncity).then(function(data){
 								var getdata = data.data;
 								$rootScope.agreement = getdata;
+								if(!getdata.logo){
+									$scope.hideLogo = 1;
+								}
+								else{
+									$scope.hideLogo = 0;	
+								}
 						});
 			
 						
@@ -822,6 +829,12 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 								var getAgreement = agreementSevice.getAgreement (jsoncity).then(function(data){
 								var getdata = data.data;
 								$rootScope.agreement = getdata;
+								if(!getdata.logo){
+									$scope.hideLogo = 1;
+								}
+								else{
+									$scope.hideLogo = 0;	
+								}
 								});
 							
 							
@@ -911,6 +924,12 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 							var getAgreement = agreementSevice.getAgreement (jsoncity).then(function(data){
 								var getdata = data.data;
 								$rootScope.agreement = getdata;
+								if(!getdata.logo){
+									$scope.hideLogo = 1;
+								}
+								else{
+									$scope.hideLogo = 0;	
+								}
 								});
                             $location.path("gemeente/"+$scope.searchCity);
 						}
