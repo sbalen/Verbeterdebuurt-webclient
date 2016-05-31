@@ -1341,22 +1341,8 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
                     }
                     else if (result.success){
                         //we got user data here, please log me in!
-                        $window.sessionStorage.username = result.user.username;
-                        $window.sessionStorage.email = result.user.email;
-                        $window.sessionStorage.password_hash = result.user.password_hash;
-                        $window.sessionStorage.name = result.user_profile.name;
-                        $window.sessionStorage.initials = result.user_profile.initials;
-                        $window.sessionStorage.surname = result.user_profile.surname;
-                        $window.sessionStorage.tussenvoegsel = result.user_profile.tussenvoegsel;
-                        $window.sessionStorage.sex = result.user_profile.sex;
-                        $window.sessionStorage.address = result.user_profile.address;
-                        $window.sessionStorage.address_number = result.user_profile.address_number;
-                        $window.sessionStorage.address_suffix = result.user_profile.address_suffix;
-                        $window.sessionStorage.postcode = result.user_profile.postcode;
-                        $window.sessionStorage.city = result.user_profile.city;
-                        $window.sessionStorage.phone = result.user_profile.phone;
-                        $window.sessionStorage.facebookID = result.user_profile.facebookID;
-                        
+                        $cookies.putObject('user',result.user);
+                        $cookies.putObject('user_profile',result.user_profile);
                         
                         $rootScope.loginStatus = function(){
                             return true;
@@ -1403,13 +1389,10 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
 					$scope.errorMessage = getLogin.error;
 					$scope.hide = "";
                     $rootScope.globaloverlay = "";
-                    var expires = new Date();
-                    expires.setDate(expires.getDate()+1/24/60);
-                    console.log(expires);
 				}else if(getLogin.success){
 					//temp for data session
 					var expired = new Date();
-                    expired.setDate(expired.getDate()+2/24);
+                    expired.setDate(expired.getDate()+((1/24)*2));
                     console.log(expired);
 					$cookies.putObject('user',getLogin.user,{expires:expired});
 					$cookies.putObject('user_profile',getLogin.user_profile,{expires:expired});
@@ -1417,10 +1400,12 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
                    	//remember me
                    		if($scope.rememberMe === true){
                    			var expired = new Date();
-		                    expired.setDate(expired.getDate()+1);
+		                    expired.setDate(expired.getDate()+7);
 		                    console.log(expired);
                    			$cookies.put('username',$scope.lusername,{expires:expired});
                    			$cookies.put('password',$scope.lpassword,{expires:expired});
+                   			$cookies.putObject('user',getLogin.user,{expires:expired});
+							$cookies.putObject('user_profile',getLogin.user_profile,{expires:expired});
                    		}
                    		else{
                    			$cookies.remove('username');
