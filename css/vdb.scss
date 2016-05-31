@@ -569,7 +569,14 @@ margin-right: 10px; margin-top: 10px;
     
 .margintop
     {
-        top: -15px;
+        top: -16px;
+        min-height: calc(100vh - 165px);
+    }
+    
+.margintop1
+    {
+        top: -16px;
+        min-height: calc(152vh - 333px);
     }
     
     
@@ -616,10 +623,24 @@ margin-right: 10px; margin-top: 10px;
     
 .footer1
     {
-        height: 114px;
+        height: 116px;
         margin-bottom: -8px;
     }
     
+.alert1 {
+    padding: 15px;
+    margin-bottom: 5px;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    margin-left: 10px;
+    margin-right: 10px;
+   
+}
+
+
+    
+    
+
 }
 
 
