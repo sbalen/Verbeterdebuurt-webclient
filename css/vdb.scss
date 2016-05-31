@@ -594,7 +594,6 @@ margin-right: 10px; margin-top: 10px;
 .selectproblem-container{
     
     padding-top: 50px;
-    padding-bottom: 30px;
     
 }
 
@@ -619,6 +618,13 @@ margin-right: 10px; margin-top: 10px;
     background: url(../img/icon_2_42_42.png) no-repeat center;
     background-size: cover;
     margin-bottom: -15px;
+    text-align: center;
+    
+    &.big{
+         padding-top: 82px;
+         width: 82px;
+        background: url(../img/problem-big.png) no-repeat top;
+    }
 }
 
 .icon-idea{
@@ -628,6 +634,16 @@ margin-right: 10px; margin-top: 10px;
     background: url(../img/icon_idea_2_42_42.png) no-repeat center;
     background-size: cover;
     margin-bottom: -15px;
+    text-align: center;
+    
+    &.big{
+         padding-top: 82px;
+         width: 82px;
+        background: url(../img/idea-big.png) no-repeat top;
+        margin-left: 10px;
+    }
+    
+    
 }
 
 .toggle-button {  background-color: white; 
