@@ -115,7 +115,8 @@
          <div class="issueDetailTable">
                     <table>
                         <tr>
-                            <td><h2>Beschrijving</h2></td>
+                            <td ng-show="newProblem.type=='problem'"><h2>Beschrijving</h2></td>
+                            <td ng-show="newProblem.type=='idea'"><h2>Idee</h2></td>
                         </tr>
                         <tr>
                             <td class="issueDetailTableContent word-break"><p>{{newProblem.description}}</p></td>
