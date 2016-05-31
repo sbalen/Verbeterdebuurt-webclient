@@ -364,6 +364,10 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
         controller : 'forgotconfCtrl'
 	})
     .when('/nieuwe-melding',{
+        templateUrl: 'selectproblem.html',
+        controller : 'createissueCtrl'
+	})
+     .when('/nieuwe-probleem',{
         templateUrl: 'createissues.html',
         controller : 'createissueCtrl'
 	})
@@ -732,9 +736,10 @@ vdbApp.run(['$rootScope', '$window', function($rootScope, $window) {
     
     }]);
 
-vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootScope','$routeParams','$http','issuesService','reportService', '$facebook','$cacheFactory','agreementSevice',function ($scope,$timeout,$window,$location,$rootScope,$routeParams,$http,issuesService,reportService,$facebook,$cacheFactory,agreementSevice) {
+vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootScope','$routeParams','$http','issuesService','reportService', '$facebook','$cacheFactory','agreementSevice','$cookies',function ($scope,$timeout,$window,$location,$rootScope,$routeParams,$http,issuesService,reportService,$facebook,$cacheFactory,agreementSevice,$cookies) {
 						 
                         menuSelected($rootScope,'home');
+                        //$scope.hideLogo = 1;
 						
                         $scope.userpanel=1;
     					console.log($rootScope.lastCity);
@@ -784,6 +789,17 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 						var getAgreement = agreementSevice.getAgreement (jsoncity).then(function(data){
 								var getdata = data.data;
 								$rootScope.agreement = getdata;
+								$timeout(function(){
+									if(!getdata.logo){
+									$rootScope.hideLogo = 1;
+									console.log($scope.hideLogo);
+								}
+								else{
+									$rootScope.hideLogo = 0;
+									console.log($scope.hideLogo);	
+								}
+								})
+								
 						});
 			
 						
@@ -818,6 +834,16 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 								var getAgreement = agreementSevice.getAgreement (jsoncity).then(function(data){
 								var getdata = data.data;
 								$rootScope.agreement = getdata;
+								$timeout(function(){
+									if(!getdata.logo){
+									$rootScope.hideLogo = 1;
+									console.log("hide");
+								}
+								else{
+									$rootScope.hideLogo = 0;
+									console.log("nothide");	
+								}
+								})
 								});
 							
 							
@@ -836,11 +862,11 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 						}
 						//login session
 						$scope.loginStatus = function(){
-							if($window.sessionStorage.username == null){
+							if($cookies.getObject('user') == null ){
 								return false;
 							}
 							else{
-								$rootScope.lusername = $window.sessionStorage.username;
+								$rootScope.lusername = $cookies.getObject('user').username;
                                
                                 
 								return true;
@@ -853,7 +879,8 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
                         
 						//logOut
 						$scope.logout = function(){
-							$window.sessionStorage.clear();
+							$cookies.remove('user');
+							$cookies.remove('user_profile');
                            // $('.dropdown-menu').hide();
                             $scope.userpanel=0;
                             
@@ -907,13 +934,23 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 							var getAgreement = agreementSevice.getAgreement (jsoncity).then(function(data){
 								var getdata = data.data;
 								$rootScope.agreement = getdata;
+								$timeout(function(){
+									if(!getdata.logo){
+									$rootScope.hideLogo = 1;
+									console.log("hide");
+								}
+								else{
+									$rootScope.hideLogo = 0;
+									console.log("nothide");	
+								}
+								})
 								});
                             $location.path("gemeente/"+$scope.searchCity);
 						}
 						//move page
 						$scope.clickMenu = function(selected){
 								if(selected == "myissues"|| selected == "createissue"){
-									if(!$window.sessionStorage.username){
+									if(!$cookies.getObject('user')){
 										if(selected == 'myissues'){
 											$rootScope.urlBefore = "/mijn-meldingen";
 											menuSelected($rootScope,'myIssues');
@@ -954,7 +991,7 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 // vdbApp.controller('mainCtrl', ['$scope','issues', function ($scope,issues) {
 
 // }]);
-vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams','issuesService','reportService','usSpinnerService','$location','$anchorScroll','issueLogService','commentService','$timeout','voteSubmitService', function ($scope,$rootScope,$window,$routeParams,issuesService,reportService,usSpinnerService,$location,$anchorScroll,issueLogService,commentService,$timeout,voteSubmitService) {
+vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams','issuesService','reportService','usSpinnerService','$location','$anchorScroll','issueLogService','commentService','$timeout','voteSubmitService','$cookies', function ($scope,$rootScope,$window,$routeParams,issuesService,reportService,usSpinnerService,$location,$anchorScroll,issueLogService,commentService,$timeout,voteSubmitService,$cookies) {
 	$rootScope.globaloverlay = "active";
     $scope.hide = "ng-hide";
 	$scope.overlay = "overlay";
@@ -988,7 +1025,7 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 
 	//validity must login when comment
 	$scope.sessionValid = function(){
-		if(!$window.sessionStorage.username){
+		if(!$cookies.getObject('user')){
 			$location.path("/login");
 			$scope.stemModal = "";
 			$rootScope.errorSession="je moet ingelogd zijn om commentaar te geven of de snelheid"
@@ -1000,17 +1037,18 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 
 	//validation for submit vote
 	$scope.voteSubmit = function(){
-		if(!$window.sessionStorage.username){
+		if(!$cookies.getObject('user')){
 			$location.path("/login");
 			$rootScope.errorSession="je moet ingelogd zijn om commentaar te geven of de snelheid"
 		}
 		else{
 			$rootScope.globaloverlay = "active";
 			var jsonVoteSubmit = JSON.stringify({"user":{
-														"username":""+$window.sessionStorage.username+"",
-													    "password_hash":""+window.sessionStorage.password_hash+""
+														"username":""+$cookies.getObject('user').username+"",
+													    "password_hash":""+$cookies.getObject('user').password_hash+""
 													  },
 													  "issue_id":$routeParams.id});
+			console.log(jsonVoteSubmit);
 			var getvoteSummit = voteSubmitService.getvoteSummit( jsonVoteSubmit ).then(function(data){
 				var getvoteSummit = data.data;
 				console.log(getvoteSummit);
@@ -1061,10 +1099,10 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 		googleMapIssue(lat,lng,type);
 	}
 	//hide log Status
-	if($window.sessionStorage.username){
+	if($cookies.getObject('user')){
 		var logjsondata = JSON.stringify({"user" : {
-						"username":""+$window.sessionStorage.username+"",
-						"password_hash":""+$window.sessionStorage.password_hash+""
+						"username":""+$cookies.getObject('user').username+"",
+						"password_hash":""+$cookies.getObject('user').password_hash+""
 					},
 			"issue_id":""+$routeParams.id+""	
 											});
@@ -1118,18 +1156,18 @@ vdbApp.controller('mentionCtrl', ['$scope','$rootScope','$window','$location', f
 		}
 }])
 
-vdbApp.controller('myIssuesCtrl', ['$scope','$rootScope','$window','$location','myIssuesService', function ($scope,$rootScope,$window,$location,myIssuesService) {
+vdbApp.controller('myIssuesCtrl', ['$scope','$rootScope','$window','$location','myIssuesService','$cookies', function ($scope,$rootScope,$window,$location,myIssuesService,$cookies) {
 		$scope.hide = "";
 		menuSelected($rootScope,'myIssues');
 
 		$rootScope.currentPage = 1;
   		$scope.totalPage = 3;
-		if($window.sessionStorage.username==null){
+		if($cookies.getObject('user')==null){
 				$rootScope.urlBefore = $location.path();
 				$location.path('/login');
 		}
-		var jsondata = JSON.stringify({"user":{ "username":""+$window.sessionStorage.username+"",
-												"password_hash":""+$window.sessionStorage.password_hash+""
+		var jsondata = JSON.stringify({"user":{ "username":""+$cookies.getObject('user').username+"",
+												"password_hash":""+$cookies.getObject('user').password_hash+""
 
 											}});
 		//to get hash password
@@ -1149,7 +1187,7 @@ vdbApp.controller('myIssuesCtrl', ['$scope','$rootScope','$window','$location','
 		
 }])
 
-vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootScope','$location','$window','myIssuesService','usSpinnerService','issueLogService','commentService','voteSubmitService', function ($scope,$routeParams,$http,$rootScope,$location,$window,myIssuesService,usSpinnerService,issueLogService,commentService,voteSubmitService) {
+vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootScope','$location','$window','myIssuesService','usSpinnerService','issueLogService','commentService','voteSubmitService','$cookies', function ($scope,$routeParams,$http,$rootScope,$location,$window,myIssuesService,usSpinnerService,issueLogService,commentService,voteSubmitService,$cookies) {
 		$scope.hide = "";
 		$scope.hideStatus="ng-hide";
 		$scope.errorVote = "";
@@ -1159,12 +1197,12 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 		$scope.id = function(){
 			return $routeParams.id;
 		}
-		if($window.sessionStorage.username==null){
+		if($cookies.getObject('user')==null){
 				$rootScope.urlBefore = $location.path();
 				$location.path('/login');
 		}
-		var jsondata = JSON.stringify({"user":{ "username":""+$window.sessionStorage.username+"",
-												"password_hash":""+$window.sessionStorage.password_hash+""
+		var jsondata = JSON.stringify({"user":{ "username":""+$cookies.getObject('user').username+"",
+												"password_hash":""+$cookies.getObject('user').password_hash+""
 
 												}});
 
@@ -1184,10 +1222,10 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 		}
 
 		//hidelog
-		if($window.sessionStorage.username){
+		if($cookies.getObject('user')){
 		var logjsondata = JSON.stringify({"user" : {
-						"username":""+$window.sessionStorage.username+"",
-						"password_hash":""+$window.sessionStorage.password_hash+""
+						"username":""+$cookies.getObject('user').username+"",
+						"password_hash":""+$cookies.getObject('user').password_hash+""
 					},
 			"issue_id":""+$routeParams.id+""	
 									});
@@ -1220,7 +1258,7 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 		//comment
 		//validity must login when comment
 		$scope.sessionValid = function(){
-		if(!$window.sessionStorage.username){
+		if(!$cookies.getObject('user')){
 			$location.path("/login");
 			$scope.stemModal = "";
 			$rootScope.errorSession="je moet ingelogd zijn om commentaar te geven of de snelheid"
@@ -1232,15 +1270,15 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 
 		//voteSubmit
 		$scope.voteSubmit = function(){
-		if(!$window.sessionStorage.username){
+		if(!$cookies.getObject('user')){
 			$location.path("/login");
 			$rootScope.errorSession="je moet ingelogd zijn om commentaar te geven of de snelheid"
 		}
 		else{
 			$rootScope.globaloverlay = "active";
 			var jsonVoteSubmit = JSON.stringify({"user":{
-														"username":""+$window.sessionStorage.username+"",
-													    "password_hash":""+window.sessionStorage.password_hash+""
+														"username":""+$cookies.getObject('user').username+"",
+													    "password_hash":""+$cookies.getObject('user').password_hash+""
 													  },
 													  "issue_id":$routeParams.id});
 			var getvoteSummit = voteSubmitService.getvoteSummit( jsonVoteSubmit ).then(function(data){
@@ -1289,7 +1327,7 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
 	if($rootScope.urlBefore==null || $rootScope.urlBefore == '/login'){
 			$rootScope.urlBefore='/' ;
 	}
-	if($window.sessionStorage.username !=null){
+	if($cookies.getObject('user')!=null){
 			$location.path('/');
 	}
 	//error session
@@ -1339,22 +1377,8 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
                     }
                     else if (result.success){
                         //we got user data here, please log me in!
-                        $window.sessionStorage.username = result.user.username;
-                        $window.sessionStorage.email = result.user.email;
-                        $window.sessionStorage.password_hash = result.user.password_hash;
-                        $window.sessionStorage.name = result.user_profile.name;
-                        $window.sessionStorage.initials = result.user_profile.initials;
-                        $window.sessionStorage.surname = result.user_profile.surname;
-                        $window.sessionStorage.tussenvoegsel = result.user_profile.tussenvoegsel;
-                        $window.sessionStorage.sex = result.user_profile.sex;
-                        $window.sessionStorage.address = result.user_profile.address;
-                        $window.sessionStorage.address_number = result.user_profile.address_number;
-                        $window.sessionStorage.address_suffix = result.user_profile.address_suffix;
-                        $window.sessionStorage.postcode = result.user_profile.postcode;
-                        $window.sessionStorage.city = result.user_profile.city;
-                        $window.sessionStorage.phone = result.user_profile.phone;
-                        $window.sessionStorage.facebookID = result.user_profile.facebookID;
-                        
+                        $cookies.putObject('user',result.user);
+                        $cookies.putObject('user_profile',result.user_profile);
                         
                         $rootScope.loginStatus = function(){
                             return true;
@@ -1403,26 +1427,21 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
                     $rootScope.globaloverlay = "";
 				}else if(getLogin.success){
 					//temp for data session
-					$window.sessionStorage.username = getLogin.user.username;
-					$window.sessionStorage.email = getLogin.user.email;
-					$window.sessionStorage.password_hash = getLogin.user.password_hash;
-					$window.sessionStorage.name = getLogin.user_profile.name;
-					$window.sessionStorage.initials = getLogin.user_profile.initials;
-					$window.sessionStorage.surname = getLogin.user_profile.surname;
-					$window.sessionStorage.tussenvoegsel = getLogin.user_profile.tussenvoegsel;
-					$window.sessionStorage.sex = getLogin.user_profile.sex;
-					$window.sessionStorage.address = getLogin.user_profile.address;
-					$window.sessionStorage.address_number = getLogin.user_profile.address_number;
-					$window.sessionStorage.address_suffix = getLogin.user_profile.address_suffix;
-					$window.sessionStorage.postcode = getLogin.user_profile.postcode;
-					$window.sessionStorage.city = getLogin.user_profile.city;
-					$window.sessionStorage.phone = getLogin.user_profile.phone;
-					$window.sessionStorage.facebookID = getLogin.user_profile.facebookID;
-                   		
+					var expired = new Date();
+                    expired.setDate(expired.getDate()+((1/24)*2));
+                    console.log(expired);
+					$cookies.putObject('user',getLogin.user,{expires:expired});
+					$cookies.putObject('user_profile',getLogin.user_profile,{expires:expired});
+					console.log($cookies.getObject('user'));
                    	//remember me
                    		if($scope.rememberMe === true){
-                   			$cookies.put('username',$scope.lusername);
-                   			$cookies.put('password',$scope.lpassword);
+                   			var expired = new Date();
+		                    expired.setDate(expired.getDate()+7);
+		                    console.log(expired);
+                   			$cookies.put('username',$scope.lusername,{expires:expired});
+                   			$cookies.put('password',$scope.lpassword,{expires:expired});
+                   			$cookies.putObject('user',getLogin.user,{expires:expired});
+							$cookies.putObject('user_profile',getLogin.user_profile,{expires:expired});
                    		}
                    		else{
                    			$cookies.remove('username');
@@ -1679,7 +1698,7 @@ vdbApp.controller('regisconfCtrl', ['$scope','$rootScope','$window','usSpinnerSe
                                        
                                        
                                       }]);
- vdbApp.controller('commentSubmitCtrl', ['$scope','$route','$rootScope','$window','$routeParams','$location','usSpinnerService','commentSubmitService','commentService','issuesService','myIssuesService', function ($scope,$route,$rootScope,$window,$routeParams,$location,usSpinnerService,commentSubmitService,commentService,issuesService,myIssuesService) {
+ vdbApp.controller('commentSubmitCtrl', ['$scope','$route','$rootScope','$window','$routeParams','$location','usSpinnerService','commentSubmitService','commentService','issuesService','myIssuesService','$cookies', function ($scope,$route,$rootScope,$window,$routeParams,$location,usSpinnerService,commentSubmitService,commentService,issuesService,myIssuesService,$cookies) {
  	//comment Service :v
  	$scope.hide = "ng-hide";
 	$scope.commentSubmit = function( issueType ){
@@ -1693,8 +1712,8 @@ vdbApp.controller('regisconfCtrl', ['$scope','$rootScope','$window','usSpinnerSe
 			$rootScope.globaloverlay = "active";
 			
 			var user = {};
-				user.username = $window.sessionStorage.username;
-				user.password_hash = $window.sessionStorage.password_hash;
+				user.username = $cookies.getObject('user').username;
+				user.password_hash = $cookies.getObject('user').password_hash;
 			var issue_id = $routeParams.id;
 			var type = $scope.tempIssueType;
 			if(!$scope.comment){
@@ -1733,8 +1752,8 @@ vdbApp.controller('regisconfCtrl', ['$scope','$rootScope','$window','usSpinnerSe
 								var getdata = data.data;
 								$rootScope.problemIdList = getdata.issues;
 						});
-				var jsondatamyIssue = JSON.stringify({"user":{ "username":""+$window.sessionStorage.username+"",
-												"password_hash":""+$window.sessionStorage.password_hash+""
+				var jsondatamyIssue = JSON.stringify({"user":{ "username":""+$cookies.getObject('user').username+"",
+												"password_hash":""+$cookies.getObject('user').password_hash+""
 												}});
 				var getMyIssues = myIssuesService.getMyIssues( jsondatamyIssue ).then(function (data){
 								var getdata = data.data;
@@ -1815,7 +1834,7 @@ vdbApp.controller('forgotconfCtrl', ['$scope','$rootScope','$window','usSpinnerS
 
 
     
-vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileService','loginService','$location','usSpinnerService', '$facebook', 'syncFBService', function ($scope,$rootScope,$window,profileService,loginService,$location,usSpinnerService,$facebook,syncFBService) {
+vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileService','loginService','$location','usSpinnerService', '$facebook', 'syncFBService','$cookies', function ($scope,$rootScope,$window,profileService,loginService,$location,usSpinnerService,$facebook,syncFBService,$cookies) {
      $scope.hide = "ng-hide";
 	
      $scope.home = function(){
@@ -1910,11 +1929,11 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
     //                            }
     //                        };
 
-
-
-    $scope.username = $window.sessionStorage.username ;
-    $scope.email = $window.sessionStorage.email;
-    if($window.sessionStorage.sex == 'man')
+    var c_user = $cookies.getObject('user');
+    var c_user_profile = $cookies.getObject('user_profile');
+    $scope.username = c_user.username ;
+    $scope.email = c_user.email;
+    if(c_user_profile.sex == 'man')
         {
             $scope.selected1=1;
             $scope.selected2=0; 
@@ -1926,21 +1945,21 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
         
     }
     
-    $scope.initials = $window.sessionStorage.initials;
-    if($window.sessionStorage.tussenvoegsel == 'null')
+    $scope.initials = c_user_profile.initials;
+    if(c_user_profile.tussenvoegsel == 'null')
         { 
             $scope.tussenvoegsel="";
         }
     else{
-        $scope.tussenvoegsel = $window.sessionStorage.tussenvoegsel;
+        $scope.tussenvoegsel = c_user_profile.tussenvoegsel;
         }
     
-    $scope.surname = $window.sessionStorage.surname;
-    $scope.address = $window.sessionStorage.address;
-    $scope.address_number = $window.sessionStorage.address_number;
-    $scope.postcode = $window.sessionStorage.postcode;
-    $scope.city = $window.sessionStorage.city;
-    $scope.phone = $window.sessionStorage.phone;
+    $scope.surname = c_user_profile.surname;
+    $scope.address = c_user_profile.address;
+    $scope.address_number = c_user_profile.address_number;
+    $scope.postcode = c_user_profile.postcode;
+    $scope.city = c_user_profile.city;
+    $scope.phone = c_user_profile.phone;
     
    
     
@@ -1964,8 +1983,8 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
     $scope.hide = "ng-hide";
     
     var user={};
-    user.username = $scope.username;
-    user.password_hash = $window.sessionStorage.password_hash;
+    user.username = c_user.username;
+    user.password_hash = c_user.password_hash;
     
     var password={}
     if($scope.password_old!= null)
@@ -2033,7 +2052,6 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
         
         
 		var jsondata = JSON.stringify({user,password,user_profile});
-        console.log(jsondata)
 		var getProfile = profileService.getProfile(jsondata).then(function (data){
             
                 var getProfile = data.data;
@@ -2078,27 +2096,16 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                     
                     if($scope.password_old !=null && $scope.password_new !=null ){
                         var password = $scope.password_new;
-                        var jsondatalogin = JSON.stringify({"user":{"username":""+$window.sessionStorage.username+"",password}});
+                        var jsondatalogin = JSON.stringify({"user":{"username":""+c_user.username+"",password}});
                     }else{
-                        var password_hash = $window.sessionStorage.password_hash;
-                        var jsondatalogin = JSON.stringify({"user":{"username":""+$window.sessionStorage.username+"",password_hash}});
+                        var password_hash = c_user.password_hash;
+                        var jsondatalogin = JSON.stringify({"user":{"username":""+c_user.username+"",password_hash}});
                     }
-                    console.log($window.sessionStorage.password_hash)
-                    
-                    console.log(jsondatalogin);
                     var getLogin = loginService.getLogin(jsondatalogin).then(function (data){
 				    var getLogin = data.data;
                     
-                    console.log(getLogin);
-                    $window.sessionStorage.sex = getLogin.user_profile.sex;
-                    $window.sessionStorage.initials = getLogin.user_profile.initials;
-                    $window.sessionStorage.tussenvoegsel = getLogin.user_profile.tussenvoegsel;
-                    $window.sessionStorage.surname = getLogin.user_profile.surname;
-                    $window.sessionStorage.address = getLogin.user_profile.address;
-                    $window.sessionStorage.address_number = getLogin.user_profile.address_number;
-                    $window.sessionStorage.postcode = getLogin.user_profile.postcode;
-                    $window.sessionStorage.city = getLogin.user_profile.city;
-                    $window.sessionStorage.phone = getLogin.user_profile.phone;
+                    $cookies.putObject('user',getLogin.user);
+                    $cookies.putObject('user_profile',getLogin.user_profile);
                     $rootScope.globaloverlay = "";  
                     $(window).scrollTop(0);
                     $scope.successAlert = "Profiel geüpdatet"; 
@@ -2123,7 +2130,7 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
     
 }])
 
-vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout','categoriesService','issueSubmitService','myIssuesService','$location','issuesService','issueSubmitServiceWithImage','duplicateIssuesService', function ($scope,$rootScope,$window,$timeout,categoriesService,issueSubmitService,myIssuesService,$location,issuesService,issueSubmitServiceWithImage,duplicateIssuesService) {	
+vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout','categoriesService','issueSubmitService','myIssuesService','$location','issuesService','issueSubmitServiceWithImage','duplicateIssuesService','$cookies', function ($scope,$rootScope,$window,$timeout,categoriesService,issueSubmitService,myIssuesService,$location,issuesService,issueSubmitServiceWithImage,duplicateIssuesService,$cookies) {	
 		$scope.hide = "ng-hide";
 		$scope.issueName = "Probleem"
 		$scope.hideIssue = 1;
@@ -2140,12 +2147,12 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 
 		menuSelected($rootScope,'createissue');
 		
-		if(!$window.sessionStorage.username){
+		if(!$cookies.getObject('user')){
 			$location.path("/login");
 		}
 		//show my issue
-		var jsondata = JSON.stringify({"user":{ "username":""+$window.sessionStorage.username+"",
-												"password_hash":""+$window.sessionStorage.password_hash+""
+		var jsondata = JSON.stringify({"user":{ "username":""+$cookies.getObject('user').username+"",
+												"password_hash":""+$cookies.getObject('user').password_hash+""
 
 											}});
 		var getMyIssues = myIssuesService.getMyIssues( jsondata ).then(function (data){
@@ -2205,7 +2212,7 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 		}
 
 
-		if($window.sessionStorage.username){
+		if($cookies.getObject('user')){
 			$scope.hideNonLogin = "ng-hide"
 		}
 		$scope.clickSearchCreateIssue= function(){
@@ -2252,8 +2259,8 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 			var location = {};
 			var file = $scope.imgData;
 			//login
-			user.username = $window.sessionStorage.username;
-			user.password_hash = $window.sessionStorage.password_hash;
+			user.username = $cookies.getObject('user').username;
+			user.password_hash = $cookies.getObject('user').password_hash;
 
 			//description
 			issue.type = "problem";
@@ -2367,8 +2374,8 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 		//dulicate data
 		$scope.duplicateData = function(){
 			var user = {};
-			user.username = $window.sessionStorage.username;
-			user.password_hash = $window.sessionStorage.password_hash;
+			user.username = $cookies.getObject('user').username;
+			user.password_hash = $cookies.getObject('user').password_hash;
 			var lat = markerLat;
 			var long = markerLng;
 			var category_id = $scope.categoryId;
@@ -2388,7 +2395,7 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 
 		}])
 
-vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout','categoriesService','issueSubmitService','myIssuesService','$location','issuesService','issueSubmitServiceWithImage', function ($scope,$rootScope,$window,$timeout,categoriesService,issueSubmitService,myIssuesService,$location,issuesService,issueSubmitServiceWithImage) {
+vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout','categoriesService','issueSubmitService','myIssuesService','$location','issuesService','issueSubmitServiceWithImage','$cookies', function ($scope,$rootScope,$window,$timeout,categoriesService,issueSubmitService,myIssuesService,$location,issuesService,issueSubmitServiceWithImage,$cookies) {
 		$scope.hide = "ng-hide";
 		$scope.issueName = "Probleem"
 		$scope.hideIssue = 1;
@@ -2400,12 +2407,12 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
 	
 		menuSelected($rootScope,'createissue');
 		
-		if(!$window.sessionStorage.username){
+		if(!$cookies.getObject('user')){
 			$location.path("/login");
 		}
 		//show my issue
-		var jsondata = JSON.stringify({"user":{ "username":""+$window.sessionStorage.username+"",
-												"password_hash":""+$window.sessionStorage.password_hash+""
+		var jsondata = JSON.stringify({"user":{ "username":""+$cookies.getObject('user').username+"",
+												"password_hash":""+$cookies.getObject('user').password_hash+""
 
 											}});
 		var getMyIssues = myIssuesService.getMyIssues( jsondata ).then(function (data){
@@ -2439,7 +2446,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
 		},1200);
 		
 
-		if($window.sessionStorage.username){
+		if($cookies.getObject('user')){
 			$scope.hideNonLogin = "ng-hide"
 		}
 		$scope.clickSearchCreateIssue= function(){
@@ -2484,8 +2491,8 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
 			var location = {};
 
 			//login
-			user.username = $window.sessionStorage.username;
-			user.password_hash = $window.sessionStorage.password_hash;
+			user.username = $cookies.getObject('user').username;
+			user.password_hash = $cookies.getObject('user').password_hash;
 
 			//description
 			issue.type = "idea";
@@ -2594,21 +2601,21 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
 		}
 		//switch bar change
 		$scope.switchButton = function (){
-			$location.path('/nieuwe-melding');
+			$location.path('/nieuwe-probleem');
 			markerLat = marker.getPosition().lat();
 	 		markerLng = marker.getPosition().lng();
 		}	
 
 }]);
 
-vdbApp.controller('deleteIssueCtrl', ['$scope','$rootScope','$routeParams','$window','statusChangeService','myIssuesService',function ($scope,$rootScope,$routeParams,$window,statusChangeService,myIssuesService) {
+vdbApp.controller('deleteIssueCtrl', ['$scope','$rootScope','$routeParams','$window','statusChangeService','myIssuesService','$cookies',function ($scope,$rootScope,$routeParams,$window,statusChangeService,myIssuesService,$cookies) {
 		$scope.hideError = "ng-hide";
 		$scope.error = "";
 		$scope.deleteIssue = function(){
 			$rootScope.globaloverlay="active";
 			var user = {};
-			user.username = $window.sessionStorage.username;
-			user.password_hash = $window.sessionStorage.password_hash;
+			user.username = $cookies.getObject('user').username;
+			user.password_hash = $cookies.getObject('user').password_hash;
 			var issue_id = $rootScope.getStatusId;
 			var status = "deleted";
 			var jsondata = JSON.stringify({user,issue_id,status});
@@ -2617,8 +2624,8 @@ vdbApp.controller('deleteIssueCtrl', ['$scope','$rootScope','$routeParams','$win
 				console.log(getStatusChange);
 				//validate error or not
 				if(getStatusChange.success){
-				var jsondata = JSON.stringify({"user":{ "username":""+$window.sessionStorage.username+"",
-												"password_hash":""+$window.sessionStorage.password_hash+""
+				var jsondata = JSON.stringify({"user":{ "username":""+$cookies.getObject('user').username+"",
+												"password_hash":""+$cookies.getObject('user').password_hash+""
 											}});
 				var getMyIssues = myIssuesService.getMyIssues( jsondata ).then(function (data){
 						var getdata = data.data;
@@ -2651,15 +2658,15 @@ vdbApp.controller('deleteIssueCtrl', ['$scope','$rootScope','$routeParams','$win
 		}
 }])
 
-vdbApp.controller('closeIssueCtrl', ['$scope','$rootScope','$routeParams','$window','statusChangeService','myIssuesService', function ($scope,$rootScope,$routeParams,$window,statusChangeService,myIssuesService) {
+vdbApp.controller('closeIssueCtrl', ['$scope','$rootScope','$routeParams','$window','statusChangeService','myIssuesService','$cookies', function ($scope,$rootScope,$routeParams,$window,statusChangeService,myIssuesService,$cookies) {
 		$scope.hideError = "ng-hide";
 		$scope.errorClose = "";
 
 		$scope.closeIssueClick = function(){
 			$rootScope.globaloverlay = "active";
 			var user = {};
-			user.username = $window.sessionStorage.username;
-			user.password_hash = $window.sessionStorage.password_hash;
+			user.username = $cookies.getObject('user').username;
+			user.password_hash = $cookies.getObject('user').password_hash;
 			var issue_id = $rootScope.getStatusId;
 			if(!$scope.feedback){
 				var result = null;
@@ -2684,8 +2691,8 @@ vdbApp.controller('closeIssueCtrl', ['$scope','$rootScope','$routeParams','$wind
 						$rootScope.globaloverlay = "";
 					}else{
 					//load myissue
-					var jsondata = JSON.stringify({"user":{ "username":""+$window.sessionStorage.username+"",
-													"password_hash":""+$window.sessionStorage.password_hash+""
+					var jsondata = JSON.stringify({"user":{ "username":""+$cookies.getObject('user').username+"",
+													"password_hash":""+$cookies.getObject('user').password_hash+""
 												}});
 					var getMyIssues = myIssuesService.getMyIssues( jsondata ).then(function (data){
 							var getdata = data.data;

@@ -6,8 +6,8 @@
                     
             </div>
 	    <!-- main container -->
-	    <div class="col-lg-6 main-container">
-                <div class="panel panel-default main-panel {{hide}}" ng-repeat="myIssues in myIssuesList | filter : {id : id()} ">
+	    <div class="col-lg-6 main-container marginbottom">
+                <div class="panel panel-default main-panel margintop {{hide}}" ng-repeat="myIssues in myIssuesList | filter : {id : id()} ">
                     <a href="/mijn-meldingen" class="close" aria-label="close" >&times;</a>
                   <div class="errorMessage">
                 <div class="alert alert-danger" ng-hide="hideError" >
@@ -64,7 +64,8 @@
               <div class="issueDetailTable">
                     <table>
                         <tr>
-                            <td><h2>Beschrijving</h2></td>
+                            <td ng-show="myIssues.type=='problem'"><h2>Beschrijving</h2></td>
+                            <td ng-show="myIssues.type=='idea'"><h2>Idee</h2></td>
                         </tr>
                         <tr>
                             <td class="issueDetailTableContent word-break"><p>{{myIssues.description}}</p></td>

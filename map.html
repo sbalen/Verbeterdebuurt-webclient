@@ -24,7 +24,7 @@
                         </div>
       			<div class="panel-body">
                           <div class="list-group" >
-                              <a href="/meldingen/{{newProblem.id}}" class="list-group-item clearfix " ng-repeat="newProblem in newProblemList| filter : {type:'problem'} | filter: {status:'Open'} | orderBy : 'created_at' : true|limitTo:3|filter:x as results" ng-click="clickIssues()">
+                              <a href="/meldingen/{{newProblem.id}}" class="list-group-item clearfix " ng-repeat="newProblem in newProblemList| filter : {type:'problem'} | filter: {status:'!closed'} | orderBy : 'created_at' : true|limitTo:3|filter:x as results" ng-click="clickIssues()">
                               <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
                               <strong> {{newProblem.title}}</strong> {{newProblem.location.full_address}}
                               <span class="pull-right">
@@ -42,7 +42,7 @@
                         </div>
       			<div class="panel-body">
                           <div class="list-group">
-                              <a href="/meldingen/{{newProblem.id}}" class="list-group-item clearfix" ng-repeat="newProblem in newProblemList| filter : {type:'idea'} | filter: {status:'Open'} | orderBy : 'created_at' : true |limitTo:3|filter:x as results2" ng-click="clickIssues()">
+                              <a href="/meldingen/{{newProblem.id}}" class="list-group-item clearfix" ng-repeat="newProblem in newProblemList| filter : {type:'idea'} | filter: {status:'!closed'} | orderBy : 'created_at' : true |limitTo:3|filter:x as results2" ng-click="clickIssues()">
                               <img class="icon" src="./img/icon_idea_2_21_21.png" size="20px"/>
                               <strong>{{newProblem.title}}</strong> {{newProblem.location.full_address}}
                               <span class="pull-right">
@@ -61,7 +61,7 @@
                     Deze gemeente heeft nog niet aangegeven dat ze meedoen. Ze is natuurlijk wel verplicht om te reageren op binnenkomende meldingen.
                     <i class="fa fa-flag"></i> 
                     </div> -->
-                    <div class="alert alert-warning" id="message-widget" ng-show="agreement.success && agreement.agreement">
+                    <div class="alert alert1 alert-warning" id="message-widget" ng-show="agreement.success && agreement.agreement">
                     {{agreement.agreement}}
                     <i class="fa fa-flag"></i> 
                     </div>
