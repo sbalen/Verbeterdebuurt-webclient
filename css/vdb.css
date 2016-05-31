@@ -382,7 +382,24 @@ h6 {
     border-radius: 0px; }
 
   .dropdown-menu li a {
-    padding-bottom: 10px; } }
+    padding-bottom: 10px; }
+
+  .margintop {
+    top: -15px; }
+
+  .marginbottom {
+    margin-bottom: -21px; }
+
+  .footer1 {
+    height: 114px;
+    margin-bottom: -8px; }
+
+  .pagination {
+    display: inline-block;
+    padding-left: 0;
+    margin: 20px 0;
+    border-radius: 4px;
+    font-size: 12px; } }
 @media (max-width: 477px) {
   .btn1 {
     width: 96%; }
@@ -392,6 +409,13 @@ h6 {
 
   .marginmedia {
     width: 100%;
+<<<<<<< HEAD
+    font-size: 10px; }
+
+  .footer1 {
+    height: 114px;
+    margin-bottom: -8px; } }
+=======
     font-size: 10px; } }
 .selectproblem-container {
   padding-top: 20px; }
@@ -399,8 +423,9 @@ h6 {
 .melding-description {
   padding: 10px; }
 
+>>>>>>> e05b20ae75c77c98d818bedebe4adcfa4ae55a7e
 .switchButton {
-  width: 50%;
+  width: 90%;
   height: 50px;
   font-size: 12px; }
 
@@ -583,7 +608,10 @@ h6 {
     margin-left: 5px; }
 
   .btn {
-    font-size: 10px; } }
+    font-size: 12px; }
+
+  .pbtn {
+    padding: 5px; } }
 .issueDetailTable {
   width: 100%; }
   .issueDetailTable .issueDetailTableContent {
