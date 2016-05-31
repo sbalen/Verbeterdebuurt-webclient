@@ -1,0 +1,68 @@
+/*
+Error: Undefined variable: "$blue".
+        on line 10 of _custom.scss
+
+5: $log-font: 'Lato', sans-serif;
+6: 
+7: $white: #fff;
+8: $darken-factor: 10%;
+9: $lighten-factor: 25%;
+10: $background-color: darken($blue, $darken-factor);
+11: 
+12: 
+13: html {
+14:   min-height: 100%; 
+15:   position:relative;
+
+Backtrace:
+_custom.scss:10
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/script/tree/variable.rb:49:in `_perform'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/script/tree/node.rb:50:in `perform'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/script/tree/funcall.rb:170:in `perform_arg'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/script/tree/funcall.rb:124:in `block in _perform'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/script/tree/funcall.rb:123:in `each'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/script/tree/funcall.rb:123:in `each_with_index'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/script/tree/funcall.rb:123:in `each'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/script/tree/funcall.rb:123:in `map'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/script/tree/funcall.rb:123:in `_perform'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/script/tree/node.rb:50:in `perform'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/tree/visitors/perform.rb:468:in `visit_variable'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/tree/visitors/base.rb:36:in `visit'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/tree/visitors/perform.rb:158:in `block in visit'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/stack.rb:79:in `block in with_base'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/stack.rb:115:in `with_frame'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/stack.rb:79:in `with_base'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/tree/visitors/perform.rb:158:in `visit'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/tree/visitors/base.rb:52:in `block in visit_children'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/tree/visitors/base.rb:52:in `map'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/tree/visitors/base.rb:52:in `visit_children'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/tree/visitors/perform.rb:167:in `block in visit_children'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/tree/visitors/perform.rb:179:in `with_environment'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/tree/visitors/perform.rb:166:in `visit_children'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/tree/visitors/base.rb:36:in `block in visit'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/tree/visitors/perform.rb:186:in `visit_root'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/tree/visitors/base.rb:36:in `visit'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/tree/visitors/perform.rb:157:in `visit'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/tree/visitors/perform.rb:8:in `visit'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/tree/root_node.rb:36:in `css_tree'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/tree/root_node.rb:29:in `render_with_sourcemap'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/engine.rb:368:in `_render_with_sourcemap'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/engine.rb:285:in `render_with_sourcemap'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/plugin/compiler.rb:490:in `update_stylesheet'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/plugin/compiler.rb:215:in `block in update_stylesheets'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/plugin/compiler.rb:209:in `each'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/plugin/compiler.rb:209:in `update_stylesheets'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/plugin/compiler.rb:293:in `watch'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/plugin.rb:108:in `method_missing'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/exec/sass_scss.rb:381:in `watch_or_update'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/exec/sass_scss.rb:51:in `process_result'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/exec/base.rb:52:in `parse'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/lib/sass/exec/base.rb:19:in `parse!'
+/Users/edward/.rbenv/versions/1.9.3-p125/lib/ruby/gems/1.9.1/gems/sass-3.4.13/bin/sass:13:in `<top (required)>'
+/Users/edward/.rbenv/versions/1.9.3-p125/bin/sass:23:in `load'
+/Users/edward/.rbenv/versions/1.9.3-p125/bin/sass:23:in `<main>'
+*/
+body:before {
+  white-space: pre;
+  font-family: monospace;
+  content: "Error: Undefined variable: \"$blue\".\A         on line 10 of _custom.scss\A \A 5: $log-font: 'Lato', sans-serif;\A 6: \A 7: $white: #fff;\A 8: $darken-factor: 10%;\A 9: $lighten-factor: 25%;\A 10: $background-color: darken($blue, $darken-factor);\A 11: \A 12: \A 13: html {\A 14:   min-height: 100%; \A 15:   position:relative;"; }
