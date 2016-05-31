@@ -1733,14 +1733,15 @@ vdbApp.controller('regisconfCtrl', ['$scope','$rootScope','$window','usSpinnerSe
 								var getdata = data.data;
 								$rootScope.problemIdList = getdata.issues;
 						});
-				}
-				var jsondata = JSON.stringify({"user":{ "username":""+$window.sessionStorage.username+"",
+				var jsondatamyIssue = JSON.stringify({"user":{ "username":""+$window.sessionStorage.username+"",
 												"password_hash":""+$window.sessionStorage.password_hash+""
 												}});
-				var getMyIssues = myIssuesService.getMyIssues( jsondata ).then(function (data){
+				var getMyIssues = myIssuesService.getMyIssues( jsondatamyIssue ).then(function (data){
 								var getdata = data.data;
 								$rootScope.myIssuesList = getdata.issues;
 				})
+				}
+				
 				//comment count
 
 
