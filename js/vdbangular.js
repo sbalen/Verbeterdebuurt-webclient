@@ -364,6 +364,10 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
         controller : 'forgotconfCtrl'
 	})
     .when('/nieuwe-melding',{
+        templateUrl: 'selectproblem.html',
+        controller : 'createissueCtrl'
+	})
+     .when('/nieuwe-probleem',{
         templateUrl: 'createissues.html',
         controller : 'createissueCtrl'
 	})
@@ -2594,7 +2598,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
 		}
 		//switch bar change
 		$scope.switchButton = function (){
-			$location.path('/nieuwe-melding');
+			$location.path('/nieuwe-probleem');
 			markerLat = marker.getPosition().lat();
 	 		markerLng = marker.getPosition().lng();
 		}	
