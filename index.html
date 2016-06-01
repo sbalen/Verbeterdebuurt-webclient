@@ -71,7 +71,7 @@
                         <span class="icon-bar"></span> 
                     </button>
                     
-                    <a class="navbar-brand" ><img src="http://staging.verbeterdebuurt.nl/{{agreement.logo}}" class="citylogo mcitylogo"></a>
+                    <a class="navbar-brand" ng-hide="hideLogo"><img src="http://staging.verbeterdebuurt.nl/{{agreement.logo}}"  class="citylogo mcitylogo"></a>
                     <a class="navbar-brand" href="/"><img  src="./img/Verbeterdebuurt-logo.png" class="vdblogo mvdblogo"></a>
                     
                 </div>
@@ -132,7 +132,7 @@
           <div class="container {{globaloverlay}}" ng-view>
 
           </div>
-        <div class="footer">
+        <div class="footer footer1">
             <div class="footertext">
                 <div class="footer-element"><a href="http://blog.verbeterdebuurt.nl/apps/">Apps</a></div>&middot;
                 <div class="footer-element"><a href="http://blog.verbeterdebuurt.nl/hoe-werkt-verbeterdebuurt-2/">Hoe werkt het</a></div>&middot;

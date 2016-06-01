@@ -5,8 +5,8 @@
 		  
 	    </div>
 	    <!-- main container -->
-	    <div class="col-lg-6 main-container" >
-	        <div class="panel panel-default main-panel">
+	    <div class="col-lg-6 main-container marginbottom" >
+	        <div class="panel panel-default main-panel margintop1">
 		    <h1>Mijn meldingen</h1>
                     <div class="list-group">
                         <a class="list-group-item clearfix" dir-paginate="myIssues in myIssuesList | itemsPerPage:totalPage" current-page="currentPage">
@@ -22,7 +22,7 @@
                                <span class="text-muted">{{myIssues.created_at}}</span>
                               </div></div>
                               <span class="pull-right">
-                                <div class="submit-buttons"><div class="btn-group">
+                                <div class="submit-buttons"><div class="btn-group pbtn">
                                             <button type="button" class="btn btn-success" ng-click="myIssueDetailClick(myIssues.id)" ng-hide="myIssues.status ==='closed'">Bekijken</button>
                                             <button type="button" class="btn btn-success" ng-click="myIssueDetailClick(myIssues.id)" ng-show = "myIssues.status ==='closed'" style="border-radius:4px;">Bekijken</button>
                         				    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#CloseModal" ng-click="getIdStatus(myIssues.id)" ng-hide="myIssues.status ==='closed'">Afsluiten</button>

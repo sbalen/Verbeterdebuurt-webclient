@@ -301,7 +301,15 @@ h6 {
     margin-left: 13px; }
 
   .margin4 {
-    margin-left: 10px; } }
+    margin-left: 10px; }
+
+  .alert1 {
+    padding: 15px;
+    margin-bottom: 5px;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    margin-left: 10px;
+    margin-right: 10px; } }
 @media (max-width: 767px) {
   .hidden-xs {
     display: none !important; }
@@ -382,7 +390,37 @@ h6 {
     border-radius: 0px; }
 
   .dropdown-menu li a {
-    padding-bottom: 10px; } }
+    padding-bottom: 10px; }
+
+  .margintop {
+    top: -16px;
+    min-height: calc(100vh - 165px); }
+
+  .margintop1 {
+    top: -16px;
+    min-height: calc(152vh - 333px); }
+
+  .marginbottom {
+    margin-bottom: -21px; }
+
+  .footer1 {
+    height: 114px;
+    margin-bottom: -8px; }
+
+  .pagination {
+    display: inline-block;
+    padding-left: 0;
+    margin: 20px 0;
+    border-radius: 4px;
+    font-size: 12px; }
+
+  .alert1 {
+    padding: 15px;
+    margin-bottom: 5px;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    margin-left: 10px;
+    margin-right: 10px; } }
 @media (max-width: 477px) {
   .btn1 {
     width: 96%; }
@@ -392,9 +430,27 @@ h6 {
 
   .marginmedia {
     width: 100%;
-    font-size: 10px; } }
+    font-size: 10px; }
+
+  .footer1 {
+    height: 116px;
+    margin-bottom: -8px; }
+
+  .alert1 {
+    padding: 15px;
+    margin-bottom: 5px;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    margin-left: 10px;
+    margin-right: 10px; } }
+.selectproblem-container {
+  padding-top: 20px; }
+
+.melding-description {
+  padding: 10px; }
+
 .switchButton {
-  width: 50%;
+  width: 90%;
   height: 50px;
   font-size: 12px; }
 
@@ -404,7 +460,12 @@ h6 {
   width: 42px;
   background: url(../img/icon_2_42_42.png) no-repeat center;
   background-size: cover;
-  margin-bottom: -15px; }
+  margin-bottom: -15px;
+  text-align: center; }
+  .icon-problem.big {
+    padding-top: 82px;
+    width: 82px;
+    background: url(../img/problem-big.png) no-repeat top; }
 
 .icon-idea {
   display: inline-block;
@@ -412,7 +473,13 @@ h6 {
   width: 42px;
   background: url(../img/icon_idea_2_42_42.png) no-repeat center;
   background-size: cover;
-  margin-bottom: -15px; }
+  margin-bottom: -15px;
+  text-align: center; }
+  .icon-idea.big {
+    padding-top: 82px;
+    width: 82px;
+    background: url(../img/idea-big.png) no-repeat top;
+    margin-left: 10px; }
 
 .toggle-button {
   background-color: white;
@@ -566,7 +633,10 @@ h6 {
     margin-left: 5px; }
 
   .btn {
-    font-size: 10px; } }
+    font-size: 12px; }
+
+  .pbtn {
+    padding: 5px; } }
 .issueDetailTable {
   width: 100%; }
   .issueDetailTable .issueDetailTableContent {
