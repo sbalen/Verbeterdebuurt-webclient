@@ -629,4 +629,9 @@ h6 {
 .word-break {
   word-break: break-all; }
 
+.duplicate-container .duplicate-item {
+  display: inline-block;
+  height: 50px;
+  padding: 20px; }
+
 /*# sourceMappingURL=vdb.css.map */
