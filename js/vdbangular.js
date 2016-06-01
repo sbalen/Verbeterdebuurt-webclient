@@ -6,6 +6,7 @@ var infoWindowContent = [];
 var latlngChange;
 var marker;
 var map;
+postalcode = null;
 //define service
 var issuesService = new Object();
 var registerService = new Object();
@@ -77,6 +78,10 @@ window.onload = function(){
      if(cityName!=null){
         geocodeAddress(geocoder, map);
         cityName=null;
+     }
+     else if(postalcode!=null){
+     	geocodeAddress(geocoder, map);
+        postalcode=null;
      }
   	 getLatLng(map);
       //start location picker
@@ -323,6 +328,10 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
     .when('/gemeente/:cityName', {
 		templateUrl: 'map.html',
 		controller : 'mainCtrl' 
+	})
+	.when('/postcode/:postalcode', {
+		templateUrl: 'map.html',
+		controller:  'mainCtrl'
 	})
     .when('/meldingen/:id',{
 		templateUrl :'issuesView.html',
@@ -762,7 +771,7 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 								showIssue(infoWindow,infoWindowContent);
 							}
 						});
-						},2000);
+						},3000);
 						if(!$routeParams.cityName){
 						if(!$rootScope.lastCity){
 							var jsoncity = JSON.stringify({"council":"Leiden"});	
@@ -774,14 +783,14 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 						else{
 							var jsoncity = JSON.stringify({"council":""+$routeParams.cityName+""});
 						}
-						
+						//send data to google map api for city
 						$rootScope.urlBefore = $location.path();
 						$window.cityName = $routeParams.cityName;
 						$scope.searchCity = $routeParams.cityName;
 						$rootScope.errorSession="";
 
 						//promise for make asyncronise data factory to be syncronis first load
-							var getReport = reportService.getReport( jsoncity ).then(function (data){
+						var getReport = reportService.getReport( jsoncity ).then(function (data){
 								var getdata = data.data;
 								$rootScope.reportList = getdata.report;
 						});
@@ -801,11 +810,40 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 								})
 								
 						});
-			
+						//with postal code load
+						if($routeParams.postalcode){
+							$window.postalcode = $routeParams.postalcode;
+							$timeout(function(){
+								
+									var jsoncity = JSON.stringify({"council":""+citynamegoogle.long_name+""});
+							console.log(jsoncity);
+							var getReport = reportService.getReport( jsoncity ).then(function (data){
+								var getdata = data.data;
+								$rootScope.reportList = getdata.report;
+							});
+
+							var getAgreement = agreementSevice.getAgreement (jsoncity).then(function(data){
+								var getdata = data.data;
+								$rootScope.agreement = getdata;
+								$timeout(function(){
+									if(!getdata.logo){
+									$rootScope.hideLogo = 1;
+									console.log($scope.hideLogo);
+								}
+								else{
+									$rootScope.hideLogo = 0;
+									console.log($scope.hideLogo);	
+								}
+								})
+								
+						});
+								
+							},3000)
+						}
 						
 						//click function at map
 						$scope.alrCity = function(){
-							if($window.city.long_name !=null){
+								if($window.city.long_name !=null){
 							
 							//url change validation	
                                 if($location.path().includes("/gemeente/") || $location.path().endsWith("/") ){
@@ -857,6 +895,7 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 								
 								});
 							}
+
 							
 							
 						}
@@ -905,11 +944,13 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
                         
 						//search
 						$scope.clickSearch= function(){
-							console.log($scope.searchCity);
-							$window.cityName = null;
-							city.long_name = $scope.searchCity;
-							$rootScope.lastCity = $scope.searchCity;
-							var jsondata = JSON.stringify({"coords_criterium":{
+								console.log($scope.searchCity);
+								$window.cityName = null;
+								city.long_name = $scope.searchCity;
+								$rootScope.lastCity = $scope.searchCity;
+								geocodeAddress(geocoder, map);
+							$timeout(function(){
+								var jsondata = JSON.stringify({"coords_criterium":{
 														  	"max_lat":maxlat,
 														    "min_lat":minlat,
 														    "max_long":maxlng,
@@ -923,10 +964,9 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 							$window.issuesData = getdata;
 							showIssue(infoWindow,infoWindowContent);
 							}
-								});
-
-							geocodeAddress(geocoder, map);
-							var jsoncity = JSON.stringify({"council":""+city.long_name+""})
+								});							
+							var jsoncity = JSON.stringify({"council":""+citynamegoogle.short_name+""})
+							console.log(jsoncity);
 							var getReport = reportService.getReport( jsoncity ).then(function (data){
 								var getdata = data.data;
 								$rootScope.reportList = getdata.report;
@@ -945,7 +985,11 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 								}
 								})
 								});
-                            $location.path("gemeente/"+$scope.searchCity);
+                            $location.path("gemeente/"+citynamegoogle.long_name);
+
+							},2000)
+							
+                    
 						}
 						//move page
 						$scope.clickMenu = function(selected){

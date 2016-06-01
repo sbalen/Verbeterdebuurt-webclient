@@ -77,7 +77,7 @@ function getLocation(map) {
                 if (result[0].address_components[i].types[b] == "administrative_area_level_2") {
                    // name of city
                     city= result[0].address_components[i];
-                    // console.log(city);
+                    console.log(city);
                     //console.log(searchCity);
                     break;
                         }
@@ -100,13 +100,30 @@ function geocodeAddress(geocoder, resultsMap) {
         if(cityName!=null){
           var address = cityName;
         }
+        else if(postalcode!=null){
+          var address = postalcode;
+        }
         geocoder.geocode({'address': address}, function(results, status) {
           if (status === google.maps.GeocoderStatus.OK) {
-            resultsMap.setCenter(results[0].geometry.location);
+                resultsMap.setCenter(results[0].geometry.location);
                 maxlat  = map.getBounds().getNorthEast().lat();
                 maxlng  = map.getBounds().getNorthEast().lng();
                 minlat = map.getBounds().getSouthWest().lat();
                 minlng = map.getBounds().getSouthWest().lng();
+                console.log(resultsMap);
+                for (var i=0; i<results[0].address_components.length; i++) {
+                for (var b=0;b<results[0].address_components[i].types.length;b++) {
+                  //if you want the change the area ..
+                if (results[0].address_components[i].types[b] == "administrative_area_level_2") {
+                   // name of city
+                    citynamegoogle= results[0].address_components[i];
+                    console.log(citynamegoogle);
+                    break;
+                        }
+                    }
+                }
+
+                    
           } else {
             alert('Geocode was not successful for the following reason: ' + status);
           }
