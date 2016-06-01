@@ -24,7 +24,6 @@
             </div>
             <div class="problem">
 		        <form class="form-horizontal" role="form">
-                            
                               <div class="panel-body">
                                 <h4>1. Bepaal de locatie</h4>
                                 <div class="well well-sm locationpicker-well">
@@ -67,12 +66,25 @@
                                 </div>
                                 <div class="form-group" ng-hide="count==0||count==null">
                                     <p>Mogelijke dubbele meldingen. Bekijk of bij deze meldingen misschien jouw probleem al gemeld is. Klik er dan op om deze melding te steunen</p>
-                                    <div class="col-sm-12 form-col" style="margin-bottom: 10px;" ng-repeat="duplicateData in duplicateDataList" >
-                                       <li>
-                                       <ul><a href="meldingen/{{duplicateData.id}}">{{duplicateData.title}}</a><ul>
-                                     </li>
+                                    
+                                    <div class="duplicate-wrapper">
+                                        <div class="duplicate-left" ng-hide="count<=4" ng-click="moveDuplicate(-1)">&lang;</div>
+                                        <div class="duplicate-container">
+                                            
+                                            <div class="duplicate-hidden-block" style="{{blockstyle}}"> 
+                                            </div>
+                                            
+                                            <a href="meldingen/{{duplicateData.id}}" ng-repeat="duplicateData in duplicateDataList">
+                                                <div class="duplicate-item" >
+
+                                                   <p>{{duplicateData.title}}</p>
+                                                </div>
+                                            </a>
+                                        </div>
+                                        <div class="duplicate-right" ng-hide="count<=4" ng-click="moveDuplicate(1)">&rang;</div>
                                     </div>
-                                     
+                                        
+                                        
                                 </div>
                                 <div class="form-group">
                                     <div class="col-sm-12 form-col" ng-class="{'has-error':errorDescription}">  
