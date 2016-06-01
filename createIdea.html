@@ -4,8 +4,8 @@
       <div class="col-md-3 hidden-sm hidden-xs hidden-md">
 	    </div>
 	    <!-- main container -->
-	    <div class="col-lg-6 main-container">
-	        <div class="panel panel-default main-panel">
+	    <div class="col-lg-6 main-container marginbottom">
+	        <div class="panel panel-default main-panel margintop">
              <div class="alert alert-danger {{hide}}" >
                                   <a class="close {{hide}}" aria-label="close" ng-click="close()" >&times;</a>
                                   <p>{{errorTitle}}</p>
@@ -15,7 +15,7 @@
                                   <p>{{errorRealization}}<p>
               </div>
 
-		        <h1 class="marginheader meldingheader">Nieuw Idea</h1>
+		        <h1 class="marginheader meldingheader">Nieuwe Idea</h1>
                 <div class="marginheader meldingheader switchButton " ng-click="switchButton()">
                 <div class="icon-problem"></div>probleem
                 <div class="{{initslide}} {{slide}}" >
@@ -55,7 +55,8 @@
                                 </div>
                                <div class="form-group">
                                     <div class="col-sm-12 form-col" style="margin-bottom: 10px;" ng-class="{'has-error':errorRealization}">
-                                        <input type="text" class="form-control" id="Onderwerp" placeholder="Realisatie" ng-model="ideaRealization">
+                                        <!-- <input type="text" class="form-control" id="description" placeholder="Realisatie" ng-model="ideaRealization"> -->
+                                        <textarea class="form-control" rows="5" id="Onderwerp" placeholder="Realisatie" ng-model="ideaRealization"></textarea>
                                     </div>
                                 </div>
                                 <div class="form-group">

@@ -4,8 +4,8 @@
       <div class="col-md-3 hidden-sm hidden-xs hidden-md">
 	    </div>
 	    <!-- main container -->
-	    <div class="col-lg-6 main-container">
-	        <div class="panel panel-default main-panel">
+	    <div class="col-lg-6 main-container marginbottom">
+	        <div class="panel panel-default main-panel margintop">
              <div class="alert alert-danger {{hide}}" >
                                   <a class="close {{hide}}" aria-label="close" ng-click="close()" >&times;</a>
                                   <p>{{errorTitle}}</p>
@@ -14,8 +14,7 @@
                                   <p>{{errorLocation}}</p>
                                   <p>{{errorRealization}}<p>
               </div>
-
-		        <h1 class="marginheader meldingheader">Nieuw Probleem</h1>
+		        <h1 class="marginheader meldingheader">Nieuwe Probleem</h1>
                 <div class="marginheader meldingheader switchButton " ng-click="switchButton()">
                 <div class="icon-problem"></div>probleem
                 <div class="{{initslide}} {{slide}}" >
@@ -25,7 +24,6 @@
             </div>
             <div class="problem">
 		        <form class="form-horizontal" role="form">
-                            
                               <div class="panel-body">
                                 <h4>1. Bepaal de locatie</h4>
                                 <div class="well well-sm locationpicker-well">
@@ -68,12 +66,25 @@
                                 </div>
                                 <div class="form-group" ng-hide="count==0||count==null">
                                     <p>Mogelijke dubbele meldingen. Bekijk of bij deze meldingen misschien jouw probleem al gemeld is. Klik er dan op om deze melding te steunen</p>
-                                    <div class="col-sm-12 form-col" style="margin-bottom: 10px;" dir-paginate="duplicateData in duplicateDataList | itemsPerPage:totalPage" current-page="currentPage" >
-                                       <li>
-                                       <ul><a href="meldingen/{{duplicateData.id}}">{{duplicateData.title}}</a><ul>
-                                     </li>
+                                    
+                                    <div class="duplicate-wrapper">
+                                        <div class="duplicate-left" ng-hide="count<=4" ng-click="moveDuplicate(-1)">&lang;</div>
+                                        <div class="duplicate-container">
+                                            
+                                            <div class="duplicate-hidden-block" style="{{blockstyle}}"> 
+                                            </div>
+                                            
+                                            <a href="meldingen/{{duplicateData.id}}" ng-repeat="duplicateData in duplicateDataList">
+                                                <div class="duplicate-item" >
+
+                                                   <p>{{duplicateData.title}}</p>
+                                                </div>
+                                            </a>
+                                        </div>
+                                        <div class="duplicate-right" ng-hide="count<=4" ng-click="moveDuplicate(1)">&rang;</div>
                                     </div>
-                                     <dir-pagination-controls boundary-links="true" template-url="node_modules/angular-utils-pagination/dirPagination.tpl.html" max-size="1" ></dir-pagination-controls>
+                                        
+                                        
                                 </div>
                                 <div class="form-group">
                                     <div class="col-sm-12 form-col" ng-class="{'has-error':errorDescription}">  

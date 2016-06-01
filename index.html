@@ -42,11 +42,15 @@
     <!--Paging Script -->
     <script src="node_modules/angular-utils-pagination/dirPagination.js"></script>
     <!--PAGE SPECIFIC SCRIPTS -->
-    <script src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+    <script src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false"></script>
     <!--FACEBOOK CONNECT -->
     <script src="js/ngFacebook.js"></script>
     <!--base64-->
     <script src="js/angular-base64-upload.js"></script>
+    <!--slider-->
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/jquery.slick/1.6.0/slick.css"/>
+    <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.slick/1.6.0/slick.min.js"></script>
+    
     
     
 </head>
@@ -71,7 +75,7 @@
                         <span class="icon-bar"></span> 
                     </button>
                     
-                    <a class="navbar-brand" ><img src="http://staging.verbeterdebuurt.nl/{{agreement.logo}}" class="citylogo mcitylogo"></a>
+                    <a class="navbar-brand" ng-hide="hideLogo"><img src="http://staging.verbeterdebuurt.nl/{{agreement.logo}}"  class="citylogo mcitylogo"></a>
                     <a class="navbar-brand" href="/"><img  src="./img/Verbeterdebuurt-logo.png" class="vdblogo mvdblogo"></a>
                     
                 </div>
@@ -132,7 +136,7 @@
           <div class="container {{globaloverlay}}" ng-view>
 
           </div>
-        <div class="footer">
+        <div class="footer footer1">
             <div class="footertext">
                 <div class="footer-element"><a href="http://blog.verbeterdebuurt.nl/apps/">Apps</a></div>&middot;
                 <div class="footer-element"><a href="http://blog.verbeterdebuurt.nl/hoe-werkt-verbeterdebuurt-2/">Hoe werkt het</a></div>&middot;

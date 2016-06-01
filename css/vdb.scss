@@ -453,6 +453,16 @@ margin-right: 10px; margin-top: 10px;
     {
         margin-left: 10px;
     }
+    
+.alert1 {
+    padding: 15px;
+    margin-bottom: 5px;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    margin-left: 10px;
+    margin-right: 10px;
+   
+}
 
 
 
@@ -567,7 +577,50 @@ margin-right: 10px; margin-top: 10px;
     padding-bottom: 10px;
 }
     
+.margintop
+    {
+        top: -16px;
+        min-height: calc(100vh - 165px);
+    }
+    
+.margintop1
+    {
+        top: -16px;
+        min-height: calc(152vh - 333px);
+    }
+    
+    
+.marginbottom
+    {
+        margin-bottom: -21px;
+    }
+    
+.footer1
+    {
+        height: 114px;
+        margin-bottom: -8px;
+    }
+    
+.pagination {
+    display: inline-block;
+    padding-left: 0;
+    margin: 20px 0;
+    border-radius: 4px;
+    font-size: 12px;
 }
+    
+    .alert1 {
+    padding: 15px;
+    margin-bottom: 5px;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    margin-left: 10px;
+    margin-right: 10px;
+   
+}
+    
+}
+
 
 
 
@@ -588,16 +641,46 @@ margin-right: 10px; margin-top: 10px;
     font-size: 10px;
     }
     
+    
+.footer1
+    {
+        height: 116px;
+        margin-bottom: -8px;
+    }
+    
+.alert1 {
+    padding: 15px;
+    margin-bottom: 5px;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    margin-left: 10px;
+    margin-right: 10px;
+   
 }
 
 
+    
+    
 
+}
+
+
+.selectproblem-container{
+    
+    padding-top: 20px;
+    
+}
+
+.melding-description{
+    
+    padding:10px;
+}
 
 
 
 //toggle button
 .switchButton{
-  width: 50%;
+  width: 90%;
   height: 50px;
   font-size:12px;
 }
@@ -609,6 +692,13 @@ margin-right: 10px; margin-top: 10px;
     background: url(../img/icon_2_42_42.png) no-repeat center;
     background-size: cover;
     margin-bottom: -15px;
+    text-align: center;
+    
+    &.big{
+         padding-top: 82px;
+         width: 82px;
+        background: url(../img/problem-big.png) no-repeat top;
+    }
 }
 
 .icon-idea{
@@ -618,6 +708,16 @@ margin-right: 10px; margin-top: 10px;
     background: url(../img/icon_idea_2_42_42.png) no-repeat center;
     background-size: cover;
     margin-bottom: -15px;
+    text-align: center;
+    
+    &.big{
+         padding-top: 82px;
+         width: 82px;
+        background: url(../img/idea-big.png) no-repeat top;
+        margin-left: 10px;
+    }
+    
+    
 }
 
 .toggle-button {  background-color: white; 
@@ -789,10 +889,13 @@ margin-right: 10px; margin-top: 10px;
     }
         
     .btn {
-    
-    font-size: 10px;
-    
+    font-size: 12px;
 }
+    
+    .pbtn
+    {   
+        padding: 5px;
+    }
 
     
 }
@@ -809,3 +912,78 @@ margin-right: 10px; margin-top: 10px;
 .word-break {
    word-break: break-all;
 }
+
+
+//duplicate
+
+
+.duplicate-wrapper{
+    text-align: center;
+    position: relative;
+
+    .duplicate-left,.duplicate-right{
+        width: 10px;
+        display: block;
+        text-align: center;
+        font-size:20px;
+        height: 90px;
+        position: absolute;
+        padding-top: 25px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    
+    .duplicate-left{
+        left:0;
+        top:0;
+    }
+    .duplicate-right{
+        right: 0;
+        top:0;
+    }
+
+
+    .duplicate-container{
+
+        white-space: nowrap; /*Prevents Wrapping*/
+        height: 90px;
+        overflow-x: scroll;
+        overflow-y: hidden;
+        display: block;
+        width: calc(100% - 20px);
+        margin-left:10px;
+        
+        a{
+            text-decoration: none;
+            
+        }
+
+        .duplicate-hidden-block{
+            display: inline-block;
+            height: 80px;
+            width:0px;
+        }
+
+        .duplicate-item{
+            white-space: normal;
+            display: inline-block;
+            height: 80px;
+            width: calc(25% - 15px);
+            border: 1px solid #ccc;
+            margin-left: 5px;
+            margin-right: 5px;
+            font-size: 12px;
+            vertical-align:top;
+            box-sizing: border-box;
+            padding: 5px;
+            
+            p{
+                word-break: overflow-wrap;
+            }
+
+        }
+
+    }
+
+}
+

@@ -6,13 +6,16 @@
             <div class="panel-heading">
                 <strong>Report</strong>
             </div>
-            <div class="panel-body">
-                <div class="list-group" >
-                    <strong>Stad : {{reportList.council}}</strong></br>
-                {{reportList.reports}} rapporten per maand</br>
-            {{reportList.solutions}} oplossing per maand
-        </div>
-    </div>  
+           <div class="panel-body">
+                          <div class="list-group" ng-hide="reportList.council == null || reportList.council == 'undefined' " >
+                            <strong>Stad : {{reportList.council}}</strong></br>
+                            {{reportList.reports}} rapporten per maand</br>
+                            {{reportList.solutions}} oplossing per maand
+                          </div>
+                           <div class="list-group"  ng-show="reportList.council == null || reportList.council == 'undifined' ">
+                             geen locatieinformatie gevonden
+                           </div>
+            </div>  
 </div>
 <div class="panel side-panel panel-default" id="new-problem-widget" ng-hide="results.length == 0 || newProblemList==null">
     <div class="panel-heading">
@@ -20,7 +23,7 @@
     </div>
     <div class="panel-body">
         <div class="list-group" >
-            <a href="/meldingen/{{newProblem.id}}" class="list-group-item clearfix" ng-repeat="newProblem in newProblemList| filter : {type:'problem'} | filter: {status:'Open'} | orderBy : 'created_at' : true |limitTo:3|filter:x as results" ng-click="clickIssues()">
+            <a href="/meldingen/{{newProblem.id}}" class="list-group-item clearfix" ng-repeat="newProblem in newProblemList| filter : {type:'problem'} | filter: {status:'!closed'} | orderBy : 'created_at' : true |limitTo:3|filter:x as results" ng-click="clickIssues()">
                 <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
                 <strong> {{newProblem.title}}</strong> {{newProblem.location.full_address}}
                 <span class="pull-right">
@@ -38,7 +41,7 @@
     </div>
     <div class="panel-body">
         <div class="list-group">
-            <a href="/meldingen/{{newProblem.id}}" class="list-group-item clearfix" ng-repeat="newProblem in newProblemList| filter : {type:'idea'} | filter: {status:'Open'} | orderBy : 'created_at' : true |limitTo:3|filter:x as results2" 
+            <a href="/meldingen/{{newProblem.id}}" class="list-group-item clearfix" ng-repeat="newProblem in newProblemList| filter : {type:'idea'} | filter: {status:'!closed'} | orderBy : 'created_at' : true |limitTo:3|filter:x as results2" 
                ng-click="clickIssues()">
                 <img class="icon" src="./img/icon_idea_2_21_21.png" size="20px"/>
                 <strong>{{newProblem.title}}</strong> {{newProblem.location.full_address}}
@@ -53,9 +56,9 @@
 </div>
 </div>
 <!-- main container -->
-<div class="col-lg-6 main-container">
+<div class="col-lg-6 main-container marginbottom">
 
-    <div class="panel panel-default main-panel {{hide}}" ng-repeat="newProblem in problemIdList |filter : {id : id()}" >
+    <div class="panel panel-default main-panel margintop {{hide}}" ng-repeat="newProblem in problemIdList |filter : {id : id()}" >
         <a href="{{lastUrl}}" class="close" aria-label="close" >&times;</a>
          
          <div class="errorMessage">
@@ -93,10 +96,10 @@
                             <td>Categorie:</td>
                             <td>{{newProblem.category}}</td>
                         </tr>
-                        <tr ng-if="newProblem.type=='idea'">
+<!--                         <tr ng-if="newProblem.type=='idea'">
                             <td>Reactie:</td>
                             <td>{{newProblem.realization}}</td>
-                        </tr>
+                        </tr> -->
                         <tr>
                             <td>Status:</td>
                             <td>{{newProblem.status}} <a class="{{hideLogStatus}}  issueLog" ng-click="logStatus()">Meer >> </a></td>
@@ -115,7 +118,8 @@
          <div class="issueDetailTable">
                     <table>
                         <tr>
-                            <td><h2>Beschrijving</h2></td>
+                            <td ng-show="newProblem.type=='problem'"><h2>Beschrijving</h2></td>
+                            <td ng-show="newProblem.type=='idea'"><h2>Idee</h2></td>
                         </tr>
                         <tr>
                             <td class="issueDetailTableContent word-break"><p>{{newProblem.description}}</p></td>
@@ -160,7 +164,7 @@
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <button type="button" class="close" data-dismiss="modal" ng-click="close()">&times;</button>
                 <h1 class="modal-title">Reactie plaatsen</h1>
                 <div class="alert alert-danger {{hide}}" >
                                   <a class="close {{hide}}" aria-label="close" ng-click="close()" >&times;</a>
@@ -172,7 +176,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="close()">Annuleren</button>
-                <button type="button" class="btn btn-success" data-dismiss="{{dissmissModal}}" ng-click="commentSubmit(newProblem.type)">Plaatsen</button>
+                <button type="button" class="btn btn-success"ng-click="commentSubmit(newProblem.type)">Plaatsen</button>
             </div>
         </div>
     </div>
