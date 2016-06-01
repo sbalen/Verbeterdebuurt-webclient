@@ -74,6 +74,7 @@ window.onload = function(){
      maxlng  = 52.15154422875919;
      minlat = 4.545096343219029;
      minlng = 4.487203543841588;
+		
 
      if(cityName!=null){
         geocodeAddress(geocoder, map);
@@ -749,7 +750,14 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 						 
                         menuSelected($rootScope,'home');
                         //$scope.hideLogo = 1;
-						
+                        //google map aouto complete
+						var input = document.getElementById('searchCity');
+							var options = {
+							  types: ['(cities)'],
+							  componentRestrictions: {country: 'nl'}
+							};
+
+							var autocomplete = new google.maps.places.Autocomplete(input, options);
                         $scope.userpanel=1;
     					console.log($rootScope.lastCity);
     					console.log($routeParams.cityName);
@@ -786,7 +794,9 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 						//send data to google map api for city
 						$rootScope.urlBefore = $location.path();
 						$window.cityName = $routeParams.cityName;
-						$scope.searchCity = $routeParams.cityName;
+						if($routeParams.cityName){
+							$scope.searchCity = $routeParams.cityName+", Netherlands";
+						}
 						$rootScope.errorSession="";
 
 						//promise for make asyncronise data factory to be syncronis first load
@@ -849,7 +859,7 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
                                 if($location.path().includes("/gemeente/") || $location.path().endsWith("/") ){
                                 $location.path("/gemeente/"+$window.city.long_name);
 								$rootScope.lastUrl = $location.path();
-								$scope.searchCity = city.long_name;	
+								$scope.searchCity = city.long_name+", Netherlands";	
 								
 							}
 							
@@ -950,6 +960,7 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 								$rootScope.lastCity = $scope.searchCity;
 								geocodeAddress(geocoder, map);
 							$timeout(function(){
+								console.log($scope.searchCity);
 								var jsondata = JSON.stringify({"coords_criterium":{
 														  	"max_lat":maxlat,
 														    "min_lat":minlat,
