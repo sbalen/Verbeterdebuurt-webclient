@@ -97,20 +97,22 @@ function getLocation(map) {
         }
 function geocodeAddress(geocoder, resultsMap) {
         var address = document.getElementById('searchCity').value;
+        console.log(address);
         if(cityName!=null){
           var address = cityName;
+          console.log(address);
         }
         else if(postalcode!=null){
           var address = postalcode;
         }
-        geocoder.geocode({'address': address}, function(results, status) {
+        geocoder.geocode({'address': address,componentRestrictions: {country: 'nl'}}, function(results, status) {
           if (status === google.maps.GeocoderStatus.OK) {
                 resultsMap.setCenter(results[0].geometry.location);
                 maxlat  = map.getBounds().getNorthEast().lat();
                 maxlng  = map.getBounds().getNorthEast().lng();
                 minlat = map.getBounds().getSouthWest().lat();
                 minlng = map.getBounds().getSouthWest().lng();
-                console.log(resultsMap);
+                console.log(map.getCenter().lat()+" "+map.getCenter().lng());
                 for (var i=0; i<results[0].address_components.length; i++) {
                 for (var b=0;b<results[0].address_components[i].types.length;b++) {
                   //if you want the change the area ..
