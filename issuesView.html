@@ -6,13 +6,16 @@
             <div class="panel-heading">
                 <strong>Report</strong>
             </div>
-            <div class="panel-body">
-                <div class="list-group" >
-                    <strong>Stad : {{reportList.council}}</strong></br>
-                {{reportList.reports}} rapporten per maand</br>
-            {{reportList.solutions}} oplossing per maand
-        </div>
-    </div>  
+           <div class="panel-body">
+                          <div class="list-group" ng-hide="reportList.council == null || reportList.council == 'undefined' " >
+                            <strong>Stad : {{reportList.council}}</strong></br>
+                            {{reportList.reports}} rapporten per maand</br>
+                            {{reportList.solutions}} oplossing per maand
+                          </div>
+                           <div class="list-group"  ng-show="reportList.council == null || reportList.council == 'undifined' ">
+                             geen locatieinformatie gevonden
+                           </div>
+            </div>  
 </div>
 <div class="panel side-panel panel-default" id="new-problem-widget" ng-hide="results.length == 0 || newProblemList==null">
     <div class="panel-heading">
@@ -53,9 +56,9 @@
 </div>
 </div>
 <!-- main container -->
-<div class="col-lg-6 main-container">
+<div class="col-lg-6 main-container marginbottom">
 
-    <div class="panel panel-default main-panel {{hide}}" ng-repeat="newProblem in problemIdList |filter : {id : id()}" >
+    <div class="panel panel-default main-panel margintop {{hide}}" ng-repeat="newProblem in problemIdList |filter : {id : id()}" >
         <a href="{{lastUrl}}" class="close" aria-label="close" >&times;</a>
          
          <div class="errorMessage">
