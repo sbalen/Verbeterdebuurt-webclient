@@ -2389,8 +2389,35 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 					$scope.count = data.data.count;
 					$scope.duplicateDataList = getDuplicateIssue.issues;
 					console.log(getDuplicateIssue);
-				});
+
+                   
+                    
+            });
+            
+            $scope.blockstyle = "margin-left:0%";
+            $scope.duplicateposition = 0;
+            
 		}
+        
+       
+        
+        $scope.moveDuplicate = function( move ){
+                
+            var limit = $scope.count-4;
+            $scope.duplicateposition = $scope.duplicateposition + move;
+            
+            if($scope.duplicateposition < 0)$scope.duplicateposition = 0; 
+            
+            if($scope.duplicateposition > limit)$scope.duplicateposition = limit;
+            
+            
+            
+            var move = $scope.duplicateposition * -25;
+            $scope.blockstyle = "margin-left:"+move+"%";
+            
+            
+            
+        }
 
 
 		}])

@@ -645,4 +645,53 @@ h6 {
 .word-break {
   word-break: break-all; }
 
+.duplicate-wrapper {
+  text-align: center;
+  position: relative; }
+  .duplicate-wrapper .duplicate-left, .duplicate-wrapper .duplicate-right {
+    width: 10px;
+    display: block;
+    text-align: center;
+    font-size: 20px;
+    height: 90px;
+    position: absolute;
+    padding-top: 25px;
+    font-weight: bold;
+    cursor: pointer; }
+  .duplicate-wrapper .duplicate-left {
+    left: 0;
+    top: 0; }
+  .duplicate-wrapper .duplicate-right {
+    right: 0;
+    top: 0; }
+  .duplicate-wrapper .duplicate-container {
+    white-space: nowrap;
+    /*Prevents Wrapping*/
+    height: 90px;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    display: block;
+    width: calc(100% - 20px);
+    margin-left: 10px; }
+    .duplicate-wrapper .duplicate-container a {
+      text-decoration: none; }
+    .duplicate-wrapper .duplicate-container .duplicate-hidden-block {
+      display: inline-block;
+      height: 80px;
+      width: 0px; }
+    .duplicate-wrapper .duplicate-container .duplicate-item {
+      white-space: normal;
+      display: inline-block;
+      height: 80px;
+      width: calc(25% - 15px);
+      border: 1px solid #ccc;
+      margin-left: 5px;
+      margin-right: 5px;
+      font-size: 12px;
+      vertical-align: top;
+      box-sizing: border-box;
+      padding: 5px; }
+      .duplicate-wrapper .duplicate-container .duplicate-item p {
+        word-break: overflow-wrap; }
+
 /*# sourceMappingURL=vdb.css.map */
