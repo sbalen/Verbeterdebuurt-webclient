@@ -795,7 +795,7 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 						$rootScope.urlBefore = $location.path();
 						$window.cityName = $routeParams.cityName;
 						if($routeParams.cityName){
-							$scope.searchCity = $routeParams.cityName+", Netherlands";
+							$scope.searchCity = $routeParams.cityName;
 						}
 						$rootScope.errorSession="";
 
@@ -857,9 +857,11 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 							
 							//url change validation	
                                 if($location.path().includes("/gemeente/") || $location.path().endsWith("/") ){
-                                $location.path("/gemeente/"+$window.city.long_name);
+                                $timeout(function(){
+                                	$location.path("/gemeente/"+$window.city.long_name);
+                                },3000)
 								$rootScope.lastUrl = $location.path();
-								$scope.searchCity = city.long_name+", Netherlands";	
+								$scope.searchCity = city.long_name;	
 								
 							}
 							
@@ -953,14 +955,13 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
                         
                         
 						//search
-						$scope.clickSearch= function(){
-								console.log($scope.searchCity);
-								$window.cityName = null;
-								city.long_name = $scope.searchCity;
-								$rootScope.lastCity = $scope.searchCity;
-								geocodeAddress(geocoder, map);
+						$scope.clickSearch= function(){	
+							$rootScope.globaloverlay = "active";
+							console.log($scope.searchCity);
+							$window.cityName = null;
+							//$rootScope.lastCity = city.long_name;
+							geocodeAddress(geocoder, map);
 							$timeout(function(){
-								console.log($scope.searchCity);
 								var jsondata = JSON.stringify({"coords_criterium":{
 														  	"max_lat":maxlat,
 														    "min_lat":minlat,
@@ -985,6 +986,7 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 							var getAgreement = agreementSevice.getAgreement (jsoncity).then(function(data){
 								var getdata = data.data;
 								$rootScope.agreement = getdata;
+								$rootScope.globaloverlay = "";
 								$timeout(function(){
 									if(!getdata.logo){
 									$rootScope.hideLogo = 1;
@@ -998,7 +1000,7 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 								});
                             $location.path("gemeente/"+citynamegoogle.long_name);
 
-							},2000)
+							},3000)
 							
                     
 						}
