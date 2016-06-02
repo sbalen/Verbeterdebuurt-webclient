@@ -2210,6 +2210,8 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 		menuSelected($rootScope,'createissue');
 		
 		//show my issue
+		if($cookies.getObject('user')){
+		$scope.hideLogin = true
 		var jsondata = JSON.stringify({"user":{ "username":""+$cookies.getObject('user').username+"",
 												"password_hash":""+$cookies.getObject('user').password_hash+""
 
@@ -2220,6 +2222,11 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
             $rootScope.myIssueCount = count;
 			$rootScope.myIssuesList = getdata.issues;
 		})
+			$scope.hideLogin = true
+		}
+		else {
+			$scope.hideLogin = false;
+		}
 		//first initial
 		$timeout(function(){
 			if(latlngChange){
@@ -2271,9 +2278,6 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 		}
 
 
-		if($cookies.getObject('user')){
-			$scope.hideNonLogin = "ng-hide"
-		}
 		$scope.clickSearchCreateIssue= function(){
 			geocodeAddressCreateProblem(geocoder, map3, $scope.searchCityCreate);
 			$scope.loadCategory = 1;
@@ -2494,7 +2498,8 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
 		menuSelected($rootScope,'createissue');
 		
 		//show my issue
-		var jsondata = JSON.stringify({"user":{ "username":""+$cookies.getObject('user').username+"",
+		if($cookies.getObject('user')){
+			var jsondata = JSON.stringify({"user":{ "username":""+$cookies.getObject('user').username+"",
 												"password_hash":""+$cookies.getObject('user').password_hash+""
 
 											}});
@@ -2504,6 +2509,9 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
             $rootScope.myIssueCount = count;
 			$rootScope.myIssuesList = getdata.issues;
 		})
+		}else{
+
+		}
 		//first initial
 		$timeout(function(){
 			if(latlngChange){
