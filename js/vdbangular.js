@@ -1011,12 +1011,13 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 										if(selected == 'myissues'){
 											$rootScope.urlBefore = "/mijn-meldingen";
 											menuSelected($rootScope,'myIssues');
+											$location.path('/'+"login");
 										}
 										if( selected == 'createissue'){
 											$rootScope.urlBefore = "/nieuwe-melding";
 											menuSelected($rootScope,'createissue');
+											$location.path('/nieuwe-melding');
 										}
-										$location.path('/'+"login");
 									}
 									else{
                                         if(selected == "createissue"){
@@ -2204,9 +2205,6 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 
 		menuSelected($rootScope,'createissue');
 		
-		if(!$cookies.getObject('user')){
-			$location.path("/login");
-		}
 		//show my issue
 		var jsondata = JSON.stringify({"user":{ "username":""+$cookies.getObject('user').username+"",
 												"password_hash":""+$cookies.getObject('user').password_hash+""
@@ -2491,9 +2489,6 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
 	
 		menuSelected($rootScope,'createissue');
 		
-		if(!$cookies.getObject('user')){
-			$location.path("/login");
-		}
 		//show my issue
 		var jsondata = JSON.stringify({"user":{ "username":""+$cookies.getObject('user').username+"",
 												"password_hash":""+$cookies.getObject('user').password_hash+""
