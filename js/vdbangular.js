@@ -2208,7 +2208,9 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 		console.log($rootScope.lastUrl);
 
 		menuSelected($rootScope,'createissue');
-		
+		if(!$cookies.getObject('user')){
+			$location.path('login');
+		}
 		//show my issue
 		var jsondata = JSON.stringify({"user":{ "username":""+$cookies.getObject('user').username+"",
 												"password_hash":""+$cookies.getObject('user').password_hash+""

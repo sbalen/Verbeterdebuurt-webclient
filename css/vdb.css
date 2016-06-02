@@ -341,8 +341,7 @@ h6 {
     width: 100%; }
 
   .panel-body {
-    padding: 15px;
-    margin-left: 25px; }
+    padding: 15px; }
 
   .registerm {
     margin-left: 67px; }
@@ -430,7 +429,7 @@ h6 {
     width: 96%; }
 
   .marginheader {
-    margin-left: 40px; }
+    margin-left: 15px; }
 
   .marginmedia {
     width: 100%;
@@ -637,10 +636,22 @@ h6 {
     margin-left: 5px; }
 
   .btn {
-    font-size: 12px; }
+    font-size: 14px;
+    margin-left: 7px; }
 
   .pbtn {
-    padding: 5px; } }
+    padding: 5px; }
+
+  .bmsubmit {
+    margin-left: 13px; }
+
+  .input-group .form-control {
+    position: relative;
+    z-index: 2;
+    float: left;
+    width: 97%;
+    margin-bottom: 0;
+    margin-left: 7px; } }
 .issueDetailTable {
   width: 100%; }
   .issueDetailTable .issueDetailTableContent {
