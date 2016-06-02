@@ -163,6 +163,10 @@ h6 {
 .glyphicon-search {
   padding-right: 5px; }
 
+.pac-container:after {
+  background-image: none !important;
+  height: 0px; }
+
 .container {
   padding-left: 0px;
   z-index: 0; }

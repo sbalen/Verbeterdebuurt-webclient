@@ -241,6 +241,13 @@ h6 {
     
 }
 
+.pac-container:after {
+
+    background-image: none !important;
+    height: 0px;
+}
+
+
 //main container
 .container{
   padding-left:0px;
@@ -992,4 +999,3 @@ margin-right: 10px; margin-top: 10px;
     }
 
 }
-
