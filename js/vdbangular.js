@@ -1,4 +1,4 @@
-var vdbApp = angular.module('vdbApp', ['ngRoute','angularSpinner','angularUtils.directives.dirPagination','ngFacebook','ngCookies','naif.base64'])
+var vdbApp = angular.module('vdbApp', ['ngRoute','angularSpinner','angularUtils.directives.dirPagination','ngFacebook','ngCookies','naif.base64','satellizer'])
 var APIURL = "https://staging.verbeterdebuurt.nl/api.php/json_1_3/";
 var geocoder = new google.maps.Geocoder();
 var infoWindow = new google.maps.InfoWindow();
@@ -269,35 +269,30 @@ function geocodeAddressCreateProblem(geocoder, resultsMap, address) {
         });
       }
 function markerGetAddress(marker,location){
-		 //first time load
-		google.maps.event.addListener(marker, 'drag', function (e) {
-               geocoder.geocode({'latLng': marker.getPosition()} , function (result , status){
-                if (status == google.maps.GeocoderStatus.OK){
-
-                for (var i=0; i<result[0].address_components.length; i++) {
-                for (var b=0;b<result[0].address_components[i].types.length;b++) {
-                  //if you want the change the area ..
-                if (result[0].address_components[i].types[b] == "route") {
-                   // street name
-                    street= result[0].address_components[i].short_name;
-                    break;
-                        }
-                if (result[0].address_components[i].types[b] == "street_number") {
-                   // street number
-                    street_number= result[0].address_components[i].short_name;
-                    break;
-                        }
-                    }
-             
-                    
-                }
-                }
-                
-
-               });
-				address = street+" "+street_number;
-				document.getElementById(location).value = address;
-            });
+	 //first time load
+	google.maps.event.addListener(marker, 'drag', function (e) {
+        geocoder.geocode({'latLng': marker.getPosition()} , function (result , status) {
+			if (status == google.maps.GeocoderStatus.OK) {
+				for (var i=0; i<result[0].address_components.length; i++) {
+					for (var b=0;b<result[0].address_components[i].types.length;b++) {
+						//if you want the change the area ..
+						if (result[0].address_components[i].types[b] == "route") {
+							// street name
+							street= result[0].address_components[i].short_name;
+							break;
+						}
+						if (result[0].address_components[i].types[b] == "street_number") {
+							// street number
+							street_number= result[0].address_components[i].short_name;
+							break;
+					    }
+					}
+				}
+			}
+		});
+		address = street+" "+street_number;
+		document.getElementById(location).value = address;
+    });
 }
 //change menu selected
 function menuSelected($scope,selected){
@@ -319,7 +314,13 @@ function menuSelected($scope,selected){
 };
 
 
-vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegateProvider', function ($routeProvider,$locationProvider,$httpProvider,$sceDelegateProvider) {
+vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegateProvider','$authProvider', function ($routeProvider,$locationProvider,$httpProvider,$sceDelegateProvider,$authProvider) {
+
+
+    $authProvider.facebook({
+      clientId: '1622145028109341'
+    });
+
 	$routeProvider
 	.when('/', {
 		templateUrl: 'map.html',
@@ -1053,6 +1054,9 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 // vdbApp.controller('mainCtrl', ['$scope','issues', function ($scope,issues) {
 
 // }]);
+
+
+
 vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams','issuesService','reportService','usSpinnerService','$location','$anchorScroll','issueLogService','commentService','$timeout','voteSubmitService','$cookies', function ($scope,$rootScope,$window,$routeParams,issuesService,reportService,usSpinnerService,$location,$anchorScroll,issueLogService,commentService,$timeout,voteSubmitService,$cookies) {
 	$rootScope.globaloverlay = "active";
     $scope.hide = "ng-hide";
@@ -1376,7 +1380,7 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 
 }])
 
-vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','$location','usSpinnerService', '$facebook','$cookies', function ($scope,$rootScope,$window,loginService,$location,usSpinnerService,$facebook,$cookies) {
+vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','$location','usSpinnerService', '$facebook','$auth','$cookies', function ($scope,$rootScope,$window,loginService,$location,usSpinnerService,$facebook,$auth,$cookies) {
 	$scope.hide = "ng-hide";
     $scope.lusername="";
     $scope.lpassword="";
@@ -1476,7 +1480,15 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
     }
     
     
+    $scope.TWlogin = function(){
+      console.log("Need to login with Twitter");
+    }
     
+    
+    $scope.authenticate = function(provider) {
+    	console.log('authenticate('+provider+')');
+      $auth.authenticate(provider);
+    };
     
 	$scope.login = function(){
         $rootScope.globaloverlay = "active";
@@ -1489,12 +1501,12 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
                     $rootScope.globaloverlay = "";
 				}else if(getLogin.success){
 					//temp for data session
-					//set expired cookies
 					var expired = new Date();
-                    expired.setHours(expired.getHours()+2);
+                    expired.setDate(expired.getDate()+((1/24)*2));
+                    console.log(expired);
 					$cookies.putObject('user',getLogin.user,{expires:expired});
 					$cookies.putObject('user_profile',getLogin.user_profile,{expires:expired});
-					console.log(expired);
+					console.log($cookies.getObject('user'));
                    	//remember me
                    		if($scope.rememberMe === true){
                    			var expired = new Date();
