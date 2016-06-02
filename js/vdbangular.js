@@ -1489,12 +1489,12 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
                     $rootScope.globaloverlay = "";
 				}else if(getLogin.success){
 					//temp for data session
+					//set expired cookies
 					var expired = new Date();
-                    expired.setDate(expired.getDate()+((1/24)*2));
-                    console.log(expired);
+                    expired.setHours(expired.getHours()+2);
 					$cookies.putObject('user',getLogin.user,{expires:expired});
 					$cookies.putObject('user_profile',getLogin.user_profile,{expires:expired});
-					console.log($cookies.getObject('user'));
+					console.log(expired);
                    	//remember me
                    		if($scope.rememberMe === true){
                    			var expired = new Date();
