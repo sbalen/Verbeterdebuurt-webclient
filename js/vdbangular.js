@@ -857,10 +857,15 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 							
 							//url change validation	
                                 if($location.path().includes("/gemeente/") || $location.path().endsWith("/") ){
-                                $timeout(function(){
-                                	$location.path("/gemeente/"+$window.city.long_name);
-                                },3000)
-								$rootScope.lastUrl = $location.path();
+                                if($rootScope.lastCity !=null){
+                                	$location.path("/gemeente/"+$rootScope.lastCity);
+                                	$rootScope.lastCity=null;
+                                	console.log("baca");
+
+                                }else{
+                                	 $location.path("/gemeente/"+$window.city.long_name);
+                                }
+                                $rootScope.lastUrl = $location.path();
 								$scope.searchCity = city.long_name;	
 								
 							}
@@ -876,7 +881,6 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 							
 						
 								var jsoncity = JSON.stringify({"council":""+$routeParams.cityName+""});
-								$rootScope.lastCity = $routeParams.cityName;
 								var getReport = reportService.getReport( jsoncity ).then(function (data){
 								var getdata = data.data;
 								$rootScope.reportList = getdata.report;
@@ -999,7 +1003,7 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 								})
 								});
                             $location.path("gemeente/"+citynamegoogle.long_name);
-
+                            $rootScope.lastCity = citynamegoogle.long_name;
 							},3000)
 							
                     
