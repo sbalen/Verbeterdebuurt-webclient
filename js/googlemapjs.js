@@ -170,12 +170,12 @@ function callMarker (markers,zoom,map){
                      var icon = "";
                      //validate for the icon
                     if(issuesData.issues[i].status == "resolved" || issuesData.issues[i].status == "closed"){
-                      icon = "/img/flag_2_42_42.png"
+                      icon = "/img/flag-32.png"
                      }
                      else if(issuesData.issues[i].type == "problem"){
-                      icon = "/img/icon_2_42_42.png";
+                      icon = "/img/pin-32.png";
                     }else if(issuesData.issues[i].type == "idea"){
-                      icon = "/img/icon_idea_2_42_42.png"; 
+                      icon = "/img/bulb-32.png"; 
                     }
                      var markerOption = {
                       position : latLng,
