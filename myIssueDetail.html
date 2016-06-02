@@ -6,14 +6,19 @@
                     
             </div>
 	    <!-- main container -->
-	    <div class="col-lg-6 main-container">
-
-                <span us-spinner spinner-key="spinner-1" spinner-start-active="true"></span>
-                <div class="panel panel-default main-panel {{hide}}" ng-repeat="myIssues in myIssuesList | filter : {id : id()} ">
-                  <a href="/myissues" class="close" aria-label="close" >&times;</a>
+	    <div class="col-lg-6 main-container marginbottom">
+                <div class="panel panel-default main-panel margintop {{hide}}" ng-repeat="myIssues in myIssuesList | filter : {id : id()} ">
+                    <a href="/mijn-meldingen" class="close" aria-label="close" >&times;</a>
+                  <div class="errorMessage">
+                <div class="alert alert-danger" ng-hide="hideError" >
+                                      <a class="close " aria-label="close" ng-click="closeError()" ng-hide="hideError" >&times;</a>
+                                      <p>{{errorVote}}</p>
+                </div>
+             </div> 
             <h1>{{myIssues.title}}<br><small>{{myIssues.location.full_address}}</small></h1>
             <div class="thumbnail right-caption span4">
-                <img class="img-responsive" src="./img/20130913_151618_1.jpg" alt="Plaatje van de situatie">
+                <img class="img-responsive" src="{{myIssues.image.image_url}}" alt="Plaatje van de situatie" ng-if="myIssues.image">
+                <div  class = "img-resposive" ng-if="!myIssues.image" id = "googleMapIssue" ng-init="googleMapIssue(myIssues.location.latitude,myIssues.location.longitude,myIssues.type)"></div>
                   <div class="detail-table hidden-xs">
                     <table width="100%">
                             <tbody> 
@@ -23,7 +28,7 @@
                                 </tr>
                                 <tr>
                                     <td>Door:</td>
-                                    <td>Sbalen</td>
+                                    <td>{{myIssues.owner.username}}</td>
                                     <td rowspan="3" colspan="2" align="right"> 
                                         <img class="img-rounded" alt="Twitter" width="49" height="49" src="./img/twitter_s.png">
                                         <img class="img-rounded" alt="Facebook" width="49" height="49" src="./img/facebook_s.png">
@@ -31,25 +36,24 @@
                                 </tr>
                                 <tr>
                                     <td>Datum:</td>
-                                    <td>24-05-2015</td>
+                                    <td>{{myIssues.created_at}}</td>
                                 </tr>
-                                <tr>
+                                <tr ng-if="myIssues.type=='problem'">
                                     <td>Categorie:</td>
-                                    <td>Straatmeubilair en Verlichting</td>
+                                    <td>{{myIssues.category}}</td>
                                 </tr>
+                               <!--  <tr ng-if="myIssues.type=='idea'">
+                                    <td>Reactie:</td>
+                                    <td>{{myIssues.realization}}</td>
+                                </tr> -->
                                 <tr>
                                     <td>Status:</td>
-                                    <td>Open <a href="#log-details" data-toggle="collapse">Meer >></a></td>
+                                    <td>{{myIssues.status}} <a class="{{hideLogStatus}} issueLog" ng-click="logStatus()" >Meer >> </a></td>
                                 </tr>
-                                <tr id="log-details" class="collapse">
+                                <tr  class="{{hideStatus}}">
                                     <td colspan="3">
-                                        <ul class="status-log">
-                                            <li class="list-group-item status-log-item"><span class="text-muted">04-09-2015 13:06: </span>De melding is afgehandeld verklaard door Hillegom Koppeling</li>
-                                            <li class="list-group-item status-log-item"><span class="text-muted">25-08-2015 13:23: </span>De melding is in behandeling genomen door Hillegom Koppeling</li>
-                                            <li class="list-group-item status-log-item"><span class="text-muted">25-08-2015 11:47: </span>De melding is automatisch geaccepteerd</li>
-                                            <li class="list-group-item status-log-item"><span class="text-muted">25-08-2015 11:46: </span>De melding is nu actief</li>
-                                            <li class="list-group-item status-log-item"><span class="text-muted">25-08-2015 11:46: </span>De melding is bevestigd</li>
-                                            <li class="list-group-item status-log-item"><span class="text-muted">25-08-2015 11:45: </span>Melding toegevoegd</li>
+                                        <ul class="status-log" ng-repeat="issueLog in issueLogList">
+                                            <li class="list-group-item status-log-item"><span class="text-muted">{{issueLog.createdAt}}: </span>{{issueLog.message}}</li>
                                         </ul>
                                     </td>
                                 </tr> 
@@ -57,28 +61,40 @@
                     </table>
                 </div>
               </div>
-              <h2>Beschrijving</h2>
-              <p>{{myIssues.description}} </p>
-              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#StemModal">Reageer <span class="badge">5</span></button>
-              <button type="button" class="btn btn-primary">Stem <span class="badge">7</span></button>
+              <div class="issueDetailTable">
+                    <table>
+                        <tr>
+                            <td ng-show="myIssues.type=='problem'"><h2>Beschrijving</h2></td>
+                            <td ng-show="myIssues.type=='idea'"><h2>Idee</h2></td>
+                        </tr>
+                        <tr>
+                            <td class="issueDetailTableContent word-break"><p>{{myIssues.description}}</p></td>
+                        </tr>
+                        
+                    </table>
+              </div>
+              <div class="issueDetaiTable" ng-if="myIssues.type=='idea'">
+                    <table>
+                        <tr>
+                            <td><h2>Realisation</h2></td>
+                        </tr>
+                        <tr>
+                            <td class="issueDetailTableContent word-break"><p>{{myIssues.realization}}</p></td>
+                        </tr>
+                    </table>
+              </div>
+             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="{{stemModal}}" ng-click="sessionValid()">Reageer <span class="badge">{{myIssues.comments}}</span></button>
+              <button type="button" class="btn btn-primary" ng-click="voteSubmit()">Stem <span class="badge">{{myIssues.votes}}</span></button>
+              <div ng-hide="results== 0 || commentList == null">
               <h2>Reacties</h2>
-              <ul class="commentList">
-                        <li>
+              <ul class="commentList" >
+                        <li ng-repeat="comment in commentList | filter: x as results">
                             <div class="commentText">
-                                <p class="">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p> <span class="date sub-text"><strong>Sbalen</strong> op 5 april, 2014</span>
+                                <p class="">{{comment.body}}</p> <span class="date sub-text"><strong>{{comment.username}}</strong> {{comment.created_at}}</span>
                             </div>
-                        </li>
-                        <li>
-                            <div class="commentText">
-                                <p class="">Sed do eiusmod tempor incididunt ut labore.</p> <span class="date sub-text"><strong>Sbalen</strong> op 5 april, 2014</span>
-                            </div>
-                        </li>
-                        <li>
-                           <div class="commentText">
-                                <p class="">uis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p> <span class="date sub-text"><strong>Sbalen</strong> op 5 april, 2014</span>
-                           </div>
                         </li>
                     </ul>
+              </div>
             </div> 
 
 	    </div>
@@ -88,26 +104,29 @@
 	    </div>  
     </div>	
 
-<!-- StemModal -->
-    <div id="StemModal" class="modal fade" role="dialog">
-        <div class="modal-dialog">
+    <!--MyIssueCOmmentModal-->
+    <div id="StemModal" class="modal fade" role="dialog" ng-controller="commentSubmitCtrl" ng-repeat="myIssues in myIssuesList |filter : {id : id()}">
+    <div class="modal-dialog">
         <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h1 class="modal-title">Reactie plaatsen</h1>
-                </div>
-                <div class="modal-body">
-                    <textarea class="form-control" rows="5" id="comment"></textarea>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Annuleren</button>
-                    <button type="button" class="btn btn-success" data-dismiss="modal">Plaatsen</button>
-                </div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" ng-click="close()">&times;</button>
+                <h1 class="modal-title">Reactie plaatsen</h1>
+                <div class="alert alert-danger {{hide}}" >
+                                  <a class="close {{hide}}" aria-label="close" ng-click="close()" >&times;</a>
+                                  <p>{{errorBody}}</p>
+              </div>
+            </div>
+            <div class="modal-body">
+                <textarea class="form-control" rows="5" id="comment" ng-model="comment"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="close()">Annuleren</button>
+                <button type="button" class="btn btn-success"ng-click="commentSubmit(myIssues.type)">Plaatsen</button>
             </div>
         </div>
     </div>
-    
+    </div>
     <!-- CloseModal -->
     <div id="CloseModal" class="modal fade" role="dialog">
         <div class="modal-dialog">

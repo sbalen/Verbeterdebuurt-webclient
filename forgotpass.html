@@ -9,16 +9,16 @@
           
         </div>
         <!-- main container -->
-        <div class="col-lg-6 main-container" ng-controller="forgotCtrl">
+        <div class="col-lg-6 main-container marginbottom" ng-controller="forgotCtrl">
             <div id="{{overlay}}">
-            <div class="panel panel-default main-panel" >
+            <div class="panel panel-default main-panel margintop" >
                     <div class="alert alert-danger {{hide}}">
                         <a href="#" class="close" data-dismiss="alert" aria-label="close" ng-click="close">&times;</a>
                        
                         <p>{{errorFEmail}}</p>
             </div>
                 
-            <h1>Wachtwoord Vergeten</h1>
+            <h1 class ="marginheader"  >Wachtwoord vergeten</h1>
                         <form class="form-horizontal" role="form">
                             <div class="panel-body">
                                 <div class="form-group">
@@ -30,7 +30,7 @@
                                 
                             
                             <div id="side_bar" class="clearfix" style="margin-bottom:15px;">
-                                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-disabled="!femail" ng-click="forgotpass()"style="float: right; position: relative; top: 25px; right: 0px;" >Voortzetten</button>
+                                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-disabled="!femail" ng-click="forgotpass()"style="float: right; position: relative; top: 5px; right: 45px;" >Verstuur</button>
                             </div>
                             
                         </form>

@@ -30,94 +30,128 @@
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
     <!--Angular-->
+    
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js" ></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular-resource.min.js"></script>
     <script src="https://code.angularjs.org/1.5.0/angular-route.js" ></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-cookies.min.js" ></script>
     <base href="/">
     <!--Loading Animation-->
     <script src="node_modules/spin.js/spin.js"></script>
     <script src="node_modules/angular-spinner/angular-spinner.js"></script>
     <!--Paging Script -->
-    <script src="node_modules/angular-utils-pagination/dirPagination.tpl.html"></script>
     <script src="node_modules/angular-utils-pagination/dirPagination.js"></script>
     <!--PAGE SPECIFIC SCRIPTS -->
-    <script src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
-   
+    <script src="http://maps.googleapis.com/maps/api/js?libraries=places&region=nl&sensor=false"></script>
+    <!--FACEBOOK CONNECT -->
+    <script src="js/ngFacebook.js"></script>
+    <!--TWITTER (AND OTHER SOCIAL MEDIA) CONNECT -->
+    <script src="js/satellizer.min.js"></script>
+    <!--base64-->
+    <script src="js/angular-base64-upload.js"></script>
+    <!--slider-->
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/jquery.slick/1.6.0/slick.css"/>
+    <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.slick/1.6.0/slick.min.js"></script>    
 </head>
-<body ng-app="vdbApp"  ng-controller="mainCtrl">
-    <!-- map div on the background -->
-    <div>
-    <div id="googlemaps" class="city" ng-mousedown="alrCity()" ></div>
-    <input type="hidden" id="city"  ></input>
-    </div>
-     
-    <!-- navigation -->
-    <nav id="navtop" class="navbar navbar-default">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#Navbar">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span> 
-                </button>
-                <a class="navbar-brand" href="/"><img style="margin-top: -16px;" src="./img/Verbeterdebuurt-logo.png"></a>
+<body ng-app="vdbApp" ng-controller="mainCtrl" >
+    <div id="app-container">
+        
+        
+        <!-- map div on the background -->
+        <div id="background">
+            <div id="googlemaps" class="city" ng-click="alrCity()" ></div>
+        </div>
+        <input type="hidden" id="city"/>
+
+        <!-- navigation -->
+        <nav id="navtop" class="navbar navbar-default">
+            <div class="container-fluid">
+
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#Navbar">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span> 
+                    </button>
+                    
+                    <a class="navbar-brand" ng-hide="hideLogo"><img src="http://staging.verbeterdebuurt.nl/{{agreement.logo}}"  class="citylogo mcitylogo"></a>
+                    <a class="navbar-brand" href="/"><img  src="./img/Verbeterdebuurt-logo.png" class="vdblogo mvdblogo"></a>
+                    
+                </div>
+                <div class="collapse navbar-collapse" id="Navbar">
+                    <ul class="nav navbar-nav hidden-lg hidden-sm hidden-md"> 
+                        <li class="divider-vertical"></li>
+                        <li class="{{homeSelected}}"><a href="/">Kaart</a></li>
+                        <li class="divider-vertical"></li>
+                        <li class="{{mentionSelected}}"><a href="nieuwe-melding">Melding maken</a></li>
+                        <li class="divider-vertical"></li>
+                        <li class="{{myIssuesSelected}}"><a href="mijn-meldingen">Mijn meldingen</a></li>  
+                        <li class="divider-vertical"></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right" ng-if="!loginStatus()">
+                        <li><a href="registratie"><span class="glyphicon glyphicon-user"></span> Registreren</a></li>
+                        <li><a href="login"><span class="glyphicon glyphicon-log-in"></span> Inloggen</a></li>
+                    </ul>
+                    <div class="nav navbar-nav navbar-right">
+                        <button id="userpanelbtn" class="btn1 btn-default1 dropdown-toggle navbar-right " ng-click="showuserpanel()" ng-if="loginStatus()" type="button" data-toggle="dropdown">
+                            <span class="username-display">{{lusername}}</span>
+                            
+                            <span class="caret" ></span>
+                        </button>
+                        <ul ng-show="userpanel" class="dropdown-menu  navbar-right" style="margin-right: 24px;margin-top: -5px;">
+                            <li><a href="profiel" style="color: white;" >Profiel</a></li>
+                            <li><a href="#" style="color: white;" ng-click="logout()">Log out</a></li>    
+                        </ul>
+                    
+                    </div>
+                </div>
             </div>
-            <div class="collapse navbar-collapse" id="Navbar">
-                <ul class="nav navbar-nav hidden-lg hidden-sm hidden-md"> 
-                    <li class="divider-vertical"></li>
-                    <li class="{{homeSelected}}"><a href="/">Kaart</a></li>
-                    <li class="divider-vertical"></li>
-                    <li class="{{mentionSelected}}"><a href="mention">Melding maken</a></li>
-                    <li class="divider-vertical"></li>
-                    <li class="{{myIssuesSelected}}"><a href="myissues">Mijn meldingen</a></li>  
-                    <li class="divider-vertical"></li>
-                </ul>
-                <ul class="nav navbar-nav navbar-right" ng-if="!loginStatus()">
-                    <li><a href="register"><span class="glyphicon glyphicon-user"></span> Registreren</a></li>
-                    <li><a href="login"><span class="glyphicon glyphicon-log-in"></span> Inloggen</a></li>
-                </ul>
-                <ul class="nav navbar-nav navbar-right" ng-if="loginStatus()" >
-                   {{username}}<a ng-click="logout()">log out</span>
-                </ul>
+        </nav>
+        
+
+        <!-- SubNavigation -->
+        <div class="navbar subnav hidden-xs" role="navigation">
+            <div class="navbar-inner">
+                <div class="container"> 
+                    <ul class="pager subnav-pager"> 
+                        <div class="btn-group-wrap btn-group">
+                           <button type="button" id="map-button" class="{{homeSelected}} btn sub-nav-btn" ng-click="clickMenu('')">Kaart</button>
+                           <button type="button" id="new-button" class="{{mentionSelected}} btn sub-nav-btn" ng-click="clickMenu('createissue')">Melding maken</button>
+                            <button type="button" id="my-button" class="{{myIssuesSelected}} btn sub-nav-btn" ng-click="clickMenu('myissues')">Mijn meldingen</button>
+                         </div>         
+                    </ul>   
+                </div>
             </div>
         </div>
-    </nav>
-    
-    <!-- SubNavigation -->
-    <div class="navbar subnav hidden-xs" role="navigation">
-        <div class="navbar-inner">
-            <div class="container"> 
-                <ul class="pager subnav-pager"> 
-                    <div class="btn-group-wrap btn-group">
-                        <button type="button" id="map-button" class="{{homeSelected}} btn sub-nav-btn" ><a href="/">Kaart</a></button>
-                        <button type="button" id="new-button" class="{{mentionSelected}} btn sub-nav-btn"><a href="mention">Melding maken</a></button>
-                        <button type="button" id="my-button" class="{{myIssuesSelected}} btn sub-nav-btn" ><a href="myissues">Mijn meldingen</a></button>
-                     </div>         
-                </ul>   
+
+        <!-- global overlay for spinner -->
+        <div id="global-overlay" class="{{globaloverlay}}">
+            <div id="global-spinner">
+                <img src="./img/vdb-spin.gif">
+            </div>
+        </div>
+        
+        <!-- I put globaloverlay, because the position need to be present in order z-index working -->
+          <div class="container {{globaloverlay}}" ng-view>
+
+          </div>
+        <div class="footer footer1">
+            <div class="footertext">
+                <div class="footer-element"><a href="http://blog.verbeterdebuurt.nl/apps/">Apps</a></div>&middot;
+                <div class="footer-element"><a href="http://blog.verbeterdebuurt.nl/hoe-werkt-verbeterdebuurt-2/">Hoe werkt het</a></div>&middot;
+                <div class="footer-element"><a href="http://blog.verbeterdebuurt.nl/">Blog</a></div>&middot;
+                <div class="footer-element"><a href="http://blog.verbeterdebuurt.nl/contact/">Contact</a></div>&middot;
+                <div class="footer-element"><a target="_blank" href="https://www.facebook.com/verbeterdebuurt/">Facebook</a></div>&middot;
+                <div class="footer-element"><a target="_blank" href="https://twitter.com/verbeterdebuurt">Twitter</a></div>
             </div>
         </div>
     </div>
-      
-      <div id="main-content" class="container" ng-view>
-          
-      </div>
-    <div class="footer">
-        <div class="footertext">
-        <a href="http://blog.verbeterdebuurt.nl/apps/">Apps</a>*
-        <a href="http://blog.verbeterdebuurt.nl/hoe-werkt-verbeterdebuurt-2/">Hoe werkt het</a>*
-        <a href="http://blog.verbeterdebuurt.nl/">Blog</a>*
-        <a href="http://blog.verbeterdebuurt.nl/contact/">Contact</a>*
-        <a href="https://www.facebook.com/verbeterdebuurt/">Facebook</a>*
-        <a href="https://twitter.com/verbeterdebuurt">Twitter</a>*
-        </div>
-    </div>
-     
 </body>
 </html>
 <!-- Page specific js -->
 
 <script src="/js/googlemapjs.js"></script>
-<script src="./js/vdb-start.js"></script>
+<!-- <script src="/js/vdb-start.js"></script> -->
 <script src="js/vdbangular.js"></script>
 
 

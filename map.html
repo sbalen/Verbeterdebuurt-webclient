@@ -8,20 +8,23 @@
                             <strong>Report</strong>
                         </div>
             <div class="panel-body">
-                          <div class="list-group" >
-                            <strong>City:{{reportList.council}}</strong></br>
-                      {{reportList.reports}} reports per Month</br>
-                      {{reportList.solutions}} solution per Month
+                          <div class="list-group" ng-hide="reportList.council == null || reportList.council == 'undefined' " >
+                            <strong>Stad : {{reportList.council}}</strong></br>
+                            {{reportList.reports}} rapporten per maand</br>
+                            {{reportList.solutions}} oplossing per maand
                           </div>
+                           <div class="list-group"  ng-show="reportList.council == null || reportList.council == 'undifined' ">
+                             geen locatieinformatie gevonden
+                           </div>
             </div>  
                     </div>
-                    <div class="panel side-panel panel-default" id="new-problem-widget">
+                    <div class="panel side-panel panel-default" id="new-problem-widget" ng-hide="results.length == 0 || newProblemList==null">
                         <div class="panel-heading">
                             <strong>Nieuwste problemen</strong>
                         </div>
       			<div class="panel-body">
                           <div class="list-group" >
-                            <a href="/issues/{{newProblem.id}}" class="list-group-item clearfix " ng-repeat="newProblem in newProblemList| filter : {type:'problem'} | filter: {status:'!open'} | orderBy : 'created_at' : true |limitTo:3" ng-click="clickIssues()">
+                              <a href="/meldingen/{{newProblem.id}}" class="list-group-item clearfix " ng-repeat="newProblem in newProblemList| filter : {type:'problem'} | filter: {status:'!closed'} | orderBy : 'created_at' : true|limitTo:3|filter:x as results" ng-click="clickIssues()">
                               <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
                               <strong> {{newProblem.title}}</strong> {{newProblem.location.full_address}}
                               <span class="pull-right">
@@ -33,13 +36,13 @@
                           </div>
             </div>  
 		                </div>
-                    <div class="panel side-panel panel-default">
+                    <div class="panel side-panel panel-default" ng-hide="results2.length == 0|| newProblemList==null">
                         <div class="panel-heading" id="active-idea-widget">
                             <strong>Actieve Ideeen</strong>
                         </div>
       			<div class="panel-body">
                           <div class="list-group">
-                            <a href="/issues/{{newProblem.id}}" class="list-group-item clearfix" ng-repeat="newProblem in newProblemList| filter : {type:'idea'} | filter: {status:'!open'} | orderBy : 'created_at' : true |limitTo:3" ng-click="clickIssues()">
+                              <a href="/meldingen/{{newProblem.id}}" class="list-group-item clearfix" ng-repeat="newProblem in newProblemList| filter : {type:'idea'} | filter: {status:'!closed'} | orderBy : 'created_at' : true |limitTo:3|filter:x as results2" ng-click="clickIssues()">
                               <img class="icon" src="./img/icon_idea_2_21_21.png" size="20px"/>
                               <strong>{{newProblem.title}}</strong> {{newProblem.location.full_address}}
                               <span class="pull-right">
@@ -54,21 +57,31 @@
             </div>
 	    <!-- main container -->
 	    <div class="col-lg-6 main-container">
-                    <div class="alert alert-warning" id="message-widget">
-                    Deze gemeente heeft nog niet aangegeven dat ze meedoen. Ze is natuurlijk wel verplicht om te regeageren op binnenkomende meldingen.
+                    <!-- <div class="alert alert-warning" id="message-widget">
+                    Deze gemeente heeft nog niet aangegeven dat ze meedoen. Ze is natuurlijk wel verplicht om te reageren op binnenkomende meldingen.
+                    <i class="fa fa-flag"></i> 
+                    </div> -->
+                    <div class="alert alert1 alert-warning" id="message-widget" ng-show="agreement.success && agreement.agreement">
+                    {{agreement.agreement}}
+                    <i class="fa fa-flag"></i> 
+                    </div>
+                    <div class="alert alert-warning" id="message-widget" ng-show="!agreement.success && agreement.agreement">
+                    {{agreement.agreement}}
+                    <i class="fa fa-flag"></i> 
+                    </div>
 
-<i class="fa fa-flag"></i>
-
-                </div>
 
 	    </div>
 	    <!--  sidebar right -->
 	    <div class="col-lg-3">
                 <div class="input-group" id="search-widget">
+                                     <form ng-submit="clickSearch()">
                                      <input type="text" class="form-control" placeholder="Zoek op adres" id="searchCity" ng-model="searchCity">
+                                     </form>
                                      <span class="input-group-btn">
                                         <button class="btn btn-primary" type="button" id="clickSearch" ng-click="clickSearch()"><span class="glyphicon glyphicon-search"></span><span class="hidden-xs">Zoeken</span></button>
                                      </span>
+                                     
                 </div>
 	    </div>  
     </div>	
