@@ -28,12 +28,26 @@ var issueLogService = new Object();
 var newsletterService = new Object();
 var agreementSevice = new Object();
 var duplicateIssuesService = new Object();
+var getIssueService = new Object();
 
 
 
 
 //google map
 window.onload = function(){
+	var browserSupportFlag =  new Boolean();
+	//SUPPORT GEOLOCATION
+	if(navigator.geolocation) {
+    	browserSupportFlag = true;
+    	navigator.geolocation.getCurrentPosition(function(position){
+					      initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+					      console.log(initialLocation);
+   							});
+					  		}
+  // Browser doesn't support Geolocation
+							  else {
+					
+							  }
       var mainLat = 52.158367;
       var mainLng = 4.492999;
       this._map_center = {lat: mainLat , lng: mainLng};
@@ -325,15 +339,23 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
 		templateUrl: 'map.html',
 		controller : 'mainCtrl'
 	})
+	// .when('/:cityNameClone',{
+	// 	templateUrl: 'map.html',
+	// 	controller : 'mainCtrl'
+	// })
     .when('/gemeente/:cityName', {
 		templateUrl: 'map.html',
 		controller : 'mainCtrl' 
+	})
+	.when('/plaats/:cityNameplaats',{
+		templateUrl: 'map.html',
+		controller : 'mainCtrl'
 	})
 	.when('/postcode/:postalcode', {
 		templateUrl: 'map.html',
 		controller:  'mainCtrl'
 	})
-    .when('/meldingen/:id',{
+    .when('/melding/:id',{
 		templateUrl :'issuesView.html',
 		controller : 'issuesCtrl'
 	})
@@ -354,18 +376,17 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
 		templateUrl: 'login.html'
 		
 	})
+    .when('/registreren', {
+		templateUrl: 'register.html'
+    })
 	.when('/ondernemingsdossier_landingpage', {
 		templateUrl: 'ondernemingsdossier.html'
 	})    
-    .when('/registratie', {
-		templateUrl: 'register.html'
-        
-    })   
     .when('/bevestiging-registratie',{
         templateUrl: 'regisconf.html',
         controller : 'regisconfCtrl'
 	})
-    .when('/wachtwoord-vergeten',{
+    .when('/wachtwoord',{
         templateUrl: 'forgotpass.html',
         controller : 'forgotCtrl'
 	})
@@ -385,10 +406,83 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
 		templateUrl: 'createIdea.html',
 		controller : 'createIdeaCtrl'
 	})
-    .when('/profiel',{
+    .when('/mijn-verbeterdebuurt',{
         templateUrl: 'profile.html',
         controller : 'profileCtrl'
 	})
+    //handle the hash sessions
+    
+    //confirm the vote
+    .when('/stem/bevestigen/:hashkey',{
+        templateUrl: 'map.html',
+        controller : 'hashCtrl',
+        resolve: {
+            targetAction: function($rootScope) { 
+                $rootScope.targetAction = "confirm_vote";
+                return true; 
+            }
+        }
+    })
+    //confirm the issue
+    //melding/new/34811/45a608c242f9a1e1f1f1e019909d5ac7a1317d9f
+    .when('/melding/bevestigen/hash/:hashkey',{
+        templateUrl: 'map.html',
+        controller : 'hashCtrl',
+        resolve: {
+            targetAction: function($rootScope) { 
+                $rootScope.targetAction = "confirm_issue";
+                return true; 
+            }
+        }
+    })
+    //delete the issue
+    //melding/verwijderen/0c0cf551ffc5ade859457961cfbd54af505300f0
+    .when('/melding/verwijderen/:hashkey',{
+        templateUrl: 'map.html',
+        controller : 'hashCtrl',
+        resolve: {
+            targetAction: function($rootScope) { 
+                $rootScope.targetAction = "delete_issue";
+                return true; 
+            }
+        }
+    })
+    //resolve issue with no comment
+    //melding/is-opgelost/e9db97963ab54a5a508455d9c43e7b842e865b62/methode/afwijzen
+    .when('/melding/is-opgelost/:hashkey/methode/afwijzen',{
+        templateUrl: 'map.html',
+        controller : 'hashCtrl',
+        resolve: {
+            targetAction: function($rootScope) { 
+                $rootScope.targetAction = "resolve_issue_with_comment_no";
+                return true; 
+            }
+        }
+    })
+    //resolve issue with comment yes
+    ///melding/is-opgelost/e9db97963ab54a5a508455d9c43e7b842e865b62/methode/oplossen
+    .when('/melding/is-opgelost/:hashkey/methode/oplossen',{
+        templateUrl: 'map.html',
+        controller : 'hashCtrl',
+        resolve: {
+            targetAction: function($rootScope) { 
+                $rootScope.targetAction = "resolve_issue_with_comment_yes";
+                return true; 
+            }
+        }
+    })
+    //close issue
+    ///melding/afsluiten/8f83b0a2992c059248f5f938baa780739ec2952a
+    .when('/melding/afsluiten/:hashkey',{
+        templateUrl: 'map.html',
+        controller : 'hashCtrl',
+        resolve: {
+            targetAction: function($rootScope) { 
+                $rootScope.targetAction = "close_issue";
+                return true; 
+            }
+        }
+    })
     
 	 $locationProvider.html5Mode(true);
 	 $sceDelegateProvider.resourceUrlWhitelist([
@@ -642,6 +736,7 @@ vdbApp.factory('issueSubmitService', ['$http',function ($http) {
 			getIssueSubmit: function ( jsondata ){
 				return $http.post(APIURL+'issueSubmit', jsondata)
 				.success(function(data){
+						console.log(data);
 						issueSubmitService.data = data;
 						return issueSubmitService.data;
 				});
@@ -734,6 +829,21 @@ vdbApp.factory('duplicateIssuesService', ['$http',function ($http) {
 			}
 	};
 }])
+
+vdbApp.factory('getIssueService', ['$http',function ($http) {
+    return {
+        getIssue : function(jsondata){
+            return $http.post(APIURL+'issueForHash',jsondata)
+                .success(function (data){
+                duplicateIssuesService.data = data;
+                return getIssueService.data;
+            });
+            return getIssueService.data;
+        }
+    };
+}])
+
+
 vdbApp.run(['$rootScope', '$window', function($rootScope, $window) {
         (function(d, s, id) {
             var js, fjs = d.getElementsByTagName(s)[0];
@@ -760,8 +870,22 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 							};
 
 							var autocomplete = new google.maps.places.Autocomplete(input, options);
-                        $scope.userpanel=1;
-						$timeout(function(){
+
+							
+							if($location.path()== "/plaats/"+$routeParams.cityNameplaats){
+							$location.path('gemeente/'+$routeParams.cityNameplaats);
+							}
+
+							// if($location.path()=="/"+$routeParams.cityNameClone){
+							// 	$location.path('gemeente/'+$routeParams.cityNameClone);
+							// 	}
+						
+								
+	                        
+	                        $scope.userpanel=1;
+	    					console.log($rootScope.lastCity);
+	    					console.log($routeParams.cityName);
+							$timeout(function(){
 							var jsondata = JSON.stringify({
 							  		"coords_criterium":{
 								  	"max_lat":maxlat,
@@ -1092,7 +1216,7 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 		if(!$cookies.getObject('user')){
 			$location.path("/login");
 			$scope.stemModal = "";
-			$rootScope.errorSession="je moet ingelogd zijn om commentaar te geven of de snelheid"
+			$rootScope.errorSession="Voor deze actie moet je ingelogd zijn."
 		}
 		else{
 			$scope.stemModal = "#StemModal";
@@ -1103,7 +1227,7 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 	$scope.voteSubmit = function(){
 		if(!$cookies.getObject('user')){
 			$location.path("/login");
-			$rootScope.errorSession="je moet ingelogd zijn om commentaar te geven of de snelheid"
+			$rootScope.errorSession="Voor deze actie moet je ingelogd zijn."
 		}
 		else{
 			$rootScope.globaloverlay = "active";
@@ -1325,7 +1449,7 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 		if(!$cookies.getObject('user')){
 			$location.path("/login");
 			$scope.stemModal = "";
-			$rootScope.errorSession="je moet ingelogd zijn om commentaar te geven of de snelheid"
+			$rootScope.errorSession="Voor deze actie moet je ingelogd zijn."
 		}
 		else{
 			$scope.stemModal = "#StemModal";
@@ -1336,7 +1460,7 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 		$scope.voteSubmit = function(){
 		if(!$cookies.getObject('user')){
 			$location.path("/login");
-			$rootScope.errorSession="je moet ingelogd zijn om commentaar te geven of de snelheid"
+			$rootScope.errorSession="Voor deze actie moet je ingelogd zijn."
 		}
 		else{
 			$rootScope.globaloverlay = "active";
@@ -1430,7 +1554,7 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
                     console.log(result);
                     if(!result.success){
                         //fix this if false
-                        $location.path('/registratie');
+                        $location.path('/registreren');
                         //in here we already had our facebook session!
                         $window.sessionStorage.facebookID = $scope.facebookuser.id;
                         $window.sessionStorage.name = $scope.facebookuser.first_name;
@@ -1449,7 +1573,7 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
                         }
                         $rootScope.globaloverlay = "";
                         $rootScope.errorSession="";
-                        if($rootScope.urlBefore == '/registratie'){
+                        if($rootScope.urlBefore == '/registreren'){
                             $location.path('/map');
                         }
                         else{
@@ -1502,7 +1626,7 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
                     //in here we already had our facebook session!
 					$scope.hide = "";
                     $rootScope.globaloverlay = "";
-                    $location.path('/registratie');
+                    $location.path('/registreren');
                     $window.sessionStorage.ondernemingsdossierID = getLogin.ondernemingsDossier.ondernemingsdossierID;
                     $window.sessionStorage.name = getLogin.ondernemingsDossier.naam;
                     $window.sessionStorage.email  = getLogin.ondernemingsDossier.email;
@@ -1543,7 +1667,7 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
 					}
                     $rootScope.globaloverlay = "";
 					$rootScope.errorSession="";
-                    if($rootScope.urlBefore == '/registratie'){
+                    if($rootScope.urlBefore == '/registreren'){
 						$location.path('/map');
 					}
 					else{
@@ -1592,7 +1716,7 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
 					}
                     $rootScope.globaloverlay = "";
 					$rootScope.errorSession="";
-                    if($rootScope.urlBefore == '/registratie'){
+                    if($rootScope.urlBefore == '/registreren'){
 						$location.path('/map');
 					}
 					else{
@@ -1609,12 +1733,12 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
 	}
 	//move to register page
 	$scope.register = function(){
-        $location.path('/registratie');
+        $location.path('/registreren');
 	}
     
       $scope.forgotpass=function()
     {
-          $location.path('/wachtwoord-vergeten');
+          $location.path('/wachtwoord');
         
     }
     
@@ -1780,15 +1904,6 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
           
             if (!getRegister.success){
                       
-//            if(getRegister.errors.sex !== " "){
-//                    $scope.errorSex = "Gender "+getRegister.errors.sex;
-//                    $scope.red="border-color:red";
-//                
-//                    }else if(getRegister.success) {
-//                    $scope.errorSex="";
-//                    $scope.red="";
-//                    }
-//            
                    
 					$scope.errorEmail = getRegister.errors.email;
                     $scope.errorNewPassword =  getRegister.errors.password;
@@ -1993,7 +2108,7 @@ vdbApp.controller('forgotconfCtrl', ['$scope','$rootScope','$window','usSpinnerS
 
 
     
-vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileService','loginService','$location','usSpinnerService', '$facebook', 'syncFBService','$cookies', function ($scope,$rootScope,$window,profileService,loginService,$location,usSpinnerService,$facebook,syncFBService,$cookies) {
+vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileService','newsletterService','loginService','$location','usSpinnerService', '$facebook', 'syncFBService','$cookies', function ($scope,$rootScope,$window,profileService,newsletterService,loginService,$location,usSpinnerService,$facebook,syncFBService,$cookies) {
      $scope.hide = "ng-hide";
 	
      $scope.home = function(){
@@ -2253,6 +2368,7 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                 
                 {
                     
+                    
                     if($scope.password_old !=null && $scope.password_new !=null ){
                         var password = $scope.password_new;
                         var jsondatalogin = JSON.stringify({"user":{"username":""+c_user.username+"",password}});
@@ -2262,6 +2378,24 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                     }
                     var getLogin = loginService.getLogin(jsondatalogin).then(function (data){
 				    var getLogin = data.data;
+                        
+                        
+                     if($scope.newsletter == true)
+                        {
+                            
+                            var jsonnewsletter = JSON.stringify({"user":{"username":""+$scope.username+""
+                                               ,"password":""+$scope.password+""
+                                               }})
+                            
+                            var getNewsletter = newsletterService.getNewsletter(jsonnewsletter).then(function (data){
+				            var getNewsletter = data.data;
+                            console.log(getNewsletter);
+                            })
+                        }
+                    
+                    console.log(jsondata);
+                    console.log(jsonnewsletter);
+                    
                     
                     $cookies.putObject('user',getLogin.user);
                     $cookies.putObject('user_profile',getLogin.user_profile);
@@ -2298,6 +2432,29 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 		$scope.initslide = "toggle-button";
 		$scope.loadCategory = 1;
 		$scope.count = 0;
+		
+
+		$scope.email="";
+	    $scope.username="";
+	    $scope.password="";
+	    $scope.initials="";
+	    $scope.tussenvoegsel="";
+	    $scope.surname="";
+	    $scope.sex="";
+	    $scope.address="";
+	    $scope.address_number="";
+	    $scope.address_suffix="";
+	    $scope.postcode="";
+	    $scope.city="";
+	    $scope.phone="";
+	    $scope.sexoption = [
+        {'name': 'Dhr.',
+         'value': 'm'},
+        {'name': 'Mw.',
+         'value': 'f'}
+   		];
+   		$scope.sex = $scope.sexoption[0].value;
+
         $timeout(function(){
         	$scope.slide = "toggle-button-selected-left";
         },0)
@@ -2305,10 +2462,9 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 		console.log($rootScope.lastUrl);
 
 		menuSelected($rootScope,'createissue');
-		if(!$cookies.getObject('user')){
-			$location.path('login');
-		}
 		//show my issue
+		if($cookies.getObject('user')){
+		$scope.hideLogin = true
 		var jsondata = JSON.stringify({"user":{ "username":""+$cookies.getObject('user').username+"",
 												"password_hash":""+$cookies.getObject('user').password_hash+""
 
@@ -2319,6 +2475,11 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
             $rootScope.myIssueCount = count;
 			$rootScope.myIssuesList = getdata.issues;
 		})
+			$scope.hideLogin = true
+		}
+		else {
+			$scope.hideLogin = false;
+		}
 		//first initial
 		$timeout(function(){
 			if(latlngChange){
@@ -2370,9 +2531,6 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 		}
 
 
-		if($cookies.getObject('user')){
-			$scope.hideNonLogin = "ng-hide"
-		}
 		$scope.clickSearchCreateIssue= function(){
 			geocodeAddressCreateProblem(geocoder, map3, $scope.searchCityCreate);
 			$scope.loadCategory = 1;
@@ -2413,12 +2571,31 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 			$scope.errorIdStyle = "";
 			//initial data for request
 			var user = {};
+			var user_profile = {};
 			var issue = {};
 			var location = {};
 			var file = $scope.imgData;
 			//login
-			user.username = $cookies.getObject('user').username;
-			user.password_hash = $cookies.getObject('user').password_hash;
+			if($cookies.getObject('user')){
+				user.username = $cookies.getObject('user').username;
+				user.password_hash = $cookies.getObject('user').password_hash;
+			}
+			//not login
+			else{
+				user.email = $scope.email;
+				user_profile.initials = $scope.initials;
+				user_profile.sex = $scope.sex;
+				user_profile.tussenvoegsel = $scope.tussenvoegsel;
+				user_profile.surname = $scope.surname;
+				user_profile.address = $scope.address;
+				user_profile.address_number = $scope.address_number;
+				user_profile.address_suffix = $scope.address_suffix;
+				user_profile.postcode = $scope.postcode;
+				user_profile.city = $scope.city;
+				user_profile.phone = $scope.phone;
+			} 
+
+			
 
 			//description
 			issue.type = "problem";
@@ -2443,8 +2620,8 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 			//location
 			location.latitude = markerLat;
 			location.longitude = markerLng;
-			var jsondataSubmit = JSON.stringify({user,issue,location});
-			
+			var jsondataSubmit = JSON.stringify({user,user_profile,issue,location});
+			console.log(jsondataSubmit);
 			if(!file){
 				//without image
 					var getIssueSubmit = issueSubmitService.getIssueSubmit( jsondataSubmit ).then(function (data){
@@ -2466,13 +2643,46 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 						if(issueData.errors.location){
 							$scope.errorLocation =issueData.errors.location;
 						}
+						if(issueData.errors.initials){
+							$scope.errorInitials = "Voorsletters "+issueData.errors.initials;
+						}
+						if(issueData.errors.owner_city){
+							$scope.errorCity = "Plaats "+issueData.errors.owner_city;
+						}
+						if(issueData.errors.surname){
+							$scope.errorSurname ="Acternaam "+issueData.errors.surname;
+						}
+						if(issueData.errors.owner_email){
+							$scope.errorEmail = issueData.errors.owner_email;
+						}
+						if(issueData.errors.owner_postcode){
+							$scope.errorPostcode = "Postcode "+issueData.errors.owner_postcode;
+						}
+						if(issueData.errors.street){
+							$scope.errorStreet = "Straat "+issueData.errors.street;
+						}
+						if(issueData.errors.street_number){
+							$scope.errorStreetNumber = "Huisnummer "+issueData.errors.street_number;
+						}
 						$rootScope.globaloverlay = "";
 						$(window).scrollTop(0);
 					}
+					else if(issueData.success == "false"){
+							$scope.hide = "";
+							console.log(issueData.success);
+							$scope.errorEmail = issueData.error;
+							$rootScope.globaloverlay = "";
+							$(window).scrollTop(0);
+						}
 					else{
 						//success
 						var issueId = issueData.issue_id;
-	                    $location.path(/mijn-meldingen/+issueId);
+	                    //login
+	                    if($cookies.getObject('user')){
+							$location.path(/mijn-meldingen/+issueId);
+	                    }else{
+	                    	$location.path(/melding/+issueId);
+	                    }
 						$rootScope.globaloverlay = "";
 
 					}
@@ -2499,13 +2709,45 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 						if(issueData.errors.location){
 							$scope.errorLocation =issueData.errors.location;
 						}
+						if(issueData.errors.initials){
+							$scope.errorInitials = "Voorsletters "+issueData.errors.initials;
+						}
+						if(issueData.errors.owner_city){
+							$scope.errorCity = "Plaats "+issueData.errors.owner_city;
+						}
+						if(issueData.errors.surname){
+							$scope.errorSurname ="Acternaam "+issueData.errors.surname;
+						}
+						if(issueData.errors.owner_email){
+							$scope.errorEmail = issueData.errors.owner_email;
+						}
+						if(issueData.errors.owner_postcode){
+							$scope.errorPostcode = "Postcode "+issueData.errors.owner_postcode;
+						}
+						if(issueData.errors.street){
+							$scope.errorStreet = "Straat "+issueData.errors.street;
+						}
+						if(issueData.errors.street_number){
+							$scope.errorStreetNumber = "Huisnummer "+issueData.errors.street_number;
+						}
 						$rootScope.globaloverlay = "";
 						$(window).scrollTop(0);
 					}
+						else if(issueData.success == "false"){
+							$scope.hide = "";
+							console.log(issueData.success);
+								$scope.errorEmail = issueData.error;
+							$rootScope.globaloverlay = "";
+							$(window).scrollTop(0);
+						}
 					else{
 						//success
 						var issueId = issueData.issue_id;
-	                    $location.path(/mijn-meldingen/+issueId);
+	                   if($cookies.getObject('user')){
+							$location.path(/mijn-meldingen/+issueId);
+	                    }else{
+	                    	$location.path(/melding/+issueId);
+	                    }
 						$rootScope.globaloverlay = "";
 
 					}
@@ -2586,6 +2828,28 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
 		$scope.hideIssue = 1;
         $scope.myIssueCount = 0;
         $scope.initslide = "toggle-button2 ";
+
+        $scope.email="";
+	    $scope.username="";
+	    $scope.password="";
+	    $scope.initials="";
+	    $scope.tussenvoegsel="";
+	    $scope.surname="";
+	    $scope.sex="";
+	    $scope.address="";
+	    $scope.address_number="";
+	    $scope.address_suffix="";
+	    $scope.postcode="";
+	    $scope.city="";
+	    $scope.phone="";
+	     $scope.sexoption = [
+        {'name': 'Dhr.',
+         'value': 'm'},
+        {'name': 'Mw.',
+         'value': 'f'}
+   		];
+   		$scope.sex = $scope.sexoption[0].value;
+	    
         $timeout(function(){
         	$scope.slide = "toggle-button-selected-right";
         },0)
@@ -2593,7 +2857,8 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
 		menuSelected($rootScope,'createissue');
 		
 		//show my issue
-		var jsondata = JSON.stringify({"user":{ "username":""+$cookies.getObject('user').username+"",
+		if($cookies.getObject('user')){
+			var jsondata = JSON.stringify({"user":{ "username":""+$cookies.getObject('user').username+"",
 												"password_hash":""+$cookies.getObject('user').password_hash+""
 
 											}});
@@ -2603,6 +2868,9 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
             $rootScope.myIssueCount = count;
 			$rootScope.myIssuesList = getdata.issues;
 		})
+		}else{
+
+		}
 		//first initial
 		$timeout(function(){
 			if(latlngChange){
@@ -2669,12 +2937,29 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
 
 			//initial data for request
 			var user = {};
+			var user_profile ={};
 			var issue = {};
 			var location = {};
 
 			//login
-			user.username = $cookies.getObject('user').username;
-			user.password_hash = $cookies.getObject('user').password_hash;
+			if($cookies.getObject('user')){
+				user.username = $cookies.getObject('user').username;
+				user.password_hash = $cookies.getObject('user').password_hash;
+			}
+			//not login
+			else{
+				user.email = $scope.email;
+				user_profile.initials = $scope.initials;
+				user_profile.sex = $scope.sex;
+				user_profile.tussenvoegsel = $scope.tussenvoegsel;
+				user_profile.surname = $scope.surname;
+				user_profile.address = $scope.address;
+				user_profile.address_number = $scope.address_number;
+				user_profile.address_suffix = $scope.address_suffix;
+				user_profile.postcode = $scope.postcode;
+				user_profile.city = $scope.city;
+				user_profile.phone = $scope.phone;
+			} 
 
 			//description
 			issue.type = "idea";
@@ -2702,7 +2987,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
 			location.longitude = markerLng;
 			console.log(location.latitude);
 			console.log(location.longitude);
-			var jsondataSubmit = JSON.stringify({user,issue,location});
+			var jsondataSubmit = JSON.stringify({user,user_profile,issue,location});
 			console.log(jsondataSubmit);
 			if(!file){
 				var getIssueSubmit = issueSubmitService.getIssueSubmit( jsondataSubmit ).then(function (data){
@@ -2722,14 +3007,47 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
 					if(issueData.errors.location){
 						$scope.errorLocation =issueData.errors.location;
 					}
+					if(issueData.errors.initials){
+							$scope.errorInitials = "Voorsletters "+issueData.errors.initials;
+						}
+					if(issueData.errors.owner_city){
+							$scope.errorCity = "Plaats "+issueData.errors.owner_city;
+					}
+					if(issueData.errors.surname){
+							$scope.errorSurname ="Acternaam "+issueData.errors.surname;
+					}
+					if(issueData.errors.owner_email){
+							$scope.errorEmail = issueData.errors.owner_email;
+					}
+					if(issueData.errors.owner_postcode){
+							$scope.errorPostcode = "Postcode "+issueData.errors.owner_postcode;
+					}
+					if(issueData.errors.street){
+							$scope.errorStreet = "Straat "+issueData.errors.street;
+					}
+					if(issueData.errors.street_number){
+							$scope.errorStreetNumber = "Huisnummer "+issueData.errors.street_number;
+					}
+
 					
+					$rootScope.globaloverlay = "";
+					$(window).scrollTop(0);
+				}
+				else if(issueData.success == "false"){
+					$scope.hide = "";
+					console.log(issueData.success);
+						$scope.errorEmail = issueData.error;
 					$rootScope.globaloverlay = "";
 					$(window).scrollTop(0);
 				}
 				else{
 					//success
 					var issueId = issueData.issue_id;
-                    $location.path(/mijn-meldingen/+issueId);
+                    if($cookies.getObject('user')){
+							$location.path(/mijn-meldingen/+issueId);
+	                    }else{
+	                    	$location.path(/melding/+issueId);
+	                    }
 					$rootScope.globaloverlay = "";
 
 				}
@@ -2755,13 +3073,48 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
 						if(issueData.errors.location){
 							$scope.errorLocation =issueData.errors.location;
 						}
-						$rootScope.globaloverlay = "";
-						$(window).scrollTop(0);
-					}
+						if(issueData.errors.location){
+						$scope.errorLocation =issueData.errors.location;
+						}
+						if(issueData.errors.initials){
+								$scope.errorInitials = "Voorsletters "+issueData.errors.initials;
+							}
+						if(issueData.errors.owner_city){
+								$scope.errorCity = "Plaats "+issueData.errors.owner_city;
+						}
+						if(issueData.errors.surname){
+								$scope.errorSurname ="Acternaam "+issueData.errors.surname;
+						}
+						if(issueData.errors.owner_email){
+								$scope.errorEmail = issueData.errors.owner_email;
+						}
+						if(issueData.errors.owner_postcode){
+								$scope.errorPostcode = "Postcode "+issueData.errors.owner_postcode;
+						}
+						if(issueData.errors.street){
+								$scope.errorStreet = "Straat "+issueData.errors.street;
+						}
+						if(issueData.errors.street_number){
+								$scope.errorStreetNumber = "Huisnummer "+issueData.errors.street_number;
+						}
+							$rootScope.globaloverlay = "";
+							$(window).scrollTop(0);
+						}
+						else if(issueData.success == "false"){
+								$scope.hide = "";
+								console.log(issueData.success);
+									$scope.errorEmail = issueData.error;
+								$rootScope.globaloverlay = "";
+								$(window).scrollTop(0);
+							}
 					else{
 						//success
 						var issueId = issueData.issue_id;
-	                    $location.path(/mijn-meldingen/+issueId);
+	                    if($cookies.getObject('user')){
+							$location.path(/mijn-meldingen/+issueId);
+	                    }else{
+	                    	$location.path(/melding/+issueId);
+	                    }
 						$rootScope.globaloverlay = "";
 
 					}
@@ -2900,5 +3253,41 @@ vdbApp.controller('closeIssueCtrl', ['$scope','$rootScope','$routeParams','$wind
 		}
 
 }])
-	
+
+
+vdbApp.controller('hashCtrl', ['$scope','$rootScope','$routeParams','$window','$location','getIssueService', function ($scope,$rootScope,$routeParams,$window,$location,getIssueService,targetAction) {
+    
+    console.log("target action : "+$rootScope.targetAction);
+    
+    var hash=$routeParams.hashkey;
+    $rootScope.hashSession = hash;     
+    var jsonhash = JSON.stringify({"authorisation_hash":""+hash+""});
+
+    var getIssue = getIssueService.getIssue( jsonhash ).then(function (data){
+        var result = data.data;
+        
+        console.log(result);
+        
+        if(result.success){
+            //we got the correct hash, so correct issue id
+            var issueID = result.issue_id;
+            $location.path("/melding/"+issueID);
+            
+          
+        }
+        else{
+            //show error
+            var error = result.error;
+            alert(error);
+            $location.path("/");
+            
+        }
+        
+    });
+    
+    
+    
+    
+}])
+
 

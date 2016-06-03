@@ -136,11 +136,10 @@ function showIssue(infoWindow,infoWindowContent){
     var markers = null;
     var markers = [];
     var zoom = map.getZoom();
-
-    if(zoom >= 14){
+    
+      if(zoom >= 14){
         callMarker(markers,zoom,map);
-    }
-
+      }
     google.maps.event.addListener(map, 'zoom_changed', function() {
       var zoom = map.getZoom();
       callMarker(markers,zoom,map);
@@ -209,7 +208,7 @@ function callMarker (markers,zoom,map){
                     else if(issuesData.issues[i].status == "accepted"){
                       tempStatus[i] = "aanvaard"
                     }
-       infoWindowContent[i]= "<a href=/meldingen/"+issuesData.issues[i].id+"><span style=color:green;>"+issuesData.issues[i].title+"</span></a><br>"+tempType[i]+", "+tempStatus[i]+"<br>"+issuesData.issues[i].location.src_address+"";
+       infoWindowContent[i]= "<a href=/melding/"+issuesData.issues[i].id+"><span style=color:green;>"+issuesData.issues[i].title+"</span></a><br>"+tempType[i]+", "+tempStatus[i]+"<br>"+issuesData.issues[i].location.src_address+"";
                     
                     //console.log(infoWindowContent[i]);
                     
@@ -230,5 +229,7 @@ function callMarker (markers,zoom,map){
                         for(var x=0 ; x< markers.length ; x++){
                           markers[x].setMap(null);
                         }
+                          markers=null;
                       }
+
 }

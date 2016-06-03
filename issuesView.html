@@ -23,7 +23,7 @@
     </div>
     <div class="panel-body">
         <div class="list-group" >
-            <a href="/meldingen/{{newProblem.id}}" class="list-group-item clearfix" ng-repeat="newProblem in newProblemList| filter : {type:'problem'} | filter: {status:'!closed'} | orderBy : 'created_at' : true |limitTo:3|filter:x as results" ng-click="clickIssues()">
+            <a href="/melding/{{newProblem.id}}" class="list-group-item clearfix" ng-repeat="newProblem in newProblemList| filter : {type:'problem'} | filter: {status:'!closed'} | orderBy : 'created_at' : true |limitTo:3|filter:x as results" ng-click="clickIssues()">
                 <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
                 <strong> {{newProblem.title}}</strong> {{newProblem.location.full_address}}
                 <span class="pull-right">
@@ -41,7 +41,7 @@
     </div>
     <div class="panel-body">
         <div class="list-group">
-            <a href="/meldingen/{{newProblem.id}}" class="list-group-item clearfix" ng-repeat="newProblem in newProblemList| filter : {type:'idea'} | filter: {status:'!closed'} | orderBy : 'created_at' : true |limitTo:3|filter:x as results2" 
+            <a href="/melding/{{newProblem.id}}" class="list-group-item clearfix" ng-repeat="newProblem in newProblemList| filter : {type:'idea'} | filter: {status:'!closed'} | orderBy : 'created_at' : true |limitTo:3|filter:x as results2" 
                ng-click="clickIssues()">
                 <img class="icon" src="./img/icon_idea_2_21_21.png" size="20px"/>
                 <strong>{{newProblem.title}}</strong> {{newProblem.location.full_address}}
@@ -102,7 +102,7 @@
                         </tr> -->
                         <tr>
                             <td>Status:</td>
-                            <td>{{newProblem.status}} <a class="{{hideLogStatus}}  issueLog" ng-click="logStatus()">Meer >> </a></td>
+                            <td>{{newProblem.status_description}} <a class="{{hideLogStatus}}  issueLog" ng-click="logStatus()">Meer >> </a></td>
                         </tr>
                         <tr class="{{hideStatus}}">
                             <td colspan="3">
