@@ -2485,7 +2485,7 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 	                    if($cookies.getObject('user')){
 							$location.path(/mijn-meldingen/+issueId);
 	                    }else{
-	                    	$location.path(/meldingen/+issueId);
+	                    	$location.path(/melding/+issueId);
 	                    }
 						$rootScope.globaloverlay = "";
 
@@ -2550,7 +2550,7 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 	                   if($cookies.getObject('user')){
 							$location.path(/mijn-meldingen/+issueId);
 	                    }else{
-	                    	$location.path(/meldingen/+issueId);
+	                    	$location.path(/melding/+issueId);
 	                    }
 						$rootScope.globaloverlay = "";
 
@@ -2850,7 +2850,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
                     if($cookies.getObject('user')){
 							$location.path(/mijn-meldingen/+issueId);
 	                    }else{
-	                    	$location.path(/meldingen/+issueId);
+	                    	$location.path(/melding/+issueId);
 	                    }
 					$rootScope.globaloverlay = "";
 
@@ -2917,7 +2917,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
 	                    if($cookies.getObject('user')){
 							$location.path(/mijn-meldingen/+issueId);
 	                    }else{
-	                    	$location.path(/meldingen/+issueId);
+	                    	$location.path(/melding/+issueId);
 	                    }
 						$rootScope.globaloverlay = "";
 
@@ -3063,12 +3063,10 @@ vdbApp.controller('confirmCtrl', ['$scope','$rootScope','$routeParams','$window'
     
     var hash=$routeParams.hashkey;
     $rootScope.hashSession = hash;
-    
-    
-    
-    var jsonhash = JSON.stringify({hash});
-    
-    //promise for make asyncronise data factory to be syncronis first load
+    $rootScope.action = "confirmvote";
+        
+    var jsonhash = JSON.stringify({"authorisation_hash":""+hash+""});
+
     var getIssue = getIssueService.getIssue( jsonhash ).then(function (data){
         var result = data.data;
         
@@ -3076,7 +3074,16 @@ vdbApp.controller('confirmCtrl', ['$scope','$rootScope','$routeParams','$window'
         
         if(result.success){
             //we got the correct hash, so correct issue id
+            var issueID = result.issue_id;
+            $location.path("/melding/"+issueID);
             
+          
+        }
+        else{
+            //show error
+            var error = result.error;
+            alert(error);
+            $location.path("/");
             
         }
         
