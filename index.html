@@ -45,14 +45,13 @@
     <script src="http://maps.googleapis.com/maps/api/js?libraries=places&region=nl&sensor=false"></script>
     <!--FACEBOOK CONNECT -->
     <script src="js/ngFacebook.js"></script>
+    <!--TWITTER (AND OTHER SOCIAL MEDIA) CONNECT -->
+    <script src="js/satellizer.min.js"></script>
     <!--base64-->
     <script src="js/angular-base64-upload.js"></script>
     <!--slider-->
     <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/jquery.slick/1.6.0/slick.css"/>
-    <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.slick/1.6.0/slick.min.js"></script>
-    
-    
-    
+    <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.slick/1.6.0/slick.min.js"></script>    
 </head>
 <body ng-app="vdbApp" ng-controller="mainCtrl" >
     <div id="app-container">
@@ -90,7 +89,7 @@
                         <li class="divider-vertical"></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right" ng-if="!loginStatus()">
-                        <li><a href="registratie"><span class="glyphicon glyphicon-user"></span> Registreren</a></li>
+                        <li><a href="registreren"><span class="glyphicon glyphicon-user"></span> Registreren</a></li>
                         <li><a href="login"><span class="glyphicon glyphicon-log-in"></span> Inloggen</a></li>
                     </ul>
                     <div class="nav navbar-nav navbar-right">
@@ -100,7 +99,7 @@
                             <span class="caret" ></span>
                         </button>
                         <ul ng-show="userpanel" class="dropdown-menu  navbar-right" style="margin-right: 24px;margin-top: -5px;">
-                            <li><a href="profiel" style="color: white;" >Profiel</a></li>
+                            <li><a href="mijn-verbeterdebuurt" style="color: white;" >Profiel</a></li>
                             <li><a href="#" style="color: white;" ng-click="logout()">Log out</a></li>    
                         </ul>
                     
