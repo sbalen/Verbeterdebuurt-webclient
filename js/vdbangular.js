@@ -355,17 +355,14 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
 		templateUrl: 'login.html'
 		
 	})
-    
-    .when('/registratie', {
+    .when('/registreren', {
 		templateUrl: 'register.html'
-        
     })
-    
     .when('/bevestiging-registratie',{
         templateUrl: 'regisconf.html',
         controller : 'regisconfCtrl'
 	})
-    .when('/wachtwoord-vergeten',{
+    .when('/wachtwoord',{
         templateUrl: 'forgotpass.html',
         controller : 'forgotCtrl'
 	})
@@ -385,10 +382,11 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
 		templateUrl: 'createIdea.html',
 		controller : 'createIdeaCtrl'
 	})
-    .when('/profiel',{
+        .when('/mijn-verbeterdebuurt',{
         templateUrl: 'profile.html',
         controller : 'profileCtrl'
 	})
+    
     
 	 $locationProvider.html5Mode(true);
 	 $sceDelegateProvider.resourceUrlWhitelist([
@@ -1428,7 +1426,7 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
                     console.log(result);
                     if(!result.success){
                         //fix this if false
-                        $location.path('/registratie');
+                        $location.path('/registreren');
                         //in here we already had our facebook session!
                         $window.sessionStorage.facebookID = $scope.facebookuser.id;
                         $window.sessionStorage.name = $scope.facebookuser.first_name;
@@ -1447,7 +1445,7 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
                         }
                         $rootScope.globaloverlay = "";
                         $rootScope.errorSession="";
-                        if($rootScope.urlBefore == '/registratie'){
+                        if($rootScope.urlBefore == '/registreren'){
                             $location.path('/map');
                         }
                         else{
@@ -1489,12 +1487,12 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
                     $rootScope.globaloverlay = "";
 				}else if(getLogin.success){
 					//temp for data session
+					//set expired cookies
 					var expired = new Date();
-                    expired.setDate(expired.getDate()+((1/24)*2));
-                    console.log(expired);
+                    expired.setHours(expired.getHours()+2);
 					$cookies.putObject('user',getLogin.user,{expires:expired});
 					$cookies.putObject('user_profile',getLogin.user_profile,{expires:expired});
-					console.log($cookies.getObject('user'));
+					console.log(expired);
                    	//remember me
                    		if($scope.rememberMe === true){
                    			var expired = new Date();
@@ -1515,7 +1513,7 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
 					}
                     $rootScope.globaloverlay = "";
 					$rootScope.errorSession="";
-                    if($rootScope.urlBefore == '/registratie'){
+                    if($rootScope.urlBefore == '/registreren'){
 						$location.path('/map');
 					}
 					else{
@@ -1532,12 +1530,12 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
 	}
 	//move to register page
 	$scope.register = function(){
-        $location.path('/registratie');
+        $location.path('/registreren');
 	}
     
       $scope.forgotpass=function()
     {
-          $location.path('/wachtwoord-vergeten');
+          $location.path('/wachtwoord');
         
     }
     
