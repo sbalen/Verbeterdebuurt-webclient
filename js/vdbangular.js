@@ -341,11 +341,15 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
 		controller : 'mainCtrl'
 		
 	})
+	.when('/:cityNameClone',{
+		templateUrl: 'map.html',
+		controller : 'mainCtrl'
+	})
     .when('/gemeente/:cityName', {
 		templateUrl: 'map.html',
 		controller : 'mainCtrl' 
 	})
-	.when('/plaats/:cityName2',{
+	.when('/plaats/:cityNameplaats',{
 		templateUrl: 'map.html',
 		controller : 'mainCtrl'
 	})
@@ -800,8 +804,11 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 
 							var autocomplete = new google.maps.places.Autocomplete(input, options);
 							
-							if($location.path()== "/plaats/"+$routeParams.cityName2){
-							$location.path('gemeente/'+$routeParams.cityName2);
+							if($location.path()== "/plaats/"+$routeParams.cityNameplaats){
+							$location.path('gemeente/'+$routeParams.cityNameplaats);
+							}
+							if($location.path()=="/"+$routeParams.cityNameClone){
+							$location.path('gemeente/'+$routeParams.cityNameClone);
 							}
 	                        
 	                        $scope.userpanel=1;
