@@ -1216,7 +1216,7 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 		if(!$cookies.getObject('user')){
 			$location.path("/login");
 			$scope.stemModal = "";
-			$rootScope.errorSession="je moet ingelogd zijn om commentaar te geven of de snelheid"
+			$rootScope.errorSession="Voor deze actie moet je ingelogd zijn."
 		}
 		else{
 			$scope.stemModal = "#StemModal";
@@ -1227,7 +1227,7 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 	$scope.voteSubmit = function(){
 		if(!$cookies.getObject('user')){
 			$location.path("/login");
-			$rootScope.errorSession="je moet ingelogd zijn om commentaar te geven of de snelheid"
+			$rootScope.errorSession="Voor deze actie moet je ingelogd zijn."
 		}
 		else{
 			$rootScope.globaloverlay = "active";
@@ -1449,7 +1449,7 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 		if(!$cookies.getObject('user')){
 			$location.path("/login");
 			$scope.stemModal = "";
-			$rootScope.errorSession="je moet ingelogd zijn om commentaar te geven of de snelheid"
+			$rootScope.errorSession="Voor deze actie moet je ingelogd zijn."
 		}
 		else{
 			$scope.stemModal = "#StemModal";
@@ -1460,7 +1460,7 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 		$scope.voteSubmit = function(){
 		if(!$cookies.getObject('user')){
 			$location.path("/login");
-			$rootScope.errorSession="je moet ingelogd zijn om commentaar te geven of de snelheid"
+			$rootScope.errorSession="Voor deze actie moet je ingelogd zijn."
 		}
 		else{
 			$rootScope.globaloverlay = "active";
