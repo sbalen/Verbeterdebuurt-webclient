@@ -353,7 +353,7 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
 		templateUrl: 'map.html',
 		controller:  'mainCtrl'
 	})
-    .when('/melding/:id?',{
+    .when('/melding/:id',{
 		templateUrl :'issuesView.html',
 		controller : 'issuesCtrl'
 	})
@@ -420,7 +420,7 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
     })
     //confirm the issue
     //melding/new/34811/45a608c242f9a1e1f1f1e019909d5ac7a1317d9f
-    .when('melding/bevestigen/hash/:hashkey',{
+    .when('/melding/bevestigen/hash/:hashkey',{
         templateUrl: 'map.html',
         controller : 'hashCtrl',
         resolve: {
@@ -432,12 +432,48 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
     })
     //delete the issue
     //melding/verwijderen/0c0cf551ffc5ade859457961cfbd54af505300f0
-    .when('melding/verwijderen/:hashkey',{
+    .when('/melding/verwijderen/:hashkey',{
         templateUrl: 'map.html',
         controller : 'hashCtrl',
         resolve: {
             targetAction: function($rootScope) { 
                 $rootScope.targetAction = "delete_issue";
+                return true; 
+            }
+        }
+    })
+    //resolve issue with no comment
+    //melding/is-opgelost/e9db97963ab54a5a508455d9c43e7b842e865b62/methode/afwijzen
+    .when('/melding/is-opgelost/:hashkey/methode/afwijzen',{
+        templateUrl: 'map.html',
+        controller : 'hashCtrl',
+        resolve: {
+            targetAction: function($rootScope) { 
+                $rootScope.targetAction = "resolve_issue_with_comment_no";
+                return true; 
+            }
+        }
+    })
+    //resolve issue with comment yes
+    ///melding/is-opgelost/e9db97963ab54a5a508455d9c43e7b842e865b62/methode/oplossen
+    .when('/melding/is-opgelost/:hashkey/methode/oplossen',{
+        templateUrl: 'map.html',
+        controller : 'hashCtrl',
+        resolve: {
+            targetAction: function($rootScope) { 
+                $rootScope.targetAction = "resolve_issue_with_comment_yes";
+                return true; 
+            }
+        }
+    })
+    //close issue
+    ///melding/afsluiten/8f83b0a2992c059248f5f938baa780739ec2952a
+    .when('/melding/afsluiten/:hashkey',{
+        templateUrl: 'map.html',
+        controller : 'hashCtrl',
+        resolve: {
+            targetAction: function($rootScope) { 
+                $rootScope.targetAction = "close_issue";
                 return true; 
             }
         }
