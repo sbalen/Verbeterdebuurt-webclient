@@ -2230,9 +2230,6 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 		console.log($rootScope.lastUrl);
 
 		menuSelected($rootScope,'createissue');
-		if(!$cookies.getObject('user')){
-			$location.path('login');
-		}
 		//show my issue
 		if($cookies.getObject('user')){
 		$scope.hideLogin = true
