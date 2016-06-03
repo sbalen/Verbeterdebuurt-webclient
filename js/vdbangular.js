@@ -12,7 +12,6 @@ var issuesService = new Object();
 var registerService = new Object();
 var loginService  = new Object();
 var reportService = new Object();
-var loginService = new Object();
 var commentService = new Object();
 var forgotService = new Object();
 var myIssuesService = new Object();
@@ -339,7 +338,6 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
 	.when('/', {
 		templateUrl: 'map.html',
 		controller : 'mainCtrl'
-		
 	})
 	// .when('/:cityNameClone',{
 	// 	templateUrl: 'map.html',
@@ -381,6 +379,9 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
     .when('/registreren', {
 		templateUrl: 'register.html'
     })
+	.when('/ondernemingsdossier_landingpage', {
+		templateUrl: 'ondernemingsdossier.html'
+	})    
     .when('/bevestiging-registratie',{
         templateUrl: 'regisconf.html',
         controller : 'regisconfCtrl'
@@ -482,6 +483,10 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
             }
         }
     })
+     .when('/:cityNameClone',{
+     	templateUrl: 'map.html',
+     	controller : 'mainCtrl'
+     })
     
 	 $locationProvider.html5Mode(true);
 	 $sceDelegateProvider.resourceUrlWhitelist([
@@ -555,6 +560,8 @@ vdbApp.factory('loginService', ['$http',function ($http) {
 			}
 	};
 }])
+
+
 
 vdbApp.factory('commentService', ['$http',function ($http) {
 		return {
@@ -867,14 +874,15 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 							};
 
 							var autocomplete = new google.maps.places.Autocomplete(input, options);
+
 							
 							if($location.path()== "/plaats/"+$routeParams.cityNameplaats){
 							$location.path('gemeente/'+$routeParams.cityNameplaats);
 							}
 
-							// if($location.path()=="/"+$routeParams.cityNameClone){
-							// 	$location.path('gemeente/'+$routeParams.cityNameClone);
-							// 	}
+                         if($location.path()=="/"+$routeParams.cityNameClone){
+                            $location.path('gemeente/'+$routeParams.cityNameClone);
+                            }
 						
 								
 	                        
@@ -931,7 +939,6 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 								$timeout(function(){
 									if(!getdata.logo){
 									$rootScope.hideLogo = 1;
-									console.log($scope.hideLogo);
 								}
 								else{
 									$rootScope.hideLogo = 0;
@@ -1195,13 +1202,18 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 								$rootScope.problemIdList = getdata.issues;
 								$scope.hide = "";
                                 $rootScope.globaloverlay = "";
-      //                           var jsoncity = JSON.stringify({"council":""+getdata.issues[0].council+""});
+      //                        var jsoncity = JSON.stringify({"council":""+getdata.issues[0].council+""});
 						// 		var getReport = reportService.getReport( jsoncity ).then(function (data){
 						// 		var getdata = data.data;
 						// 		$rootScope.reportList = getdata.report;
                                                                
 						// });
-						
+								if($rootScope.targetAction === "close_issue"){
+									$('#CloseModal').modal('show');
+									$rootScope.getStatusId = $routeParams.id;
+									console.log($rootScope.getStatusId);
+								}
+								
 						});
 
 	$scope.id = function(){
@@ -1213,7 +1225,7 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 		if(!$cookies.getObject('user')){
 			$location.path("/login");
 			$scope.stemModal = "";
-			$rootScope.errorSession="je moet ingelogd zijn om commentaar te geven of de snelheid"
+			$rootScope.errorSession="Voor deze actie moet je ingelogd zijn."
 		}
 		else{
 			$scope.stemModal = "#StemModal";
@@ -1224,7 +1236,7 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 	$scope.voteSubmit = function(){
 		if(!$cookies.getObject('user')){
 			$location.path("/login");
-			$rootScope.errorSession="je moet ingelogd zijn om commentaar te geven of de snelheid"
+			$rootScope.errorSession="Voor deze actie moet je ingelogd zijn."
 		}
 		else{
 			$rootScope.globaloverlay = "active";
@@ -1446,7 +1458,7 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 		if(!$cookies.getObject('user')){
 			$location.path("/login");
 			$scope.stemModal = "";
-			$rootScope.errorSession="je moet ingelogd zijn om commentaar te geven of de snelheid"
+			$rootScope.errorSession="Voor deze actie moet je ingelogd zijn."
 		}
 		else{
 			$scope.stemModal = "#StemModal";
@@ -1457,7 +1469,7 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 		$scope.voteSubmit = function(){
 		if(!$cookies.getObject('user')){
 			$location.path("/login");
-			$rootScope.errorSession="je moet ingelogd zijn om commentaar te geven of de snelheid"
+			$rootScope.errorSession="Voor deze actie moet je ingelogd zijn."
 		}
 		else{
 			$rootScope.globaloverlay = "active";
@@ -1504,7 +1516,6 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
     $scope.lusername="";
     $scope.lpassword="";
     
-    
 	//$scope.overlay ACTIVE WHENclick and overlay when no event
 	$scope.overlay="overlay";
 	
@@ -1515,6 +1526,7 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
 	if($cookies.getObject('user')!=null){
 			$location.path('/');
 	}
+	
 	//error session
 	if($rootScope.errorSession){
 		$scope.hide = "";
@@ -1609,9 +1621,76 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
       $auth.authenticate(provider);
     };
     
+    $scope.loginWithOndernemingsDossier = function(){
+        $rootScope.globaloverlay = "active";
+        var jsondata = JSON.stringify({"ondernemingsdossierURL":""+$location.url()+""});
+		console.log("jsondata:" +jsondata);
+		var getLogin = loginService.getLogin(jsondata).then(function (data){
+				var getLogin = data.data;
+
+				if(!getLogin.success && getLogin.ondernemingsDossier != undefined) {
+					//go to register with data prefilled
+                    //fix this if false
+					$scope.errorMessage = getLogin.error;
+                    //in here we already had our facebook session!
+					$scope.hide = "";
+                    $rootScope.globaloverlay = "";
+                    $location.path('/registreren');
+                    $window.sessionStorage.ondernemingsdossierID = getLogin.ondernemingsDossier.ondernemingsdossierID;
+                    $window.sessionStorage.name = getLogin.ondernemingsDossier.naam;
+                    $window.sessionStorage.email  = getLogin.ondernemingsDossier.email;
+                    $window.sessionStorage.postcode  = getLogin.ondernemingsDossier.postcode;
+                    $window.sessionStorage.address_number =  getLogin.ondernemingsDossier.huisnummer;
+                    $rootScope.errorSession = getLogin.error;
+
+				} else if (!getLogin.success) {
+					$scope.errorMessage = getLogin.error;
+					$scope.hide = "";
+                    $rootScope.globaloverlay = "";
+				} else if (getLogin.success) {
+					//this is the same code as login succes, better to separate?
+					//temp for data session
+					var expired = new Date();
+                    expired.setDate(expired.getDate()+((1/24)*2));
+                    console.log(expired);
+					$cookies.putObject('user',getLogin.user,{expires:expired});
+					$cookies.putObject('user_profile',getLogin.user_profile,{expires:expired});
+					console.log($cookies.getObject('user'));
+                   	//remember me
+                   		if($scope.rememberMe === true){
+                   			var expired = new Date();
+		                    expired.setDate(expired.getDate()+7);
+		                    console.log(expired);
+                   			$cookies.put('username',$scope.lusername,{expires:expired});
+                   			$cookies.put('password',$scope.lpassword,{expires:expired});
+                   			$cookies.putObject('user',getLogin.user,{expires:expired});
+							$cookies.putObject('user_profile',getLogin.user_profile,{expires:expired});
+                   		}
+                   		else{
+                   			$cookies.remove('username');
+                   			$cookies.remove('password');
+                   		}
+                
+					$rootScope.loginStatus = function(){
+						return true;
+					}
+                    $rootScope.globaloverlay = "";
+					$rootScope.errorSession="";
+                    if($rootScope.urlBefore == '/registreren'){
+						$location.path('/map');
+					}
+					else{
+						$location.path($rootScope.urlBefore);
+					}
+					
+				}	
+		})
+		
+	}
+
 	$scope.login = function(){
         $rootScope.globaloverlay = "active";
-		var jsondata = JSON.stringify({"user":{"username":""+$scope.lusername+"","password":""+$scope.lpassword+""}});
+        var jsondata = JSON.stringify({"user":{"username":""+$scope.lusername+"","password":""+$scope.lpassword+""}});
 		var getLogin = loginService.getLogin(jsondata).then(function (data){
 				var getLogin = data.data;
 				if(!getLogin.success){
@@ -1672,7 +1751,13 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
         
     }
     
+    //check for ondernemingsDossier
+	if ($rootScope.urlBefore=='/ondernemingsdossier_landingpage') {
+		$scope.loginWithOndernemingsDossier();
+	}
+
 }])
+
 
 vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerService','newsletterService','usSpinnerService','$location', '$facebook', function ($scope,$rootScope,$window,registerService,newsletterService,usSpinnerService,$location,$facebook) {
     $scope.home = function(){
@@ -1711,10 +1796,21 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
 
         if($window.sessionStorage.name)$scope.initials=$window.sessionStorage.name;
         if($window.sessionStorage.email)$scope.email=$window.sessionStorage.email;
+        if($window.sessionStorage.email)$scope.email=$window.sessionStorage.email;
         if($window.sessionStorage.surname)$scope.surname=$window.sessionStorage.surname;
         $scope.facebookID = $window.sessionStorage.facebookID;
+
     }
-    
+
+    if ($window.sessionStorage.ondernemingsdossierID != undefined) {
+
+        if($window.sessionStorage.name)$scope.initials=$window.sessionStorage.name;
+        if($window.sessionStorage.email)$scope.email=$window.sessionStorage.email;
+        if($window.sessionStorage.postcode)$scope.postcode=$window.sessionStorage.postcode;
+        if($window.sessionStorage.address_number)$scope.address_number=$window.sessionStorage.address_number;
+        $scope.ondernemingsdossierID = $window.sessionStorage.ondernemingsdossierID;
+
+    }
 
     //set default message for facebook button
     $scope.facebookMessages = "Connect Facebook";
@@ -1757,7 +1853,9 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
         
     $scope.sex = $scope.sexoption[0].value;
     
-    if($rootScope.errorSession){
+    if($rootScope.errorSession) {
+    	console.log("error:" + $rootScope.errorSession);
+    	$scope.errorNewUsername = $rootScope.errorSession;
 		$scope.hide = "";
     }
     
@@ -1781,7 +1879,8 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
                                           ,"postcode":""+$scope.postcode+""
                                           ,"city":""+$scope.city+""
                                           ,"phone":""+$scope.phone+""
-                                          ,"facebookID":""+$scope.facebookID
+                                          ,"facebookID":""+$scope.facebookID+""
+                                          ,"ondernemingsdossierID":""+$scope.ondernemingsdossierID
                                           }
                                       
         
@@ -1808,7 +1907,7 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
                 
             if($scope.password != $scope.password2)
                 {
-                    $scope.errorPassword = "Wachtwoord niet overeen"
+                    $scope.errorPassword = "Wachtwoord komt niet niet overeen"
                     $scope.hide = "";
                 }
           
@@ -3110,8 +3209,14 @@ vdbApp.controller('closeIssueCtrl', ['$scope','$rootScope','$routeParams','$wind
 		$scope.closeIssueClick = function(){
 			$rootScope.globaloverlay = "active";
 			var user = {};
-			user.username = $cookies.getObject('user').username;
-			user.password_hash = $cookies.getObject('user').password_hash;
+			if($cookies.getObject('user')){
+				user.username = $cookies.getObject('user').username;
+				user.password_hash = $cookies.getObject('user').password_hash;
+			}
+			else {
+				user.authorisation_hash = $rootScope.hashSession;
+			}
+			
 			var issue_id = $rootScope.getStatusId;
 			if(!$scope.feedback){
 				var result = null;
@@ -3136,21 +3241,32 @@ vdbApp.controller('closeIssueCtrl', ['$scope','$rootScope','$routeParams','$wind
 						$rootScope.globaloverlay = "";
 					}else{
 					//load myissue
-					var jsondata = JSON.stringify({"user":{ "username":""+$cookies.getObject('user').username+"",
+						if($cookies.getObject('user')){
+							var jsondata = JSON.stringify({"user":{ "username":""+$cookies.getObject('user').username+"",
 													"password_hash":""+$cookies.getObject('user').password_hash+""
 												}});
-					var getMyIssues = myIssuesService.getMyIssues( jsondata ).then(function (data){
-							var getdata = data.data;
-							var count = getdata.count;
-				            $rootScope.myIssueCount = count;
-							$rootScope.myIssuesList = getdata.issues;
-							$('#CloseModal').modal('hide');
-							$('.modal-backdrop').hide();
-							$rootScope.globaloverlay = "";
-							$scope.errorClose = "";
-							$scope.feedback = "";
-							$scope.rating = null;
-						})
+							var getMyIssues = myIssuesService.getMyIssues( jsondata ).then(function (data){
+									var getdata = data.data;
+									var count = getdata.count;
+						            $rootScope.myIssueCount = count;
+									$rootScope.myIssuesList = getdata.issues;
+									$('#CloseModal').modal('hide');
+									$('.modal-backdrop').hide();
+									$rootScope.globaloverlay = "";
+									$scope.errorClose = "";
+									$scope.feedback = "";
+									$scope.rating = null;
+								})
+						}
+						else {
+									$('#CloseModal').modal('hide');
+									$('.modal-backdrop').hide();
+									$rootScope.globaloverlay = "";
+									$scope.errorClose = "";
+									$scope.feedback = "";
+									$scope.rating = null;
+						}
+					
 					}
 					
 				});

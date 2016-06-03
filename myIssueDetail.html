@@ -48,12 +48,12 @@
                                 </tr> -->
                                 <tr>
                                     <td>Status:</td>
-                                    <td>{{myIssues.status}} <a class="{{hideLogStatus}} issueLog" ng-click="logStatus()" >Meer >> </a></td>
+                                    <td>{{myIssues.status_description}} <a class="{{hideLogStatus}} issueLog" ng-click="logStatus()" >Meer >> </a></td>
                                 </tr>
                                 <tr  class="{{hideStatus}}">
                                     <td colspan="3">
-                                        <ul class="status-log" ng-repeat="issueLog in issueLogList">
-                                            <li class="list-group-item status-log-item"><span class="text-muted">{{issueLog.createdAt}}: </span>{{issueLog.message}}</li>
+                                        <ul class="status-log" >
+                                            <li ng-repeat="issueLog in issueLogList" class="list-group-item status-log-item"><span class="text-muted">{{issueLog.createdAt}}: </span>{{issueLog.message}}</li>
                                         </ul>
                                     </td>
                                 </tr> 
