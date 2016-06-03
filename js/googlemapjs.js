@@ -144,10 +144,6 @@ function showIssue(infoWindow,infoWindowContent){
       var zoom = map.getZoom();
       callMarker(markers,zoom,map);
     });
-   
-
-
-                    
 
 }
 //backup
