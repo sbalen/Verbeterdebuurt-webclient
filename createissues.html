@@ -100,41 +100,41 @@
                                 Of <a href="login">log in</a> om dit over te slaan
                                 <div class="form-group">
                                     <div class="col-sm-12 form-col" style="margin-bottom: 10px;">
-                                        <input type="text" class="form-control" id="email" placeholder="E-mailadres">
+                                        <input type="text" class="form-control" id="email" placeholder="E-mailadres" ng-model="email">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                         <div class="col-sm-2 form-col" style="margin-bottom: 10px;">
-                                            <select class="combobox" id="sex" style="width:97%;">
+                                            <select class="combobox" id="sex" style="width:97%;" ng-model="sex">
                                                 <option value="m">Dhr.</option>
                                                 <option value="f">Mw.</option>
                                             </select>
                                         </div>
                                         <div class="col-sm-3 form-col" style="margin-bottom: 10px;">
-                                            <input type="text" class="form-control" id="initials" placeholder="voorletters" style="width:97%;">
+                                            <input type="text" class="form-control" id="initials" placeholder="voorletters" style="width:97%;" ng-model="initials">
                                         </div>
                                         <div class="col-sm-3 form-col" style="margin-bottom: 10px;">
-                                            <input type="text" class="form-control" id="tussenvoegsel" placeholder="tussenvoegsel" style="width:97%;">
+                                            <input type="text" class="form-control" id="tussenvoegsel" placeholder="tussenvoegsel" style="width:97%;" ng-model="tussenvoegsel">
                                         </div>
                                         <div class="col-sm-4 form-col" style="margin-bottom: 10px;">
-                                            <input type="text" class="form-control" id="name" placeholder="Achternaam">
+                                            <input type="text" class="form-control" id="name" placeholder="Achternaam" ng-model="surname">
                                         </div>
                                 </div>
                                 <div class="form-group">
                                     <div class="col-sm-8 form-col" style="margin-bottom: 10px;">
-                                        <input type="text" class="form-control" id="street" placeholder="Straat" style="width:98%;">
+                                        <input type="text" class="form-control" id="street" placeholder="Straat" style="width:98%;" ng-model="address">
                                     </div>
                                     <div class="col-sm-4 form-col" style="margin-bottom: 10px;">
-                                        <input type="text" class="form-control" id="number" placeholder="Huisnummer">
+                                        <input type="text" class="form-control" id="number" placeholder="Huisnummer" ng-model="address_number" >
                                     </div>
                                     <div class="col-sm-4 form-col" style="margin-bottom: 10px;">
-                                        <input type="text" class="form-control" id="postcode" placeholder="Postcode" style="width:97%;">
+                                        <input type="text" class="form-control" id="postcode" placeholder="Postcode" style="width:97%;" ng-model="postcode">
                                     </div>
                                     <div class="col-sm-8 form-col" style="margin-bottom: 10px;">
-                                        <input type="text" class="form-control" id="city" placeholder="Plaats">
+                                        <input type="text" class="form-control" id="city" placeholder="Plaats" ng-model="city">
                                     </div>
                                     <div class="col-sm-12 form-col" style="margin-bottom: 10px;">
-                                        <input type="text" class="form-control" id="telephonenumber" placeholder="Telefoonnummer (optioneel)">
+                                        <input type="text" class="form-control" id="telephonenumber" placeholder="Telefoonnummer (optioneel)" ng-model="phone">
                                     </div>
                                 </div>
                             </div>
