@@ -1195,13 +1195,18 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 								$rootScope.problemIdList = getdata.issues;
 								$scope.hide = "";
                                 $rootScope.globaloverlay = "";
-      //                           var jsoncity = JSON.stringify({"council":""+getdata.issues[0].council+""});
+      //                        var jsoncity = JSON.stringify({"council":""+getdata.issues[0].council+""});
 						// 		var getReport = reportService.getReport( jsoncity ).then(function (data){
 						// 		var getdata = data.data;
 						// 		$rootScope.reportList = getdata.report;
                                                                
 						// });
-						
+								if($rootScope.targetAction === "close_issue"){
+									$('#CloseModal').modal('show');
+									$rootScope.getStatusId = $routeParams.id;
+									console.log($rootScope.getStatusId);
+								}
+								
 						});
 
 	$scope.id = function(){
@@ -3110,8 +3115,14 @@ vdbApp.controller('closeIssueCtrl', ['$scope','$rootScope','$routeParams','$wind
 		$scope.closeIssueClick = function(){
 			$rootScope.globaloverlay = "active";
 			var user = {};
-			user.username = $cookies.getObject('user').username;
-			user.password_hash = $cookies.getObject('user').password_hash;
+			if($cookies.getObject('user')){
+				user.username = $cookies.getObject('user').username;
+				user.password_hash = $cookies.getObject('user').password_hash;
+			}
+			else {
+				user.authorisation_hash = $rootScope.hashSession;
+			}
+			
 			var issue_id = $rootScope.getStatusId;
 			if(!$scope.feedback){
 				var result = null;
@@ -3136,21 +3147,32 @@ vdbApp.controller('closeIssueCtrl', ['$scope','$rootScope','$routeParams','$wind
 						$rootScope.globaloverlay = "";
 					}else{
 					//load myissue
-					var jsondata = JSON.stringify({"user":{ "username":""+$cookies.getObject('user').username+"",
+						if($cookies.getObject('user')){
+							var jsondata = JSON.stringify({"user":{ "username":""+$cookies.getObject('user').username+"",
 													"password_hash":""+$cookies.getObject('user').password_hash+""
 												}});
-					var getMyIssues = myIssuesService.getMyIssues( jsondata ).then(function (data){
-							var getdata = data.data;
-							var count = getdata.count;
-				            $rootScope.myIssueCount = count;
-							$rootScope.myIssuesList = getdata.issues;
-							$('#CloseModal').modal('hide');
-							$('.modal-backdrop').hide();
-							$rootScope.globaloverlay = "";
-							$scope.errorClose = "";
-							$scope.feedback = "";
-							$scope.rating = null;
-						})
+							var getMyIssues = myIssuesService.getMyIssues( jsondata ).then(function (data){
+									var getdata = data.data;
+									var count = getdata.count;
+						            $rootScope.myIssueCount = count;
+									$rootScope.myIssuesList = getdata.issues;
+									$('#CloseModal').modal('hide');
+									$('.modal-backdrop').hide();
+									$rootScope.globaloverlay = "";
+									$scope.errorClose = "";
+									$scope.feedback = "";
+									$scope.rating = null;
+								})
+						}
+						else {
+									$('#CloseModal').modal('hide');
+									$('.modal-backdrop').hide();
+									$rootScope.globaloverlay = "";
+									$scope.errorClose = "";
+									$scope.feedback = "";
+									$scope.rating = null;
+						}
+					
 					}
 					
 				});
