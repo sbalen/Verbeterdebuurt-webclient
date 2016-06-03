@@ -393,10 +393,38 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
     //confirm the vote
     .when('/stem/bevestigen/:hashkey',{
         templateUrl: 'map.html',
-        controller : 'confirmCtrl'
+        controller : 'hashCtrl',
+        resolve: {
+            targetAction: function($rootScope) { 
+                $rootScope.targetAction = "confirm_vote";
+                return true; 
+            }
+        }
     })
-    
-    
+    //confirm the issue
+    //melding/new/34811/45a608c242f9a1e1f1f1e019909d5ac7a1317d9f
+    .when('melding/bevestigen/hash/:hashkey',{
+        templateUrl: 'map.html',
+        controller : 'hashCtrl',
+        resolve: {
+            targetAction: function($rootScope) { 
+                $rootScope.targetAction = "confirm_issue";
+                return true; 
+            }
+        }
+    })
+    //delete the issue
+    //melding/verwijderen/0c0cf551ffc5ade859457961cfbd54af505300f0
+    .when('melding/verwijderen/:hashkey',{
+        templateUrl: 'map.html',
+        controller : 'hashCtrl',
+        resolve: {
+            targetAction: function($rootScope) { 
+                $rootScope.targetAction = "delete_issue";
+                return true; 
+            }
+        }
+    })
     
 	 $locationProvider.html5Mode(true);
 	 $sceDelegateProvider.resourceUrlWhitelist([
@@ -3059,12 +3087,12 @@ vdbApp.controller('closeIssueCtrl', ['$scope','$rootScope','$routeParams','$wind
 }])
 
 
-vdbApp.controller('confirmCtrl', ['$scope','$rootScope','$routeParams','$window','$location','getIssueService', function ($scope,$rootScope,$routeParams,$window,$location,getIssueService) {
+vdbApp.controller('hashCtrl', ['$scope','$rootScope','$routeParams','$window','$location','getIssueService', function ($scope,$rootScope,$routeParams,$window,$location,getIssueService,targetAction) {
+    
+    console.log("target action : "+$rootScope.targetAction);
     
     var hash=$routeParams.hashkey;
-    $rootScope.hashSession = hash;
-    $rootScope.action = "confirmvote";
-        
+    $rootScope.hashSession = hash;     
     var jsonhash = JSON.stringify({"authorisation_hash":""+hash+""});
 
     var getIssue = getIssueService.getIssue( jsonhash ).then(function (data){
