@@ -9,9 +9,9 @@
                         </div>
             <div class="panel-body">
                           <div class="list-group" ng-hide="reportList.council == null || reportList.council == 'undefined' " >
-                            <strong>Stad : {{reportList.council}}</strong></br>
-                            {{reportList.reports}} rapporten per maand</br>
-                            {{reportList.solutions}} oplossing per maand
+                            <strong>Gemeente: {{reportList.council}}</strong></br>
+                            Meldingen per maand: {{reportList.reports}} </br>
+                            Oplossingen per maand: {{reportList.solutions}}
                           </div>
                            <div class="list-group"  ng-show="reportList.council == null || reportList.council == 'undifined' ">
                              geen locatieinformatie gevonden
@@ -38,7 +38,7 @@
 		                </div>
                     <div class="panel side-panel panel-default" ng-hide="results2.length == 0|| newProblemList==null">
                         <div class="panel-heading" id="active-idea-widget">
-                            <strong>Actieve Ideeen</strong>
+                            <strong>Actieve Idee&euml;n</strong>
                         </div>
       			<div class="panel-body">
                           <div class="list-group">
