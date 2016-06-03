@@ -209,7 +209,7 @@ function callMarker (markers,zoom,map){
                     else if(issuesData.issues[i].status == "accepted"){
                       tempStatus[i] = "aanvaard"
                     }
-       infoWindowContent[i]= "<a href=/meldingen/"+issuesData.issues[i].id+"><span style=color:green;>"+issuesData.issues[i].title+"</span></a><br>"+tempType[i]+", "+tempStatus[i]+"<br>"+issuesData.issues[i].location.src_address+"";
+       infoWindowContent[i]= "<a href=/melding/"+issuesData.issues[i].id+"><span style=color:green;>"+issuesData.issues[i].title+"</span></a><br>"+tempType[i]+", "+tempStatus[i]+"<br>"+issuesData.issues[i].location.src_address+"";
                     
                     //console.log(infoWindowContent[i]);
                     

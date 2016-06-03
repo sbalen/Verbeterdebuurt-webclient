@@ -29,6 +29,7 @@ var issueLogService = new Object();
 var newsletterService = new Object();
 var agreementSevice = new Object();
 var duplicateIssuesService = new Object();
+var getIssueService = new Object();
 
 
 
@@ -335,7 +336,7 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
 		templateUrl: 'map.html',
 		controller:  'mainCtrl'
 	})
-    .when('/meldingen/:id',{
+    .when('/melding/:id',{
 		templateUrl :'issuesView.html',
 		controller : 'issuesCtrl'
 	})
@@ -383,10 +384,18 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
 		templateUrl: 'createIdea.html',
 		controller : 'createIdeaCtrl'
 	})
-        .when('/mijn-verbeterdebuurt',{
+    .when('/mijn-verbeterdebuurt',{
         templateUrl: 'profile.html',
         controller : 'profileCtrl'
 	})
+    //handle the hash sessions
+    
+    //confirm the vote
+    .when('/stem/bevestigen/:hashkey',{
+        templateUrl: 'map.html',
+        controller : 'confirmCtrl'
+    })
+    
     
     
 	 $locationProvider.html5Mode(true);
@@ -731,6 +740,21 @@ vdbApp.factory('duplicateIssuesService', ['$http',function ($http) {
 			}
 	};
 }])
+
+vdbApp.factory('getIssueService', ['$http',function ($http) {
+    return {
+        getIssue : function(jsondata){
+            return $http.post(APIURL+'issueForHash',jsondata)
+                .success(function (data){
+                duplicateIssuesService.data = data;
+                return getIssueService.data;
+            });
+            return getIssueService.data;
+        }
+    };
+}])
+
+
 vdbApp.run(['$rootScope', '$window', function($rootScope, $window) {
         (function(d, s, id) {
             var js, fjs = d.getElementsByTagName(s)[0];
@@ -2813,5 +2837,34 @@ vdbApp.controller('closeIssueCtrl', ['$scope','$rootScope','$routeParams','$wind
 		}
 
 }])
-	
+
+
+vdbApp.controller('confirmCtrl', ['$scope','$rootScope','$routeParams','$window','$location','getIssueService', function ($scope,$rootScope,$routeParams,$window,$location,getIssueService) {
+    
+    var hash=$routeParams.hashkey;
+    $rootScope.hashSession = hash;
+    
+    
+    
+    var jsonhash = JSON.stringify({hash});
+    
+    //promise for make asyncronise data factory to be syncronis first load
+    var getIssue = getIssueService.getIssue( jsonhash ).then(function (data){
+        var result = data.data;
+        
+        console.log(result);
+        
+        if(result.success){
+            //we got the correct hash, so correct issue id
+            
+            
+        }
+        
+    });
+    
+    
+    
+    
+}])
+
 
