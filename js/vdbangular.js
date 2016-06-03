@@ -12,7 +12,6 @@ var issuesService = new Object();
 var registerService = new Object();
 var loginService  = new Object();
 var reportService = new Object();
-var loginService = new Object();
 var commentService = new Object();
 var forgotService = new Object();
 var myIssuesService = new Object();
@@ -326,7 +325,6 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
 	.when('/', {
 		templateUrl: 'map.html',
 		controller : 'mainCtrl'
-		
 	})
     .when('/gemeente/:cityName', {
 		templateUrl: 'map.html',
@@ -360,6 +358,9 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
     .when('/registreren', {
 		templateUrl: 'register.html'
     })
+	.when('/ondernemingsdossier_landingpage', {
+		templateUrl: 'ondernemingsdossier.html'
+	})    
     .when('/bevestiging-registratie',{
         templateUrl: 'regisconf.html',
         controller : 'regisconfCtrl'
@@ -470,6 +471,8 @@ vdbApp.factory('loginService', ['$http',function ($http) {
 			}
 	};
 }])
+
+
 
 vdbApp.factory('commentService', ['$http',function ($http) {
 		return {
@@ -783,8 +786,6 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 
 							var autocomplete = new google.maps.places.Autocomplete(input, options);
                         $scope.userpanel=1;
-    					console.log($rootScope.lastCity);
-    					console.log($routeParams.cityName);
 						$timeout(function(){
 							var jsondata = JSON.stringify({
 							  		"coords_criterium":{
@@ -835,7 +836,6 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 								$timeout(function(){
 									if(!getdata.logo){
 									$rootScope.hideLogo = 1;
-									console.log($scope.hideLogo);
 								}
 								else{
 									$rootScope.hideLogo = 0;
@@ -1408,7 +1408,6 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
     $scope.lusername="";
     $scope.lpassword="";
     
-    
 	//$scope.overlay ACTIVE WHENclick and overlay when no event
 	$scope.overlay="overlay";
 	
@@ -1419,6 +1418,7 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
 	if($cookies.getObject('user')!=null){
 			$location.path('/');
 	}
+	
 	//error session
 	if($rootScope.errorSession){
 		$scope.hide = "";
@@ -1513,9 +1513,76 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
       $auth.authenticate(provider);
     };
     
+    $scope.loginWithOndernemingsDossier = function(){
+        $rootScope.globaloverlay = "active";
+        var jsondata = JSON.stringify({"ondernemingsdossierURL":""+$location.url()+""});
+		console.log("jsondata:" +jsondata);
+		var getLogin = loginService.getLogin(jsondata).then(function (data){
+				var getLogin = data.data;
+
+				if(!getLogin.success && getLogin.ondernemingsDossier != undefined) {
+					//go to register with data prefilled
+                    //fix this if false
+					$scope.errorMessage = getLogin.error;
+                    //in here we already had our facebook session!
+					$scope.hide = "";
+                    $rootScope.globaloverlay = "";
+                    $location.path('/registrateren');
+                    $window.sessionStorage.ondernemingsdossierID = getLogin.ondernemingsDossier.ondernemingsdossierID;
+                    $window.sessionStorage.name = getLogin.ondernemingsDossier.naam;
+                    $window.sessionStorage.email  = getLogin.ondernemingsDossier.email;
+                    $window.sessionStorage.postcode  = getLogin.ondernemingsDossier.postcode;
+                    $window.sessionStorage.address_number =  getLogin.ondernemingsDossier.huisnummer;
+                    $rootScope.errorSession = getLogin.error;
+
+				} else if (!getLogin.success) {
+					$scope.errorMessage = getLogin.error;
+					$scope.hide = "";
+                    $rootScope.globaloverlay = "";
+				} else if (getLogin.success) {
+					//this is the same code as login succes, better to separate?
+					//temp for data session
+					var expired = new Date();
+                    expired.setDate(expired.getDate()+((1/24)*2));
+                    console.log(expired);
+					$cookies.putObject('user',getLogin.user,{expires:expired});
+					$cookies.putObject('user_profile',getLogin.user_profile,{expires:expired});
+					console.log($cookies.getObject('user'));
+                   	//remember me
+                   		if($scope.rememberMe === true){
+                   			var expired = new Date();
+		                    expired.setDate(expired.getDate()+7);
+		                    console.log(expired);
+                   			$cookies.put('username',$scope.lusername,{expires:expired});
+                   			$cookies.put('password',$scope.lpassword,{expires:expired});
+                   			$cookies.putObject('user',getLogin.user,{expires:expired});
+							$cookies.putObject('user_profile',getLogin.user_profile,{expires:expired});
+                   		}
+                   		else{
+                   			$cookies.remove('username');
+                   			$cookies.remove('password');
+                   		}
+                
+					$rootScope.loginStatus = function(){
+						return true;
+					}
+                    $rootScope.globaloverlay = "";
+					$rootScope.errorSession="";
+                    if($rootScope.urlBefore == '/registreren'){
+						$location.path('/map');
+					}
+					else{
+						$location.path($rootScope.urlBefore);
+					}
+					
+				}	
+		})
+		
+	}
+
 	$scope.login = function(){
         $rootScope.globaloverlay = "active";
-		var jsondata = JSON.stringify({"user":{"username":""+$scope.lusername+"","password":""+$scope.lpassword+""}});
+        var jsondata = JSON.stringify({"user":{"username":""+$scope.lusername+"","password":""+$scope.lpassword+""}});
 		var getLogin = loginService.getLogin(jsondata).then(function (data){
 				var getLogin = data.data;
 				if(!getLogin.success){
@@ -1576,7 +1643,13 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
         
     }
     
+    //check for ondernemingsDossier
+	if ($rootScope.urlBefore=='/ondernemingsdossier_landingpage') {
+		$scope.loginWithOndernemingsDossier();
+	}
+
 }])
+
 
 vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerService','newsletterService','usSpinnerService','$location', '$facebook', function ($scope,$rootScope,$window,registerService,newsletterService,usSpinnerService,$location,$facebook) {
     $scope.home = function(){
@@ -1615,10 +1688,21 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
 
         if($window.sessionStorage.name)$scope.initials=$window.sessionStorage.name;
         if($window.sessionStorage.email)$scope.email=$window.sessionStorage.email;
+        if($window.sessionStorage.email)$scope.email=$window.sessionStorage.email;
         if($window.sessionStorage.surname)$scope.surname=$window.sessionStorage.surname;
         $scope.facebookID = $window.sessionStorage.facebookID;
+
     }
-    
+
+    if ($window.sessionStorage.ondernemingsdossierID != undefined) {
+
+        if($window.sessionStorage.name)$scope.initials=$window.sessionStorage.name;
+        if($window.sessionStorage.email)$scope.email=$window.sessionStorage.email;
+        if($window.sessionStorage.postcode)$scope.postcode=$window.sessionStorage.postcode;
+        if($window.sessionStorage.address_number)$scope.address_number=$window.sessionStorage.address_number;
+        $scope.ondernemingsdossierID = $window.sessionStorage.ondernemingsdossierID;
+
+    }
 
     //set default message for facebook button
     $scope.facebookMessages = "Connect Facebook";
@@ -1661,7 +1745,9 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
         
     $scope.sex = $scope.sexoption[0].value;
     
-    if($rootScope.errorSession){
+    if($rootScope.errorSession) {
+    	console.log("error:" + $rootScope.errorSession);
+    	$scope.errorNewUsername = $rootScope.errorSession;
 		$scope.hide = "";
     }
     
@@ -1685,7 +1771,8 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
                                           ,"postcode":""+$scope.postcode+""
                                           ,"city":""+$scope.city+""
                                           ,"phone":""+$scope.phone+""
-                                          ,"facebookID":""+$scope.facebookID
+                                          ,"facebookID":""+$scope.facebookID+""
+                                          ,"ondernemingsdossierID":""+$scope.ondernemingsdossierID
                                           }
                                       
         
@@ -1712,7 +1799,7 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
                 
             if($scope.password != $scope.password2)
                 {
-                    $scope.errorPassword = "Wachtwoord niet overeen"
+                    $scope.errorPassword = "Wachtwoord komt niet niet overeen"
                     $scope.hide = "";
                 }
           
