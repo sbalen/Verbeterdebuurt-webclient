@@ -483,6 +483,10 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
             }
         }
     })
+     .when('/:cityNameClone',{
+     	templateUrl: 'map.html',
+     	controller : 'mainCtrl'
+     })
     
 	 $locationProvider.html5Mode(true);
 	 $sceDelegateProvider.resourceUrlWhitelist([
@@ -876,9 +880,9 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 							$location.path('gemeente/'+$routeParams.cityNameplaats);
 							}
 
-							// if($location.path()=="/"+$routeParams.cityNameClone){
-							// 	$location.path('gemeente/'+$routeParams.cityNameClone);
-							// 	}
+                         if($location.path()=="/"+$routeParams.cityNameClone){
+                            $location.path('gemeente/'+$routeParams.cityNameClone);
+                            }
 						
 								
 	                        
