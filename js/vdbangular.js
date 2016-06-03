@@ -339,10 +339,10 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
 		templateUrl: 'map.html',
 		controller : 'mainCtrl'
 	})
-	.when('/:cityNameClone',{
-		templateUrl: 'map.html',
-		controller : 'mainCtrl'
-	})
+	// .when('/:cityNameClone',{
+	// 	templateUrl: 'map.html',
+	// 	controller : 'mainCtrl'
+	// })
     .when('/gemeente/:cityName', {
 		templateUrl: 'map.html',
 		controller : 'mainCtrl' 
@@ -875,9 +875,12 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 							if($location.path()== "/plaats/"+$routeParams.cityNameplaats){
 							$location.path('gemeente/'+$routeParams.cityNameplaats);
 							}
-							if($location.path()=="/"+$routeParams.cityNameClone){
-							$location.path('gemeente/'+$routeParams.cityNameClone);
-							}
+
+							// if($location.path()=="/"+$routeParams.cityNameClone){
+							// 	$location.path('gemeente/'+$routeParams.cityNameClone);
+							// 	}
+						
+								
 	                        
 	                        $scope.userpanel=1;
 	    					console.log($rootScope.lastCity);
