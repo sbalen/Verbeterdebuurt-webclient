@@ -1626,7 +1626,7 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
                     //in here we already had our facebook session!
 					$scope.hide = "";
                     $rootScope.globaloverlay = "";
-                    $location.path('/registrateren');
+                    $location.path('/registreren');
                     $window.sessionStorage.ondernemingsdossierID = getLogin.ondernemingsDossier.ondernemingsdossierID;
                     $window.sessionStorage.name = getLogin.ondernemingsDossier.naam;
                     $window.sessionStorage.email  = getLogin.ondernemingsDossier.email;
