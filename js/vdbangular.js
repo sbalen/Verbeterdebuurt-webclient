@@ -1683,15 +1683,6 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
           
             if (!getRegister.success){
                       
-//            if(getRegister.errors.sex !== " "){
-//                    $scope.errorSex = "Gender "+getRegister.errors.sex;
-//                    $scope.red="border-color:red";
-//                
-//                    }else if(getRegister.success) {
-//                    $scope.errorSex="";
-//                    $scope.red="";
-//                    }
-//            
                    
 					$scope.errorEmail = getRegister.errors.email;
                     $scope.errorNewPassword =  getRegister.errors.password;
@@ -1896,7 +1887,7 @@ vdbApp.controller('forgotconfCtrl', ['$scope','$rootScope','$window','usSpinnerS
 
 
     
-vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileService','loginService','$location','usSpinnerService', '$facebook', 'syncFBService','$cookies', function ($scope,$rootScope,$window,profileService,loginService,$location,usSpinnerService,$facebook,syncFBService,$cookies) {
+vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileService','newsletterService','loginService','$location','usSpinnerService', '$facebook', 'syncFBService','$cookies', function ($scope,$rootScope,$window,profileService,newsletterService,loginService,$location,usSpinnerService,$facebook,syncFBService,$cookies) {
      $scope.hide = "ng-hide";
 	
      $scope.home = function(){
@@ -2156,6 +2147,7 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                 
                 {
                     
+                    
                     if($scope.password_old !=null && $scope.password_new !=null ){
                         var password = $scope.password_new;
                         var jsondatalogin = JSON.stringify({"user":{"username":""+c_user.username+"",password}});
@@ -2165,6 +2157,24 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                     }
                     var getLogin = loginService.getLogin(jsondatalogin).then(function (data){
 				    var getLogin = data.data;
+                        
+                        
+                     if($scope.newsletter == true)
+                        {
+                            
+                            var jsonnewsletter = JSON.stringify({"user":{"username":""+$scope.username+""
+                                               ,"password":""+$scope.password+""
+                                               }})
+                            
+                            var getNewsletter = newsletterService.getNewsletter(jsonnewsletter).then(function (data){
+				            var getNewsletter = data.data;
+                            console.log(getNewsletter);
+                            })
+                        }
+                    
+                    console.log(jsondata);
+                    console.log(jsonnewsletter);
+                    
                     
                     $cookies.putObject('user',getLogin.user);
                     $cookies.putObject('user_profile',getLogin.user_profile);
