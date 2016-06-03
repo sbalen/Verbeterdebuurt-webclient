@@ -136,7 +136,6 @@ function showIssue(infoWindow,infoWindowContent){
     var markers = null;
     var markers = [];
     var zoom = map.getZoom();
-
     if(zoom >= 14){
         callMarker(markers,zoom,map);
     }
@@ -235,6 +234,6 @@ function callMarker (markers,zoom,map){
                         for(var x=0 ; x< markers.length ; x++){
                           markers[x].setMap(null);
                         }
-                          markers=[];
+                          markers=null;
                       }
 }

@@ -2217,6 +2217,13 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 	    $scope.postcode="";
 	    $scope.city="";
 	    $scope.phone="";
+	    $scope.sexoption = [
+        {'name': 'Dhr.',
+         'value': 'm'},
+        {'name': 'Mw.',
+         'value': 'f'}
+   		];
+   		$scope.sex = $scope.sexoption[0].value;
 
         $timeout(function(){
         	$scope.slide = "toggle-button-selected-left";
@@ -2407,9 +2414,37 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 						if(issueData.errors.location){
 							$scope.errorLocation =issueData.errors.location;
 						}
+						if(issueData.errors.initials){
+							$scope.errorInitials = "Voorsletters "+issueData.errors.initials;
+						}
+						if(issueData.errors.owner_city){
+							$scope.errorCity = "Plaats "+issueData.errors.owner_city;
+						}
+						if(issueData.errors.surname){
+							$scope.errorSurname ="Acternaam "+issueData.errors.surname;
+						}
+						if(issueData.errors.owner_email){
+							$scope.errorEmail = issueData.errors.owner_email;
+						}
+						if(issueData.errors.owner_postcode){
+							$scope.errorPostcode = "Postcode "+issueData.errors.owner_postcode;
+						}
+						if(issueData.errors.street){
+							$scope.errorStreet = "Straat "+issueData.errors.street;
+						}
+						if(issueData.errors.street_number){
+							$scope.errorStreetNumber = "Huisnummer "+issueData.errors.street_number;
+						}
 						$rootScope.globaloverlay = "";
 						$(window).scrollTop(0);
 					}
+					else if(issueData.success == "false"){
+							$scope.hide = "";
+							console.log(issueData.success);
+							$scope.errorEmail = issueData.error;
+							$rootScope.globaloverlay = "";
+							$(window).scrollTop(0);
+						}
 					else{
 						//success
 						var issueId = issueData.issue_id;
@@ -2445,9 +2480,37 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 						if(issueData.errors.location){
 							$scope.errorLocation =issueData.errors.location;
 						}
+						if(issueData.errors.initials){
+							$scope.errorInitials = "Voorsletters "+issueData.errors.initials;
+						}
+						if(issueData.errors.owner_city){
+							$scope.errorCity = "Plaats "+issueData.errors.owner_city;
+						}
+						if(issueData.errors.surname){
+							$scope.errorSurname ="Acternaam "+issueData.errors.surname;
+						}
+						if(issueData.errors.owner_email){
+							$scope.errorEmail = issueData.errors.owner_email;
+						}
+						if(issueData.errors.owner_postcode){
+							$scope.errorPostcode = "Postcode "+issueData.errors.owner_postcode;
+						}
+						if(issueData.errors.street){
+							$scope.errorStreet = "Straat "+issueData.errors.street;
+						}
+						if(issueData.errors.street_number){
+							$scope.errorStreetNumber = "Huisnummer "+issueData.errors.street_number;
+						}
 						$rootScope.globaloverlay = "";
 						$(window).scrollTop(0);
 					}
+						else if(issueData.success == "false"){
+							$scope.hide = "";
+							console.log(issueData.success);
+								$scope.errorEmail = issueData.error;
+							$rootScope.globaloverlay = "";
+							$(window).scrollTop(0);
+						}
 					else{
 						//success
 						var issueId = issueData.issue_id;
@@ -2550,6 +2613,13 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
 	    $scope.postcode="";
 	    $scope.city="";
 	    $scope.phone="";
+	     $scope.sexoption = [
+        {'name': 'Dhr.',
+         'value': 'm'},
+        {'name': 'Mw.',
+         'value': 'f'}
+   		];
+   		$scope.sex = $scope.sexoption[0].value;
 	    
         $timeout(function(){
         	$scope.slide = "toggle-button-selected-right";
@@ -2708,7 +2778,36 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
 					if(issueData.errors.location){
 						$scope.errorLocation =issueData.errors.location;
 					}
+					if(issueData.errors.initials){
+							$scope.errorInitials = "Voorsletters "+issueData.errors.initials;
+						}
+					if(issueData.errors.owner_city){
+							$scope.errorCity = "Plaats "+issueData.errors.owner_city;
+					}
+					if(issueData.errors.surname){
+							$scope.errorSurname ="Acternaam "+issueData.errors.surname;
+					}
+					if(issueData.errors.owner_email){
+							$scope.errorEmail = issueData.errors.owner_email;
+					}
+					if(issueData.errors.owner_postcode){
+							$scope.errorPostcode = "Postcode "+issueData.errors.owner_postcode;
+					}
+					if(issueData.errors.street){
+							$scope.errorStreet = "Straat "+issueData.errors.street;
+					}
+					if(issueData.errors.street_number){
+							$scope.errorStreetNumber = "Huisnummer "+issueData.errors.street_number;
+					}
+
 					
+					$rootScope.globaloverlay = "";
+					$(window).scrollTop(0);
+				}
+				else if(issueData.success == "false"){
+					$scope.hide = "";
+					console.log(issueData.success);
+						$scope.errorEmail = issueData.error;
 					$rootScope.globaloverlay = "";
 					$(window).scrollTop(0);
 				}
@@ -2745,9 +2844,40 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
 						if(issueData.errors.location){
 							$scope.errorLocation =issueData.errors.location;
 						}
-						$rootScope.globaloverlay = "";
-						$(window).scrollTop(0);
-					}
+						if(issueData.errors.location){
+						$scope.errorLocation =issueData.errors.location;
+						}
+						if(issueData.errors.initials){
+								$scope.errorInitials = "Voorsletters "+issueData.errors.initials;
+							}
+						if(issueData.errors.owner_city){
+								$scope.errorCity = "Plaats "+issueData.errors.owner_city;
+						}
+						if(issueData.errors.surname){
+								$scope.errorSurname ="Acternaam "+issueData.errors.surname;
+						}
+						if(issueData.errors.owner_email){
+								$scope.errorEmail = issueData.errors.owner_email;
+						}
+						if(issueData.errors.owner_postcode){
+								$scope.errorPostcode = "Postcode "+issueData.errors.owner_postcode;
+						}
+						if(issueData.errors.street){
+								$scope.errorStreet = "Straat "+issueData.errors.street;
+						}
+						if(issueData.errors.street_number){
+								$scope.errorStreetNumber = "Huisnummer "+issueData.errors.street_number;
+						}
+							$rootScope.globaloverlay = "";
+							$(window).scrollTop(0);
+						}
+						else if(issueData.success == "false"){
+								$scope.hide = "";
+								console.log(issueData.success);
+									$scope.errorEmail = issueData.error;
+								$rootScope.globaloverlay = "";
+								$(window).scrollTop(0);
+							}
 					else{
 						//success
 						var issueId = issueData.issue_id;
