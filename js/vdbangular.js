@@ -336,7 +336,7 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
 		templateUrl: 'map.html',
 		controller:  'mainCtrl'
 	})
-    .when('/melding/:id',{
+    .when('/melding/:id?',{
 		templateUrl :'issuesView.html',
 		controller : 'issuesCtrl'
 	})
