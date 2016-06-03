@@ -36,6 +36,19 @@ var getIssueService = new Object();
 
 //google map
 window.onload = function(){
+	var browserSupportFlag =  new Boolean();
+	//SUPPORT GEOLOCATION
+	if(navigator.geolocation) {
+    	browserSupportFlag = true;
+    	navigator.geolocation.getCurrentPosition(function(position){
+					      initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+					      console.log(initialLocation);
+   							});
+					  		}
+  // Browser doesn't support Geolocation
+							  else {
+					
+							  }
       var mainLat = 52.158367;
       var mainLng = 4.492999;
       this._map_center = {lat: mainLat , lng: mainLng};
@@ -331,6 +344,10 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
     .when('/gemeente/:cityName', {
 		templateUrl: 'map.html',
 		controller : 'mainCtrl' 
+	})
+	.when('/plaats/:cityName2',{
+		templateUrl: 'map.html',
+		controller : 'mainCtrl'
 	})
 	.when('/postcode/:postalcode', {
 		templateUrl: 'map.html',
@@ -810,10 +827,15 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 							};
 
 							var autocomplete = new google.maps.places.Autocomplete(input, options);
-                        $scope.userpanel=1;
-    					console.log($rootScope.lastCity);
-    					console.log($routeParams.cityName);
-						$timeout(function(){
+							
+							if($location.path()== "/plaats/"+$routeParams.cityName2){
+							$location.path('gemeente/'+$routeParams.cityName2);
+							}
+	                        
+	                        $scope.userpanel=1;
+	    					console.log($rootScope.lastCity);
+	    					console.log($routeParams.cityName);
+							$timeout(function(){
 							var jsondata = JSON.stringify({
 							  		"coords_criterium":{
 								  	"max_lat":maxlat,
@@ -1746,15 +1768,6 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
           
             if (!getRegister.success){
                       
-//            if(getRegister.errors.sex !== " "){
-//                    $scope.errorSex = "Gender "+getRegister.errors.sex;
-//                    $scope.red="border-color:red";
-//                
-//                    }else if(getRegister.success) {
-//                    $scope.errorSex="";
-//                    $scope.red="";
-//                    }
-//            
                    
 					$scope.errorEmail = getRegister.errors.email;
                     $scope.errorNewPassword =  getRegister.errors.password;
@@ -1959,7 +1972,7 @@ vdbApp.controller('forgotconfCtrl', ['$scope','$rootScope','$window','usSpinnerS
 
 
     
-vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileService','loginService','$location','usSpinnerService', '$facebook', 'syncFBService','$cookies', function ($scope,$rootScope,$window,profileService,loginService,$location,usSpinnerService,$facebook,syncFBService,$cookies) {
+vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileService','newsletterService','loginService','$location','usSpinnerService', '$facebook', 'syncFBService','$cookies', function ($scope,$rootScope,$window,profileService,newsletterService,loginService,$location,usSpinnerService,$facebook,syncFBService,$cookies) {
      $scope.hide = "ng-hide";
 	
      $scope.home = function(){
@@ -2219,6 +2232,7 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                 
                 {
                     
+                    
                     if($scope.password_old !=null && $scope.password_new !=null ){
                         var password = $scope.password_new;
                         var jsondatalogin = JSON.stringify({"user":{"username":""+c_user.username+"",password}});
@@ -2228,6 +2242,24 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                     }
                     var getLogin = loginService.getLogin(jsondatalogin).then(function (data){
 				    var getLogin = data.data;
+                        
+                        
+                     if($scope.newsletter == true)
+                        {
+                            
+                            var jsonnewsletter = JSON.stringify({"user":{"username":""+$scope.username+""
+                                               ,"password":""+$scope.password+""
+                                               }})
+                            
+                            var getNewsletter = newsletterService.getNewsletter(jsonnewsletter).then(function (data){
+				            var getNewsletter = data.data;
+                            console.log(getNewsletter);
+                            })
+                        }
+                    
+                    console.log(jsondata);
+                    console.log(jsonnewsletter);
+                    
                     
                     $cookies.putObject('user',getLogin.user);
                     $cookies.putObject('user_profile',getLogin.user_profile);
