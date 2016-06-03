@@ -36,6 +36,19 @@ var getIssueService = new Object();
 
 //google map
 window.onload = function(){
+	var browserSupportFlag =  new Boolean();
+	//SUPPORT GEOLOCATION
+	if(navigator.geolocation) {
+    	browserSupportFlag = true;
+    	navigator.geolocation.getCurrentPosition(function(position){
+					      initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+					      console.log(initialLocation);
+   							});
+					  		}
+  // Browser doesn't support Geolocation
+							  else {
+					
+							  }
       var mainLat = 52.158367;
       var mainLng = 4.492999;
       this._map_center = {lat: mainLat , lng: mainLng};
@@ -331,6 +344,10 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
     .when('/gemeente/:cityName', {
 		templateUrl: 'map.html',
 		controller : 'mainCtrl' 
+	})
+	.when('/plaats/:cityName2',{
+		templateUrl: 'map.html',
+		controller : 'mainCtrl'
 	})
 	.when('/postcode/:postalcode', {
 		templateUrl: 'map.html',
@@ -782,10 +799,15 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 							};
 
 							var autocomplete = new google.maps.places.Autocomplete(input, options);
-                        $scope.userpanel=1;
-    					console.log($rootScope.lastCity);
-    					console.log($routeParams.cityName);
-						$timeout(function(){
+							
+							if($location.path()== "/plaats/"+$routeParams.cityName2){
+							$location.path('gemeente/'+$routeParams.cityName2);
+							}
+	                        
+	                        $scope.userpanel=1;
+	    					console.log($rootScope.lastCity);
+	    					console.log($routeParams.cityName);
+							$timeout(function(){
 							var jsondata = JSON.stringify({
 							  		"coords_criterium":{
 								  	"max_lat":maxlat,
