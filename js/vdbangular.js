@@ -29,7 +29,9 @@ var newsletterService = new Object();
 var agreementSevice = new Object();
 var duplicateIssuesService = new Object();
 var getIssueService = new Object();
-
+var confirmRegistrationService = new Object();
+var cancelRegistrationService = new Object();
+var confirmIssueService = new Object();
 
 
 
@@ -343,11 +345,15 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
 	// 	templateUrl: 'map.html',
 	// 	controller : 'mainCtrl'
 	// })
-    .when('/gemeente/:cityName', {
+    .when('/gemeente/:cityName/', {
 		templateUrl: 'map.html',
 		controller : 'mainCtrl' 
 	})
-	.when('/plaats/:cityNameplaats',{
+    .when('/gemeente/:cityName/:action?', {
+        templateUrl: 'map.html',
+        controller : 'mainCtrl' 
+    })
+    .when('/plaats/:cityNameplaats/:nextaction?',{
 		templateUrl: 'map.html',
 		controller : 'mainCtrl'
 	})
@@ -355,6 +361,10 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
 		templateUrl: 'map.html',
 		controller:  'mainCtrl'
 	})
+    .when('/postcode/:postalcode/:action?', {
+        templateUrl: 'map.html',
+        controller:  'mainCtrl'
+    })
     .when('/melding/:id',{
 		templateUrl :'issuesView.html',
 		controller : 'issuesCtrl'
@@ -483,10 +493,45 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
             }
         }
     })
-     .when('/:cityNameClone',{
+    
+    //handle registration for hash session
+    .when('/registratie/annuleren/hash/:hashkey',{
+        templateUrl: 'confirmation.html',
+        controller : 'registrationHashCtrl',
+        resolve: {
+            targetAction: function($rootScope) { 
+                $rootScope.targetAction = "cancel_register";
+                return true; 
+            }
+        }
+    })
+    //cancel registration
+        .when('/registratie/bevestigen/hash/:hashkey',{
+        templateUrl: 'confirmation.html',
+        controller : 'registrationHashCtrl',
+        resolve: {
+            targetAction: function($rootScope) { 
+                $rootScope.targetAction = "register";
+                return true; 
+            }
+        }
+    })
+    
+    
+    
+    
+    
+     //redirect city / postcode
+    
+    .when('/:cityNameClone',{
+        templateUrl: 'map.html',
+        controller : 'mainCtrl'
+    })
+    .when('/:cityNameClone/:nextaction?',{
      	templateUrl: 'map.html',
      	controller : 'mainCtrl'
      })
+    
     
 	 $locationProvider.html5Mode(true);
 	 $sceDelegateProvider.resourceUrlWhitelist([
@@ -847,6 +892,52 @@ vdbApp.factory('getIssueService', ['$http',function ($http) {
     };
 }])
 
+vdbApp.factory('confirmRegistrationService', ['$http',function ($http) {
+    return {
+        getConfirm : function( jsondata ){
+            return $http.post(APIURL+'confirmRegistration', jsondata)
+                .success(function(data){
+                if(angular.isObject(data)){
+                    confirmRegistrationService.data=data;
+                    return confirmRegistrationService.data;
+                }
+            });
+            return confirmRegistrationService.data;
+
+        }
+    };
+}])
+
+vdbApp.factory('cancelRegistrationService', ['$http',function ($http) {
+    return {
+        getConfirm : function( jsondata ){
+            return $http.post(APIURL+'cancelRegistration', jsondata)
+                .success(function(data){
+                if(angular.isObject(data)){
+                    cancelRegistrationService.data=data;
+                    return cancelRegistrationService.data;
+                }
+            });
+            return cancelRegistrationService.data;
+
+        }
+    };
+}])
+
+vdbApp.factory('confirmIssueService', ['$http',function ($http) {
+	return {
+		getConfirmIssue  : function(jsondata){
+			return $http.post(APIURL+'confirmIssue',jsondata)
+			.success(function(data){
+				confirmIssueService.data =data;
+				return confirmIssueService.data;
+			});
+			return getConfirmIssueService.data;
+		}
+
+	};
+}])
+
 
 vdbApp.run(['$rootScope', '$window', function($rootScope, $window) {
         (function(d, s, id) {
@@ -863,7 +954,16 @@ vdbApp.run(['$rootScope', '$window', function($rootScope, $window) {
     }]);
 
 vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootScope','$routeParams','$http','issuesService','reportService', '$facebook','$cacheFactory','agreementSevice','$cookies',function ($scope,$timeout,$window,$location,$rootScope,$routeParams,$http,issuesService,reportService,$facebook,$cacheFactory,agreementSevice,$cookies) {
-						 
+				        
+                        //for redirecting the action
+                        var nextaction = "";
+                        if ( !(typeof $routeParams.nextaction === 'undefined')) {
+                         
+                                nextaction = "/" + $routeParams.nextaction;
+                            
+                        }
+                        
+                        
                         menuSelected($rootScope,'home');
                         //$scope.hideLogo = 1;
                         //google map aouto complete
@@ -876,15 +976,16 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 							var autocomplete = new google.maps.places.Autocomplete(input, options);
 
 							
-							if($location.path()== "/plaats/"+$routeParams.cityNameplaats){
-							$location.path('gemeente/'+$routeParams.cityNameplaats);
+							if($location.path()== "/plaats/"+$routeParams.cityNameplaats+nextaction){
+							$location.path('gemeente/'+$routeParams.cityNameplaats+nextaction);
 							}
 
-                         if($location.path()=="/"+$routeParams.cityNameClone){
-                            $location.path('gemeente/'+$routeParams.cityNameClone);
+                            if($location.path()=="/"+$routeParams.cityNameClone+nextaction){
+                             $location.path('gemeente/'+$routeParams.cityNameClone+nextaction);
                             }
 						
 								
+                            
 	                        
 	                        $scope.userpanel=1;
 	    					console.log($rootScope.lastCity);
@@ -907,7 +1008,24 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 								showIssue(infoWindow,infoWindowContent);
 							}
 						});
-						},3000);
+                                
+                                
+                                
+                        //auto redirection to new problem
+                        if ( !(typeof $routeParams.action === 'undefined')) {
+                            if($routeParams.action == "nieuw-melding"){
+                                $location.path('/nieuw-melding');
+                            }
+                            else if($routeParams.action == "nieuw-probleem"){
+                                $location.path('/nieuw-probleem');
+                            }
+                            else if($routeParams.action == "nieuw-idea"){
+                                $location.path('/nieuw-idea');
+                            }
+                        }
+
+                                
+						},1000);
 						if(!$routeParams.cityName){
 						if(!$rootScope.lastCity){
 							var jsoncity = JSON.stringify({"council":"Leiden"});	
@@ -1169,8 +1287,6 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 								
 						}
 
-
-						
 					}]);
 //Retrieving issues
 
@@ -1183,7 +1299,7 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 
 
 
-vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams','issuesService','reportService','usSpinnerService','$location','$anchorScroll','issueLogService','commentService','$timeout','voteSubmitService','$cookies','statusChangeService', function ($scope,$rootScope,$window,$routeParams,issuesService,reportService,usSpinnerService,$location,$anchorScroll,issueLogService,commentService,$timeout,voteSubmitService,$cookies,statusChangeService) {
+vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams','issuesService','reportService','usSpinnerService','$location','$anchorScroll','issueLogService','commentService','$timeout','voteSubmitService','$cookies','confirmIssueService', function ($scope,$rootScope,$window,$routeParams,issuesService,reportService,usSpinnerService,$location,$anchorScroll,issueLogService,commentService,$timeout,voteSubmitService,$cookies,confirmIssueService) {
 	$rootScope.globaloverlay = "active";
     $scope.hide = "ng-hide";
 	$scope.overlay = "overlay";
@@ -1219,17 +1335,15 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 								//confirm issue with hash code
 								if($rootScope.targetAction === "confirm_issue"){
 									$rootScope.globaloverlay = "active";
-									var user = {};
-									user.authorisation_hash = $rootScope.hashSession;
-									var issue_id = $routeParams.id;
-									var status = "confirmed";
-									var jsondata = JSON.stringify({user,issue_id,status});
-									var getStatusChange = statusChangeService.getStatusChange( jsondata ).then(function(data){
-										var getStatusChange = data.data;
-										console.log(getStatusChange);
-										if(!getStatusChange.success){
+									var authorisation_hash = $rootScope.hashSession;
+									var jsondata = JSON.stringify({authorisation_hash});
+									console.log(jsondata);
+									var getConfirmIssue = confirmIssueService.getConfirmIssue( jsondata ).then(function(data){
+										var getConfirmIssue = data.data;
+										console.log(getConfirmIssue);
+										if(!getConfirmIssue.success){
 											$scope.hideError = 0;
-											$scope.errorConfirmed = getStatusChange.error;
+											$scope.errorConfirmed = getConfirmIssue.error;
 											$rootScope.globaloverlay = "";
 										}else{
 											var jsondata = JSON.stringify({"issue_id":$routeParams.id});
@@ -3381,13 +3495,75 @@ vdbApp.controller('hashCtrl', ['$scope','$rootScope','$routeParams','$window','$
             alert(error);
             $location.path("/");
             
-        }
-        
+        } 
     });
+}])
+
+
+
+//registration hash handling
+
+vdbApp.controller('registrationHashCtrl', ['$scope','$rootScope','$routeParams','$window','$location','confirmRegistrationService','cancelRegistrationService', function ($scope,$rootScope,$routeParams,$window,$location,confirmRegistrationService,cancelRegistrationService,targetAction) {
+
+    
+    $scope.successConfirm = false;
+    $scope.cancelConfirm = false;
+    $scope.showerror = false;
+    
+    console.log("target action : "+$rootScope.targetAction);
+    var hash=$routeParams.hashkey;
+    $rootScope.hashSession = hash;     
+    
+    if($rootScope.targetAction === "register"){
+        $rootScope.globaloverlay = "active";
+
+        var jsondata = JSON.stringify({"hash":""+$rootScope.hashSession+""});
+        
+        var getConfirm = confirmRegistrationService.getConfirm( jsondata ).then(function(data){
+            var confirmation = data.data;
+            console.log(confirmation);
+            if(!confirmation.success){
+                $rootScope.globaloverlay = "";
+                $scope.message = confirmation.message;
+                $scope.showerror = true;
+                
+                
+            }else{
+                 $rootScope.globaloverlay = "";
+                 $scope.successConfirm = true;
+            }
+        });
+           
+        $rootScope.hashSession = null;
+        $rootScope.targetAction = null;
+    }else if($rootScope.targetAction === "cancel_register"){
+        $rootScope.globaloverlay = "active";
+
+        var jsondata = JSON.stringify({"hash":""+$rootScope.hashSession+""});
+
+        var getConfirm = cancelRegistrationService.getConfirm( jsondata ).then(function(data){
+            var confirmation = data.data;
+            console.log(confirmation);
+            if(!confirmation.success){
+                $rootScope.globaloverlay = "";
+                $scope.message = confirmation.message;
+                $scope.showerror = true;
+
+
+            }else{
+                $rootScope.globaloverlay = "";
+                $scope.cancelConfirm = true;
+            }
+        });
+
+        $rootScope.hashSession = null;
+        $rootScope.targetAction = null;
+    }
+    
+    
+    
     
     
     
     
 }])
-
-
