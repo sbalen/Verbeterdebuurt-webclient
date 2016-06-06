@@ -2369,11 +2369,12 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
         
         
     $scope.hide = "ng-hide";
-    
+    c_user = $cookies.getObject('user');
+    c_user_profile = $cookies.getObject('user_profile');
     var user={};
     user.username = c_user.username;
     user.password_hash = c_user.password_hash;
-    
+    console.log($cookies.getObject('user'));
     var password={}
     if($scope.password_old!= null)
         {
@@ -2440,6 +2441,7 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
         
         
 		var jsondata = JSON.stringify({user,password,user_profile});
+		console.log(jsondata);
 		var getProfile = profileService.getProfile(jsondata).then(function (data){
             
                 var getProfile = data.data;
@@ -2510,14 +2512,21 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                     console.log(jsondata);
                     console.log(jsonnewsletter);
                     
-                    
+                    console.log($cookies.getObject("user"));
                     $cookies.putObject('user',getLogin.user);
+                    console.log($cookies.getObject("user"));
                     $cookies.putObject('user_profile',getLogin.user_profile);
+                    var expired = new Date();
+                    expired.setDate(expired.getDate()+((1/24)*2));
+                    $cookies.putObject('user',getLogin.user,{expires:expired});
+                    $cookies.putObject('user_profile',getLogin.user_profile,{expires:expired});
                     $rootScope.globaloverlay = "";  
                     $(window).scrollTop(0);
                     $scope.successAlert = "Profiel geüpdatet"; 
                     $scope.successClass = "successAlert";
                     $scope.hide = "";
+                    $scope.password_new="";
+                    $scope.password_old="";
                         
 //                    $location.path('/profile');
                     
@@ -2683,6 +2692,15 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 			$scope.errorDescription = "";
 			$scope.errorId = "";
 			$scope.errorIdStyle = "";
+            $scope.errorLocation="";
+            $scope.errorInitials="";
+            $scope.errorCity="";
+            $scope.errorSurname="";
+            $scope.errorEmail="";
+            $scope.errorPostcode="";
+            $scope.errorStreet="";
+            $scope.errorStreetNumber="";
+            
 			//initial data for request
 			var user = {};
 			var user_profile = {};
@@ -3051,6 +3069,14 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
 			$scope.errorDescription = "";
 			$scope.errorId = "";
 			$scope.errorIdStyle = "";
+            $scope.errorLocation="";
+            $scope.errorInitials="";
+            $scope.errorCity="";
+            $scope.errorSurname="";
+            $scope.errorEmail="";
+            $scope.errorPostcode="";
+            $scope.errorStreet="";
+            $scope.errorStreetNumber="";
 			var file = $scope.imgData;
 
 			//initial data for request
