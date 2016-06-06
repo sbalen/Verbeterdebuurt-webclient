@@ -58,7 +58,7 @@
                     </div>
                             <div class="panel-body">
                                 <h4>Persoonsgegevens</h4>
-                                 <h5 style="color:green; margin-right: 26px;">Deze gegevens zijn nodig voor de gemeente om aan je melding te kunnen werken. Ze worden niet publiek gemaakt en nooit gebruikt voor marketing doeleinden.</h5>
+                                 <h5 style="color:green; margin-right: 26px;">Deze gegevens zijn nodig voor de gemeente om aan je melding te kunnen werken. Ze worden niet openbaar gemaakt en nooit gebruikt voor marketingdoeleinden.</h5>
                                 <div class="form-group" >
                                         <div class="col-sm-2 form-col marginwidth "   ng-class="{'has-error': errorSex }">
                                             <select class="combobox" id="category"  ng-model="sex" ng-options="template.value as template.name for template in sexoption" >
@@ -123,7 +123,7 @@
                                 </table>
                                 <div class="checkbox">
                                     <label style="margin-left: 5px;">
-                                        <input type="checkbox" ng-model="agree"> Ik ben akkoord met de Algemene Voorwaarden
+                                        <input type="checkbox" ng-model="agree"> Ik ben akkoord met de <a href="//blog.verbeterdebuurt.nl/algemene-voorwaarden/" target="_blank">Algemene Voorwaarden</a>
                                     </label> 
                                 
                                 </div>
@@ -134,9 +134,9 @@
                                 </div>
                             </div>
                             
-                            <div class="submit-buttons ">
+                            <div class="submit-buttons" style="padding-right:40px;">
                                 <button type="button" class="btn btn-danger submitm bsubmit bmsubmit" data-dismiss="modal" ng-click="home()" >Annuleren</button>
-                                <button type="button" class="btn btn-success" data-dismiss="modal" ng-disabled="!agree" ng-click="register()">Registreren</button>
+                                <button type="button" style="float:right; display:inline-block"; class="btn btn-success" data-dismiss="modal" ng-disabled="!agree" ng-click="register()">Registreren</button>
                             </div>
                         </form>
                 </div>

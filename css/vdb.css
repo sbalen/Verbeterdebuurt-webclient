@@ -710,3 +710,8 @@ h6 {
         word-break: overflow-wrap; }
 
 /*# sourceMappingURL=vdb.css.map */
+.status-log { padding:0px; margin:0px;}
+  status-log-item {
+  padding:0px;
+  margin:0px;
+}
