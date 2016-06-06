@@ -2579,6 +2579,15 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 			$scope.errorDescription = "";
 			$scope.errorId = "";
 			$scope.errorIdStyle = "";
+            $scope.errorLocation="";
+            $scope.errorInitials="";
+            $scope.errorCity="";
+            $scope.errorSurname="";
+            $scope.errorEmail="";
+            $scope.errorPostcode="";
+            $scope.errorStreet="";
+            $scope.errorStreetNumber="";
+            
 			//initial data for request
 			var user = {};
 			var user_profile = {};
@@ -2945,6 +2954,14 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
 			$scope.errorDescription = "";
 			$scope.errorId = "";
 			$scope.errorIdStyle = "";
+            $scope.errorLocation="";
+            $scope.errorInitials="";
+            $scope.errorCity="";
+            $scope.errorSurname="";
+            $scope.errorEmail="";
+            $scope.errorPostcode="";
+            $scope.errorStreet="";
+            $scope.errorStreetNumber="";
 			var file = $scope.imgData;
 
 			//initial data for request
