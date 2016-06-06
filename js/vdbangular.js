@@ -2264,7 +2264,7 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
     var user={};
     user.username = c_user.username;
     user.password_hash = c_user.password_hash;
-    
+    console.log($cookies.getObject('user'));
     var password={}
     if($scope.password_old!= null)
         {
@@ -2401,8 +2401,9 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                     console.log(jsondata);
                     console.log(jsonnewsletter);
                     
-                    
+                    console.log($cookies.getObject("user"));
                     $cookies.putObject('user',getLogin.user);
+                    console.log($cookies.getObject("user"));
                     $cookies.putObject('user_profile',getLogin.user_profile);
                     $rootScope.globaloverlay = "";  
                     $(window).scrollTop(0);
