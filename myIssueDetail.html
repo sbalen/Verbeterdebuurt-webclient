@@ -10,9 +10,10 @@
                 <div class="panel panel-default main-panel margintop {{hide}}" ng-repeat="myIssues in myIssuesList | filter : {id : id()} ">
                     <a href="/mijn-meldingen" class="close" aria-label="close" >&times;</a>
                   <div class="errorMessage">
-                <div class="alert alert-danger" ng-hide="hideError" >
+                <div class="alert alert-danger {{successClass}}" ng-hide="hideError" >
                                       <a class="close " aria-label="close" ng-click="closeError()" ng-hide="hideError" >&times;</a>
                                       <p>{{errorVote}}</p>
+                                      <p>{{successMessage}}</p>
                 </div>
              </div> 
             <h1>{{myIssues.title}}<br><small>{{myIssues.location.full_address}}</small></h1>
