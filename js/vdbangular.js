@@ -31,7 +31,7 @@ var duplicateIssuesService = new Object();
 var getIssueService = new Object();
 var confirmRegistrationService = new Object();
 var cancelRegistrationService = new Object();
-
+var confirmIssueService = new Object();
 
 
 
@@ -910,6 +910,20 @@ vdbApp.factory('cancelRegistrationService', ['$http',function ($http) {
     };
 }])
 
+vdbApp.factory('confirmIssueService', ['$http',function ($http) {
+	return {
+		getConfirmIssue  : function(jsondata){
+			return $http.post(APIURL+'confirmIssue',jsondata)
+			.success(function(data){
+				confirmIssueService.data =data;
+				return confirmIssueService.data;
+			});
+			return getConfirmIssueService.data;
+		}
+
+	};
+}])
+
 
 vdbApp.run(['$rootScope', '$window', function($rootScope, $window) {
         (function(d, s, id) {
@@ -1246,7 +1260,7 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 
 
 
-vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams','issuesService','reportService','usSpinnerService','$location','$anchorScroll','issueLogService','commentService','$timeout','voteSubmitService','$cookies','statusChangeService', function ($scope,$rootScope,$window,$routeParams,issuesService,reportService,usSpinnerService,$location,$anchorScroll,issueLogService,commentService,$timeout,voteSubmitService,$cookies,statusChangeService) {
+vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams','issuesService','reportService','usSpinnerService','$location','$anchorScroll','issueLogService','commentService','$timeout','voteSubmitService','$cookies','confirmIssueService', function ($scope,$rootScope,$window,$routeParams,issuesService,reportService,usSpinnerService,$location,$anchorScroll,issueLogService,commentService,$timeout,voteSubmitService,$cookies,confirmIssueService) {
 	$rootScope.globaloverlay = "active";
     $scope.hide = "ng-hide";
 	$scope.overlay = "overlay";
@@ -1282,17 +1296,15 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 								//confirm issue with hash code
 								if($rootScope.targetAction === "confirm_issue"){
 									$rootScope.globaloverlay = "active";
-									var user = {};
-									user.authorisation_hash = $rootScope.hashSession;
-									var issue_id = $routeParams.id;
-									var status = "confirmed";
-									var jsondata = JSON.stringify({user,issue_id,status});
-									var getStatusChange = statusChangeService.getStatusChange( jsondata ).then(function(data){
-										var getStatusChange = data.data;
-										console.log(getStatusChange);
-										if(!getStatusChange.success){
+									var authorisation_hash = $rootScope.hashSession;
+									var jsondata = JSON.stringify({authorisation_hash});
+									console.log(jsondata);
+									var getConfirmIssue = confirmIssueService.getConfirmIssue( jsondata ).then(function(data){
+										var getConfirmIssue = data.data;
+										console.log(getConfirmIssue);
+										if(!getConfirmIssue.success){
 											$scope.hideError = 0;
-											$scope.errorConfirmed = getStatusChange.error;
+											$scope.errorConfirmed = getConfirmIssue.error;
 											$rootScope.globaloverlay = "";
 										}else{
 											var jsondata = JSON.stringify({"issue_id":$routeParams.id});
