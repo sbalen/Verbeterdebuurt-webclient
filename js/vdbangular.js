@@ -394,15 +394,15 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
         templateUrl: 'forgotconf.html',
         controller : 'forgotconfCtrl'
 	})
-    .when('/nieuwe-melding',{
+    .when('/nieuw-melding',{
         templateUrl: 'selectproblem.html',
         controller : 'createissueCtrl'
 	})
-     .when('/nieuwe-probleem',{
+     .when('/nieuw-probleem',{
         templateUrl: 'createissues.html',
         controller : 'createissueCtrl'
 	})
-	.when('/nieuwe-idea',{
+	.when('/nieuw-idea',{
 		templateUrl: 'createIdea.html',
 		controller : 'createIdeaCtrl'
 	})
@@ -1145,14 +1145,14 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 											$location.path('/'+"login");
 										}
 										if( selected == 'createissue'){
-											$rootScope.urlBefore = "/nieuwe-melding";
+											$rootScope.urlBefore = "/nieuw-melding";
 											menuSelected($rootScope,'createissue');
-											$location.path('/nieuwe-melding');
+											$location.path('/nieuw-melding');
 										}
 									}
 									else{
                                         if(selected == "createissue"){
-                                            $location.path('/nieuwe-melding');
+                                            $location.path('/nieuw-melding');
                                         
                                         }else if(selected == "myissues"){
                                             $location.path('/mijn-meldingen');
@@ -2776,7 +2776,7 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 		}
 		//switch bar change
 		$scope.switchButton = function (){
-			$location.path('/nieuwe-idea');
+			$location.path('/nieuw-idea');
 			markerLat = marker.getPosition().lat();
 	 		markerLng = marker.getPosition().lng();
 		}
@@ -3145,7 +3145,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
 		}
 		//switch bar change
 		$scope.switchButton = function (){
-			$location.path('/nieuwe-probleem');
+			$location.path('/nieuw-probleem');
 			markerLat = marker.getPosition().lat();
 	 		markerLng = marker.getPosition().lng();
 		}	
