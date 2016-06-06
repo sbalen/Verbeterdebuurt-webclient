@@ -345,7 +345,7 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
 	// 	templateUrl: 'map.html',
 	// 	controller : 'mainCtrl'
 	// })
-    .when('/gemeente/:cityName', {
+    .when('/gemeente/:cityName/', {
 		templateUrl: 'map.html',
 		controller : 'mainCtrl' 
 	})
@@ -353,7 +353,7 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
         templateUrl: 'map.html',
         controller : 'mainCtrl' 
     })
-	.when('/plaats/:cityNameplaats',{
+    .when('/plaats/:cityNameplaats/:nextaction?',{
 		templateUrl: 'map.html',
 		controller : 'mainCtrl'
 	})
@@ -361,6 +361,10 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
 		templateUrl: 'map.html',
 		controller:  'mainCtrl'
 	})
+    .when('/postcode/:postalcode/:action?', {
+        templateUrl: 'map.html',
+        controller:  'mainCtrl'
+    })
     .when('/melding/:id',{
 		templateUrl :'issuesView.html',
 		controller : 'issuesCtrl'
@@ -518,10 +522,16 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
     
     
      //redirect city / postcode
-     .when('/:cityNameClone',{
+    
+    .when('/:cityNameClone',{
+        templateUrl: 'map.html',
+        controller : 'mainCtrl'
+    })
+    .when('/:cityNameClone/:nextaction?',{
      	templateUrl: 'map.html',
      	controller : 'mainCtrl'
      })
+    
     
 	 $locationProvider.html5Mode(true);
 	 $sceDelegateProvider.resourceUrlWhitelist([
@@ -932,10 +942,10 @@ vdbApp.run(['$rootScope', '$window', function($rootScope, $window) {
 vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootScope','$routeParams','$http','issuesService','reportService', '$facebook','$cacheFactory','agreementSevice','$cookies',function ($scope,$timeout,$window,$location,$rootScope,$routeParams,$http,issuesService,reportService,$facebook,$cacheFactory,agreementSevice,$cookies) {
 				        
                         //for redirecting the action
-                        var action = "/";
-                        if ( !(typeof $routeParams.action === 'undefined')) {
+                        var nextaction = "";
+                        if ( !(typeof $routeParams.nextaction === 'undefined')) {
                          
-                            action = action + $routeParams.action;
+                                nextaction = "/" + $routeParams.nextaction;
                             
                         }
                         
@@ -952,12 +962,12 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 							var autocomplete = new google.maps.places.Autocomplete(input, options);
 
 							
-							if($location.path()== "/plaats/"+$routeParams.cityNameplaats){
-							$location.path('gemeente/'+$routeParams.cityNameplaats);
+							if($location.path()== "/plaats/"+$routeParams.cityNameplaats+nextaction){
+							$location.path('gemeente/'+$routeParams.cityNameplaats+nextaction);
 							}
 
-                         if($location.path()=="/"+$routeParams.cityNameClone){
-                            $location.path('gemeente/'+$routeParams.cityNameClone);
+                            if($location.path()=="/"+$routeParams.cityNameClone+nextaction){
+                             $location.path('gemeente/'+$routeParams.cityNameClone+nextaction);
                             }
 						
 								
