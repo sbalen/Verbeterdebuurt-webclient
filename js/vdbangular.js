@@ -349,6 +349,10 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
 		templateUrl: 'map.html',
 		controller : 'mainCtrl' 
 	})
+    .when('/gemeente/:cityName/:action?', {
+        templateUrl: 'map.html',
+        controller : 'mainCtrl' 
+    })
 	.when('/plaats/:cityNameplaats',{
 		templateUrl: 'map.html',
 		controller : 'mainCtrl'
@@ -926,7 +930,16 @@ vdbApp.run(['$rootScope', '$window', function($rootScope, $window) {
     }]);
 
 vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootScope','$routeParams','$http','issuesService','reportService', '$facebook','$cacheFactory','agreementSevice','$cookies',function ($scope,$timeout,$window,$location,$rootScope,$routeParams,$http,issuesService,reportService,$facebook,$cacheFactory,agreementSevice,$cookies) {
-						 
+				        
+                        //for redirecting the action
+                        var action = "/";
+                        if ( !(typeof $routeParams.action === 'undefined')) {
+                         
+                            action = action + $routeParams.action;
+                            
+                        }
+                        
+                        
                         menuSelected($rootScope,'home');
                         //$scope.hideLogo = 1;
                         //google map aouto complete
@@ -948,6 +961,7 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
                             }
 						
 								
+                            
 	                        
 	                        $scope.userpanel=1;
 	    					console.log($rootScope.lastCity);
@@ -970,7 +984,24 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 								showIssue(infoWindow,infoWindowContent);
 							}
 						});
-						},3000);
+                                
+                                
+                                
+                        //auto redirection to new problem
+                        if ( !(typeof $routeParams.action === 'undefined')) {
+                            if($routeParams.action == "nieuw-melding"){
+                                $location.path('/nieuw-melding');
+                            }
+                            else if($routeParams.action == "nieuw-probleem"){
+                                $location.path('/nieuw-probleem');
+                            }
+                            else if($routeParams.action == "nieuw-idea"){
+                                $location.path('/nieuw-idea');
+                            }
+                        }
+
+                                
+						},1000);
 						if(!$routeParams.cityName){
 						if(!$rootScope.lastCity){
 							var jsoncity = JSON.stringify({"council":"Leiden"});	
@@ -1232,8 +1263,6 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 								
 						}
 
-
-						
 					}]);
 //Retrieving issues
 
