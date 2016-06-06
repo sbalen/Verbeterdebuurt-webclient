@@ -394,15 +394,15 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
         templateUrl: 'forgotconf.html',
         controller : 'forgotconfCtrl'
 	})
-    .when('/nieuwe-melding',{
+    .when('/nieuw-melding',{
         templateUrl: 'selectproblem.html',
         controller : 'createissueCtrl'
 	})
-     .when('/nieuwe-probleem',{
+     .when('/nieuw-probleem',{
         templateUrl: 'createissues.html',
         controller : 'createissueCtrl'
 	})
-	.when('/nieuwe-idea',{
+	.when('/nieuw-idea',{
 		templateUrl: 'createIdea.html',
 		controller : 'createIdeaCtrl'
 	})
@@ -483,6 +483,10 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
             }
         }
     })
+     .when('/:cityNameClone',{
+     	templateUrl: 'map.html',
+     	controller : 'mainCtrl'
+     })
     
 	 $locationProvider.html5Mode(true);
 	 $sceDelegateProvider.resourceUrlWhitelist([
@@ -876,9 +880,9 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 							$location.path('gemeente/'+$routeParams.cityNameplaats);
 							}
 
-							// if($location.path()=="/"+$routeParams.cityNameClone){
-							// 	$location.path('gemeente/'+$routeParams.cityNameClone);
-							// 	}
+                         if($location.path()=="/"+$routeParams.cityNameClone){
+                            $location.path('gemeente/'+$routeParams.cityNameClone);
+                            }
 						
 								
 	                        
@@ -1141,14 +1145,14 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 											$location.path('/'+"login");
 										}
 										if( selected == 'createissue'){
-											$rootScope.urlBefore = "/nieuwe-melding";
+											$rootScope.urlBefore = "/nieuw-melding";
 											menuSelected($rootScope,'createissue');
-											$location.path('/nieuwe-melding');
+											$location.path('/nieuw-melding');
 										}
 									}
 									else{
                                         if(selected == "createissue"){
-                                            $location.path('/nieuwe-melding');
+                                            $location.path('/nieuw-melding');
                                         
                                         }else if(selected == "myissues"){
                                             $location.path('/mijn-meldingen');
@@ -2773,15 +2777,17 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 		}
 		//switch bar change
 		$scope.switchButton = function (){
-			$location.path('/nieuwe-idea');
+			$location.path('/nieuw-idea');
 			markerLat = marker.getPosition().lat();
 	 		markerLng = marker.getPosition().lng();
 		}
 		//dulicate data
 		$scope.duplicateData = function(){
 			var user = {};
+			if($cookies.getObject('user')){
 			user.username = $cookies.getObject('user').username;
 			user.password_hash = $cookies.getObject('user').password_hash;
+			}
 			var lat = markerLat;
 			var long = markerLng;
 			var category_id = $scope.categoryId;
@@ -3142,7 +3148,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
 		}
 		//switch bar change
 		$scope.switchButton = function (){
-			$location.path('/nieuwe-probleem');
+			$location.path('/nieuw-probleem');
 			markerLat = marker.getPosition().lat();
 	 		markerLng = marker.getPosition().lng();
 		}	

@@ -19,7 +19,7 @@
                                <div>
                                <p><strong>{{myIssues.title}}</strong><img class="icon" ng-if="myIssues.type === 'problem' && myIssues.status != 'closed' " src="./img/icon_2_21_21.png" /><img class="icon" ng-if="myIssues.type === 'idea' && myIssues.status != 'closed' " src="./img/icon_idea_2_21_21.png" /><img class="icon" ng-if="myIssues.status === 'closed' " src="./img/flag_2_21_21.png" /></p>
 			                           {{myIssues.location.full_address}}<br/>
-                                       <strong>{{myIssues.type}}</strong>,{{myIssues.status}}</br>
+                                       <strong>{{myIssues.type}}</strong>, {{myIssues.status_description}}</br>
                                <span class="text-muted">{{myIssues.created_at}}</span>
                               </div></div>
                               <span class="pull-right">
@@ -33,7 +33,7 @@
                             </a>
                      </div> 
                     <div class="notice-no-issue" ng-show="count<=0">
-                        Je hebt nog geen meldingen. <a href="/nieuwe-melding">Klik hier</a> om een melding te maken.
+                        Je hebt nog geen meldingen. <a href="/nieuw-melding">Klik hier</a> om een melding te maken.
                     </div>
                 
                      <span class="clearfix">
