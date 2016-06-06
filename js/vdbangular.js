@@ -31,7 +31,7 @@ var duplicateIssuesService = new Object();
 var getIssueService = new Object();
 var confirmRegistrationService = new Object();
 var cancelRegistrationService = new Object();
-
+var confirmIssueService = new Object();
 
 
 
@@ -345,11 +345,15 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
 	// 	templateUrl: 'map.html',
 	// 	controller : 'mainCtrl'
 	// })
-    .when('/gemeente/:cityName', {
+    .when('/gemeente/:cityName/', {
 		templateUrl: 'map.html',
 		controller : 'mainCtrl' 
 	})
-	.when('/plaats/:cityNameplaats',{
+    .when('/gemeente/:cityName/:action?', {
+        templateUrl: 'map.html',
+        controller : 'mainCtrl' 
+    })
+    .when('/plaats/:cityNameplaats/:nextaction?',{
 		templateUrl: 'map.html',
 		controller : 'mainCtrl'
 	})
@@ -357,6 +361,10 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
 		templateUrl: 'map.html',
 		controller:  'mainCtrl'
 	})
+    .when('/postcode/:postalcode/:action?', {
+        templateUrl: 'map.html',
+        controller:  'mainCtrl'
+    })
     .when('/melding/:id',{
 		templateUrl :'issuesView.html',
 		controller : 'issuesCtrl'
@@ -514,10 +522,16 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
     
     
      //redirect city / postcode
-     .when('/:cityNameClone',{
+    
+    .when('/:cityNameClone',{
+        templateUrl: 'map.html',
+        controller : 'mainCtrl'
+    })
+    .when('/:cityNameClone/:nextaction?',{
      	templateUrl: 'map.html',
      	controller : 'mainCtrl'
      })
+    
     
 	 $locationProvider.html5Mode(true);
 	 $sceDelegateProvider.resourceUrlWhitelist([
@@ -910,6 +924,20 @@ vdbApp.factory('cancelRegistrationService', ['$http',function ($http) {
     };
 }])
 
+vdbApp.factory('confirmIssueService', ['$http',function ($http) {
+	return {
+		getConfirmIssue  : function(jsondata){
+			return $http.post(APIURL+'confirmIssue',jsondata)
+			.success(function(data){
+				confirmIssueService.data =data;
+				return confirmIssueService.data;
+			});
+			return getConfirmIssueService.data;
+		}
+
+	};
+}])
+
 
 vdbApp.run(['$rootScope', '$window', function($rootScope, $window) {
         (function(d, s, id) {
@@ -926,7 +954,16 @@ vdbApp.run(['$rootScope', '$window', function($rootScope, $window) {
     }]);
 
 vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootScope','$routeParams','$http','issuesService','reportService', '$facebook','$cacheFactory','agreementSevice','$cookies',function ($scope,$timeout,$window,$location,$rootScope,$routeParams,$http,issuesService,reportService,$facebook,$cacheFactory,agreementSevice,$cookies) {
-						 
+				        
+                        //for redirecting the action
+                        var nextaction = "";
+                        if ( !(typeof $routeParams.nextaction === 'undefined')) {
+                         
+                                nextaction = "/" + $routeParams.nextaction;
+                            
+                        }
+                        
+                        
                         menuSelected($rootScope,'home');
                         //$scope.hideLogo = 1;
                         //google map aouto complete
@@ -939,15 +976,16 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 							var autocomplete = new google.maps.places.Autocomplete(input, options);
 
 							
-							if($location.path()== "/plaats/"+$routeParams.cityNameplaats){
-							$location.path('gemeente/'+$routeParams.cityNameplaats);
+							if($location.path()== "/plaats/"+$routeParams.cityNameplaats+nextaction){
+							$location.path('gemeente/'+$routeParams.cityNameplaats+nextaction);
 							}
 
-                         if($location.path()=="/"+$routeParams.cityNameClone){
-                            $location.path('gemeente/'+$routeParams.cityNameClone);
+                            if($location.path()=="/"+$routeParams.cityNameClone+nextaction){
+                             $location.path('gemeente/'+$routeParams.cityNameClone+nextaction);
                             }
 						
 								
+                            
 	                        
 	                        $scope.userpanel=1;
 	    					console.log($rootScope.lastCity);
@@ -970,7 +1008,24 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 								showIssue(infoWindow,infoWindowContent);
 							}
 						});
-						},3000);
+                                
+                                
+                                
+                        //auto redirection to new problem
+                        if ( !(typeof $routeParams.action === 'undefined')) {
+                            if($routeParams.action == "nieuw-melding"){
+                                $location.path('/nieuw-melding');
+                            }
+                            else if($routeParams.action == "nieuw-probleem"){
+                                $location.path('/nieuw-probleem');
+                            }
+                            else if($routeParams.action == "nieuw-idea"){
+                                $location.path('/nieuw-idea');
+                            }
+                        }
+
+                                
+						},1000);
 						if(!$routeParams.cityName){
 						if(!$rootScope.lastCity){
 							var jsoncity = JSON.stringify({"council":"Leiden"});	
@@ -1232,8 +1287,6 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 								
 						}
 
-
-						
 					}]);
 //Retrieving issues
 
@@ -1246,7 +1299,7 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 
 
 
-vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams','issuesService','reportService','usSpinnerService','$location','$anchorScroll','issueLogService','commentService','$timeout','voteSubmitService','$cookies','statusChangeService', function ($scope,$rootScope,$window,$routeParams,issuesService,reportService,usSpinnerService,$location,$anchorScroll,issueLogService,commentService,$timeout,voteSubmitService,$cookies,statusChangeService) {
+vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams','issuesService','reportService','usSpinnerService','$location','$anchorScroll','issueLogService','commentService','$timeout','voteSubmitService','$cookies','confirmIssueService', function ($scope,$rootScope,$window,$routeParams,issuesService,reportService,usSpinnerService,$location,$anchorScroll,issueLogService,commentService,$timeout,voteSubmitService,$cookies,confirmIssueService) {
 	$rootScope.globaloverlay = "active";
     $scope.hide = "ng-hide";
 	$scope.overlay = "overlay";
@@ -1282,17 +1335,15 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 								//confirm issue with hash code
 								if($rootScope.targetAction === "confirm_issue"){
 									$rootScope.globaloverlay = "active";
-									var user = {};
-									user.authorisation_hash = $rootScope.hashSession;
-									var issue_id = $routeParams.id;
-									var status = "confirmed";
-									var jsondata = JSON.stringify({user,issue_id,status});
-									var getStatusChange = statusChangeService.getStatusChange( jsondata ).then(function(data){
-										var getStatusChange = data.data;
-										console.log(getStatusChange);
-										if(!getStatusChange.success){
+									var authorisation_hash = $rootScope.hashSession;
+									var jsondata = JSON.stringify({authorisation_hash});
+									console.log(jsondata);
+									var getConfirmIssue = confirmIssueService.getConfirmIssue( jsondata ).then(function(data){
+										var getConfirmIssue = data.data;
+										console.log(getConfirmIssue);
+										if(!getConfirmIssue.success){
 											$scope.hideError = 0;
-											$scope.errorConfirmed = getStatusChange.error;
+											$scope.errorConfirmed = getConfirmIssue.error;
 											$rootScope.globaloverlay = "";
 										}else{
 											var jsondata = JSON.stringify({"issue_id":$routeParams.id});
