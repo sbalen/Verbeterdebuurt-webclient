@@ -2783,8 +2783,10 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 		//dulicate data
 		$scope.duplicateData = function(){
 			var user = {};
+			if($cookies.getObject('user')){
 			user.username = $cookies.getObject('user').username;
 			user.password_hash = $cookies.getObject('user').password_hash;
+			}
 			var lat = markerLat;
 			var long = markerLng;
 			var category_id = $scope.categoryId;
