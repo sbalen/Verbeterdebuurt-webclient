@@ -709,9 +709,16 @@ h6 {
       .duplicate-wrapper .duplicate-container .duplicate-item p {
         word-break: overflow-wrap; }
 
+.status-log {
+  padding: 0px;
+  margin: 0px; }
+
+.status-log-item {
+  padding: 0px;
+  margin: 0px; }
+
+.successAlert {
+  background-color: #3AB53A;
+  border-color: #3AB53A; }
+
 /*# sourceMappingURL=vdb.css.map */
-.status-log { padding:0px; margin:0px;}
-  status-log-item {
-  padding:0px;
-  margin:0px;
-}
