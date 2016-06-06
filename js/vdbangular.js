@@ -483,6 +483,35 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
             }
         }
     })
+    
+    //handle registration for hash session
+    .when('/registratie/annuleren/hash/:hashkey',{
+        templateUrl: 'confirmation.html',
+        controller : 'registrationHashCtrl',
+        resolve: {
+            targetAction: function($rootScope) { 
+                $rootScope.targetAction = "register";
+                return true; 
+            }
+        }
+    })
+    //cancel registration
+        .when('/registratie/bevestigen/hash/:hashkey',{
+        templateUrl: 'confirmation.html',
+        controller : 'registrationHashCtrl',
+        resolve: {
+            targetAction: function($rootScope) { 
+                $rootScope.targetAction = "cancel_register";
+                return true; 
+            }
+        }
+    })
+    
+    
+    
+    
+    
+     //redirect city / postcode
      .when('/:cityNameClone',{
      	templateUrl: 'map.html',
      	controller : 'mainCtrl'
@@ -3309,13 +3338,23 @@ vdbApp.controller('hashCtrl', ['$scope','$rootScope','$routeParams','$window','$
             alert(error);
             $location.path("/");
             
-        }
-        
+        } 
     });
+}])
+
+
+
+//registration hash handling
+
+vdbApp.controller('registrationHashCtrl', ['$scope','$rootScope','$routeParams','$window','$location', function ($scope,$rootScope,$routeParams,$window,$location,targetAction) {
+
+    console.log("target action : "+$rootScope.targetAction);
+    var hash=$routeParams.hashkey;
+    $rootScope.hashSession = hash;     
+    
+    alert(hash);
     
     
     
     
 }])
-
-
