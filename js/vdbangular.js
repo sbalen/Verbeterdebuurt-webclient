@@ -1212,7 +1212,7 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 
 
 
-vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams','issuesService','reportService','usSpinnerService','$location','$anchorScroll','issueLogService','commentService','$timeout','voteSubmitService','$cookies', function ($scope,$rootScope,$window,$routeParams,issuesService,reportService,usSpinnerService,$location,$anchorScroll,issueLogService,commentService,$timeout,voteSubmitService,$cookies) {
+vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams','issuesService','reportService','usSpinnerService','$location','$anchorScroll','issueLogService','commentService','$timeout','voteSubmitService','$cookies','statusChangeService', function ($scope,$rootScope,$window,$routeParams,issuesService,reportService,usSpinnerService,$location,$anchorScroll,issueLogService,commentService,$timeout,voteSubmitService,$cookies,statusChangeService) {
 	$rootScope.globaloverlay = "active";
     $scope.hide = "ng-hide";
 	$scope.overlay = "overlay";
@@ -1237,10 +1237,44 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 						// 		$rootScope.reportList = getdata.report;
                                                                
 						// });
+								//close issue with hashcode
 								if($rootScope.targetAction === "close_issue"){
 									$('#CloseModal').modal('show');
 									$rootScope.getStatusId = $routeParams.id;
 									console.log($rootScope.getStatusId);
+									$rootScope.hashSession = null;
+									$rootScope.targetAction = null;
+								}
+								//confirm issue with hash code
+								if($rootScope.targetAction === "confirm_issue"){
+									$rootScope.globaloverlay = "active";
+									var user = {};
+									user.authorisation_hash = $rootScope.hashSession;
+									var issue_id = $routeParams.id;
+									var status = "confirmed";
+									var jsondata = JSON.stringify({user,issue_id,status});
+									var getStatusChange = statusChangeService.getStatusChange( jsondata ).then(function(data){
+										var getStatusChange = data.data;
+										console.log(getStatusChange);
+										if(!getStatusChange.success){
+											$scope.hideError = 0;
+											$scope.errorConfirmed = getStatusChange.error;
+											$rootScope.globaloverlay = "";
+										}else{
+											var jsondata = JSON.stringify({"issue_id":$routeParams.id});
+											var getIssues = issuesService.getIssues( jsondata ).then(function (data){
+												$scope.hideError = 0;
+												$scope.successClass = "successAlert";
+												$scope.errorConfirmed = "Geregistreerd bij gemeente";
+												var getdata = data.data;
+												$rootScope.problemIdList = getdata.issues;
+				                                $rootScope.globaloverlay = "";
+											});
+										}
+										
+									});
+									$rootScope.hashSession = null;
+									$rootScope.targetAction = null;
 								}
 								
 						});
@@ -1418,6 +1452,7 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 		$scope.hideStatus="ng-hide";
 		$scope.errorVote = "";
 		$scope.hideError = 1;
+		$scope.successClass=""
 		menuSelected($rootScope,'myIssues');
 		$rootScope.globaloverlay = "active";
 		$scope.id = function(){
@@ -1426,6 +1461,11 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 		if($cookies.getObject('user')==null){
 				$rootScope.urlBefore = $location.path();
 				$location.path('/login');
+		}
+		if($rootScope.successCreate == 1){
+				$scope.hideError = 0;
+				$scope.successClass = "successAlert";
+				$scope.successMessage = "Geregistreerd bij gemeente";
 		}
 		var jsondata = JSON.stringify({"user":{ "username":""+$cookies.getObject('user').username+"",
 												"password_hash":""+$cookies.getObject('user').password_hash+""
@@ -1537,6 +1577,8 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 		$scope.hideError = 1;
 		$scope.errorVote = "";
 	}
+	//delete success Create
+	$rootScope.successCreate = null;
 
 }])
 
@@ -2718,6 +2760,7 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 	                    //login
 	                    if($cookies.getObject('user')){
 							$location.path(/mijn-meldingen/+issueId);
+							$rootScope.successCreate = 1;
 	                    }else{
 	                    	$location.path(/melding/+issueId);
 	                    }
@@ -2783,6 +2826,7 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 						var issueId = issueData.issue_id;
 	                   if($cookies.getObject('user')){
 							$location.path(/mijn-meldingen/+issueId);
+							$rootScope.successCreate = "Geregistreerd bij gemeente";
 	                    }else{
 	                    	$location.path(/melding/+issueId);
 	                    }
@@ -3085,6 +3129,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
 					var issueId = issueData.issue_id;
                     if($cookies.getObject('user')){
 							$location.path(/mijn-meldingen/+issueId);
+							$rootScope.successCreate = "Geregistreerd bij gemeente";
 	                    }else{
 	                    	$location.path(/melding/+issueId);
 	                    }
@@ -3152,6 +3197,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
 						var issueId = issueData.issue_id;
 	                    if($cookies.getObject('user')){
 							$location.path(/mijn-meldingen/+issueId);
+							$rootScope.successCreate = "Geregistreerd bij gemeente";
 	                    }else{
 	                    	$location.path(/melding/+issueId);
 	                    }
