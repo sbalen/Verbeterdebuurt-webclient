@@ -1436,7 +1436,7 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 		if($rootScope.successCreate == 1){
 				$scope.hideError = 0;
 				$scope.successClass = "successAlert";
-				$scope.successMessage = "Geregistreerd bij gemeente";
+				$scope.successMessage = "Je melding is verstuurd!";
 		}
 		var jsondata = JSON.stringify({"user":{ "username":""+$cookies.getObject('user').username+"",
 												"password_hash":""+$cookies.getObject('user').password_hash+""
