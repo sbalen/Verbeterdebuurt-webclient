@@ -29,6 +29,8 @@ var newsletterService = new Object();
 var agreementSevice = new Object();
 var duplicateIssuesService = new Object();
 var getIssueService = new Object();
+var confirmRegistrationService = new Object();
+var cancelRegistrationService = new Object();
 
 
 
@@ -483,6 +485,35 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
             }
         }
     })
+    
+    //handle registration for hash session
+    .when('/registratie/annuleren/hash/:hashkey',{
+        templateUrl: 'confirmation.html',
+        controller : 'registrationHashCtrl',
+        resolve: {
+            targetAction: function($rootScope) { 
+                $rootScope.targetAction = "cancel_register";
+                return true; 
+            }
+        }
+    })
+    //cancel registration
+        .when('/registratie/bevestigen/hash/:hashkey',{
+        templateUrl: 'confirmation.html',
+        controller : 'registrationHashCtrl',
+        resolve: {
+            targetAction: function($rootScope) { 
+                $rootScope.targetAction = "register";
+                return true; 
+            }
+        }
+    })
+    
+    
+    
+    
+    
+     //redirect city / postcode
      .when('/:cityNameClone',{
      	templateUrl: 'map.html',
      	controller : 'mainCtrl'
@@ -847,6 +878,38 @@ vdbApp.factory('getIssueService', ['$http',function ($http) {
     };
 }])
 
+vdbApp.factory('confirmRegistrationService', ['$http',function ($http) {
+    return {
+        getConfirm : function( jsondata ){
+            return $http.post(APIURL+'confirmRegistration', jsondata)
+                .success(function(data){
+                if(angular.isObject(data)){
+                    confirmRegistrationService.data=data;
+                    return confirmRegistrationService.data;
+                }
+            });
+            return confirmRegistrationService.data;
+
+        }
+    };
+}])
+
+vdbApp.factory('cancelRegistrationService', ['$http',function ($http) {
+    return {
+        getConfirm : function( jsondata ){
+            return $http.post(APIURL+'cancelRegistration', jsondata)
+                .success(function(data){
+                if(angular.isObject(data)){
+                    cancelRegistrationService.data=data;
+                    return cancelRegistrationService.data;
+                }
+            });
+            return cancelRegistrationService.data;
+
+        }
+    };
+}])
+
 
 vdbApp.run(['$rootScope', '$window', function($rootScope, $window) {
         (function(d, s, id) {
@@ -1183,7 +1246,7 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 
 
 
-vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams','issuesService','reportService','usSpinnerService','$location','$anchorScroll','issueLogService','commentService','$timeout','voteSubmitService','$cookies', function ($scope,$rootScope,$window,$routeParams,issuesService,reportService,usSpinnerService,$location,$anchorScroll,issueLogService,commentService,$timeout,voteSubmitService,$cookies) {
+vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams','issuesService','reportService','usSpinnerService','$location','$anchorScroll','issueLogService','commentService','$timeout','voteSubmitService','$cookies','statusChangeService', function ($scope,$rootScope,$window,$routeParams,issuesService,reportService,usSpinnerService,$location,$anchorScroll,issueLogService,commentService,$timeout,voteSubmitService,$cookies,statusChangeService) {
 	$rootScope.globaloverlay = "active";
     $scope.hide = "ng-hide";
 	$scope.overlay = "overlay";
@@ -1208,10 +1271,44 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 						// 		$rootScope.reportList = getdata.report;
                                                                
 						// });
+								//close issue with hashcode
 								if($rootScope.targetAction === "close_issue"){
 									$('#CloseModal').modal('show');
 									$rootScope.getStatusId = $routeParams.id;
 									console.log($rootScope.getStatusId);
+									$rootScope.hashSession = null;
+									$rootScope.targetAction = null;
+								}
+								//confirm issue with hash code
+								if($rootScope.targetAction === "confirm_issue"){
+									$rootScope.globaloverlay = "active";
+									var user = {};
+									user.authorisation_hash = $rootScope.hashSession;
+									var issue_id = $routeParams.id;
+									var status = "confirmed";
+									var jsondata = JSON.stringify({user,issue_id,status});
+									var getStatusChange = statusChangeService.getStatusChange( jsondata ).then(function(data){
+										var getStatusChange = data.data;
+										console.log(getStatusChange);
+										if(!getStatusChange.success){
+											$scope.hideError = 0;
+											$scope.errorConfirmed = getStatusChange.error;
+											$rootScope.globaloverlay = "";
+										}else{
+											var jsondata = JSON.stringify({"issue_id":$routeParams.id});
+											var getIssues = issuesService.getIssues( jsondata ).then(function (data){
+												$scope.hideError = 0;
+												$scope.successClass = "successAlert";
+												$scope.errorConfirmed = "Geregistreerd bij gemeente";
+												var getdata = data.data;
+												$rootScope.problemIdList = getdata.issues;
+				                                $rootScope.globaloverlay = "";
+											});
+										}
+										
+									});
+									$rootScope.hashSession = null;
+									$rootScope.targetAction = null;
 								}
 								
 						});
@@ -1389,6 +1486,7 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 		$scope.hideStatus="ng-hide";
 		$scope.errorVote = "";
 		$scope.hideError = 1;
+		$scope.successClass=""
 		menuSelected($rootScope,'myIssues');
 		$rootScope.globaloverlay = "active";
 		$scope.id = function(){
@@ -1397,6 +1495,11 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 		if($cookies.getObject('user')==null){
 				$rootScope.urlBefore = $location.path();
 				$location.path('/login');
+		}
+		if($rootScope.successCreate == 1){
+				$scope.hideError = 0;
+				$scope.successClass = "successAlert";
+				$scope.successMessage = "Geregistreerd bij gemeente";
 		}
 		var jsondata = JSON.stringify({"user":{ "username":""+$cookies.getObject('user').username+"",
 												"password_hash":""+$cookies.getObject('user').password_hash+""
@@ -1508,6 +1611,8 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 		$scope.hideError = 1;
 		$scope.errorVote = "";
 	}
+	//delete success Create
+	$rootScope.successCreate = null;
 
 }])
 
@@ -2264,11 +2369,12 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
         
         
     $scope.hide = "ng-hide";
-    
+    c_user = $cookies.getObject('user');
+    c_user_profile = $cookies.getObject('user_profile');
     var user={};
     user.username = c_user.username;
     user.password_hash = c_user.password_hash;
-    
+    console.log($cookies.getObject('user'));
     var password={}
     if($scope.password_old!= null)
         {
@@ -2335,6 +2441,7 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
         
         
 		var jsondata = JSON.stringify({user,password,user_profile});
+		console.log(jsondata);
 		var getProfile = profileService.getProfile(jsondata).then(function (data){
             
                 var getProfile = data.data;
@@ -2405,14 +2512,21 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                     console.log(jsondata);
                     console.log(jsonnewsletter);
                     
-                    
+                    console.log($cookies.getObject("user"));
                     $cookies.putObject('user',getLogin.user);
+                    console.log($cookies.getObject("user"));
                     $cookies.putObject('user_profile',getLogin.user_profile);
+                    var expired = new Date();
+                    expired.setDate(expired.getDate()+((1/24)*2));
+                    $cookies.putObject('user',getLogin.user,{expires:expired});
+                    $cookies.putObject('user_profile',getLogin.user_profile,{expires:expired});
                     $rootScope.globaloverlay = "";  
                     $(window).scrollTop(0);
                     $scope.successAlert = "Profiel geüpdatet"; 
                     $scope.successClass = "successAlert";
                     $scope.hide = "";
+                    $scope.password_new="";
+                    $scope.password_old="";
                         
 //                    $location.path('/profile');
                     
@@ -2578,6 +2692,15 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 			$scope.errorDescription = "";
 			$scope.errorId = "";
 			$scope.errorIdStyle = "";
+            $scope.errorLocation="";
+            $scope.errorInitials="";
+            $scope.errorCity="";
+            $scope.errorSurname="";
+            $scope.errorEmail="";
+            $scope.errorPostcode="";
+            $scope.errorStreet="";
+            $scope.errorStreetNumber="";
+            
 			//initial data for request
 			var user = {};
 			var user_profile = {};
@@ -2689,6 +2812,7 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 	                    //login
 	                    if($cookies.getObject('user')){
 							$location.path(/mijn-meldingen/+issueId);
+							$rootScope.successCreate = 1;
 	                    }else{
 	                    	$location.path(/melding/+issueId);
 	                    }
@@ -2754,6 +2878,7 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 						var issueId = issueData.issue_id;
 	                   if($cookies.getObject('user')){
 							$location.path(/mijn-meldingen/+issueId);
+							$rootScope.successCreate = "Geregistreerd bij gemeente";
 	                    }else{
 	                    	$location.path(/melding/+issueId);
 	                    }
@@ -2783,8 +2908,10 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 		//dulicate data
 		$scope.duplicateData = function(){
 			var user = {};
+			if($cookies.getObject('user')){
 			user.username = $cookies.getObject('user').username;
 			user.password_hash = $cookies.getObject('user').password_hash;
+			}
 			var lat = markerLat;
 			var long = markerLng;
 			var category_id = $scope.categoryId;
@@ -2942,6 +3069,14 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
 			$scope.errorDescription = "";
 			$scope.errorId = "";
 			$scope.errorIdStyle = "";
+            $scope.errorLocation="";
+            $scope.errorInitials="";
+            $scope.errorCity="";
+            $scope.errorSurname="";
+            $scope.errorEmail="";
+            $scope.errorPostcode="";
+            $scope.errorStreet="";
+            $scope.errorStreetNumber="";
 			var file = $scope.imgData;
 
 			//initial data for request
@@ -3054,6 +3189,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
 					var issueId = issueData.issue_id;
                     if($cookies.getObject('user')){
 							$location.path(/mijn-meldingen/+issueId);
+							$rootScope.successCreate = "Geregistreerd bij gemeente";
 	                    }else{
 	                    	$location.path(/melding/+issueId);
 	                    }
@@ -3121,6 +3257,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
 						var issueId = issueData.issue_id;
 	                    if($cookies.getObject('user')){
 							$location.path(/mijn-meldingen/+issueId);
+							$rootScope.successCreate = "Geregistreerd bij gemeente";
 	                    }else{
 	                    	$location.path(/melding/+issueId);
 	                    }
@@ -3307,13 +3444,75 @@ vdbApp.controller('hashCtrl', ['$scope','$rootScope','$routeParams','$window','$
             alert(error);
             $location.path("/");
             
-        }
-        
+        } 
     });
+}])
+
+
+
+//registration hash handling
+
+vdbApp.controller('registrationHashCtrl', ['$scope','$rootScope','$routeParams','$window','$location','confirmRegistrationService','cancelRegistrationService', function ($scope,$rootScope,$routeParams,$window,$location,confirmRegistrationService,cancelRegistrationService,targetAction) {
+
+    
+    $scope.successConfirm = false;
+    $scope.cancelConfirm = false;
+    $scope.showerror = false;
+    
+    console.log("target action : "+$rootScope.targetAction);
+    var hash=$routeParams.hashkey;
+    $rootScope.hashSession = hash;     
+    
+    if($rootScope.targetAction === "register"){
+        $rootScope.globaloverlay = "active";
+
+        var jsondata = JSON.stringify({"hash":""+$rootScope.hashSession+""});
+        
+        var getConfirm = confirmRegistrationService.getConfirm( jsondata ).then(function(data){
+            var confirmation = data.data;
+            console.log(confirmation);
+            if(!confirmation.success){
+                $rootScope.globaloverlay = "";
+                $scope.message = confirmation.message;
+                $scope.showerror = true;
+                
+                
+            }else{
+                 $rootScope.globaloverlay = "";
+                 $scope.successConfirm = true;
+            }
+        });
+           
+        $rootScope.hashSession = null;
+        $rootScope.targetAction = null;
+    }else if($rootScope.targetAction === "cancel_register"){
+        $rootScope.globaloverlay = "active";
+
+        var jsondata = JSON.stringify({"hash":""+$rootScope.hashSession+""});
+
+        var getConfirm = cancelRegistrationService.getConfirm( jsondata ).then(function(data){
+            var confirmation = data.data;
+            console.log(confirmation);
+            if(!confirmation.success){
+                $rootScope.globaloverlay = "";
+                $scope.message = confirmation.message;
+                $scope.showerror = true;
+
+
+            }else{
+                $rootScope.globaloverlay = "";
+                $scope.cancelConfirm = true;
+            }
+        });
+
+        $rootScope.hashSession = null;
+        $rootScope.targetAction = null;
+    }
+    
+    
+    
     
     
     
     
 }])
-
-

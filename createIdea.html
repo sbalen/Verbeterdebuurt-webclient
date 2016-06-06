@@ -23,6 +23,8 @@
               </div>
 
 		        <h1 class="marginheader meldingheader">Nieuw Idee</h1>
+            <h5 style="color:green; margin-right: 6px; margin-left: 6px;">Wij delen je idee met de gemeente &amp; met buurtbewoners. De ervaring leert dat lang niet alle idee&euml;n geholpen kunnen worden door de gemeente, maar dat je kansen kan vergroten met een goed verhaal en veel medestanders.</h5>
+
                 <div class="marginheader meldingheader switchButton " ng-click="switchButton()">
                 <div class="icon-problem"></div>probleem
                 <div class="{{initslide}} {{slide}}" >
@@ -54,9 +56,6 @@
                               </div>
                             </div>
                             <div class="panel-body">
-
-                                <h5 style="color:green; margin-right: 26px; margin-left: 18px;">Wij delen je idee met de gemeente &amp; met buurtbewoners. De ervaring leert dat lang niet alle idee&euml;n geholpen kunnen worden door de gemeente, maar dat je kansen kan vergroten met een goed verhaal en veel medestanders.</h5>
-
                                 <h4>2. Beschrijf de melding</h4>
                                <div class="form-group">
                                     <div class="col-sm-12 form-col" style="margin-bottom: 10px;" ng-class="{'has-error':errorTitle}">
@@ -66,12 +65,12 @@
                                <div class="form-group">
                                     <div class="col-sm-12 form-col" style="margin-bottom: 10px;" ng-class="{'has-error':errorRealization}">
                                         <!-- <input type="text" class="form-control" id="description" placeholder="Realisatie" ng-model="ideaRealization"> -->
-                                        <textarea class="form-control" rows="5" id="Onderwerp" placeholder="Realisatie" ng-model="ideaRealization"></textarea>
+                                        <textarea class="form-control" rows="5" id="Onderwerp" placeholder="Wat is er nodig om je idee te realizeren? Wat is er nodig?" ng-model="ideaRealization"></textarea>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <div class="col-sm-12 form-col" ng-class="{'has-error':errorDescription}">  
-                                        <textarea class="form-control" rows="5" id="description" placeholder="Beschrijving" ng-model="ideaDescription"></textarea>
+                                        <textarea class="form-control" rows="5" id="description" placeholder="Wat is de aanleiding van je idee?" ng-model="ideaDescription"></textarea>
                                     </div>
                                 </div>
                                 <!--<label class="control-label">Select File</label>-->
@@ -81,40 +80,43 @@
                              <div class="panel-body" ng-hide="hideLogin">
                                 <h4>3. Contactgegevens</h4>
                                 Of <a href="login">log in</a> om dit over te slaan
-                                <div class="form-group">
-                                    <div class="col-sm-12 form-col" style="margin-bottom: 10px;" ng-class="{'has-error':errorEmail}" >
-                                        <input type="text" class="form-control" id="email" placeholder="E-mailadres" ng-model="email">
+                               <div class="form-group">
+                                    <div class="col-sm-12 form-col" ng-class="{'has-error': errorEmail}">
+                                        <input type="text" class="form-control" id="email" placeholder="E-mailadres" ng-model="email" style="margin-bottom: 15px">
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                        <div class="col-sm-2 form-col" style="margin-bottom: 10px;">
-                                            <select class="combobox" id="sex" style="width:97%;" ng-model="sex" ng-options="template.value as template.name for template in sexoption">
+                                <div class="form-group" >
+                                        <div class="col-sm-2 form-col marginwidth "   ng-class="{'has-error': errorSex }">
+                                            <select class="combobox" id="category"  ng-model="sex" ng-options="template.value as template.name for template in sexoption" >
+                                                
                                             </select>
                                         </div>
-                                        <div class="col-sm-3 form-col" style="margin-bottom: 10px;" ng-class="{'has-error':errorInitials}">
-                                            <input type="text" class="form-control" id="initials" placeholder="voorletters" style="width:97%;" ng-model="initials">
+                                        <div class="col-sm-3 form-col margin1 marginwidth" ng-class="{'has-error': errorInitials }">
+                                            <input type="text" class="form-control margin2 margin2m" id="initials" placeholder="voorletters" ng-model="initials"  >
                                         </div>
-                                        <div class="col-sm-3 form-col" style="margin-bottom: 10px;">
-                                            <input type="text" class="form-control" id="tussenvoegsel" placeholder="tussenvoegsel" style="width:97%;" ng-model="tussenvoegsel">
+                                        <div class="col-sm-3 form-col margin1 marginwidth" ng-class="{'has-error': errorMiddle }">
+                                            <input type="text" class="form-control margin4 margin4m" id="tussenvoegsel" placeholder="tussenvoegsel" ng-model="tussenvoegsel" >
                                         </div>
-                                        <div class="col-sm-4 form-col" style="margin-bottom: 10px;" ng-class="{'has-error':errorSurname}">
-                                            <input type="text" class="form-control" id="name" placeholder="Achternaam" ng-model="surname" >
+                                        <div class="col-sm-3 form-col margin1 marginwidth1" ng-class="{'has-error': errorSurname }">
+                                            <input type="text" class="form-control margin3 margin3m" id="name" placeholder="Achternaam" ng-model ="surname" style="margin-bottom: 15px">
                                         </div>
                                 </div>
                                 <div class="form-group">
-                                    <div class="col-sm-8 form-col" style="margin-bottom: 10px;" ng-class="{'has-error':errorStreet}">
-                                        <input type="text" class="form-control" id="street" placeholder="Straat" style="width:98%;" ng-model="address">
+                                    <div class="col-sm-8  form-col " ng-class="{'has-error':errorStreet}">
+                                        <input type="text"   class="form-control field marginwidth " id="street" placeholder="Straat" ng-model ="address" >
                                     </div>
-                                    <div class="col-sm-4 form-col" style="margin-bottom: 10px;" ng-class="{'has-error':errorStreetNumber}">
-                                        <input type="text" class="form-control" id="number" placeholder="Huisnummer" ng-model="address_number" >
+                                    <div class="col-sm-4 form-col " ng-class="{'has-error':errorStreetNumber}">
+                                        <input type="text" class="form-control"   id="number" placeholder="Huisnummer" ng-model ="address_number" style="margin-bottom: 15px">
                                     </div>
-                                    <div class="col-sm-4 form-col" style="margin-bottom: 10px;" ng-class="{'has-error':errorPostcode}">
-                                        <input type="text" class="form-control" id="postcode" placeholder="Postcode" style="width:97%;" ng-model="postcode">
                                     </div>
-                                    <div class="col-sm-8 form-col" style="margin-bottom: 10px;" ng-class="{'has-error':errorCity}">
-                                        <input type="text" class="form-control" id="city" placeholder="Plaats" ng-model="city">
+                                <div class="form-group">
+                                    <div class="col-sm-4 form-col " ng-class="{'has-error': errorPostcode}">
+                                        <input type="text" class="form-control field1 marginwidth "  id="postcode" placeholder="Postcode" ng-model="postcode" >
                                     </div>
-                                    <div class="col-sm-12 form-col" style="margin-bottom: 10px;">
+                                    <div class="col-sm-8 form-col" ng-class="{'has-error':errorCity}">
+                                        <input type="text" class="form-control " id="city" placeholder="Plaats" ng-model="city" style="margin-bottom: 15px">
+                                    </div>
+                                    <div class="col-sm-12 form-col">
                                         <input type="text" class="form-control" id="telephonenumber" placeholder="Telefoonnummer (optioneel)" ng-model="phone">
                                     </div>
                                 </div>
@@ -122,7 +124,6 @@
                           </form>
                           
                         <div class="modal-footer">
-                                <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="reset()">Annuleren</button>
                                 <button type="button" class="btn btn-success" data-dismiss="modal" ng-click="createIdea()">Verzenden</button>
                         </div>            
                     </div>  

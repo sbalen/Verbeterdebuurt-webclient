@@ -62,9 +62,10 @@
         <a href="{{lastUrl}}" class="close" aria-label="close" >&times;</a>
          
          <div class="errorMessage">
-             <div class="alert alert-danger" ng-hide="hideError" >
+             <div class="alert alert-danger {{successClass}}" ng-hide="hideError" >
                                       <a class="close " aria-label="close" ng-click="closeError()" ng-hide="hideError" >&times;</a>
                                       <p>{{errorVote}}</p>
+                                      <p>{{errorConfirmed}}</p>
              </div>    
 
          </div>
