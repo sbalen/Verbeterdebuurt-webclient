@@ -29,6 +29,8 @@ var newsletterService = new Object();
 var agreementSevice = new Object();
 var duplicateIssuesService = new Object();
 var getIssueService = new Object();
+var confirmRegistrationService = new Object();
+var cancelRegistrationService = new Object();
 
 
 
@@ -490,7 +492,7 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
         controller : 'registrationHashCtrl',
         resolve: {
             targetAction: function($rootScope) { 
-                $rootScope.targetAction = "register";
+                $rootScope.targetAction = "cancel_register";
                 return true; 
             }
         }
@@ -501,7 +503,7 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
         controller : 'registrationHashCtrl',
         resolve: {
             targetAction: function($rootScope) { 
-                $rootScope.targetAction = "cancel_register";
+                $rootScope.targetAction = "register";
                 return true; 
             }
         }
@@ -872,6 +874,38 @@ vdbApp.factory('getIssueService', ['$http',function ($http) {
                 return getIssueService.data;
             });
             return getIssueService.data;
+        }
+    };
+}])
+
+vdbApp.factory('confirmRegistrationService', ['$http',function ($http) {
+    return {
+        getConfirm : function( jsondata ){
+            return $http.post(APIURL+'confirmRegistration', jsondata)
+                .success(function(data){
+                if(angular.isObject(data)){
+                    confirmRegistrationService.data=data;
+                    return confirmRegistrationService.data;
+                }
+            });
+            return confirmRegistrationService.data;
+
+        }
+    };
+}])
+
+vdbApp.factory('cancelRegistrationService', ['$http',function ($http) {
+    return {
+        getConfirm : function( jsondata ){
+            return $http.post(APIURL+'cancelRegistration', jsondata)
+                .success(function(data){
+                if(angular.isObject(data)){
+                    cancelRegistrationService.data=data;
+                    return cancelRegistrationService.data;
+                }
+            });
+            return cancelRegistrationService.data;
+
         }
     };
 }])
@@ -3392,13 +3426,65 @@ vdbApp.controller('hashCtrl', ['$scope','$rootScope','$routeParams','$window','$
 
 //registration hash handling
 
-vdbApp.controller('registrationHashCtrl', ['$scope','$rootScope','$routeParams','$window','$location', function ($scope,$rootScope,$routeParams,$window,$location,targetAction) {
+vdbApp.controller('registrationHashCtrl', ['$scope','$rootScope','$routeParams','$window','$location','confirmRegistrationService','cancelRegistrationService', function ($scope,$rootScope,$routeParams,$window,$location,confirmRegistrationService,cancelRegistrationService,targetAction) {
 
+    
+    $scope.successConfirm = false;
+    $scope.cancelConfirm = false;
+    $scope.showerror = false;
+    
     console.log("target action : "+$rootScope.targetAction);
     var hash=$routeParams.hashkey;
     $rootScope.hashSession = hash;     
     
-    alert(hash);
+    if($rootScope.targetAction === "register"){
+        $rootScope.globaloverlay = "active";
+
+        var jsondata = JSON.stringify({"hash":""+$rootScope.hashSession+""});
+        
+        var getConfirm = confirmRegistrationService.getConfirm( jsondata ).then(function(data){
+            var confirmation = data.data;
+            console.log(confirmation);
+            if(!confirmation.success){
+                $rootScope.globaloverlay = "";
+                $scope.message = confirmation.message;
+                $scope.showerror = true;
+                
+                
+            }else{
+                 $rootScope.globaloverlay = "";
+                 $scope.successConfirm = true;
+            }
+        });
+           
+        $rootScope.hashSession = null;
+        $rootScope.targetAction = null;
+    }else if($rootScope.targetAction === "cancel_register"){
+        $rootScope.globaloverlay = "active";
+
+        var jsondata = JSON.stringify({"hash":""+$rootScope.hashSession+""});
+
+        var getConfirm = cancelRegistrationService.getConfirm( jsondata ).then(function(data){
+            var confirmation = data.data;
+            console.log(confirmation);
+            if(!confirmation.success){
+                $rootScope.globaloverlay = "";
+                $scope.message = confirmation.message;
+                $scope.showerror = true;
+
+
+            }else{
+                $rootScope.globaloverlay = "";
+                $scope.cancelConfirm = true;
+            }
+        });
+
+        $rootScope.hashSession = null;
+        $rootScope.targetAction = null;
+    }
+    
+    
+    
     
     
     

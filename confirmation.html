@@ -8,7 +8,7 @@
 
         </div>
         <!-- main container -->
-        <div class="col-lg-6 main-container col-md-3 marginbottom">   
+        <div class="col-lg-6 main-container col-md-3 marginbottom" ng-show="successConfirm">   
             <div class="panel panel-default main-panel margintop">
                 <div id="side_bar" class="clearfix" style="margin-bottom:15px;">
                     <h2 style="float: left;">Registratie succesvol</h2><br><br><br>
@@ -17,6 +17,28 @@
                 </div>		    
             </div>
         </div>
+        
+        
+        <div class="col-lg-6 main-container col-md-3 marginbottom" ng-show="cancelConfirm">   
+            <div class="panel panel-default main-panel margintop">
+                <div id="side_bar" class="clearfix" style="margin-bottom:15px;">
+                    <h2 style="float: left;">Registratie geannuleerd</h2><br><br><br>
+                    <br><p style="float: left">De registratie is geannuleerd.</p>
+                </div>		    
+            </div>
+        </div>
+        
+        
+        <div class="col-lg-6 main-container col-md-3 marginbottom" ng-show="showerror">   
+            <div class="panel panel-default main-panel margintop" >
+                <div id="side_bar" class="clearfix" style="margin-bottom:15px;">
+                    <h2 style="float: left;">Registratie bevestigen mislukt
+                    </h2><br><br><br>
+                    <br><p style="float: left">{{message}}</p>
+                </div>		    
+            </div>
+        </div>
+        
     </div>
 
 
