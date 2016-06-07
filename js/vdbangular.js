@@ -23,6 +23,7 @@ var issueSubmitService = new Object();
 var voteSubmitService = new Object();
 var syncFBService = new Object();
 var loginFBService = new Object();
+var loginTWService = new Object();
 var statusChangeService = new Object();
 var issueLogService = new Object();
 var newsletterService = new Object();
@@ -422,7 +423,7 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
         templateUrl: 'forgotconf.html',
         controller : 'forgotconfCtrl'
 	})
-    .when('/nieuw-melding',{
+    .when('/nieuwe-melding',{
         templateUrl: 'selectproblem.html',
         controller : 'createissueCtrl'
 	})
@@ -785,6 +786,22 @@ vdbApp.factory('loginFBService', ['$http',function ($http) {
 }])
 
 
+vdbApp.factory('loginTWService', ['$http',function ($http) {
+    return {
+        getFBLogin : function( jsondata ){
+            return $http.post(APIURL+'connectTwitter', jsondata)
+                .success(function(data){
+                if(angular.isObject(data)){
+                    loginTWService.data=data;
+                    return loginTWService.data;
+                }
+            });
+            return loginTWService.data;
+        }
+    };
+}])
+
+
 
 
 vdbApp.factory('workLogService', ['$http',function ($http) {
@@ -1122,8 +1139,8 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
                                 
                         //auto redirection to new problem
                         if ( !(typeof $routeParams.action === 'undefined')) {
-                            if($routeParams.action == "nieuw-melding"){
-                                $location.path('/nieuw-melding');
+                            if($routeParams.action == "nieuwe-melding"){
+                                $location.path('/nieuwe-melding');
                             }
                             else if($routeParams.action == "nieuw-probleem"){
                                 $location.path('/nieuw-probleem');
@@ -1372,14 +1389,14 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 											$location.path('/'+"login");
 										}
 										if( selected == 'createissue'){
-											$rootScope.urlBefore = "/nieuw-melding";
+											$rootScope.urlBefore = "/nieuwe-melding";
 											menuSelected($rootScope,'createissue');
-											$location.path('/nieuw-melding');
+											$location.path('/nieuwe-melding');
 										}
 									}
 									else{
                                         if(selected == "createissue"){
-                                            $location.path('/nieuw-melding');
+                                            $location.path('/nieuwe-melding');
                                         
                                         }else if(selected == "myissues"){
                                             $location.path('/mijn-meldingen');
@@ -1909,7 +1926,7 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
     
     
     $scope.TWlogin = function(){
-      console.log("Need to login with Twitter");
+        $twitter.login();
     }
     
     $scope.loginWithOndernemingsDossier = function(){
