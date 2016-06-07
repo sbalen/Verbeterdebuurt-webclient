@@ -1103,8 +1103,8 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 //                              }
 //                          }
 //                            }
-
-                        },1000)
+//
+//                        },1000)
                         
 
                         menuSelected($rootScope,'home');
