@@ -41,7 +41,7 @@
                                   <input type="hidden" class="gllpLongitude" value="4.492999"/>
                                   <input type="hidden" class="gllpZoom" value="12"/>
                                   <input type="text" class="gllpLocationName noborder" id="location" readonly size=20/>
-                                  <p class=" warning-text text-primary">Deze gemeente heeft niet aangegeven dat ze uw melding binnenin behandeling nemen binnen 4 weken"</p>
+                                  <p class=" warning-text text-primary">{{standardMessage}}</p>
                                 </fieldset> 
                               </div>
                             </div>
@@ -64,11 +64,11 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="form-group" ng-hide="count==0||count==null">
+                                <div class="form-group" ng-hide="count==0||count==null" style="z-index:50;">
                                     <p>Mogelijke dubbele meldingen. Bekijk of bij deze meldingen misschien jouw probleem al gemeld is. Klik er dan op om deze melding te steunen</p>
                                     
                                     <div class="duplicate-wrapper">
-                                        <div class="duplicate-left" ng-hide="count<=4" ng-click="moveDuplicate(-1)">&lang;</div>
+                                        <div class="duplicate-left" ng-hide="count<=3" ng-click="moveDuplicate(-1)">&lang;</div>
                                         <div class="duplicate-container">
                                             
                                             <div class="duplicate-hidden-block" style="{{blockstyle}}"> 
@@ -76,12 +76,17 @@
                                             
                                             <a href="melding/{{duplicateData.id}}" ng-repeat="duplicateData in duplicateDataList">
                                                 <div class="duplicate-item" >
+                                                    
+                                                    <div class="bubble-description">
+                                                        {{duplicateData.title}}<br/>
+                                                        {{duplicateData.description}}
+                                                    </div>
 
-                                                   <p>{{duplicateData.title}}</p>
+                                                    <p>{{duplicateData.location.src_address}}</p>
                                                 </div>
                                             </a>
                                         </div>
-                                        <div class="duplicate-right" ng-hide="count<=4" ng-click="moveDuplicate(1)">&rang;</div>
+                                        <div class="duplicate-right" ng-hide="count<=3" ng-click="moveDuplicate(1)">&rang;</div>
                                     </div>
                                         
                                         
