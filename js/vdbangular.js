@@ -1885,11 +1885,13 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
 					}
                     $rootScope.globaloverlay = "";
 					$rootScope.errorSession="";
-                    if($rootScope.urlBefore == '/registreren'){
-						$location.path('/map');
-					}
-					else{
-						$location.path($rootScope.urlBefore);
+                    var postcode = $location.search().postcode;
+                    console.log(postcode);
+                    if (postcode != undefined) {
+                        $location.search({});
+                        $location.path('/postcode/' + (postcode.replace(/ /g,"").toUpperCase()));
+					} else {
+                        $location.path('/');
 					}
 					
 				}	
@@ -2004,7 +2006,6 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
     if($scope.fbstatus) {
 
         if($window.sessionStorage.name)$scope.username=$window.sessionStorage.name;
-        if($window.sessionStorage.email)$scope.email=$window.sessionStorage.email;
         if($window.sessionStorage.email)$scope.email=$window.sessionStorage.email;
         if($window.sessionStorage.surname)$scope.surname=$window.sessionStorage.surname;
         $scope.facebookID = $window.sessionStorage.facebookID;
