@@ -32,6 +32,7 @@ var getIssueService = new Object();
 var confirmRegistrationService = new Object();
 var cancelRegistrationService = new Object();
 var confirmIssueService = new Object();
+var unfollowIssueService = new Object();
 
 
 
@@ -517,6 +518,21 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
         }
     })
     
+    
+    //unfollow issue
+    ///melding/afmelden/8f83b0a2992c059248f5f938baa780739ec2952a
+        .when('/melding/afmelden/:hashkey',{
+        templateUrl: 'map.html',
+        controller : 'hashCtrl',
+        resolve: {
+            targetAction: function($rootScope) { 
+                $rootScope.targetAction = "unfollow_issue";
+                return true; 
+            }
+        }
+    })
+    
+    
     //handle registration for hash session
     .when('/registratie/annuleren/hash/:hashkey',{
         templateUrl: 'confirmation.html',
@@ -966,6 +982,22 @@ vdbApp.factory('confirmIssueService', ['$http',function ($http) {
 }])
 
 
+vdbApp.factory('unfollowIssueService', ['$http',function ($http) {
+    return {
+        getUnfollowIssue  : function(jsondata){
+            return $http.post(APIURL+'unfollowIssue',jsondata)
+                .success(function(data){
+                unfollowIssueService.data =data;
+                return unfollowIssueService.data;
+            });
+            return unfollowIssueService.data;
+        }
+
+    };
+}])
+
+
+
 vdbApp.run(['$rootScope', '$window', function($rootScope, $window) {
         (function(d, s, id) {
             var js, fjs = d.getElementsByTagName(s)[0];
@@ -1382,7 +1414,7 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 
 
 
-vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams','issuesService','reportService','usSpinnerService','$location','$anchorScroll','issueLogService','commentService','$timeout','voteSubmitService','$cookies','confirmIssueService', function ($scope,$rootScope,$window,$routeParams,issuesService,reportService,usSpinnerService,$location,$anchorScroll,issueLogService,commentService,$timeout,voteSubmitService,$cookies,confirmIssueService) {
+vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams','issuesService','reportService','usSpinnerService','$location','$anchorScroll','issueLogService','commentService','$timeout','voteSubmitService','$cookies','confirmIssueService', 'unfollowIssueService', function ($scope,$rootScope,$window,$routeParams,issuesService,reportService,usSpinnerService,$location,$anchorScroll,issueLogService,commentService,$timeout,voteSubmitService,$cookies,confirmIssueService,unfollowIssueService) {
 	$rootScope.globaloverlay = "active";
     $scope.hide = "ng-hide";
 	$scope.overlay = "overlay";
@@ -1433,7 +1465,7 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 											var getIssues = issuesService.getIssues( jsondata ).then(function (data){
 												$scope.hideError = 0;
 												$scope.successClass = "successAlert";
-												$scope.errorConfirmed = "Geregistreerd bij gemeente";
+												$scope.errorConfirmed = "Geregistreerd bij gemeente.";
 												var getdata = data.data;
 												$rootScope.problemIdList = getdata.issues;
 				                                $rootScope.globaloverlay = "";
@@ -1444,6 +1476,38 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 									$rootScope.hashSession = null;
 									$rootScope.targetAction = null;
 								}
+        
+        
+                                //unfollow issue with hash code
+                                if($rootScope.targetAction === "unfollow_issue"){
+                                    $rootScope.globaloverlay = "active";
+                                    var authorisation_hash = $rootScope.hashSession;
+                                    var jsondata = JSON.stringify({"hash":""+authorisation_hash+""});
+                                    console.log(jsondata);
+                                    var getUnfollowIssue = unfollowIssueService.getUnfollowIssue( jsondata ).then(function(data){
+                                        var getUnfollowIssue = data.data;
+                                        console.log(getUnfollowIssue);
+                                        if(!getUnfollowIssue.success){
+                                            $scope.hideError = 0;
+                                            $scope.errorConfirmed = getUnfollowIssue.error;
+                                            $rootScope.globaloverlay = "";
+                                        }else{
+                                            var jsondata = JSON.stringify({"issue_id":$routeParams.id});
+                                            var getIssues = issuesService.getIssues( jsondata ).then(function (data){
+                                                $scope.hideError = 0;
+                                                $scope.successClass = "successAlert";
+                                                $scope.errorConfirmed = "Je volgt deze melding niet meer.";
+                                                var getdata = data.data;
+                                                $rootScope.problemIdList = getdata.issues;
+                                                $rootScope.globaloverlay = "";
+                                            });
+                                        }
+
+                                    });
+                                    $rootScope.hashSession = null;
+                                    $rootScope.targetAction = null;
+                                }
+        
 								
 						});
 
