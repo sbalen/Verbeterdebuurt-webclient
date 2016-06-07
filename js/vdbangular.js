@@ -1445,6 +1445,11 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 		if($rootScope.lastUrl==null){
 			$rootScope.lastUrl=='/';
 		}
+        if($rootScope.standardTemp){
+                $scope.hideError = 0;
+                $scope.successClass = "successAlert";
+                $scope.successMessage = $rootScope.standardTemp;
+        }
 	$rootScope.urlBefore = $location.path();
 	var getIssues = issuesService.getIssues( jsondata ).then(function (data){
 								var getdata = data.data;
@@ -1653,6 +1658,7 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 		$scope.hideError = 1;
 		$scope.errorVote = "";
 	}
+    $rootScope.standardTemp = null;
 
 
 }])
