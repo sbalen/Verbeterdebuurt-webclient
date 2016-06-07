@@ -1,7 +1,9 @@
 function getLocation(map) { 
                  var infoWindow = new google.maps.InfoWindow();
                  var infoWindowContent = []; 
+
             // get the data from center of map
+
                google.maps.event.addListener(map, 'dragend', function (e) {
                google.maps.event.trigger(map,'resize')
                 maxlat  = map.getBounds().getNorthEast().lat();

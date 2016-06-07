@@ -33,6 +33,8 @@ var confirmRegistrationService = new Object();
 var cancelRegistrationService = new Object();
 var confirmIssueService = new Object();
 var unfollowIssueService = new Object();
+var serviceStandartService = new Object();
+
 
 
 
@@ -338,7 +340,7 @@ function geocodeGetLocationFound(lat,lng){
                   //if you want the change the area ..
                 if (result[0].address_components[i].types[b] == "administrative_area_level_2") {
                    // name of city
-                    return cityFound= result[0].address_components[i];
+                    cityFound= result[0].address_components[i];
                     break;
                         }
                     }
@@ -975,6 +977,18 @@ vdbApp.factory('confirmIssueService', ['$http',function ($http) {
 	};
 }])
 
+vdbApp.factory('serviceStandartService', ['$http',function ($http) {
+    return {
+        getServiceStandard  : function(jsondata){
+            return $http.post(APIURL+'serviceStandard',jsondata)
+            .success(function(data){
+                serviceStandartService.data = data;
+                return serviceStandartService.data;
+            });
+            return serviceStandartService.data;
+        }
+    };
+}])
 
 vdbApp.factory('unfollowIssueService', ['$http',function ($http) {
     return {
@@ -1016,63 +1030,73 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
                             
                         }
                         
-//                        //geolocation found location
-//                        //SUPPORT GEOLOCATION
-//                            if(navigator.geolocation) {
-//                                console.log("geocode active");
-//                                browserSupportFlag = true;
-//                                navigator.geolocation.getCurrentPosition(function(position){
-//                                                        var mainLat = position.coords.latitude;
-//                                                        var mainLng = position.coords.longitude;
-//                                                        map.setCenter({lat:mainLat,lng:mainLng});
-//                                                        maxlat  = map.getBounds().getNorthEast().lat();
-//                                                        maxlng  = map.getBounds().getNorthEast().lng();
-//                                                        minlat = map.getBounds().getSouthWest().lat();
-//                                                        minlng = map.getBounds().getSouthWest().lng();
-//                                                        var jsondata = JSON.stringify({
-//                                                                        "coords_criterium":{
-//                                                                        "max_lat":maxlat,
-//                                                                        "min_lat":minlat,
-//                                                                        "max_long":maxlng,
-//                                                                        "min_long":minlng
-//                                                                      }
-//                                                                    });
-//                                                            var getIssues = issuesService.getIssues( jsondata ).then(function (data){
-//                                                                    var getdata = data.data;
-//                                                                    $rootScope.newProblemList = getdata.issues;
-//                                                                    //initial google map marker
-//                                                                    if(getdata.count != 0 || !getdata){
-//                                                                    $window.issuesData = getdata;
-//                                                                    showIssue(infoWindow,infoWindowContent);
-//                                                                }
-//                                                            });
-//                                                            var getcity = geocodeGetLocationFound(mainLat,mainLng);
-//                                                            var jsoncity = JSON.stringify({"council":""+getcity+""});
-//                                                            var getReport = reportService.getReport( jsoncity ).then(function (data){
-//                                                            var getdata = data.data;
-//                                                            $rootScope.reportList = getdata.report;
-//                                                            });
-//
-//                                                            var getAgreement = agreementSevice.getAgreement (jsoncity).then(function(data){
-//                                                                    var getdata = data.data;
-//                                                                    $rootScope.agreement = getdata;
-//                                                                    $timeout(function(){
-//                                                                        if(!getdata.logo){
-//                                                                        $rootScope.hideLogo = 1;
-//                                                                    }
-//                                                                    else{
-//                                                                        $rootScope.hideLogo = 0;
-//                                                                        console.log($scope.hideLogo);   
-//                                                                    }
-//                                                                    })
-//                                                            });
-//                                                    
-//                                                })
-//                                    }
-//                          // Browser doesn't support Geolocation
-//                           else {
-//                                
-//                              }
+                        //geolocation found location
+                        //SUPPORT GEOLOCATION
+                          //   if(navigator.geolocation) {
+                          //       console.log("geocode active");
+                          //       browserSupportFlag = true;
+                          //       navigator.geolocation.getCurrentPosition(
+                          //                       //when user accept the location
+                          //                       function(position){
+                          //                               var mainLat = position.coords.latitude;
+                          //                               var mainLng = position.coords.longitude;
+                          //                               map.setCenter({lat:mainLat,lng:mainLng});
+                          //                               maxlat  = map.getBounds().getNorthEast().lat();
+                          //                               maxlng  = map.getBounds().getNorthEast().lng();
+                          //                               minlat = map.getBounds().getSouthWest().lat();
+                          //                               minlng = map.getBounds().getSouthWest().lng();
+                          //                               var jsondata = JSON.stringify({
+                          //                                               "coords_criterium":{
+                          //                                               "max_lat":maxlat,
+                          //                                               "min_lat":minlat,
+                          //                                               "max_long":maxlng,
+                          //                                               "min_long":minlng
+                          //                                             }
+                          //                                           });
+                          //                                   var getIssues = issuesService.getIssues( jsondata ).then(function (data){
+                          //                                           var getdata = data.data;
+                          //                                           $rootScope.newProblemList = getdata.issues;
+                          //                                           //initial google map marker
+                          //                                           if(getdata.count != 0 || !getdata){
+                          //                                           $window.issuesData = getdata;
+                          //                                           showIssue(infoWindow,infoWindowContent);
+                          //                                       }
+                          //                                   });
+                          //                                   var getcity = geocodeGetLocationFound(mainLat,mainLng);
+                          //                                   var jsoncity = JSON.stringify({"council":""+getcity+""});
+                          //                                   var getReport = reportService.getReport( jsoncity ).then(function (data){
+                          //                                   var getdata = data.data;
+                          //                                   $rootScope.reportList = getdata.report;
+                          //                                   });
+
+                          //                                   var getAgreement = agreementSevice.getAgreement (jsoncity).then(function(data){
+                          //                                           var getdata = data.data;
+                          //                                           $rootScope.agreement = getdata;
+                          //                                           $timeout(function(){
+                          //                                               if(!getdata.logo){
+                          //                                               $rootScope.hideLogo = 1;
+                          //                                           }
+                          //                                           else{
+                          //                                               $rootScope.hideLogo = 0;
+                          //                                               console.log($scope.hideLogo);   
+                          //                                           }
+                          //                                           })
+                          //                                   });
+                                                    
+                          //                       },
+                          //                       //when user did not share location
+                          //                       function(error){
+                          //                           if(error.PERMISSION_DENIED){
+
+                          //                           }
+                          //                       }
+                          //                       )
+                          //           }
+                          // // Browser doesn't support Geolocation
+                          //  else {
+                                
+                          //     }
+
                         menuSelected($rootScope,'home');
                         //$scope.hideLogo = 1;
                         //google map aouto complete
@@ -1134,7 +1158,7 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
                         }
 
                                 
-						},1000);
+						},3000);
 						if(!$routeParams.cityName){
 						if(!$rootScope.lastCity){
 							var jsoncity = JSON.stringify({"council":"Leiden"});	
@@ -1678,7 +1702,7 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 		$scope.hideStatus="ng-hide";
 		$scope.errorVote = "";
 		$scope.hideError = 1;
-		$scope.successClass=""
+		$scope.successClass="";
 		menuSelected($rootScope,'myIssues');
 		$rootScope.globaloverlay = "active";
 		$scope.id = function(){
@@ -1688,11 +1712,11 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 				$rootScope.urlBefore = $location.path();
 				$location.path('/login');
 		}
-		if($rootScope.successCreate == 1){
+		if($rootScope.standardTemp){
 				$scope.hideError = 0;
 				$scope.successClass = "successAlert";
-				$scope.successMessage = "Je melding is verstuurd!";
-		}
+				$scope.successMessage = $rootScope.standardTemp;
+        }
 		var jsondata = JSON.stringify({"user":{ "username":""+$cookies.getObject('user').username+"",
 												"password_hash":""+$cookies.getObject('user').password_hash+""
 
@@ -1804,7 +1828,7 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 		$scope.errorVote = "";
 	}
 	//delete success Create
-	$rootScope.successCreate = null;
+	$rootScope.standardTemp= null;
 
 }])
 
@@ -2733,7 +2757,7 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
     
 }])
 
-vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout','categoriesService','issueSubmitService','myIssuesService','$location','issuesService','issueSubmitServiceWithImage','duplicateIssuesService','$cookies', function ($scope,$rootScope,$window,$timeout,categoriesService,issueSubmitService,myIssuesService,$location,issuesService,issueSubmitServiceWithImage,duplicateIssuesService,$cookies) {	
+vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout','categoriesService','issueSubmitService','myIssuesService','$location','issuesService','issueSubmitServiceWithImage','duplicateIssuesService','$cookies','serviceStandartService',function ($scope,$rootScope,$window,$timeout,categoriesService,issueSubmitService,myIssuesService,$location,issuesService,issueSubmitServiceWithImage,duplicateIssuesService,$cookies,serviceStandartService) {	
 		$scope.hide = "ng-hide";
 		$scope.issueName = "Probleem"
 		$scope.hideIssue = 1;
@@ -2742,6 +2766,7 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 		$scope.initslide = "toggle-button";
 		$scope.loadCategory = 1;
 		$scope.count = 0;
+        $scope.standardMessage = "";
 		
 
 		$scope.email="";
@@ -2809,7 +2834,7 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 			googleMapCreateProblem(latlngChange);
 			var latitude = markerLat;
 			var longitude = markerLng;
-			var jsondataCity = JSON.stringify({latitude,longitude});
+            var jsondataCity = JSON.stringify({latitude,longitude});
 			var getCategories = categoriesService.getCategories( jsondataCity ).then(function (data){
 				$scope.categoriesList = data.data.categories;
 				$timeout(function(){
@@ -2826,6 +2851,7 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 			var latitude = markerLat;
 			var longitude = markerLng;
 			var jsondataCity = JSON.stringify({latitude,longitude});
+            var jsondataCity = JSON.stringify({latitude,longitude});
 			console.log(jsondataCity);
 			$timeout(function(){
 			$scope.categoriesList = null;
@@ -2847,6 +2873,7 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 			city.long_name = $scope.searchCityCreate;
 	 		var latitude = markerLat;
 			var longitude = markerLng;
+            var jsondataCity = JSON.stringify({latitude,longitude});
 			$rootScope.lastCity = $scope.searchCityCreate;
 			console.log($rootScope.lastCity);
 			var jsondataCity = JSON.stringify({latitude,longitude});
@@ -3101,21 +3128,27 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 			}
 			var lat = markerLat;
 			var long = markerLng;
+            var council = city.long_name;
 			var category_id = $scope.categoryId;
 			$rootScope.currentPage = 1;
   			$scope.totalPage = 5;
-
+            var jsondataServiceStandard = JSON.stringify({council,category_id});
 			var jsondataDuplicate = JSON.stringify({user,lat,long,category_id});
-			console.log(jsondataDuplicate);
 			var getDuplicateIssue = duplicateIssuesService.getDuplicateIssue(jsondataDuplicate).then(function (data){
 					var getDuplicateIssue = data.data;
 					$scope.count = data.data.count;
 					$scope.duplicateDataList = getDuplicateIssue.issues;
 					console.log(getDuplicateIssue);
-
-                   
-                    
+      
             });
+            console.log(jsondataServiceStandard);
+            var getServiceStandard = serviceStandartService.getServiceStandard(jsondataServiceStandard).then(function (data){
+                    var getServiceStandard = data.data;
+                    $scope.standardMessage = getServiceStandard.standard;
+                    $rootScope.standardTemp = getServiceStandard.standard;
+                    console.log(getServiceStandard);
+            })
+           
             
             $scope.blockstyle = "margin-left:0%";
             $scope.duplicateposition = 0;
