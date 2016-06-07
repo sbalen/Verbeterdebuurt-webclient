@@ -557,11 +557,6 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
     .when('/:location/:title/:id',{
         templateUrl :'issuesView.html',
         controller : 'issuesCtrl'
-     
-        
-        
-        
-        
     })
     
     
@@ -1035,79 +1030,79 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
                             
                         }
                         
-                        //geolocation found location
-                        //SUPPORT GEOLOCATION
-                        $timeout(function(){
-                            if(!$routeParams.cityName){
-                                if(geolocationValid==0){
-                            if(navigator.geolocation) {
-                                console.log("geocode active");
-                                browserSupportFlag = true;
-                                navigator.geolocation.getCurrentPosition(
-                                                //when user accept the location
-                                                function(position){
-                                                        var mainLat = position.coords.latitude;
-                                                        var mainLng = position.coords.longitude;
-                                                        map.setCenter({lat:mainLat,lng:mainLng});
-                                                        maxlat  = map.getBounds().getNorthEast().lat();
-                                                        maxlng  = map.getBounds().getNorthEast().lng();
-                                                        minlat = map.getBounds().getSouthWest().lat();
-                                                        minlng = map.getBounds().getSouthWest().lng();
-                                                        var jsondata = JSON.stringify({
-                                                                        "coords_criterium":{
-                                                                        "max_lat":maxlat,
-                                                                        "min_lat":minlat,
-                                                                        "max_long":maxlng,
-                                                                        "min_long":minlng
-                                                                      }
-                                                                    });
-                                                            var getIssues = issuesService.getIssues( jsondata ).then(function (data){
-                                                                    var getdata = data.data;
-                                                                    $rootScope.newProblemList = getdata.issues;
-                                                                    //initial google map marker
-                                                                    if(getdata.count != 0 || !getdata){
-                                                                    $window.issuesData = getdata;
-                                                                    showIssue(infoWindow,infoWindowContent);
-                                                                }
-                                                            });
-                                                            var getcity = geocodeGetLocationFound(mainLat,mainLng);
-                                                            var jsoncity = JSON.stringify({"council":""+getcity+""});
-                                                            var getReport = reportService.getReport( jsoncity ).then(function (data){
-                                                            var getdata = data.data;
-                                                            $rootScope.reportList = getdata.report;
-                                                            });
-
-                                                            var getAgreement = agreementSevice.getAgreement (jsoncity).then(function(data){
-                                                                    var getdata = data.data;
-                                                                    $rootScope.agreement = getdata;
-                                                                    $timeout(function(){
-                                                                        if(!getdata.logo){
-                                                                        $rootScope.hideLogo = 1;
-                                                                    }
-                                                                    else{
-                                                                        $rootScope.hideLogo = 0;
-                                                                        console.log($scope.hideLogo);   
-                                                                    }
-                                                                    })
-                                                            });
-                                                            geolocationValid = 1;
-                                                    
-                                                },
-                                                //when user did not share location
-                                                function(error){
-                                                    if(error.PERMISSION_DENIED){
-
-                                                    }
-                                                }
-                                                )
-                                    }
-                                
-                          // Browser doesn't support Geolocation
-                           else {
-                                
-                              }
-                          }
-                            }
+//                        //geolocation found location
+//                        //SUPPORT GEOLOCATION
+//                        $timeout(function(){
+//                            if(!$routeParams.cityName){
+//                                if(geolocationValid==0){
+//                            if(navigator.geolocation) {
+//                                console.log("geocode active");
+//                                browserSupportFlag = true;
+//                                navigator.geolocation.getCurrentPosition(
+//                                                //when user accept the location
+//                                                function(position){
+//                                                        var mainLat = position.coords.latitude;
+//                                                        var mainLng = position.coords.longitude;
+//                                                        map.setCenter({lat:mainLat,lng:mainLng});
+//                                                        maxlat  = map.getBounds().getNorthEast().lat();
+//                                                        maxlng  = map.getBounds().getNorthEast().lng();
+//                                                        minlat = map.getBounds().getSouthWest().lat();
+//                                                        minlng = map.getBounds().getSouthWest().lng();
+//                                                        var jsondata = JSON.stringify({
+//                                                                        "coords_criterium":{
+//                                                                        "max_lat":maxlat,
+//                                                                        "min_lat":minlat,
+//                                                                        "max_long":maxlng,
+//                                                                        "min_long":minlng
+//                                                                      }
+//                                                                    });
+//                                                            var getIssues = issuesService.getIssues( jsondata ).then(function (data){
+//                                                                    var getdata = data.data;
+//                                                                    $rootScope.newProblemList = getdata.issues;
+//                                                                    //initial google map marker
+//                                                                    if(getdata.count != 0 || !getdata){
+//                                                                    $window.issuesData = getdata;
+//                                                                    showIssue(infoWindow,infoWindowContent);
+//                                                                }
+//                                                            });
+//                                                            var getcity = geocodeGetLocationFound(mainLat,mainLng);
+//                                                            var jsoncity = JSON.stringify({"council":""+getcity+""});
+//                                                            var getReport = reportService.getReport( jsoncity ).then(function (data){
+//                                                            var getdata = data.data;
+//                                                            $rootScope.reportList = getdata.report;
+//                                                            });
+//
+//                                                            var getAgreement = agreementSevice.getAgreement (jsoncity).then(function(data){
+//                                                                    var getdata = data.data;
+//                                                                    $rootScope.agreement = getdata;
+//                                                                    $timeout(function(){
+//                                                                        if(!getdata.logo){
+//                                                                        $rootScope.hideLogo = 1;
+//                                                                    }
+//                                                                    else{
+//                                                                        $rootScope.hideLogo = 0;
+//                                                                        console.log($scope.hideLogo);   
+//                                                                    }
+//                                                                    })
+//                                                            });
+//                                                            geolocationValid = 1;
+//                                                    
+//                                                },
+//                                                //when user did not share location
+//                                                function(error){
+//                                                    if(error.PERMISSION_DENIED){
+//
+//                                                    }
+//                                                }
+//                                                )
+//                                    }
+//                                
+//                          // Browser doesn't support Geolocation
+//                           else {
+//                                
+//                              }
+//                          }
+//                            }
 
                         },1000)
                         
