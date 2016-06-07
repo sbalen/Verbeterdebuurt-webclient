@@ -1,4 +1,4 @@
-var vdbApp = angular.module('vdbApp', ['ngRoute','angularSpinner','angularUtils.directives.dirPagination','ngFacebook','ngCookies','naif.base64','satellizer'])
+var vdbApp = angular.module('vdbApp', ['ngRoute','angularSpinner','angularUtils.directives.dirPagination','ngFacebook','ngCookies','naif.base64'])
 var APIURL = "https://staging.verbeterdebuurt.nl/api.php/json_1_3/";
 var geocoder = new google.maps.Geocoder();
 var infoWindow = new google.maps.InfoWindow();
@@ -37,21 +37,8 @@ var confirmIssueService = new Object();
 
 //google map
 window.onload = function(){
-	var browserSupportFlag =  new Boolean();
-	//SUPPORT GEOLOCATION
-	if(navigator.geolocation) {
-    	browserSupportFlag = true;
-    	navigator.geolocation.getCurrentPosition(function(position){
-					      initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
-					      console.log(initialLocation);
-   							});
-					  		}
-  // Browser doesn't support Geolocation
-							  else {
-					
-							  }
       var mainLat = 52.158367;
-      var mainLng = 4.492999;
+        var mainLng = 4.492999;
       this._map_center = {lat: mainLat , lng: mainLng};
       //this._marker_positions = [{lat: 27.1959742, lng: 78.02423269999100}, {lat: 27.1959733, lng: 78.02423269999992}] ;
       var mapOptions = {
@@ -82,6 +69,7 @@ window.onload = function(){
 			    ]
 
       };
+
      map = new google.maps.Map(document.getElementById('googlemaps'), mapOptions);
      getLocation(map);
      var geocoder = new google.maps.Geocoder();
@@ -328,13 +316,28 @@ function menuSelected($scope,selected){
 	}
 };
 
+function geocodeGetLocationFound(lat,lng){
+    geocoder.geocode({'location':{'lat': lat,'lng':lng}} , function (result , status){
+                if (status == google.maps.GeocoderStatus.OK){
 
-vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegateProvider','$authProvider', function ($routeProvider,$locationProvider,$httpProvider,$sceDelegateProvider,$authProvider) {
+                for (var i=0; i<result[0].address_components.length; i++) {
+                for (var b=0;b<result[0].address_components[i].types.length;b++) {
+                  //if you want the change the area ..
+                if (result[0].address_components[i].types[b] == "administrative_area_level_2") {
+                   // name of city
+                    return cityFound= result[0].address_components[i];
+                    break;
+                        }
+                    }
+                }
+                     
+                }
+                
 
+               });
+}
 
-    $authProvider.facebook({
-      clientId: '1622145028109341'
-    });
+vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegateProvider', function ($routeProvider,$locationProvider,$httpProvider,$sceDelegateProvider) {
 
 	$routeProvider
 	.when('/', {
@@ -963,7 +966,63 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
                             
                         }
                         
-                        
+                        //geolocation found location
+                        //SUPPORT GEOLOCATION
+                            if(navigator.geolocation) {
+                                console.log("geocode active");
+                                browserSupportFlag = true;
+                                navigator.geolocation.getCurrentPosition(function(position){
+                                                        var mainLat = position.coords.latitude;
+                                                        var mainLng = position.coords.longitude;
+                                                        map.setCenter({lat:mainLat,lng:mainLng});
+                                                        maxlat  = map.getBounds().getNorthEast().lat();
+                                                        maxlng  = map.getBounds().getNorthEast().lng();
+                                                        minlat = map.getBounds().getSouthWest().lat();
+                                                        minlng = map.getBounds().getSouthWest().lng();
+                                                        var jsondata = JSON.stringify({
+                                                                        "coords_criterium":{
+                                                                        "max_lat":maxlat,
+                                                                        "min_lat":minlat,
+                                                                        "max_long":maxlng,
+                                                                        "min_long":minlng
+                                                                      }
+                                                                    });
+                                                            var getIssues = issuesService.getIssues( jsondata ).then(function (data){
+                                                                    var getdata = data.data;
+                                                                    $rootScope.newProblemList = getdata.issues;
+                                                                    //initial google map marker
+                                                                    if(getdata.count != 0 || !getdata){
+                                                                    $window.issuesData = getdata;
+                                                                    showIssue(infoWindow,infoWindowContent);
+                                                                }
+                                                            });
+                                                            var getcity = geocodeGetLocationFound(mainLat,mainLng);
+                                                            var jsoncity = JSON.stringify({"council":""+getcity+""});
+                                                            var getReport = reportService.getReport( jsoncity ).then(function (data){
+                                                            var getdata = data.data;
+                                                            $rootScope.reportList = getdata.report;
+                                                            });
+
+                                                            var getAgreement = agreementSevice.getAgreement (jsoncity).then(function(data){
+                                                                    var getdata = data.data;
+                                                                    $rootScope.agreement = getdata;
+                                                                    $timeout(function(){
+                                                                        if(!getdata.logo){
+                                                                        $rootScope.hideLogo = 1;
+                                                                    }
+                                                                    else{
+                                                                        $rootScope.hideLogo = 0;
+                                                                        console.log($scope.hideLogo);   
+                                                                    }
+                                                                    })
+                                                            });
+                                                    
+                                                })
+                                    }
+                          // Browser doesn't support Geolocation
+                           else {
+                                
+                              }
                         menuSelected($rootScope,'home');
                         //$scope.hideLogo = 1;
                         //google map aouto complete
@@ -1667,7 +1726,7 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 
 }])
 
-vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','$location','usSpinnerService', '$facebook','$auth','$cookies', function ($scope,$rootScope,$window,loginService,$location,usSpinnerService,$facebook,$auth,$cookies) {
+vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','$location','usSpinnerService', '$facebook','$cookies', function ($scope,$rootScope,$window,loginService,$location,usSpinnerService,$facebook,$cookies) {
 	$scope.hide = "ng-hide";
     $scope.lusername="";
     $scope.lpassword="";
@@ -1771,12 +1830,6 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
       console.log("Need to login with Twitter");
     }
     
-    
-    $scope.authenticate = function(provider) {
-    	console.log('authenticate('+provider+')');
-      $auth.authenticate(provider);
-    };
-    
     $scope.loginWithOndernemingsDossier = function(){
         $rootScope.globaloverlay = "active";
         var jsondata = JSON.stringify({"ondernemingsdossierURL":""+$location.url()+""});
@@ -1832,11 +1885,13 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
 					}
                     $rootScope.globaloverlay = "";
 					$rootScope.errorSession="";
-                    if($rootScope.urlBefore == '/registreren'){
-						$location.path('/map');
-					}
-					else{
-						$location.path($rootScope.urlBefore);
+                    var postcode = $location.search().postcode;
+                    console.log(postcode);
+                    if (postcode != undefined) {
+                        $location.search({});
+                        $location.path('/postcode/' + (postcode.replace(/ /g,"").toUpperCase()));
+					} else {
+                        $location.path('/');
 					}
 					
 				}	
@@ -1950,8 +2005,7 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
     $scope.fbstatus = $facebook.isConnected();
     if($scope.fbstatus) {
 
-        if($window.sessionStorage.name)$scope.initials=$window.sessionStorage.name;
-        if($window.sessionStorage.email)$scope.email=$window.sessionStorage.email;
+        if($window.sessionStorage.name)$scope.username=$window.sessionStorage.name;
         if($window.sessionStorage.email)$scope.email=$window.sessionStorage.email;
         if($window.sessionStorage.surname)$scope.surname=$window.sessionStorage.surname;
         $scope.facebookID = $window.sessionStorage.facebookID;
@@ -1959,8 +2013,8 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
     }
 
     if ($window.sessionStorage.ondernemingsdossierID != undefined) {
-
-        if($window.sessionStorage.name)$scope.initials=$window.sessionStorage.name;
+        console.log($window.sessionStorage.name);
+        if($window.sessionStorage.name)$scope.username=$window.sessionStorage.name.replace(/\+/g,"").replace(/-/g,"").replace(/_/g,"").replace(/\//g,"").replace(/ /g,"").toLowerCase();
         if($window.sessionStorage.email)$scope.email=$window.sessionStorage.email;
         if($window.sessionStorage.postcode)$scope.postcode=$window.sessionStorage.postcode;
         if($window.sessionStorage.address_number)$scope.address_number=$window.sessionStorage.address_number;
