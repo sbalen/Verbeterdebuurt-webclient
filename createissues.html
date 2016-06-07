@@ -64,7 +64,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="form-group" ng-hide="count==0||count==null">
+                                <div class="form-group" ng-hide="count==0||count==null" style="z-index:50;">
                                     <p>Mogelijke dubbele meldingen. Bekijk of bij deze meldingen misschien jouw probleem al gemeld is. Klik er dan op om deze melding te steunen</p>
                                     
                                     <div class="duplicate-wrapper">
@@ -76,8 +76,12 @@
                                             
                                             <a href="melding/{{duplicateData.id}}" ng-repeat="duplicateData in duplicateDataList">
                                                 <div class="duplicate-item" >
+                                                    
+                                                    <div class="bubble-description">
+                                                    
+                                                    </div>
 
-                                                   <p>{{duplicateData.title}}</p>
+                                                    <p>{{duplicateData.location.src_address}}</p>
                                                 </div>
                                             </a>
                                         </div>
