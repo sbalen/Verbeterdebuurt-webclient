@@ -328,6 +328,17 @@ function menuSelected($scope,selected){
 	}
 };
 
+//convert to slug
+function convertToSlug(Text)
+{
+    return Text
+        .toLowerCase()
+        .replace(/[^\w ]+/g,'')
+        .replace(/ +/g,'-')
+    ;
+}
+
+
 
 vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegateProvider','$authProvider', function ($routeProvider,$locationProvider,$httpProvider,$sceDelegateProvider,$authProvider) {
 
@@ -369,6 +380,8 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
 		templateUrl :'issuesView.html',
 		controller : 'issuesCtrl'
 	})
+    
+    
 	.when('/mention', {
 		templateUrl: 'mention.html',
 		controller : 'mentionCtrl'
@@ -518,7 +531,11 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
     })
     
     
-    
+    //pretty url for issue-detail
+    .when('/melding/:location/:title/:id',{
+        templateUrl :'issuesView.html',
+        controller : 'issuesCtrl'
+    })
     
     
      //redirect city / postcode
