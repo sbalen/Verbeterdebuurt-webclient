@@ -387,13 +387,10 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
 		templateUrl :'issuesView.html',
 		controller : 'issuesCtrl'
 	})
-    
-    
 	.when('/mention', {
 		templateUrl: 'mention.html',
 		controller : 'mentionCtrl'
 	})
-
     .when('/mijn-meldingen', {
 		templateUrl: 'myissues.html',
 		controller : 'myIssuesCtrl'	
@@ -404,7 +401,6 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
 	})
     .when('/login', {
 		templateUrl: 'login.html'
-		
 	})
     .when('/registreren', {
 		templateUrl: 'register.html'
@@ -424,7 +420,7 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
         templateUrl: 'forgotconf.html',
         controller : 'forgotconfCtrl'
 	})
-    .when('/nieuw-melding',{
+    .when('/nieuwe-melding',{
         templateUrl: 'selectproblem.html',
         controller : 'createissueCtrl'
 	})
@@ -513,11 +509,8 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
             }
         }
     })
-    
-    
     //unfollow issue
-    ///melding/afmelden/ae7f2bcf791d6f5570240e3c1f6aa44824c3e689
-        .when('/melding/afmelden/:hashkey',{
+    .when('/melding/afmelden/:hashkey',{
         templateUrl: 'map.html',
         controller : 'hashCtrl',
         resolve: {
@@ -527,8 +520,6 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
             }
         }
     })
-    
-    
     //handle registration for hash session
     .when('/registratie/annuleren/hash/:hashkey',{
         templateUrl: 'confirmation.html',
@@ -551,17 +542,20 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
             }
         }
     })
-    
-    
     //pretty url for issue-detail
     .when('/:location/:title/:id',{
         templateUrl :'issuesView.html',
         controller : 'issuesCtrl'
     })
-    
-    
-     //redirect city / postcode
-    
+    .when('/auth/:type',{
+        resolve : {
+            targetAction: function($rootScope) { 
+                console.log("hiaha");
+                return true; 
+            }
+        }
+    })
+    //redirect city / postcode
     .when('/:cityNameClone',{
         templateUrl: 'map.html',
         controller : 'mainCtrl'
@@ -570,8 +564,7 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
      	templateUrl: 'map.html',
      	controller : 'mainCtrl'
      })
-    
-    
+
 	 $locationProvider.html5Mode(true);
 	 $sceDelegateProvider.resourceUrlWhitelist([
 		// Allow same origin resource loads.
@@ -785,6 +778,7 @@ vdbApp.factory('loginFBService', ['$http',function ($http) {
         }
     };
 }])
+
 
 
 
@@ -1005,7 +999,6 @@ vdbApp.factory('unfollowIssueService', ['$http',function ($http) {
 }])
 
 
-
 vdbApp.run(['$rootScope', '$window', function($rootScope, $window) {
         (function(d, s, id) {
             var js, fjs = d.getElementsByTagName(s)[0];
@@ -1156,8 +1149,8 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
                                 
                         //auto redirection to new problem
                         if ( !(typeof $routeParams.action === 'undefined')) {
-                            if($routeParams.action == "nieuw-melding"){
-                                $location.path('/nieuw-melding');
+                            if($routeParams.action == "nieuwe-melding"){
+                                $location.path('/nieuwe-melding');
                             }
                             else if($routeParams.action == "nieuw-probleem"){
                                 $location.path('/nieuw-probleem');
@@ -1345,7 +1338,6 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
                             
                         }
                         
-                        
 						//search
 						$scope.clickSearch= function(){	
 							$rootScope.globaloverlay = "active";
@@ -1406,14 +1398,14 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 											$location.path('/'+"login");
 										}
 										if( selected == 'createissue'){
-											$rootScope.urlBefore = "/nieuw-melding";
+											$rootScope.urlBefore = "/nieuwe-melding";
 											menuSelected($rootScope,'createissue');
-											$location.path('/nieuw-melding');
+											$location.path('/nieuwe-melding');
 										}
 									}
 									else{
                                         if(selected == "createissue"){
-                                            $location.path('/nieuw-melding');
+                                            $location.path('/nieuwe-melding');
                                         
                                         }else if(selected == "myissues"){
                                             $location.path('/mijn-meldingen');
@@ -1947,10 +1939,6 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
         $facebook.login();
     }
     
-    
-    $scope.TWlogin = function(){
-      console.log("Need to login with Twitter");
-    }
     
     $scope.loginWithOndernemingsDossier = function(){
         $rootScope.globaloverlay = "active";
