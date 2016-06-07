@@ -698,14 +698,15 @@ h6 {
       white-space: normal;
       display: inline-block;
       height: 80px;
-      width: calc(25% - 15px);
+      width: calc(33% - 12px);
       border: 1px solid #ccc;
       margin-left: 5px;
       margin-right: 5px;
       font-size: 12px;
       vertical-align: top;
       box-sizing: border-box;
-      padding: 5px; }
+      padding: 5px;
+      background: #fcfcfc; }
       .duplicate-wrapper .duplicate-container .duplicate-item p {
         word-break: overflow-wrap; }
 
