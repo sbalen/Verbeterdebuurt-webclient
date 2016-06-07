@@ -1,4 +1,4 @@
-var vdbApp = angular.module('vdbApp', ['ngRoute','angularSpinner','angularUtils.directives.dirPagination','ngFacebook','ngCookies','naif.base64','satellizer'])
+var vdbApp = angular.module('vdbApp', ['ngRoute','angularSpinner','angularUtils.directives.dirPagination','ngFacebook','ngCookies','naif.base64'])
 var APIURL = "https://staging.verbeterdebuurt.nl/api.php/json_1_3/";
 var geocoder = new google.maps.Geocoder();
 var infoWindow = new google.maps.InfoWindow();
@@ -337,12 +337,7 @@ function geocodeGetLocationFound(lat,lng){
                });
 }
 
-vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegateProvider','$authProvider', function ($routeProvider,$locationProvider,$httpProvider,$sceDelegateProvider,$authProvider) {
-
-
-    $authProvider.facebook({
-      clientId: '1622145028109341'
-    });
+vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegateProvider', function ($routeProvider,$locationProvider,$httpProvider,$sceDelegateProvider) {
 
 	$routeProvider
 	.when('/', {
@@ -1731,7 +1726,7 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 
 }])
 
-vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','$location','usSpinnerService', '$facebook','$auth','$cookies', function ($scope,$rootScope,$window,loginService,$location,usSpinnerService,$facebook,$auth,$cookies) {
+vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','$location','usSpinnerService', '$facebook','$cookies', function ($scope,$rootScope,$window,loginService,$location,usSpinnerService,$facebook,$cookies) {
 	$scope.hide = "ng-hide";
     $scope.lusername="";
     $scope.lpassword="";
@@ -1834,12 +1829,6 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
     $scope.TWlogin = function(){
       console.log("Need to login with Twitter");
     }
-    
-    
-    $scope.authenticate = function(provider) {
-    	console.log('authenticate('+provider+')');
-      $auth.authenticate(provider);
-    };
     
     $scope.loginWithOndernemingsDossier = function(){
         $rootScope.globaloverlay = "active";
