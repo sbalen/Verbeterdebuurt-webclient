@@ -1,4 +1,4 @@
-var vdbApp = angular.module('vdbApp', ['ngRoute','angularSpinner','angularUtils.directives.dirPagination','ngFacebook','ngCookies','naif.base64','satellizer'])
+var vdbApp = angular.module('vdbApp', ['ngRoute','angularSpinner','angularUtils.directives.dirPagination','ngFacebook','ngCookies','naif.base64'])
 var APIURL = "https://staging.verbeterdebuurt.nl/api.php/json_1_3/";
 var geocoder = new google.maps.Geocoder();
 var infoWindow = new google.maps.InfoWindow();
@@ -337,12 +337,7 @@ function geocodeGetLocationFound(lat,lng){
                });
 }
 
-vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegateProvider','$authProvider', function ($routeProvider,$locationProvider,$httpProvider,$sceDelegateProvider,$authProvider) {
-
-
-    $authProvider.facebook({
-      clientId: '1622145028109341'
-    });
+vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegateProvider', function ($routeProvider,$locationProvider,$httpProvider,$sceDelegateProvider) {
 
 	$routeProvider
 	.when('/', {
@@ -1731,7 +1726,7 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 
 }])
 
-vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','$location','usSpinnerService', '$facebook','$auth','$cookies', function ($scope,$rootScope,$window,loginService,$location,usSpinnerService,$facebook,$auth,$cookies) {
+vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','$location','usSpinnerService', '$facebook','$cookies', function ($scope,$rootScope,$window,loginService,$location,usSpinnerService,$facebook,$cookies) {
 	$scope.hide = "ng-hide";
     $scope.lusername="";
     $scope.lpassword="";
@@ -1835,12 +1830,6 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
       console.log("Need to login with Twitter");
     }
     
-    
-    $scope.authenticate = function(provider) {
-    	console.log('authenticate('+provider+')');
-      $auth.authenticate(provider);
-    };
-    
     $scope.loginWithOndernemingsDossier = function(){
         $rootScope.globaloverlay = "active";
         var jsondata = JSON.stringify({"ondernemingsdossierURL":""+$location.url()+""});
@@ -1896,11 +1885,13 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
 					}
                     $rootScope.globaloverlay = "";
 					$rootScope.errorSession="";
-                    if($rootScope.urlBefore == '/registreren'){
-						$location.path('/map');
-					}
-					else{
-						$location.path($rootScope.urlBefore);
+                    var postcode = $location.search().postcode;
+                    console.log(postcode);
+                    if (postcode != undefined) {
+                        $location.search({});
+                        $location.path('/postcode/' + (postcode.replace(/ /g,"").toUpperCase()));
+					} else {
+                        $location.path('/');
 					}
 					
 				}	
@@ -2014,8 +2005,7 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
     $scope.fbstatus = $facebook.isConnected();
     if($scope.fbstatus) {
 
-        if($window.sessionStorage.name)$scope.initials=$window.sessionStorage.name;
-        if($window.sessionStorage.email)$scope.email=$window.sessionStorage.email;
+        if($window.sessionStorage.name)$scope.username=$window.sessionStorage.name;
         if($window.sessionStorage.email)$scope.email=$window.sessionStorage.email;
         if($window.sessionStorage.surname)$scope.surname=$window.sessionStorage.surname;
         $scope.facebookID = $window.sessionStorage.facebookID;
@@ -2023,8 +2013,8 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
     }
 
     if ($window.sessionStorage.ondernemingsdossierID != undefined) {
-
-        if($window.sessionStorage.name)$scope.initials=$window.sessionStorage.name;
+        console.log($window.sessionStorage.name);
+        if($window.sessionStorage.name)$scope.username=$window.sessionStorage.name.replace(/\+/g,"").replace(/-/g,"").replace(/_/g,"").replace(/\//g,"").replace(/ /g,"").toLowerCase();
         if($window.sessionStorage.email)$scope.email=$window.sessionStorage.email;
         if($window.sessionStorage.postcode)$scope.postcode=$window.sessionStorage.postcode;
         if($window.sessionStorage.address_number)$scope.address_number=$window.sessionStorage.address_number;
