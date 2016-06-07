@@ -37,21 +37,8 @@ var confirmIssueService = new Object();
 
 //google map
 window.onload = function(){
-	var browserSupportFlag =  new Boolean();
-	//SUPPORT GEOLOCATION
-	if(navigator.geolocation) {
-    	browserSupportFlag = true;
-    	navigator.geolocation.getCurrentPosition(function(position){
-					      initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
-					      console.log(initialLocation);
-   							});
-					  		}
-  // Browser doesn't support Geolocation
-							  else {
-					
-							  }
       var mainLat = 52.158367;
-      var mainLng = 4.492999;
+        var mainLng = 4.492999;
       this._map_center = {lat: mainLat , lng: mainLng};
       //this._marker_positions = [{lat: 27.1959742, lng: 78.02423269999100}, {lat: 27.1959733, lng: 78.02423269999992}] ;
       var mapOptions = {
@@ -82,6 +69,7 @@ window.onload = function(){
 			    ]
 
       };
+
      map = new google.maps.Map(document.getElementById('googlemaps'), mapOptions);
      getLocation(map);
      var geocoder = new google.maps.Geocoder();
@@ -328,6 +316,26 @@ function menuSelected($scope,selected){
 	}
 };
 
+function geocodeGetLocationFound(lat,lng){
+    geocoder.geocode({'location':{'lat': lat,'lng':lng}} , function (result , status){
+                if (status == google.maps.GeocoderStatus.OK){
+
+                for (var i=0; i<result[0].address_components.length; i++) {
+                for (var b=0;b<result[0].address_components[i].types.length;b++) {
+                  //if you want the change the area ..
+                if (result[0].address_components[i].types[b] == "administrative_area_level_2") {
+                   // name of city
+                    return cityFound= result[0].address_components[i];
+                    break;
+                        }
+                    }
+                }
+                     
+                }
+                
+
+               });
+}
 
 vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegateProvider','$authProvider', function ($routeProvider,$locationProvider,$httpProvider,$sceDelegateProvider,$authProvider) {
 
@@ -963,7 +971,63 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
                             
                         }
                         
-                        
+                        //geolocation found location
+                        //SUPPORT GEOLOCATION
+                            if(navigator.geolocation) {
+                                console.log("geocode active");
+                                browserSupportFlag = true;
+                                navigator.geolocation.getCurrentPosition(function(position){
+                                                        var mainLat = position.coords.latitude;
+                                                        var mainLng = position.coords.longitude;
+                                                        map.setCenter({lat:mainLat,lng:mainLng});
+                                                        maxlat  = map.getBounds().getNorthEast().lat();
+                                                        maxlng  = map.getBounds().getNorthEast().lng();
+                                                        minlat = map.getBounds().getSouthWest().lat();
+                                                        minlng = map.getBounds().getSouthWest().lng();
+                                                        var jsondata = JSON.stringify({
+                                                                        "coords_criterium":{
+                                                                        "max_lat":maxlat,
+                                                                        "min_lat":minlat,
+                                                                        "max_long":maxlng,
+                                                                        "min_long":minlng
+                                                                      }
+                                                                    });
+                                                            var getIssues = issuesService.getIssues( jsondata ).then(function (data){
+                                                                    var getdata = data.data;
+                                                                    $rootScope.newProblemList = getdata.issues;
+                                                                    //initial google map marker
+                                                                    if(getdata.count != 0 || !getdata){
+                                                                    $window.issuesData = getdata;
+                                                                    showIssue(infoWindow,infoWindowContent);
+                                                                }
+                                                            });
+                                                            var getcity = geocodeGetLocationFound(mainLat,mainLng);
+                                                            var jsoncity = JSON.stringify({"council":""+getcity+""});
+                                                            var getReport = reportService.getReport( jsoncity ).then(function (data){
+                                                            var getdata = data.data;
+                                                            $rootScope.reportList = getdata.report;
+                                                            });
+
+                                                            var getAgreement = agreementSevice.getAgreement (jsoncity).then(function(data){
+                                                                    var getdata = data.data;
+                                                                    $rootScope.agreement = getdata;
+                                                                    $timeout(function(){
+                                                                        if(!getdata.logo){
+                                                                        $rootScope.hideLogo = 1;
+                                                                    }
+                                                                    else{
+                                                                        $rootScope.hideLogo = 0;
+                                                                        console.log($scope.hideLogo);   
+                                                                    }
+                                                                    })
+                                                            });
+                                                    
+                                                })
+                                    }
+                          // Browser doesn't support Geolocation
+                           else {
+                                
+                              }
                         menuSelected($rootScope,'home');
                         //$scope.hideLogo = 1;
                         //google map aouto complete
