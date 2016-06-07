@@ -520,7 +520,7 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
     
     
     //unfollow issue
-    ///melding/afmelden/8f83b0a2992c059248f5f938baa780739ec2952a
+    ///melding/afmelden/ae7f2bcf791d6f5570240e3c1f6aa44824c3e689
         .when('/melding/afmelden/:hashkey',{
         templateUrl: 'map.html',
         controller : 'hashCtrl',
@@ -558,9 +558,14 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
     
     
     //pretty url for issue-detail
-    .when('/melding/:location/:title/:id',{
+    .when('/:location/:title/:id',{
         templateUrl :'issuesView.html',
         controller : 'issuesCtrl'
+     
+        
+        
+        
+        
     })
     
     
@@ -3644,7 +3649,8 @@ vdbApp.controller('hashCtrl', ['$scope','$rootScope','$routeParams','$window','$
             var error = result.error;
             alert(error);
             $location.path("/");
-            
+            $rootScope.hashSession = null;
+            $rootScope.targetAction = null;
         } 
     });
 }])
