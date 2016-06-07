@@ -2003,7 +2003,7 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
     $scope.fbstatus = $facebook.isConnected();
     if($scope.fbstatus) {
 
-        if($window.sessionStorage.name)$scope.initials=$window.sessionStorage.name;
+        if($window.sessionStorage.name)$scope.username=$window.sessionStorage.name;
         if($window.sessionStorage.email)$scope.email=$window.sessionStorage.email;
         if($window.sessionStorage.email)$scope.email=$window.sessionStorage.email;
         if($window.sessionStorage.surname)$scope.surname=$window.sessionStorage.surname;
@@ -2012,8 +2012,8 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
     }
 
     if ($window.sessionStorage.ondernemingsdossierID != undefined) {
-
-        if($window.sessionStorage.name)$scope.initials=$window.sessionStorage.name;
+        console.log($window.sessionStorage.name);
+        if($window.sessionStorage.name)$scope.username=$window.sessionStorage.name.replace(/\+/g,"").replace(/-/g,"").replace(/_/g,"").replace(/\//g,"").replace(/ /g,"").toLowerCase();
         if($window.sessionStorage.email)$scope.email=$window.sessionStorage.email;
         if($window.sessionStorage.postcode)$scope.postcode=$window.sessionStorage.postcode;
         if($window.sessionStorage.address_number)$scope.address_number=$window.sessionStorage.address_number;
