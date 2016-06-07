@@ -23,7 +23,6 @@ var issueSubmitService = new Object();
 var voteSubmitService = new Object();
 var syncFBService = new Object();
 var loginFBService = new Object();
-var loginTWService = new Object();
 var statusChangeService = new Object();
 var issueLogService = new Object();
 var newsletterService = new Object();
@@ -386,13 +385,10 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
 		templateUrl :'issuesView.html',
 		controller : 'issuesCtrl'
 	})
-    
-    
 	.when('/mention', {
 		templateUrl: 'mention.html',
 		controller : 'mentionCtrl'
 	})
-
     .when('/mijn-meldingen', {
 		templateUrl: 'myissues.html',
 		controller : 'myIssuesCtrl'	
@@ -403,7 +399,6 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
 	})
     .when('/login', {
 		templateUrl: 'login.html'
-		
 	})
     .when('/registreren', {
 		templateUrl: 'register.html'
@@ -512,11 +507,9 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
             }
         }
     })
-    
-    
     //unfollow issue
     ///melding/afmelden/8f83b0a2992c059248f5f938baa780739ec2952a
-        .when('/melding/afmelden/:hashkey',{
+    .when('/melding/afmelden/:hashkey',{
         templateUrl: 'map.html',
         controller : 'hashCtrl',
         resolve: {
@@ -526,8 +519,6 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
             }
         }
     })
-    
-    
     //handle registration for hash session
     .when('/registratie/annuleren/hash/:hashkey',{
         templateUrl: 'confirmation.html',
@@ -550,17 +541,20 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
             }
         }
     })
-    
-    
     //pretty url for issue-detail
     .when('/melding/:location/:title/:id',{
         templateUrl :'issuesView.html',
         controller : 'issuesCtrl'
     })
-    
-    
-     //redirect city / postcode
-    
+    .when('/auth/:type',{
+        resolve : {
+            targetAction: function($rootScope) { 
+                console.log("hiaha");
+                return true; 
+            }
+        }
+    })
+    //redirect city / postcode
     .when('/:cityNameClone',{
         templateUrl: 'map.html',
         controller : 'mainCtrl'
@@ -569,8 +563,7 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
      	templateUrl: 'map.html',
      	controller : 'mainCtrl'
      })
-    
-    
+
 	 $locationProvider.html5Mode(true);
 	 $sceDelegateProvider.resourceUrlWhitelist([
 		// Allow same origin resource loads.
@@ -786,21 +779,6 @@ vdbApp.factory('loginFBService', ['$http',function ($http) {
 }])
 
 
-vdbApp.factory('loginTWService', ['$http',function ($http) {
-    return {
-        getFBLogin : function( jsondata ){
-            return $http.post(APIURL+'connectTwitter', jsondata)
-                .success(function(data){
-                if(angular.isObject(data)){
-                    loginTWService.data=data;
-                    return loginTWService.data;
-                }
-            });
-            return loginTWService.data;
-        }
-    };
-}])
-
 
 
 
@@ -1006,7 +984,6 @@ vdbApp.factory('unfollowIssueService', ['$http',function ($http) {
 
     };
 }])
-
 
 
 vdbApp.run(['$rootScope', '$window', function($rootScope, $window) {
@@ -1327,7 +1304,6 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
                         //    $('.dropdown-menu').show();
                             
                         }
-                        
                         
 						//search
 						$scope.clickSearch= function(){	
@@ -1924,10 +1900,6 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
         $facebook.login();
     }
     
-    
-    $scope.TWlogin = function(){
-        $twitter.login();
-    }
     
     $scope.loginWithOndernemingsDossier = function(){
         $rootScope.globaloverlay = "active";
