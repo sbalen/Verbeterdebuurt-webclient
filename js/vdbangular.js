@@ -93,6 +93,9 @@ window.onload = function(){
   	 getLatLng(map);
       //start location picker
     
+    
+    $('#duplicate-bubble').hide();
+    
 }
 function getLatLng (map){
 	google.maps.event.addListener(map,'bounds_changed',function(){
@@ -329,6 +332,7 @@ function convertToSlug(Text)
         .replace(/ +/g,'-')
     ;
 }
+
 
 
 function geocodeGetLocationFound(lat,lng){
