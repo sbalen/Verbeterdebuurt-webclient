@@ -2439,10 +2439,14 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
 		$scope.hide = "";
 	}
     
+    var c_user = $cookies.getObject('user');
+    var c_user_profile = $cookies.getObject('user_profile');
+    
     //set default message for facebook button
     $scope.facebookMessages = "Connect Facebook";
-    $scope.facebookExist = ($window.sessionStorage.facebookID)? 1 : 0;
+    $scope.facebookExist = (c_user_profile.facebookID)? 1 : 0;
     if($scope.facebookExist) $scope.facebookMessages = "Gekoppeld met Facebook";
+    
     
     
     
@@ -2495,6 +2499,8 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                         //set button to connected
                         $scope.facebookMessages = "Gekoppeld met Facebook";
                         $scope.facebookExist = 1;
+                        
+                        //fix this into cookies 
                         $window.sessionStorage.facebookID = facebookID;
                         
                     }
@@ -2522,8 +2528,7 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
     //                            }
     //                        };
 
-    var c_user = $cookies.getObject('user');
-    var c_user_profile = $cookies.getObject('user_profile');
+    
     $scope.username = c_user.username ;
     $scope.email = c_user.email;
     if(c_user_profile.sex == 'man')
