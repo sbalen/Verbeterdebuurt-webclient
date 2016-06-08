@@ -522,8 +522,8 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
     })
     //unfollow issue
     .when('/melding/afmelden/:hashkey',{
-        templateUrl: 'map.html',
-        controller : 'hashCtrl',
+        templateUrl: 'confirmation.html',
+        controller : 'unfollowIssueCtrl',
         resolve: {
             targetAction: function($rootScope) { 
                 $rootScope.targetAction = "unfollow_issue";
@@ -1523,39 +1523,7 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 									$rootScope.hashSession = null;
 									$rootScope.targetAction = null;
 								}
-        
-        
-                                //unfollow issue with hash code
-                                if($rootScope.targetAction === "unfollow_issue"){
-                                    $rootScope.globaloverlay = "active";
-                                    var authorisation_hash = $rootScope.hashSession;
-                                    var jsondata = JSON.stringify({"hash":""+authorisation_hash+""});
-                                    console.log(jsondata);
-                                    var getUnfollowIssue = unfollowIssueService.getUnfollowIssue( jsondata ).then(function(data){
-                                        var getUnfollowIssue = data.data;
-                                        console.log(getUnfollowIssue);
-                                        if(!getUnfollowIssue.success){
-                                            $scope.hideError = 0;
-                                            $scope.errorConfirmed = getUnfollowIssue.error;
-                                            $rootScope.globaloverlay = "";
-                                        }else{
-                                            var jsondata = JSON.stringify({"issue_id":$routeParams.id});
-                                            var getIssues = issuesService.getIssues( jsondata ).then(function (data){
-                                                $scope.hideError = 0;
-                                                $scope.successClass = "successAlert";
-                                                $scope.errorConfirmed = "Je volgt deze melding niet meer.";
-                                                var getdata = data.data;
-                                                $rootScope.problemIdList = getdata.issues;
-                                                $rootScope.globaloverlay = "";
-                                            });
-                                        }
-
-                                    });
-                                    $rootScope.hashSession = null;
-                                    $rootScope.targetAction = null;
-                                }
-        
-								
+        						
 						});
 
 	$scope.id = function(){
@@ -2482,10 +2450,14 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
 		$scope.hide = "";
 	}
     
+    var c_user = $cookies.getObject('user');
+    var c_user_profile = $cookies.getObject('user_profile');
+    
     //set default message for facebook button
     $scope.facebookMessages = "Connect Facebook";
-    $scope.facebookExist = ($window.sessionStorage.facebookID)? 1 : 0;
+    $scope.facebookExist = (c_user_profile.facebookID)? 1 : 0;
     if($scope.facebookExist) $scope.facebookMessages = "Gekoppeld met Facebook";
+    
     
     
     
@@ -2538,6 +2510,8 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                         //set button to connected
                         $scope.facebookMessages = "Gekoppeld met Facebook";
                         $scope.facebookExist = 1;
+                        
+                        //fix this into cookies 
                         $window.sessionStorage.facebookID = facebookID;
                         
                     }
@@ -2565,8 +2539,7 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
     //                            }
     //                        };
 
-    var c_user = $cookies.getObject('user');
-    var c_user_profile = $cookies.getObject('user_profile');
+    
     $scope.username = c_user.username ;
     $scope.email = c_user.email;
     if(c_user_profile.sex == 'man')
@@ -3801,6 +3774,46 @@ vdbApp.controller('hashCtrl', ['$scope','$rootScope','$routeParams','$window','$
     });
 }])
 
+vdbApp.controller('unfollowIssueCtrl', ['$scope','$rootScope','$routeParams','$window','$location','unfollowIssueService', function ($scope,$rootScope,$routeParams,$window,$location,unfollowIssueService,targetAction) {
+
+    $scope.successConfirm = false;
+    $scope.cancelConfirm = false;
+    $scope.showerror = false;
+    $scope.errorUnfollow = false;
+    console.log("target action : "+$rootScope.targetAction);
+
+    var hash=$routeParams.hashkey;
+    $rootScope.hashSession = hash;     
+    
+    //unfollow issue with hash code
+    $rootScope.globaloverlay = "active";
+    var authorisation_hash = $rootScope.hashSession;
+    var jsondata = JSON.stringify({"hash":""+authorisation_hash+""});
+    console.log(jsondata);
+    var getUnfollowIssue = unfollowIssueService.getUnfollowIssue( jsondata ).then(function(data){
+        var getUnfollowIssue = data.data;
+        console.log(getUnfollowIssue);
+        if(!getUnfollowIssue.success){
+            $scope.message = getUnfollowIssue.error;
+            $rootScope.globaloverlay = "";
+            $scope.errorUnfollow = true;
+        }else{
+                $scope.message = "Je volgt deze melding niet meer.";
+                var getdata = data.data;
+                $rootScope.globaloverlay = "";
+                $scope.errorUnfollow = true;
+        }
+
+    });
+    $rootScope.hashSession = null;
+    $rootScope.targetAction = null;
+    
+    
+}])
+
+
+
+
 
 
 //registration hash handling
@@ -3811,6 +3824,7 @@ vdbApp.controller('registrationHashCtrl', ['$scope','$rootScope','$routeParams',
     $scope.successConfirm = false;
     $scope.cancelConfirm = false;
     $scope.showerror = false;
+    $scope.errorUnfollow = false;
     
     console.log("target action : "+$rootScope.targetAction);
     var hash=$routeParams.hashkey;
