@@ -2168,6 +2168,10 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
     
 	$scope.register = function(){
        
+        if($scope.ondernemingsdossierID == null)
+            {
+                var ondernemingsdossierID = "";
+            }
 
         $rootScope.globaloverlay = "active";
 		var jsondata = JSON.stringify({"user":{"username":""+$scope.username+""
@@ -2185,9 +2189,10 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
                                           ,"city":""+$scope.city+""
                                           ,"phone":""+$scope.phone+""
                                           ,"facebookID":""+$scope.facebookID+""
-                                          ,"ondernemingsdossierID":""+$scope.ondernemingsdossierID
+                                          ,"ondernemingsdossierID":""+ondernemingsdossierID
                                           }
                                       
+                                
         
                                        
                                        
@@ -2555,8 +2560,8 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
 	$scope.profile = function(){
     $rootScope.globaloverlay = "active";
     $scope.errorEmail ="";
-    $scope.errorOldPassword =  "";
-    $scope.errorNewPassword = "";
+    $scope.errorOldPassword =  null;
+    $scope.errorNewPassword = null;
     $scope.errorInitials = "";
     $scope.errorSurname = "";
     $scope.errorAddress = "";
@@ -2566,6 +2571,7 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
     $scope.errorSex = "";
     $scope.errorPasshash = "";
     $scope.errorFB = "";
+    $scope.errorPassword3 = null;
         
         
     $scope.hide = "ng-hide";
@@ -2584,7 +2590,11 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
         {
             password.password_new = $scope.password_new;        
         }
-    
+    if($scope.rpassword!= null)
+        {
+            password.rpassword = $scope.rpassword;        
+        }
+        
     var user_profile ={}
     
     if($scope.initials!=null)
@@ -2647,6 +2657,12 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                 var getProfile = data.data;
             
             
+                     if($scope.password_new != $scope.rpassword)
+                {
+                    $scope.errorPassword3 = "Wachtwoord komt niet overeen"
+                    $scope.hide = "";
+                }
+                    
             
 				if (getProfile.success==false){
                     
