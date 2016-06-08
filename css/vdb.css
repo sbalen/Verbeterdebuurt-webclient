@@ -698,16 +698,41 @@ h6 {
       white-space: normal;
       display: inline-block;
       height: 80px;
-      width: calc(25% - 15px);
+      width: calc(33.3333% - 11px);
       border: 1px solid #ccc;
       margin-left: 5px;
       margin-right: 5px;
       font-size: 12px;
       vertical-align: top;
       box-sizing: border-box;
-      padding: 5px; }
+      padding: 5px;
+      background: #fcfcfc;
+      position: relative; }
       .duplicate-wrapper .duplicate-container .duplicate-item p {
         word-break: overflow-wrap; }
+      .duplicate-wrapper .duplicate-container .duplicate-item .bubble-description {
+        height: 100px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 300px;
+        border: 1px solid #007AC3;
+        border-radius: 4px;
+        background: #fff;
+        z-index: 100;
+        display: none; }
+      .duplicate-wrapper .duplicate-container .duplicate-item.active .bubble-description {
+        display: block; }
+
+#duplicate-bubble {
+  height: 100px;
+  position: absolute;
+  width: 300px;
+  border: 1px solid #007AC3;
+  border-radius: 4px;
+  background: #fff;
+  z-index: 100;
+  padding: 10px; }
 
 .status-log {
   padding: 0px;

@@ -1,4 +1,8 @@
-    <!-- body -->  
+<div id="duplicate-bubble">
+    
+</div>    
+
+<!-- body -->  
     <div id="main-content" class="container">
 	   
       <div class="col-md-3 hidden-sm hidden-xs hidden-md">
@@ -41,7 +45,7 @@
                                   <input type="hidden" class="gllpLongitude" value="4.492999"/>
                                   <input type="hidden" class="gllpZoom" value="12"/>
                                   <input type="text" class="gllpLocationName noborder" id="location" readonly size=20/>
-                                  <p class=" warning-text text-primary">Deze gemeente heeft niet aangegeven dat ze uw melding binnenin behandeling nemen binnen 4 weken"</p>
+                                  <p class=" warning-text text-primary">{{standardMessage}}</p>
                                 </fieldset> 
                               </div>
                             </div>
@@ -64,24 +68,32 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="form-group" ng-hide="count==0||count==null">
+                                <div class="form-group" ng-hide="count==0||count==null" style="z-index:50;">
                                     <p>Mogelijke dubbele meldingen. Bekijk of bij deze meldingen misschien jouw probleem al gemeld is. Klik er dan op om deze melding te steunen</p>
                                     
                                     <div class="duplicate-wrapper">
-                                        <div class="duplicate-left" ng-hide="count<=4" ng-click="moveDuplicate(-1)">&lang;</div>
+                                        <div class="duplicate-left" ng-hide="count<=3" ng-click="moveDuplicate(-1)">&lang;</div>
                                         <div class="duplicate-container">
                                             
                                             <div class="duplicate-hidden-block" style="{{blockstyle}}"> 
                                             </div>
                                             
-                                            <a href="melding/{{duplicateData.id}}" ng-repeat="duplicateData in duplicateDataList">
-                                                <div class="duplicate-item" >
-
-                                                   <p>{{duplicateData.title}}</p>
+<!--                                            <a href="melding/{{duplicateData.id}}" ng-repeat="duplicateData in duplicateDataList">-->
+                                            <div class="duplicate-item" ng-repeat="duplicateData in duplicateDataList" >
+                                                    
+                                                    <div class="bubble-description">
+                                                        {{duplicateData.title}}<br/>
+                                                        {{duplicateData.description}}
+                                                        <br/>
+                                                        <br/>
+                                                        <a href="melding/{{duplicateData.id}}">Details</a>
+                                                    </div>
+                                                    <p>{{duplicateData.category}}</p>
+                                                    <p>{{duplicateData.location.src_address}}</p>
                                                 </div>
-                                            </a>
+<!--                                            </a>-->
                                         </div>
-                                        <div class="duplicate-right" ng-hide="count<=4" ng-click="moveDuplicate(1)">&rang;</div>
+                                        <div class="duplicate-right" ng-hide="count<=3" ng-click="moveDuplicate(1)">&rang;</div>
                                     </div>
                                         
                                         
@@ -185,9 +197,36 @@
         			top: $('#navtop').height()
       			}
 		});	
+            
+            $('#duplicate-bubble').hide();
         });
         $("#file-input-problem").fileinput();
         $("#file-input-problem").fileinput({'showUpload':false});
         $("#file-input-idea").fileinput();
         $("#file-input-idea").fileinput({'showUpload':false});
+//        
+//    $('.duplicate-item').on('click', function(e) {
+//        e.preventDefault();
+//        $('#duplicate-bubble').css( 'top', e.pageY );
+//        $('#duplicate-bubble').css( 'left', e.pageX );
+//        $('#duplicate-bubble').show();
+//    });
+    
+    $(document).on("click", ".duplicate-item", function(e) {
+        e.preventDefault();
+        $('#duplicate-bubble').html($(this).find(".bubble-description").html());
+      
+        $('#duplicate-bubble').css( 'top', e.pageY );
+        $('#duplicate-bubble').css( 'left', e.pageX );
+        $('#duplicate-bubble').show();
+        //your code here...
+    });
+    
+    $('#duplicate-bubble').on('click', function() {
+
+                $('#duplicate-bubble').hide();
+                $('#duplicate-bubble').empty();
+    });
+    
+    
 </script>
