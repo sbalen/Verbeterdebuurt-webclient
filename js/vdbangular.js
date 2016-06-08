@@ -1469,6 +1469,11 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
                 $scope.successClass = "successAlert";
                 $scope.successMessage = $rootScope.standardTemp;
         }
+        if($rootScope.successCreate == 1){
+                $scope.hideError = 0;
+                $scope.successClass = "successAlert";
+                $scope.successMessageNonApi = "Je melding is verstuurd!";
+        }
 	$rootScope.urlBefore = $location.path();
 	var getIssues = issuesService.getIssues( jsondata ).then(function (data){
 								var getdata = data.data;
@@ -1678,7 +1683,7 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 		$scope.errorVote = "";
 	}
     $rootScope.standardTemp = null;
-
+    $rootScope.successCreate = 0;
 
 }])
 
@@ -1741,6 +1746,11 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 				$scope.hideError = 0;
 				$scope.successClass = "successAlert";
 				$scope.successMessage = $rootScope.standardTemp;
+        }
+        if($rootScope.successCreate == 1){
+                $scope.hideError = 0;
+                $scope.successClass = "successAlert";
+                $scope.successMessageNonApi = "Je melding is verstuurd!";
         }
 		var jsondata = JSON.stringify({"user":{ "username":""+$cookies.getObject('user').username+"",
 												"password_hash":""+$cookies.getObject('user').password_hash+""
@@ -1854,6 +1864,7 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 	}
 	//delete success Create
 	$rootScope.standardTemp= null;
+    $rootScope.successCreate = 0;
 
 }])
 
@@ -3067,10 +3078,10 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 					else{
 						//success
 						var issueId = issueData.issue_id;
+                        $rootScope.successCreate = 1;
 	                    //login
 	                    if($cookies.getObject('user')){
 							$location.path(/mijn-meldingen/+issueId);
-							$rootScope.successCreate = 1;
 	                    }else{
 	                    	$location.path(/melding/+issueId);
 	                    }
@@ -3149,6 +3160,7 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 						}
 					else{
 						//success
+                        $rootScope.successCreate = 1;
 						var issueId = issueData.issue_id;
 	                   if($cookies.getObject('user')){
 							$location.path(/mijn-meldingen/+issueId);
@@ -3485,6 +3497,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
 				}
 				else{
 					//success
+                    $rootScope.successCreate = 1;
 					var issueId = issueData.issue_id;
                     if($cookies.getObject('user')){
 							$location.path(/mijn-meldingen/+issueId);
@@ -3569,6 +3582,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
 					else{
 						//success
 						var issueId = issueData.issue_id;
+                        $rootScope.successCreate = 1;
 	                    if($cookies.getObject('user')){
 							$location.path(/mijn-meldingen/+issueId);
 							$rootScope.successCreate = "Geregistreerd bij gemeente";
