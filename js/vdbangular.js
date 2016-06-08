@@ -2470,8 +2470,8 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
 	$scope.profile = function(){
     $rootScope.globaloverlay = "active";
     $scope.errorEmail ="";
-    $scope.errorOldPassword =  "";
-    $scope.errorNewPassword = "";
+    $scope.errorOldPassword =  null;
+    $scope.errorNewPassword = null;
     $scope.errorInitials = "";
     $scope.errorSurname = "";
     $scope.errorAddress = "";
@@ -2481,6 +2481,7 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
     $scope.errorSex = "";
     $scope.errorPasshash = "";
     $scope.errorFB = "";
+    $scope.errorPassword3 = null;
         
         
     $scope.hide = "ng-hide";
@@ -2564,6 +2565,12 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
             
             
 				if (getProfile.success==false){
+                    
+                     if($scope.password_new != $scope.rpassword)
+                {
+                    $scope.errorPassword3 = "Wachtwoord komt niet overeen"
+                    $scope.hide = "";
+                }
                     
                     $scope.errorEmail = getProfile.errors.email;
                     $scope.errorOldPassword =  getProfile.errors.password_old;
