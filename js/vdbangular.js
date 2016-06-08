@@ -1469,6 +1469,11 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
                 $scope.successClass = "successAlert";
                 $scope.successMessage = $rootScope.standardTemp;
         }
+        if($rootScope.successCreate == 1){
+                $scope.hideError = 0;
+                $scope.successClass = "successAlert";
+                $scope.successMessageNonApi = "Je melding is verstuurd!";
+        }
 	$rootScope.urlBefore = $location.path();
 	var getIssues = issuesService.getIssues( jsondata ).then(function (data){
 								var getdata = data.data;
@@ -1646,7 +1651,7 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 		$scope.errorVote = "";
 	}
     $rootScope.standardTemp = null;
-
+    $rootScope.successCreate = 0;
 
 }])
 
@@ -1709,6 +1714,11 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 				$scope.hideError = 0;
 				$scope.successClass = "successAlert";
 				$scope.successMessage = $rootScope.standardTemp;
+        }
+        if($rootScope.successCreate == 1){
+                $scope.hideError = 0;
+                $scope.successClass = "successAlert";
+                $scope.successMessageNonApi = "Je melding is verstuurd!";
         }
 		var jsondata = JSON.stringify({"user":{ "username":""+$cookies.getObject('user').username+"",
 												"password_hash":""+$cookies.getObject('user').password_hash+""
@@ -1822,6 +1832,7 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope','$routeParams','$http','$rootS
 	}
 	//delete success Create
 	$rootScope.standardTemp= null;
+    $rootScope.successCreate = 0;
 
 }])
 
@@ -2010,7 +2021,7 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
                     console.log(expired);
 					$cookies.putObject('user',getLogin.user,{expires:expired});
 					$cookies.putObject('user_profile',getLogin.user_profile,{expires:expired});
-					console.log($cookies.getObject('user'));
+                    console.log($cookies.getObject('user_profile'));
                    	//remember me
                    		if($scope.rememberMe === true){
                    			var expired = new Date();
@@ -2439,10 +2450,14 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
 		$scope.hide = "";
 	}
     
+    var c_user = $cookies.getObject('user');
+    var c_user_profile = $cookies.getObject('user_profile');
+    
     //set default message for facebook button
     $scope.facebookMessages = "Connect Facebook";
-    $scope.facebookExist = ($window.sessionStorage.facebookID)? 1 : 0;
+    $scope.facebookExist = (c_user_profile.facebookID)? 1 : 0;
     if($scope.facebookExist) $scope.facebookMessages = "Gekoppeld met Facebook";
+    
     
     
     
@@ -2495,8 +2510,16 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                         //set button to connected
                         $scope.facebookMessages = "Gekoppeld met Facebook";
                         $scope.facebookExist = 1;
-                        $window.sessionStorage.facebookID = facebookID;
                         
+                        //fix this into cookies 
+                        $window.sessionStorage.facebookID = facebookID;
+                        var user = $cookies.getObject('user');
+                        var user_profile = $cookies.getObject('user_profile');
+                        var expired = new Date();
+                        expired.setDate(expired.getDate()+((1/24)*2));
+                        user_profile.facebookID = facebookID;
+                        $cookies.putObject('user',user,{expires:expired});
+                        $cookies.putObject('user_profile',user_profiles,{expires:expired});
                     }
                     
                     $rootScope.globaloverlay = "";
@@ -2522,8 +2545,7 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
     //                            }
     //                        };
 
-    var c_user = $cookies.getObject('user');
-    var c_user_profile = $cookies.getObject('user_profile');
+    
     $scope.username = c_user.username ;
     $scope.email = c_user.email;
     if(c_user_profile.sex == 'man')
@@ -2647,9 +2669,20 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
         }
     
     
+     if($scope.password_new != $scope.rpassword) 
+                         {
+                              
+                             $scope.errorPassword3 = "Wachtwoord komt niet overeen"
+                             $scope.hide = "";
+                             $(window).scrollTop(0);
+                             $rootScope.globaloverlay = ""; 
+                             
+                    
+                         }
+        
+        
+        else if($scope.password_new == $scope.rpassword){
     
-        
-        
 		var jsondata = JSON.stringify({user,password,user_profile});
 		console.log(jsondata);
 		var getProfile = profileService.getProfile(jsondata).then(function (data){
@@ -2657,14 +2690,9 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                 var getProfile = data.data;
             
             
-                     if($scope.password_new != $scope.rpassword)
-                {
-                    $scope.errorPassword3 = "Wachtwoord komt niet overeen"
-                    $scope.hide = "";
-                }
-                    
-            
 				if (getProfile.success==false){
+                    
+                    if(getProfile.success==false){
                     
                     $scope.errorEmail = getProfile.errors.email;
                     $scope.errorOldPassword =  getProfile.errors.password_old;
@@ -2678,7 +2706,9 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                     $scope.errorSex = getProfile.errors.sex;
                     $scope.errorPasshash = getProfile.errors.password_hash;
                     $scope.errorFB = "";
-                                    
+                   
+                    }
+                    
 					$scope.hide = "";
                     $scope.successAlert = "";
                     $scope.successClass = "";
@@ -2743,18 +2773,26 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                     $scope.hide = "";
                     $scope.password_new="";
                     $scope.password_old="";
-                        
-//                    $location.path('/profile');
+                    $scope.rpassword="";
                     
-                    //console.log(jsondata);
+                    
                 })
             
             }
+                   
 		});
+            
+         
+            }
+        
+         $scope.successAlert = "";
+         $scope.successClass = "";
 		
         $scope.close = function(){
          
 		  $scope.hide="ng-hide";
+            
+             
         }
 	}
   
@@ -3028,10 +3066,10 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 					else{
 						//success
 						var issueId = issueData.issue_id;
+                        $rootScope.successCreate = 1;
 	                    //login
 	                    if($cookies.getObject('user')){
 							$location.path(/mijn-meldingen/+issueId);
-							$rootScope.successCreate = 1;
 	                    }else{
 	                    	$location.path(/melding/+issueId);
 	                    }
@@ -3110,6 +3148,7 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 						}
 					else{
 						//success
+                        $rootScope.successCreate = 1;
 						var issueId = issueData.issue_id;
 	                   if($cookies.getObject('user')){
 							$location.path(/mijn-meldingen/+issueId);
@@ -3446,6 +3485,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
 				}
 				else{
 					//success
+                    $rootScope.successCreate = 1;
 					var issueId = issueData.issue_id;
                     if($cookies.getObject('user')){
 							$location.path(/mijn-meldingen/+issueId);
@@ -3530,6 +3570,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
 					else{
 						//success
 						var issueId = issueData.issue_id;
+                        $rootScope.successCreate = 1;
 	                    if($cookies.getObject('user')){
 							$location.path(/mijn-meldingen/+issueId);
 							$rootScope.successCreate = "Geregistreerd bij gemeente";
