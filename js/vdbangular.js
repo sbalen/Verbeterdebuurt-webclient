@@ -76,10 +76,17 @@ window.onload = function(){
      map = new google.maps.Map(document.getElementById('googlemaps'), mapOptions);
      getLocation(map);
      var geocoder = new google.maps.Geocoder();
-     maxlat  = 52.17899981092104;
-     maxlng  = 52.15154422875919;
-     minlat = 4.545096343219029;
-     minlng = 4.487203543841588;
+      google.maps.event.addListener(map, 'bounds_changed', function (e) {
+             maxlat  = map.getBounds().getNorthEast().lat();
+            maxlng  = map.getBounds().getNorthEast().lng();
+            minlat = map.getBounds().getSouthWest().lat();
+            minlng = map.getBounds().getSouthWest().lng();
+      });
+   
+     // maxlat  = 52.17899981092104;
+     // maxlng  = 52.15154422875919;
+     // minlat = 4.545096343219029;
+     // minlng = 4.487203543841588;
 		
 
      if(cityName!=null){
