@@ -76,10 +76,17 @@ window.onload = function(){
      map = new google.maps.Map(document.getElementById('googlemaps'), mapOptions);
      getLocation(map);
      var geocoder = new google.maps.Geocoder();
-     maxlat  = 52.17899981092104;
-     maxlng  = 52.15154422875919;
-     minlat = 4.545096343219029;
-     minlng = 4.487203543841588;
+      google.maps.event.addListener(map, 'bounds_changed', function (e) {
+             maxlat  = map.getBounds().getNorthEast().lat();
+            maxlng  = map.getBounds().getNorthEast().lng();
+            minlat = map.getBounds().getSouthWest().lat();
+            minlng = map.getBounds().getSouthWest().lng();
+      });
+   
+     // maxlat  = 52.17899981092104;
+     // maxlng  = 52.15154422875919;
+     // minlat = 4.545096343219029;
+     // minlng = 4.487203543841588;
 		
 
      if(cityName!=null){
@@ -515,8 +522,8 @@ vdbApp.config(['$routeProvider','$locationProvider','$httpProvider','$sceDelegat
     })
     //unfollow issue
     .when('/melding/afmelden/:hashkey',{
-        templateUrl: 'map.html',
-        controller : 'hashCtrl',
+        templateUrl: 'confirmation.html',
+        controller : 'unfollowIssueCtrl',
         resolve: {
             targetAction: function($rootScope) { 
                 $rootScope.targetAction = "unfollow_issue";
@@ -1285,7 +1292,13 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 								})
 								});
 							
-							
+							var jsondata = JSON.stringify({"coords_criterium":{
+                                                            "max_lat":maxlat,
+                                                            "min_lat":minlat,
+                                                            "max_long":maxlng,
+                                                            "min_long":minlng
+                                                          }
+                                                        });
 							getIssues = issuesService.getIssues( jsondata ).then(function (data){
 								var getdata = data.data;
 								$rootScope.newProblemList = getdata.issues; 
@@ -1505,39 +1518,7 @@ vdbApp.controller('issuesCtrl', ['$scope','$rootScope','$window','$routeParams',
 									$rootScope.hashSession = null;
 									$rootScope.targetAction = null;
 								}
-        
-        
-                                //unfollow issue with hash code
-                                if($rootScope.targetAction === "unfollow_issue"){
-                                    $rootScope.globaloverlay = "active";
-                                    var authorisation_hash = $rootScope.hashSession;
-                                    var jsondata = JSON.stringify({"hash":""+authorisation_hash+""});
-                                    console.log(jsondata);
-                                    var getUnfollowIssue = unfollowIssueService.getUnfollowIssue( jsondata ).then(function(data){
-                                        var getUnfollowIssue = data.data;
-                                        console.log(getUnfollowIssue);
-                                        if(!getUnfollowIssue.success){
-                                            $scope.hideError = 0;
-                                            $scope.errorConfirmed = getUnfollowIssue.error;
-                                            $rootScope.globaloverlay = "";
-                                        }else{
-                                            var jsondata = JSON.stringify({"issue_id":$routeParams.id});
-                                            var getIssues = issuesService.getIssues( jsondata ).then(function (data){
-                                                $scope.hideError = 0;
-                                                $scope.successClass = "successAlert";
-                                                $scope.errorConfirmed = "Je volgt deze melding niet meer.";
-                                                var getdata = data.data;
-                                                $rootScope.problemIdList = getdata.issues;
-                                                $rootScope.globaloverlay = "";
-                                            });
-                                        }
-
-                                    });
-                                    $rootScope.hashSession = null;
-                                    $rootScope.targetAction = null;
-                                }
-        
-								
+        						
 						});
 
 	$scope.id = function(){
@@ -2187,6 +2168,10 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
     
 	$scope.register = function(){
        
+        if($scope.ondernemingsdossierID == null)
+            {
+                var ondernemingsdossierID = "";
+            }
 
         $rootScope.globaloverlay = "active";
 		var jsondata = JSON.stringify({"user":{"username":""+$scope.username+""
@@ -2204,9 +2189,10 @@ vdbApp.controller('registerCtrl', ['$scope','$rootScope','$window','registerServ
                                           ,"city":""+$scope.city+""
                                           ,"phone":""+$scope.phone+""
                                           ,"facebookID":""+$scope.facebookID+""
-                                          ,"ondernemingsdossierID":""+$scope.ondernemingsdossierID
+                                          ,"ondernemingsdossierID":""+ondernemingsdossierID
                                           }
                                       
+                                
         
                                        
                                        
@@ -2574,8 +2560,8 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
 	$scope.profile = function(){
     $rootScope.globaloverlay = "active";
     $scope.errorEmail ="";
-    $scope.errorOldPassword =  "";
-    $scope.errorNewPassword = "";
+    $scope.errorOldPassword =  null;
+    $scope.errorNewPassword = null;
     $scope.errorInitials = "";
     $scope.errorSurname = "";
     $scope.errorAddress = "";
@@ -2585,6 +2571,7 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
     $scope.errorSex = "";
     $scope.errorPasshash = "";
     $scope.errorFB = "";
+    $scope.errorPassword3 = null;
         
         
     $scope.hide = "ng-hide";
@@ -2603,7 +2590,11 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
         {
             password.password_new = $scope.password_new;        
         }
-    
+    if($scope.rpassword!= null)
+        {
+            password.rpassword = $scope.rpassword;        
+        }
+        
     var user_profile ={}
     
     if($scope.initials!=null)
@@ -2666,6 +2657,12 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                 var getProfile = data.data;
             
             
+                     if($scope.password_new != $scope.rpassword)
+                {
+                    $scope.errorPassword3 = "Wachtwoord komt niet overeen"
+                    $scope.hide = "";
+                }
+                    
             
 				if (getProfile.success==false){
                     
@@ -3039,6 +3036,22 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 	                    	$location.path(/melding/+issueId);
 	                    }
 						$rootScope.globaloverlay = "";
+                        var jsondata = JSON.stringify({"coords_criterium":{
+                                                            "max_lat":maxlat,
+                                                            "min_lat":minlat,
+                                                            "max_long":maxlng,
+                                                            "min_long":minlng
+                                                          }
+                                                        });
+                            getIssues = issuesService.getIssues( jsondata ).then(function (data){
+                                var getdata = data.data;
+                                $rootScope.newProblemList = getdata.issues; 
+                                if(getdata.count != 0 || !getdata){
+                                $window.issuesData = getdata;
+                                showIssue(infoWindow,infoWindowContent);
+                                }
+                                
+                                });
 
 					}
 
@@ -3105,6 +3118,22 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 	                    	$location.path(/melding/+issueId);
 	                    }
 						$rootScope.globaloverlay = "";
+                         var jsondata = JSON.stringify({"coords_criterium":{
+                                                            "max_lat":maxlat,
+                                                            "min_lat":minlat,
+                                                            "max_long":maxlng,
+                                                            "min_long":minlng
+                                                          }
+                                                        });
+                            getIssues = issuesService.getIssues( jsondata ).then(function (data){
+                                var getdata = data.data;
+                                $rootScope.newProblemList = getdata.issues; 
+                                if(getdata.count != 0 || !getdata){
+                                $window.issuesData = getdata;
+                                showIssue(infoWindow,infoWindowContent);
+                                }
+                                
+                                });
 
 					}
 			});
@@ -3425,7 +3454,22 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
 	                    	$location.path(/melding/+issueId);
 	                    }
 					$rootScope.globaloverlay = "";
-
+                     var jsondata = JSON.stringify({"coords_criterium":{
+                                                            "max_lat":maxlat,
+                                                            "min_lat":minlat,
+                                                            "max_long":maxlng,
+                                                            "min_long":minlng
+                                                          }
+                                                        });
+                            getIssues = issuesService.getIssues( jsondata ).then(function (data){
+                                var getdata = data.data;
+                                $rootScope.newProblemList = getdata.issues; 
+                                if(getdata.count != 0 || !getdata){
+                                $window.issuesData = getdata;
+                                showIssue(infoWindow,infoWindowContent);
+                                }
+                                
+                                });
 				}
 
 			});
@@ -3493,7 +3537,22 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
 	                    	$location.path(/melding/+issueId);
 	                    }
 						$rootScope.globaloverlay = "";
-
+                         var jsondata = JSON.stringify({"coords_criterium":{
+                                                            "max_lat":maxlat,
+                                                            "min_lat":minlat,
+                                                            "max_long":maxlng,
+                                                            "min_long":minlng
+                                                          }
+                                                        });
+                            getIssues = issuesService.getIssues( jsondata ).then(function (data){
+                                var getdata = data.data;
+                                $rootScope.newProblemList = getdata.issues; 
+                                if(getdata.count != 0 || !getdata){
+                                $window.issuesData = getdata;
+                                showIssue(infoWindow,infoWindowContent);
+                                }
+                                
+                                });
 					}
 			});
 
@@ -3680,6 +3739,46 @@ vdbApp.controller('hashCtrl', ['$scope','$rootScope','$routeParams','$window','$
     });
 }])
 
+vdbApp.controller('unfollowIssueCtrl', ['$scope','$rootScope','$routeParams','$window','$location','unfollowIssueService', function ($scope,$rootScope,$routeParams,$window,$location,unfollowIssueService,targetAction) {
+
+    $scope.successConfirm = false;
+    $scope.cancelConfirm = false;
+    $scope.showerror = false;
+    $scope.errorUnfollow = false;
+    console.log("target action : "+$rootScope.targetAction);
+
+    var hash=$routeParams.hashkey;
+    $rootScope.hashSession = hash;     
+    
+    //unfollow issue with hash code
+    $rootScope.globaloverlay = "active";
+    var authorisation_hash = $rootScope.hashSession;
+    var jsondata = JSON.stringify({"hash":""+authorisation_hash+""});
+    console.log(jsondata);
+    var getUnfollowIssue = unfollowIssueService.getUnfollowIssue( jsondata ).then(function(data){
+        var getUnfollowIssue = data.data;
+        console.log(getUnfollowIssue);
+        if(!getUnfollowIssue.success){
+            $scope.message = getUnfollowIssue.error;
+            $rootScope.globaloverlay = "";
+            $scope.errorUnfollow = true;
+        }else{
+                $scope.message = "Je volgt deze melding niet meer.";
+                var getdata = data.data;
+                $rootScope.globaloverlay = "";
+                $scope.errorUnfollow = true;
+        }
+
+    });
+    $rootScope.hashSession = null;
+    $rootScope.targetAction = null;
+    
+    
+}])
+
+
+
+
 
 
 //registration hash handling
@@ -3690,6 +3789,7 @@ vdbApp.controller('registrationHashCtrl', ['$scope','$rootScope','$routeParams',
     $scope.successConfirm = false;
     $scope.cancelConfirm = false;
     $scope.showerror = false;
+    $scope.errorUnfollow = false;
     
     console.log("target action : "+$rootScope.targetAction);
     var hash=$routeParams.hashkey;
