@@ -1292,7 +1292,13 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 								})
 								});
 							
-							
+							var jsondata = JSON.stringify({"coords_criterium":{
+                                                            "max_lat":maxlat,
+                                                            "min_lat":minlat,
+                                                            "max_long":maxlng,
+                                                            "min_long":minlng
+                                                          }
+                                                        });
 							getIssues = issuesService.getIssues( jsondata ).then(function (data){
 								var getdata = data.data;
 								$rootScope.newProblemList = getdata.issues; 
@@ -3046,6 +3052,22 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 	                    	$location.path(/melding/+issueId);
 	                    }
 						$rootScope.globaloverlay = "";
+                        var jsondata = JSON.stringify({"coords_criterium":{
+                                                            "max_lat":maxlat,
+                                                            "min_lat":minlat,
+                                                            "max_long":maxlng,
+                                                            "min_long":minlng
+                                                          }
+                                                        });
+                            getIssues = issuesService.getIssues( jsondata ).then(function (data){
+                                var getdata = data.data;
+                                $rootScope.newProblemList = getdata.issues; 
+                                if(getdata.count != 0 || !getdata){
+                                $window.issuesData = getdata;
+                                showIssue(infoWindow,infoWindowContent);
+                                }
+                                
+                                });
 
 					}
 
@@ -3112,6 +3134,22 @@ vdbApp.controller('createissueCtrl', ['$scope','$rootScope','$window','$timeout'
 	                    	$location.path(/melding/+issueId);
 	                    }
 						$rootScope.globaloverlay = "";
+                         var jsondata = JSON.stringify({"coords_criterium":{
+                                                            "max_lat":maxlat,
+                                                            "min_lat":minlat,
+                                                            "max_long":maxlng,
+                                                            "min_long":minlng
+                                                          }
+                                                        });
+                            getIssues = issuesService.getIssues( jsondata ).then(function (data){
+                                var getdata = data.data;
+                                $rootScope.newProblemList = getdata.issues; 
+                                if(getdata.count != 0 || !getdata){
+                                $window.issuesData = getdata;
+                                showIssue(infoWindow,infoWindowContent);
+                                }
+                                
+                                });
 
 					}
 			});
@@ -3432,7 +3470,22 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
 	                    	$location.path(/melding/+issueId);
 	                    }
 					$rootScope.globaloverlay = "";
-
+                     var jsondata = JSON.stringify({"coords_criterium":{
+                                                            "max_lat":maxlat,
+                                                            "min_lat":minlat,
+                                                            "max_long":maxlng,
+                                                            "min_long":minlng
+                                                          }
+                                                        });
+                            getIssues = issuesService.getIssues( jsondata ).then(function (data){
+                                var getdata = data.data;
+                                $rootScope.newProblemList = getdata.issues; 
+                                if(getdata.count != 0 || !getdata){
+                                $window.issuesData = getdata;
+                                showIssue(infoWindow,infoWindowContent);
+                                }
+                                
+                                });
 				}
 
 			});
@@ -3500,7 +3553,22 @@ vdbApp.controller('createIdeaCtrl', ['$scope','$rootScope','$window','$timeout',
 	                    	$location.path(/melding/+issueId);
 	                    }
 						$rootScope.globaloverlay = "";
-
+                         var jsondata = JSON.stringify({"coords_criterium":{
+                                                            "max_lat":maxlat,
+                                                            "min_lat":minlat,
+                                                            "max_long":maxlng,
+                                                            "min_long":minlng
+                                                          }
+                                                        });
+                            getIssues = issuesService.getIssues( jsondata ).then(function (data){
+                                var getdata = data.data;
+                                $rootScope.newProblemList = getdata.issues; 
+                                if(getdata.count != 0 || !getdata){
+                                $window.issuesData = getdata;
+                                showIssue(infoWindow,infoWindowContent);
+                                }
+                                
+                                });
 					}
 			});
 
