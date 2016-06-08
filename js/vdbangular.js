@@ -2663,9 +2663,20 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
         }
     
     
+     if($scope.password_new != $scope.rpassword) 
+                         {
+                              
+                             $scope.errorPassword3 = "Wachtwoord komt niet overeen"
+                             $scope.hide = "";
+                             $(window).scrollTop(0);
+                             $rootScope.globaloverlay = ""; 
+                             
+                    
+                         }
+        
+        
+        else if($scope.password_new == $scope.rpassword){
     
-        
-        
 		var jsondata = JSON.stringify({user,password,user_profile});
 		console.log(jsondata);
 		var getProfile = profileService.getProfile(jsondata).then(function (data){
@@ -2673,14 +2684,9 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                 var getProfile = data.data;
             
             
-                     if($scope.password_new != $scope.rpassword)
-                {
-                    $scope.errorPassword3 = "Wachtwoord komt niet overeen"
-                    $scope.hide = "";
-                }
-                    
-            
 				if (getProfile.success==false){
+                    
+                    if(getProfile.success==false){
                     
                     $scope.errorEmail = getProfile.errors.email;
                     $scope.errorOldPassword =  getProfile.errors.password_old;
@@ -2694,7 +2700,9 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                     $scope.errorSex = getProfile.errors.sex;
                     $scope.errorPasshash = getProfile.errors.password_hash;
                     $scope.errorFB = "";
-                                    
+                   
+                    }
+                    
 					$scope.hide = "";
                     $scope.successAlert = "";
                     $scope.successClass = "";
@@ -2759,18 +2767,26 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                     $scope.hide = "";
                     $scope.password_new="";
                     $scope.password_old="";
-                        
-//                    $location.path('/profile');
+                    $scope.rpassword="";
                     
-                    //console.log(jsondata);
+                    
                 })
             
             }
+                   
 		});
+            
+         
+            }
+        
+         $scope.successAlert = "";
+         $scope.successClass = "";
 		
         $scope.close = function(){
          
 		  $scope.hide="ng-hide";
+            
+             
         }
 	}
   
