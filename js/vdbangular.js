@@ -2021,7 +2021,7 @@ vdbApp.controller('loginCtrl', ['$scope','$rootScope','$window','loginService','
                     console.log(expired);
 					$cookies.putObject('user',getLogin.user,{expires:expired});
 					$cookies.putObject('user_profile',getLogin.user_profile,{expires:expired});
-					console.log($cookies.getObject('user'));
+                    console.log($cookies.getObject('user_profile'));
                    	//remember me
                    		if($scope.rememberMe === true){
                    			var expired = new Date();
@@ -2513,7 +2513,13 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                         
                         //fix this into cookies 
                         $window.sessionStorage.facebookID = facebookID;
-                        
+                        var user = $cookies.getObject('user');
+                        var user_profile = $cookies.getObject('user_profile');
+                        var expired = new Date();
+                        expired.setDate(expired.getDate()+((1/24)*2));
+                        user_profile.facebookID = facebookID;
+                        $cookies.putObject('user',user,{expires:expired});
+                        $cookies.putObject('user_profile',user_profiles,{expires:expired});
                     }
                     
                     $rootScope.globaloverlay = "";
