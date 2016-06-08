@@ -1034,6 +1034,11 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
                             
                         }
                         
+                        if(geolocationValid==0){
+                           
+                            
+                        }
+    
 //                        //geolocation found location
 //                        //SUPPORT GEOLOCATION
                        $timeout(function(){
@@ -1106,6 +1111,12 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
                                
                              }
                          }
+                           }
+                           else{
+                               //so we have the url..
+                               geolocationValid = 1;
+                               
+                               
                            }
 
                        },1000)
