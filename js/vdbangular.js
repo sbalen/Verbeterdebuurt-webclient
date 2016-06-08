@@ -40,8 +40,8 @@ var geolocationValid = 0;
 
 //google map
 window.onload = function () {
-    var mainLat = 52.158367;
-    var mainLng = 4.492999;
+    var mainLat = 52.371828;
+    var mainLng = 4.902220;
     this._map_center = {
         lat: mainLat,
         lng: mainLng
