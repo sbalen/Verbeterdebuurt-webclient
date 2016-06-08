@@ -2695,7 +2695,9 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                               
                              $scope.errorPassword3 = "Wachtwoord komt niet overeen"
                              $scope.hide = "";
-                             $rootScope.globaloverlay = "";  
+                             $(window).scrollTop(0);
+                             $rootScope.globaloverlay = ""; 
+                             
                     
                          }
         
@@ -2794,17 +2796,24 @@ vdbApp.controller('profileCtrl', ['$scope','$rootScope','$window','profileServic
                     $scope.password_old="";
                     $scope.rpassword="";
                     
+                    
                 })
             
             }
+                   
 		});
             
          
-            }   
+            }
+        
+         $scope.successAlert = "";
+         $scope.successClass = "";
 		
         $scope.close = function(){
          
 		  $scope.hide="ng-hide";
+            
+             
         }
 	}
   
