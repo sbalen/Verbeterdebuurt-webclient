@@ -1037,7 +1037,7 @@ vdbApp.controller('mainCtrl', ['$scope','$timeout','$window','$location','$rootS
 //                        //geolocation found location
 //                        //SUPPORT GEOLOCATION
                        $timeout(function(){
-                           if(!$routeParams.cityName){
+                           if(!$routeParams.cityName && !$routeParams.id){
                                if(geolocationValid==0){
                            if(navigator.geolocation) {
                                console.log("geocode active");
