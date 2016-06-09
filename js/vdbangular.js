@@ -1100,7 +1100,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     //                        //geolocation found location
     //                        //SUPPORT GEOLOCATION
     $timeout(function () {
-        if (!$routeParams.cityName && !$routeParams.id) {
+        if (!$routeParams.cityName && !$routeParams.id && !$routeParams.postalcode) {
             if (geolocationValid == 0) {
                 if (navigator.geolocation) {
                     console.log("geocode active");
@@ -1161,7 +1161,21 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
                         },
                         //when user did not share location
                         function (error) {
-                            if (error.PERMISSION_DENIED) {
+                            if (error.PERMISSION_DENIED) {               
+                                //check if user are logged in?
+                                if ($cookies.getObject('user') != null) {
+                                    $rootScope.lusername = $cookies.getObject('user').username;
+                                    
+                                    $window.postalcode = $cookies.getObject('user_profile').postcode;
+                                
+                                    $location.path("/postcode/" +$window.postalcode);
+             
+                                    geocodeAddress(geocoder, map)
+                                    
+                                    
+                                    geolocationValid = 1;
+                                    
+                                }
 
                             }
                         }
@@ -1170,6 +1184,19 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
 
                 // Browser doesn't support Geolocation
                 else {
+                    
+                    //check if user are logged in?
+                    if ($cookies.getObject('user') != null) {
+                        $rootScope.lusername = $cookies.getObject('user').username;
+                        
+                        $window.postalcode = $cookies.getObject('user_profile').postcode;
+                        $location.path("/postcode/" +$window.postalcode);
+                        geocodeAddress(geocoder, map)
+                        
+                        
+                        geolocationValid = 1;
+                    }
+                    
 
                 }
             }
@@ -1180,7 +1207,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
 
         }
 
-    }, 1000)
+    }, 3000)
 
 
     menuSelected($rootScope, 'home');
@@ -1291,7 +1318,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     if ($routeParams.postalcode) {
         $window.postalcode = $routeParams.postalcode;
         $timeout(function () {
-
+            
             var jsoncity = JSON.stringify({
                 "council": "" + citynamegoogle.long_name + ""
             });
@@ -1629,8 +1656,9 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
     //validation for submit vote
     $scope.voteSubmit = function () {
         if (!$cookies.getObject('user')) {
-            $location.path("/login");
-            $rootScope.errorSession = "Voor deze actie moet je ingelogd zijn."
+            $rootScope.errorSession = "Voor deze actie moet je ingelogd zijn.";
+             $('#voteModal').modal('show');
+
         } else {
             $rootScope.globaloverlay = "active";
             var jsonVoteSubmit = JSON.stringify({
@@ -4071,3 +4099,24 @@ vdbApp.controller('registrationHashCtrl', ['$scope', '$rootScope', '$routeParams
 
 
 }])
+
+vdbApp.controller('voteCtrl', ['$scope','$routeParams','voteSubmitService', function ($scope,$routeParams,voteSubmitService) {
+    
+    $scope.submit = function(){
+            console.log($scope.email);
+            console.log($scope.name);
+            var user = {};
+            user.email = $scope.email;
+            
+
+            user.name = $scope.name;
+            var issue_id = $routeParams.id;
+
+            var jsondata = JSON.stringify({user,issue_id});
+            console.log(jsondata);
+            var getvoteSummit = voteSubmitService.getvoteSummit(jsondata).then(function (data) {
+                var getvoteSubmit = data.data;
+                console.log(getvoteSubmit);
+            }); 
+    }
+}]);
