@@ -188,7 +188,15 @@ function googleMapCreateProblem(latlng) {
                         visibility: "off"
                     }
 				        		]
-				    }
+            },
+            {
+                featureType: "transit.station",
+                stylers: [
+                    {
+                        visibility: "off"
+                    }
+                ]
+            }
 			    ]
     }
     map3 = new google.maps.Map(document.getElementById("googleMapCreateProblem"), mapOption3);
@@ -232,7 +240,15 @@ function googleMapCreateIdea(latlng) {
                         visibility: "off"
                     }
 				        		]
-				    }
+            },
+            {
+                featureType: "transit.station",
+                stylers: [
+                    {
+                        visibility: "off"
+                    }
+                ]
+            }
 			    ]
     }
     map4 = new google.maps.Map(document.getElementById("googleMapCreateIdea"), mapOption4);
