@@ -22,13 +22,13 @@
                     
                     <div class="form-group">
                         <div class="col-sm-12 form-col">
-                            <input type="text" class="form-control" id="username" placeholder="Gebruikersnaam of e-mailadres" ng-model="lusername" style="margin-left: 15px;">
+                            <input type="text" class="form-control" id="username" placeholder="Gebruikersnaam of e-mailadres" ng-model="lusername" style="margin-left: 15px;" ng-keyup="$event.keyCode == 13 && login()">
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-sm-12 form-col">
                             <form ng-submit="login()">
-                                <input type="password" class="form-control" id="password-1" placeholder="Wachtwoord" ng-model="lpassword" style="margin-left: 15px;">
+                                <input type="password" class="form-control" id="password-1" placeholder="Wachtwoord" ng-model="lpassword" style="margin-left: 15px;" ng-keyup="$event.keyCode == 13 && login()">
                             </form>
                         </div>
                     </div>
