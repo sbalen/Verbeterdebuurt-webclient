@@ -1167,10 +1167,10 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
                                     $rootScope.lusername = $cookies.getObject('user').username;
                                     
                                     $window.postalcode = $cookies.getObject('user_profile').postcode;
-                                    alert("go to "+$window.postalcode);
+                                    //alert("go to "+$window.postalcode);
                                     $location.path("/postcode/" +$window.postalcode);
                                     //this is not freakin working
-                                    
+                                    geocodeAddress(geocoder, map)
                                     
                                     
                                     geolocationValid = 1;
@@ -1191,6 +1191,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
                         
                         $window.postalcode = $cookies.getObject('user_profile').postcode;
                         $location.path("/postcode/" +$window.postalcode);
+                        geocodeAddress(geocoder, map)
                         
                         
                         geolocationValid = 1;
@@ -1317,7 +1318,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     if ($routeParams.postalcode) {
         $window.postalcode = $routeParams.postalcode;
         $timeout(function () {
-
+            
             var jsoncity = JSON.stringify({
                 "council": "" + citynamegoogle.long_name + ""
             });
