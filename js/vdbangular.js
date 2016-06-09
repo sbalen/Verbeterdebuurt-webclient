@@ -1100,7 +1100,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     //                        //geolocation found location
     //                        //SUPPORT GEOLOCATION
     $timeout(function () {
-        if (!$routeParams.cityName && !$routeParams.id) {
+        if (!$routeParams.cityName && !$routeParams.id && !$routeParams.postalcode) {
             if (geolocationValid == 0) {
                 if (navigator.geolocation) {
                     console.log("geocode active");
@@ -1161,7 +1161,21 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
                         },
                         //when user did not share location
                         function (error) {
-                            if (error.PERMISSION_DENIED) {
+                            if (error.PERMISSION_DENIED) {               
+                                //check if user are logged in?
+                                if ($cookies.getObject('user') != null) {
+                                    $rootScope.lusername = $cookies.getObject('user').username;
+                                    
+                                    $window.postalcode = $cookies.getObject('user_profile').postcode;
+                                    alert("go to "+$window.postalcode);
+                                    $location.path("/postcode/" +$window.postalcode);
+                                    //this is not freakin working
+                                    
+                                    
+                                    
+                                    geolocationValid = 1;
+                                    
+                                }
 
                             }
                         }
@@ -1170,6 +1184,18 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
 
                 // Browser doesn't support Geolocation
                 else {
+                    
+                    //check if user are logged in?
+                    if ($cookies.getObject('user') != null) {
+                        $rootScope.lusername = $cookies.getObject('user').username;
+                        
+                        $window.postalcode = $cookies.getObject('user_profile').postcode;
+                        $location.path("/postcode/" +$window.postalcode);
+                        
+                        
+                        geolocationValid = 1;
+                    }
+                    
 
                 }
             }
@@ -1180,7 +1206,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
 
         }
 
-    }, 1000)
+    }, 3000)
 
 
     menuSelected($rootScope, 'home');
