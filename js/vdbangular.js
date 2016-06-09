@@ -1655,8 +1655,9 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
     //validation for submit vote
     $scope.voteSubmit = function () {
         if (!$cookies.getObject('user')) {
-            $location.path("/login");
-            $rootScope.errorSession = "Voor deze actie moet je ingelogd zijn."
+            $rootScope.errorSession = "Voor deze actie moet je ingelogd zijn.";
+             $('#voteModal').modal('show');
+
         } else {
             $rootScope.globaloverlay = "active";
             var jsonVoteSubmit = JSON.stringify({
@@ -4097,3 +4098,24 @@ vdbApp.controller('registrationHashCtrl', ['$scope', '$rootScope', '$routeParams
 
 
 }])
+
+vdbApp.controller('voteCtrl', ['$scope','$routeParams','voteSubmitService', function ($scope,$routeParams,voteSubmitService) {
+    
+    $scope.submit = function(){
+            console.log($scope.email);
+            console.log($scope.name);
+            var user = {};
+            user.email = $scope.email;
+            
+
+            user.name = $scope.name;
+            var issue_id = $routeParams.id;
+
+            var jsondata = JSON.stringify({user,issue_id});
+            console.log(jsondata);
+            var getvoteSummit = voteSubmitService.getvoteSummit(jsondata).then(function (data) {
+                var getvoteSubmit = data.data;
+                console.log(getvoteSubmit);
+            }); 
+    }
+}]);
