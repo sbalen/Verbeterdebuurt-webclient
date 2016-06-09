@@ -1565,7 +1565,6 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
     var jsondata = JSON.stringify({
         "issue_id": $routeParams.id
     });
-
     if ($rootScope.lastUrl == null) {
         $rootScope.lastUrl == '/';
     }
@@ -1583,6 +1582,14 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
     var getIssues = issuesService.getIssues(jsondata).then(function (data) {
         var getdata = data.data;
         $rootScope.problemIdList = getdata.issues;
+        $timeout(function(){
+        mainLat = getdata.issues[0].location.latitude;
+        mainLng = getdata.issues[0].location.longitude;
+        map.setCenter({ lat: mainLat,
+                        lng: mainLng});
+
+        },1000)
+       
         $scope.hide = "";
         $rootScope.globaloverlay = "";
         //                        var jsoncity = JSON.stringify({"council":""+getdata.issues[0].council+""});
@@ -1834,7 +1841,7 @@ vdbApp.controller('myIssuesCtrl', ['$scope', '$rootScope', '$window', '$location
 
 }])
 
-vdbApp.controller('myIssuesDetailCtrl', ['$scope', '$routeParams', '$http', '$rootScope', '$location', '$window', 'myIssuesService', 'usSpinnerService', 'issueLogService', 'commentService', 'voteSubmitService', '$cookies', function ($scope, $routeParams, $http, $rootScope, $location, $window, myIssuesService, usSpinnerService, issueLogService, commentService, voteSubmitService, $cookies) {
+vdbApp.controller('myIssuesDetailCtrl', ['$scope', '$routeParams', '$http', '$rootScope', '$location', '$window', 'myIssuesService', 'usSpinnerService', 'issueLogService', 'commentService', 'voteSubmitService', '$cookies','$timeout', function ($scope, $routeParams, $http, $rootScope, $location, $window, myIssuesService, usSpinnerService, issueLogService, commentService, voteSubmitService, $cookies,$timeout) {
     $scope.hide = "";
     $scope.hideStatus = "ng-hide";
     $scope.errorVote = "";
@@ -1872,6 +1879,17 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope', '$routeParams', '$http', '$ro
         $rootScope.count = getdata.count;
         $rootScope.myIssuesList = getdata.issues;
         $rootScope.globaloverlay = "";
+        for(var i = 0 ; i < getdata.count ; i++){
+            if(getdata.issues[i].id == $routeParams.id){
+                $timeout(function(){
+                    mainLat = getdata.issues[0].location.latitude;
+                    mainLng = getdata.issues[0].location.longitude;
+                    map.setCenter({ lat: mainLat,
+                                    lng: mainLng});
+                },1000)
+                break;
+            }
+        }
     })
     $scope.id = function () {
         return $routeParams.id;
