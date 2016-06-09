@@ -1167,12 +1167,10 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
                                     $rootScope.lusername = $cookies.getObject('user').username;
                                     
                                     $window.postalcode = $cookies.getObject('user_profile').postcode;
-                                
                                     $location.path("/postcode/" +$window.postalcode);
-             
                                     geocodeAddress(geocoder, map)
                                     
-                                    
+        
                                     geolocationValid = 1;
                                     
                                 }
@@ -1351,7 +1349,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
             if ($window.city.long_name != null) {
 
                 //url change validation	
-                if ($location.path().includes("/gemeente/") || $location.path().endsWith("/")) {
+                if ($location.path().includes("/gemeente/") || $location.path().endsWith("/") || $routeParams.postalcode) {
                     if ($rootScope.lastCity != null) {
                         $location.path("/gemeente/" + $rootScope.lastCity);
                         $rootScope.lastCity = null;
