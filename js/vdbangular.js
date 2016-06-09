@@ -1167,9 +1167,9 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
                                     $rootScope.lusername = $cookies.getObject('user').username;
                                     
                                     $window.postalcode = $cookies.getObject('user_profile').postcode;
-                                    //alert("go to "+$window.postalcode);
+                                
                                     $location.path("/postcode/" +$window.postalcode);
-                                    //this is not freakin working
+             
                                     geocodeAddress(geocoder, map)
                                     
                                     
