@@ -1734,19 +1734,42 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
                 $scope.hideLogStatus = "ng-hide";
             } else {
                 $scope.hideLogStatus = "";
+                $scope.showDataText = "Meer >>";
                 $scope.issueLogList = getdata.logs;
             }
         });
     } else {
-        $scope.hideLogStatus = "ng-hide";
+        var logjsondata = JSON.stringify({
+            "issue_id": "" + $routeParams.id + ""
+        });
+        console.log(logjsondata);
+        var getIssueLog = issueLogService.getIssueLog(logjsondata).then(function (data) {
+            var getdata = data.data;
+            if (!getdata.success) {
+                $scope.hideLogStatus = "ng-hide";
+                console.log("gagal");
+
+            } else if (getdata.success && getdata.counts == 0) {
+                $scope.hideLogStatus = "ng-hide";
+                console.log("no data");
+
+            } else {
+                $scope.hideLogStatus = "";
+                $scope.issueLogList = getdata.logs;
+                console.log(success);
+
+            }
+        });
     }
 
     //to hide and show log status
     $scope.logStatus = function () {
             if ($scope.hideStatus == "ng-hide") {
                 $scope.hideStatus = "";
+                $scope.showDataText = "Minder <<";
             } else {
                 $scope.hideStatus = "ng-hide";
+                 $scope.showDataText = "Meer >>";
             }
         }
         //show Comment

@@ -104,12 +104,12 @@
                         </tr> -->
                         <tr>
                             <td>Status:</td>
-                            <td>{{newProblem.status_description}} <a class="{{hideLogStatus}}  issueLog" ng-click="logStatus()">Meer >> </a></td>
+                            <td>{{newProblem.status_description}} <a class="{{hideLogStatus}}  issueLog" ng-click="logStatus()"> {{showDataText}} </a></td>
                         </tr>
                         <tr class="{{hideStatus}}">
                             <td colspan="3">
                                 <ul class="status-log">
-                                    <li ng-repeat="issueLog in issueLogList" class="list-group-item status-log-item"><span class="text-muted">{{issueLog.createdAt}}: </span>{{issueLog.message}}</li>
+                                    <li ng-repeat="issueLog in issueLogList" class="list-group-item status-log-item"><span class="text-muted"> {{issueLog.createdAt}}: </span>{{issueLog.message}}</li>
                                 </ul>
                             </td>
                         </tr> 
