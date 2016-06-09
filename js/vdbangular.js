@@ -74,7 +74,15 @@ window.onload = function () {
                         visibility: "off"
                     }
 				        		]
-				    }
+				    },
+            {
+                featureType: "transit.station",
+                stylers: [
+                    {
+                        visibility: "off"
+                    }
+                ]
+            }
 			    ]
 
     };
