@@ -683,7 +683,7 @@ h6 {
     white-space: nowrap;
     /*Prevents Wrapping*/
     height: 90px;
-    overflow-x: scroll;
+    overflow-x: hidden;
     overflow-y: hidden;
     display: block;
     width: calc(100% - 20px);
@@ -725,14 +725,18 @@ h6 {
         display: block; }
 
 #duplicate-bubble {
-  height: 100px;
+  height: auto;
+  width: auto;
   position: absolute;
-  width: 300px;
+  max-width: 300px;
   border: 1px solid #007AC3;
   border-radius: 4px;
   background: #fff;
   z-index: 100;
-  padding: 10px; }
+  padding: 10px;
+  font-size: 12px; }
+  #duplicate-bubble a {
+    font-size: 10px; }
 
 .status-log {
   padding: 0px;
