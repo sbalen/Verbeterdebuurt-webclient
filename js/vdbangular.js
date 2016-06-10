@@ -494,7 +494,7 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
             templateUrl: 'createissues.html',
             controller: 'createissueCtrl'
         })
-        .when('/nieuw-idea', {
+        .when('/nieuw-idee', {
             templateUrl: 'createIdea.html',
             controller: 'createIdeaCtrl'
         })
@@ -1169,14 +1169,12 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
                                 //check if user are logged in?
                                 if ($cookies.getObject('user') != null) {
                                     $rootScope.lusername = $cookies.getObject('user').username;
-                                    
+                                    console.log("error handling");
                                     $window.postalcode = $cookies.getObject('user_profile').postcode;
-                                
                                     $location.path("/postcode/" +$window.postalcode);
-             
                                     geocodeAddress(geocoder, map)
                                     
-                                    
+        
                                     geolocationValid = 1;
                                     
                                 }
@@ -1269,8 +1267,8 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
                 $location.path('/nieuwe-melding');
             } else if ($routeParams.action == "nieuw-probleem") {
                 $location.path('/nieuw-probleem');
-            } else if ($routeParams.action == "nieuw-idea") {
-                $location.path('/nieuw-idea');
+            } else if ($routeParams.action == "nieuw-idee") {
+                $location.path('/nieuw-idee');
             }
         }
 
@@ -1355,7 +1353,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
             if ($window.city.long_name != null) {
 
                 //url change validation	
-                if ($location.path().includes("/gemeente/") || $location.path().endsWith("/")) {
+                if ($location.path().includes("/gemeente/") || $location.path().endsWith("/") || $routeParams.postalcode) {
                     if ($rootScope.lastCity != null) {
                         $location.path("/gemeente/" + $rootScope.lastCity);
                         $rootScope.lastCity = null;
@@ -1469,6 +1467,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
             $rootScope.globaloverlay = "active";
             console.log($scope.searchCity);
             $window.cityName = null;
+            $window.postalcode = null;
             //$rootScope.lastCity = city.long_name;
             geocodeAddress(geocoder, map);
             $timeout(function () {
@@ -3377,7 +3376,7 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
         }
         //switch bar change
     $scope.switchButton = function () {
-            $location.path('/nieuw-idea');
+            $location.path('/nieuw-idee');
             markerLat = marker.getPosition().lat();
             markerLng = marker.getPosition().lng();
         }

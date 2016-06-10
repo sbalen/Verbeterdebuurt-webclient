@@ -107,6 +107,7 @@ function geocodeAddress(geocoder, resultsMap) {
         else if(postalcode!=null){
           var address = postalcode;
         }
+        console.log(address);
         geocoder.geocode({'address': address,componentRestrictions: {country: 'nl'}}, function(results, status) {
           if (status === google.maps.GeocoderStatus.OK) {
                 resultsMap.setCenter(results[0].geometry.location);
@@ -114,14 +115,19 @@ function geocodeAddress(geocoder, resultsMap) {
                 maxlng  = map.getBounds().getNorthEast().lng();
                 minlat = map.getBounds().getSouthWest().lat();
                 minlng = map.getBounds().getSouthWest().lng();
+
                 console.log(map.getCenter().lat()+" "+map.getCenter().lng());
+                console.log("nasiduk");
+                citynamegoogle= {};
+                citynamegoogle.long_name = null;
                 for (var i=0; i<results[0].address_components.length; i++) {
                 for (var b=0;b<results[0].address_components[i].types.length;b++) {
                   //if you want the change the area ..
                 if (results[0].address_components[i].types[b] == "administrative_area_level_2") {
                    // name of city
-                    citynamegoogle= results[0].address_components[i];
-                    console.log(citynamegoogle);
+                   console.log("nasiduk");
+                    citynamegoogle = results[0].address_components[i];
+                    console.log(results[0].address_components[i]);
                     break;
                         }
                     }
@@ -131,6 +137,9 @@ function geocodeAddress(geocoder, resultsMap) {
           } else {
             alert('Geocode was not successful for the following reason: ' + status);
           }
+          address = null;
+          postalcode = null;
+          cityName = null;
         });
       }
 
