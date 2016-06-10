@@ -1689,6 +1689,11 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
         $scope.successClass = "successAlert";
         $scope.successMessageNonApi = "Je melding is verstuurd!";
     }
+    if($rootScope.successVote ==1){
+        $scope.hideError = 0;
+        $scope.successClass = "successAlert";
+        $scope.successMessageNonApi = $rootScope.voteMessage;
+    }
     $rootScope.urlBefore = $location.path();
     var getIssues = issuesService.getIssues(jsondata).then(function (data) {
         var getdata = data.data;
@@ -1914,6 +1919,7 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
     }
     $rootScope.standardTemp = null;
     $rootScope.successCreate = 0;
+    $rootScope.successVote = 0;
 
     //show my issue
                 if ($cookies.getObject('user')) {
@@ -4334,7 +4340,7 @@ vdbApp.controller('voteCtrl', ['$scope','$rootScope','$routeParams','voteSubmitS
                 }
                 else{
                     $rootScope.globaloverlay = "";
-                    $('#StemModal').modal('hide');
+                    $('#voteModal').modal('hide');
                     $('.modal-backdrop').hide();
                 }
             }); 
@@ -4344,7 +4350,7 @@ vdbApp.controller('voteCtrl', ['$scope','$rootScope','$routeParams','voteSubmitS
     }
 }]);
 
-vdbApp.controller('confirmVoteCtrl', ['$scope','$rootScope','$routeParams','confirmVoteService', function ($scope,$rootScope,$routeParams,confirmVoteService) {
+vdbApp.controller('confirmVoteCtrl', ['$scope','$rootScope','$routeParams','confirmVoteService','$location', function ($scope,$rootScope,$routeParams,confirmVoteService,$location) {
     $scope.successConfirm = false;
     $scope.cancelConfirm = false;
     $scope.showerror = false;
@@ -4366,12 +4372,13 @@ vdbApp.controller('confirmVoteCtrl', ['$scope','$rootScope','$routeParams','conf
         if (!getConfirmVote.success) {
             $scope.message = getConfirmVote.error;
             $rootScope.globaloverlay = "";
-            $scope.errorUnfollow = true;
         } else {
             $scope.message = getConfirmVote.message;
             var getdata = data.data;
             $rootScope.globaloverlay = "";
-            $scope.errorUnfollow = true;
+            $location.path('/melding/'+getdata.issue_id);
+            $rootScope.voteMessage = getdata.message;
+            $rootScope.successVote = 1;
         }
 
     });
