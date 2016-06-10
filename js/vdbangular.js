@@ -552,7 +552,7 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
 
     //confirm the vote
     .when('/stem/bevestigen/:hashkey', {
-            templateUrl: 'map.html',
+            templateUrl: 'confirmation.html',
             controller: 'confirmVoteCtrl',
             resolve: {
                 targetAction: function ($rootScope) {
@@ -1161,7 +1161,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     $timeout(function () {
        
         
-        if (!$routeParams.cityName && !$routeParams.id && !$routeParams.postalcode) {
+        if (!$routeParams.cityName && !$routeParams.id && !$routeParams.postalcode && !$routeParams.hashkey) {
             
 
             if (geolocationValid == 0) {
@@ -4202,6 +4202,7 @@ vdbApp.controller('unfollowIssueCtrl', ['$scope', '$rootScope', '$routeParams', 
     $scope.cancelConfirm = false;
     $scope.showerror = false;
     $scope.errorUnfollow = false;
+    $scope.errorVote = false;
     console.log("target action : " + $rootScope.targetAction);
 
     var hash = $routeParams.hashkey;
@@ -4251,6 +4252,7 @@ vdbApp.controller('registrationHashCtrl', ['$scope', '$rootScope', '$routeParams
     $scope.cancelConfirm = false;
     $scope.showerror = false;
     $scope.errorUnfollow = false;
+    $scope.errorVote = false;
 
     console.log("target action : " + $rootScope.targetAction);
     var hash = $routeParams.hashkey;
@@ -4355,6 +4357,7 @@ vdbApp.controller('confirmVoteCtrl', ['$scope','$rootScope','$routeParams','conf
     $scope.cancelConfirm = false;
     $scope.showerror = false;
     $scope.errorUnfollow = false;
+    $scope.errorVote = false;
 
     console.log("target action : " + $rootScope.targetAction);
     var hash = $routeParams.hashkey;
@@ -4372,6 +4375,7 @@ vdbApp.controller('confirmVoteCtrl', ['$scope','$rootScope','$routeParams','conf
         if (!getConfirmVote.success) {
             $scope.message = getConfirmVote.error;
             $rootScope.globaloverlay = "";
+            $scope.errorVote = true;
         } else {
             $scope.message = getConfirmVote.message;
             var getdata = data.data;
