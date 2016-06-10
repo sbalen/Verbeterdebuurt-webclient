@@ -1482,7 +1482,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
         $cookies.remove('user_profile');
         // $('.dropdown-menu').hide();
         $scope.userpanel = 0;
-
+        $rootScope.myIssuesList = null;
 
         $scope.fbstatus = $facebook.isConnected();
         if ($scope.fbstatus) {
@@ -1602,7 +1602,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
                         $rootScope.myIssueCount = count;
                         $rootScope.myIssuesList = getdata.issues;
                     })
-                    $scope.hideLogin = true
+                    $scope.hideLogin = true;
                 } else {
                     $scope.hideLogin = false;
                 }
