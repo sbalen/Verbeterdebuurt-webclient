@@ -494,7 +494,7 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
             templateUrl: 'createissues.html',
             controller: 'createissueCtrl'
         })
-        .when('/nieuw-idea', {
+        .when('/nieuw-idee', {
             templateUrl: 'createIdea.html',
             controller: 'createIdeaCtrl'
         })
@@ -1267,8 +1267,8 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
                 $location.path('/nieuwe-melding');
             } else if ($routeParams.action == "nieuw-probleem") {
                 $location.path('/nieuw-probleem');
-            } else if ($routeParams.action == "nieuw-idea") {
-                $location.path('/nieuw-idea');
+            } else if ($routeParams.action == "nieuw-idee") {
+                $location.path('/nieuw-idee');
             }
         }
 
@@ -3376,7 +3376,7 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
         }
         //switch bar change
     $scope.switchButton = function () {
-            $location.path('/nieuw-idea');
+            $location.path('/nieuw-idee');
             markerLat = marker.getPosition().lat();
             markerLng = marker.getPosition().lng();
         }
