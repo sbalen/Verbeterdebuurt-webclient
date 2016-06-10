@@ -23,7 +23,7 @@
                             <div class="panel-body">
                                 <div class="form-group">
                                     <div class="col-sm-12 form-col">
-                                        <input type="text" class="form-control" id="email" placeholder="E-mailadres" ng-model="femail">
+                                        <input type="text" class="form-control" id="email" placeholder="E-mailadres" ng-model="femail" ng-keyup="$event.keyCode == 13 && forgotpass()">
                                     </div>
                                 </div>
                             </div>
