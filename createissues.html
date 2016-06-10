@@ -25,11 +25,11 @@
                                   <p>{{errorStreet}}</p>
                                   <p>{{errorStreetNumber}}</p>
               </div>
-		        <h1 class="marginheader meldingheader">Nieuw Probleem</h1>
+		        <h1 class="marginheader meldingheader fontM">Nieuw Probleem</h1>
             <div class="problem">
 		        <form class="form-horizontal" role="form">
                               <div class="panel-body">
-                                <h4>1. Bepaal de locatie</h4>
+                                <h4 class="fontM">1. Bepaal de locatie</h4>
                                 <div class="well well-sm locationpicker-well">
                                   <fieldset class="gllpLatlonPicker">
                                   <div class="input-group" style="width:100%; margin-left:0; ">
@@ -50,7 +50,7 @@
                               </div>
                             </div>
                             <div class="panel-body">
-                                <h4>2. Beschrijf de melding</h4>
+                                <h4 class="fontM">2. Beschrijf de melding</h4>
 	                             <div class="form-group">
                                     <div class="col-sm-12 form-col" style="margin-bottom: 10px;" ng-class="{'has-error':errorTitle}">
                                         <input type="text" class="form-control" id="Onderwerp" placeholder="Onderwerp" ng-model="title">
@@ -108,7 +108,7 @@
                                 <input id="file-input-problem" type="file" style="width: 94%;margin-left: 3%;" data-show-upload="false" img-upload='imgData'>
                             </div>
                             <div class="panel-body" ng-hide="hideLogin">
-                                <h4>3. Contactgegevens</h4>
+                                <h4 class="fontM">3. Contactgegevens</h4>
                                 Of <a href="login">log in</a> om dit over te slaan
                                 <div class="form-group">
                                     <div class="col-sm-12 form-col" ng-class="{'has-error': errorEmail}">
