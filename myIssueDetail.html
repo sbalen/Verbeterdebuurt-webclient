@@ -20,7 +20,8 @@
             <h1>{{myIssues.title}}<br><small>{{myIssues.location.full_address}}</small></h1>
             <div class="thumbnail right-caption span4">
                 <img class="img-responsive" src="{{myIssues.image.image_url}}" alt="Plaatje van de situatie" ng-if="myIssues.image">
-                <div  class = "img-resposive" ng-if="!myIssues.image" id = "googleMapIssue" ng-init="googleMapIssue(myIssues.location.latitude,myIssues.location.longitude,myIssues.type)"></div>
+                <img class="img-responsive" src="{{sateliteimg}}" alt="Plaatje van de situatie" ng-if="!myIssues.image">
+<!--                <div  class = "img-resposive" ng-if="!myIssues.image" id = "googleMapIssue" ng-init="googleMapIssue(myIssues.location.latitude,myIssues.location.longitude,myIssues.type)"></div>-->
                   <div class="detail-table hidden-xs">
                     <table width="100%">
                             <tbody> 
@@ -101,9 +102,27 @@
 
 	    </div>
 	    <!--  sidebar right -->
-	    <div class="col-lg-3">
-                
-	    </div>  
+	   <div class="col-lg-3 hidden-xs " ng-hide="results.length == 0 || myIssuesList == null">
+            <div class="panel side-panel panel-default">
+                    <div class="panel-heading">
+                            <strong>Mijn Meldingen</strong>
+                        </div>
+                            <div class="panel-body">
+                          <div class="list-group" >
+                            <a href="/mijn-meldingen/{{myIssues.id}}" class="list-group-item clearfix" ng-repeat="myIssues in myIssuesList| orderBy : 'created_at' : true |limitTo:3  | filter : x as results" ng-click="clickIssues()">
+                              <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
+                              <strong> {{myIssues.title}}</strong> {{myIssues.location.full_address}}
+                              {{myIssues.status}}
+                              <span class="pull-right">
+                                <button class="btn btn-xs btn-success" >
+                                  <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
+                                </button>
+                              </span>
+                            </a>
+                          </div>
+                        </div>  
+            </div>
+        </div>   
     </div>	
 
     <!--MyIssueCOmmentModal-->
