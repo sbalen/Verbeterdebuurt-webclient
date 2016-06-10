@@ -324,7 +324,20 @@ h6 {
     border: 1px solid transparent;
     border-radius: 12px;
     margin-left: 10px;
-    margin-right: 10px; } }
+    margin-right: 10px; }
+
+  .mfooter {
+    width: 57%;
+    height: 50px;
+    background-color: white;
+    text-align: center;
+    margin-left: 21%;
+    bottom: 20px;
+    position: absolute;
+    border-color: #007AC3;
+    border-style: solid;
+    border-width: thin;
+    z-index: 1020; } }
 @media (max-width: 767px) {
   .hidden-xs {
     display: none !important; }
