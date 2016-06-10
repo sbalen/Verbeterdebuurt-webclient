@@ -2160,7 +2160,9 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope', '$routeParams', '$http', '$ro
         }
         //delete success Create
     $rootScope.standardTemp = null;
-    $rootScope.successCreate = 0;
+    $rootScope.successCreateLogin = 0;
+    $rootScope.successCreateNonLogin = 0;
+    $rootScope.successVote = 0;
 
     //show my issue
                 if ($cookies.getObject('user')) {
