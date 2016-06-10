@@ -34,6 +34,7 @@ var cancelRegistrationService = new Object();
 var confirmIssueService = new Object();
 var unfollowIssueService = new Object();
 var serviceStandartService = new Object();
+var confirmVoteService = new Object();
 var geolocationValid = 0;
 
 
@@ -539,7 +540,7 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
             templateUrl: 'createissues.html',
             controller: 'createissueCtrl'
         })
-        .when('/nieuw-idea', {
+        .when('/nieuw-idee', {
             templateUrl: 'createIdea.html',
             controller: 'createIdeaCtrl'
         })
@@ -552,7 +553,7 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
     //confirm the vote
     .when('/stem/bevestigen/:hashkey', {
             templateUrl: 'map.html',
-            controller: 'hashCtrl',
+            controller: 'confirmVoteCtrl',
             resolve: {
                 targetAction: function ($rootScope) {
                     $rootScope.targetAction = "confirm_vote";
@@ -1111,6 +1112,19 @@ vdbApp.factory('unfollowIssueService', ['$http', function ($http) {
     };
 }])
 
+vdbApp.factory('confirmVoteService', ["$http",function ($http) {
+    return {
+        getConfirmVote: function (jsondata){
+            return $http.post(APIURL+ 'confirmVote',jsondata)
+            .success(function (data){
+                confirmVoteService.data = data;
+                return confirmVoteService.data;
+            });
+            return confirmVoteService.data;
+        }
+
+    };
+}])
 
 vdbApp.run(['$rootScope', '$window', function ($rootScope, $window) {
     (function (d, s, id) {
@@ -1145,7 +1159,11 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     //                        //geolocation found location
     //                        //SUPPORT GEOLOCATION
     $timeout(function () {
-        if (!$routeParams.cityName && !$routeParams.id) {
+       
+        
+        if (!$routeParams.cityName && !$routeParams.id && !$routeParams.postalcode) {
+            
+
             if (geolocationValid == 0) {
                 if (navigator.geolocation) {
                     console.log("geocode active");
@@ -1206,7 +1224,19 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
                         },
                         //when user did not share location
                         function (error) {
-                            if (error.PERMISSION_DENIED) {
+                            if (error.PERMISSION_DENIED) {               
+                                //check if user are logged in?
+                                if ($cookies.getObject('user') != null) {
+                                    $rootScope.lusername = $cookies.getObject('user').username;
+                                    console.log("error handling");
+                                    $window.postalcode = $cookies.getObject('user_profile').postcode;
+                                    $location.path("/postcode/" +$window.postalcode);
+                                    geocodeAddress(geocoder, map)
+                                    
+        
+                                    geolocationValid = 1;
+                                    
+                                }
 
                             }
                         }
@@ -1215,6 +1245,19 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
 
                 // Browser doesn't support Geolocation
                 else {
+                    
+                    //check if user are logged in?
+                    if ($cookies.getObject('user') != null) {
+                        $rootScope.lusername = $cookies.getObject('user').username;
+                        
+                        $window.postalcode = $cookies.getObject('user_profile').postcode;
+                        $location.path("/postcode/" +$window.postalcode);
+                        geocodeAddress(geocoder, map)
+                        
+                        
+                        geolocationValid = 1;
+                    }
+                    
 
                 }
             }
@@ -1225,7 +1268,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
 
         }
 
-    }, 1000)
+    }, 3000)
 
 
     menuSelected($rootScope, 'home');
@@ -1283,8 +1326,8 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
                 $location.path('/nieuwe-melding');
             } else if ($routeParams.action == "nieuw-probleem") {
                 $location.path('/nieuw-probleem');
-            } else if ($routeParams.action == "nieuw-idea") {
-                $location.path('/nieuw-idea');
+            } else if ($routeParams.action == "nieuw-idee") {
+                $location.path('/nieuw-idee');
             }
         }
 
@@ -1359,7 +1402,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     if ($routeParams.postalcode) {
         $window.postalcode = $routeParams.postalcode;
         $timeout(function () {
-
+            
             var jsoncity = JSON.stringify({
                 "council": "" + citynamegoogle.long_name + ""
             });
@@ -1392,7 +1435,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
             if ($window.city.long_name != null) {
 
                 //url change validation	
-                if ($location.path().includes("/gemeente/") || $location.path().endsWith("/")) {
+                if ($location.path().includes("/gemeente/") || $location.path().endsWith("/") || $routeParams.postalcode) {
                     if ($rootScope.lastCity != null) {
                         $location.path("/gemeente/" + $rootScope.lastCity);
                         $rootScope.lastCity = null;
@@ -1506,6 +1549,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
             $rootScope.globaloverlay = "active";
             console.log($scope.searchCity);
             $window.cityName = null;
+            $window.postalcode = null;
             //$rootScope.lastCity = city.long_name;
             geocodeAddress(geocoder, map);
             $timeout(function () {
@@ -1645,6 +1689,11 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
         $scope.successClass = "successAlert";
         $scope.successMessageNonApi = "Je melding is verstuurd!";
     }
+    if($rootScope.successVote ==1){
+        $scope.hideError = 0;
+        $scope.successClass = "successAlert";
+        $scope.successMessageNonApi = $rootScope.voteMessage;
+    }
     $rootScope.urlBefore = $location.path();
     var getIssues = issuesService.getIssues(jsondata).then(function (data) {
         var getdata = data.data;
@@ -1734,8 +1783,9 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
     //validation for submit vote
     $scope.voteSubmit = function () {
         if (!$cookies.getObject('user')) {
-            $location.path("/login");
-            $rootScope.errorSession = "Voor deze actie moet je ingelogd zijn."
+            $rootScope.errorSession = "Voor deze actie moet je ingelogd zijn.";
+             $('#voteModal').modal('show');
+
         } else {
             $rootScope.globaloverlay = "active";
             var jsonVoteSubmit = JSON.stringify({
@@ -1869,6 +1919,7 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
     }
     $rootScope.standardTemp = null;
     $rootScope.successCreate = 0;
+    $rootScope.successVote = 0;
 
     //show my issue
                 if ($cookies.getObject('user')) {
@@ -3534,7 +3585,7 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
         }
         //switch bar change
     $scope.switchButton = function () {
-            $location.path('/nieuw-idea');
+            $location.path('/nieuw-idee');
             markerLat = marker.getPosition().lat();
             markerLng = marker.getPosition().lng();
         }
@@ -4171,10 +4222,12 @@ vdbApp.controller('unfollowIssueCtrl', ['$scope', '$rootScope', '$routeParams', 
             $rootScope.globaloverlay = "";
             $scope.errorUnfollow = true;
         } else {
-            $scope.message = "Je volgt deze melding niet meer.";
-            var getdata = data.data;
+            $scope.message = getUnfollowIssue.message;
+            if(!$scope.message) $scope.message = "Je volgt deze melding niet meer.";
             $rootScope.globaloverlay = "";
-            $scope.errorUnfollow = true;
+            $rootScope.standardTemp = $scope.message;
+            var issueID = getUnfollowIssue.issue_id;
+            $location.path("/melding/" + issueID);
         }
 
     });
@@ -4259,4 +4312,76 @@ vdbApp.controller('registrationHashCtrl', ['$scope', '$rootScope', '$routeParams
 
 
 
+}])
+
+vdbApp.controller('voteCtrl', ['$scope','$rootScope','$routeParams','voteSubmitService', function ($scope,$rootScope,$routeParams,voteSubmitService) {
+    $scope.hide = 1;
+    $scope.submit = function(){
+            $rootScope.globaloverlay = "active";
+            console.log($scope.email);
+            console.log($scope.name);
+            var user = {};
+            user.email = $scope.email;
+            
+
+            user.name = $scope.name;
+            var issue_id = $routeParams.id;
+
+            var jsondata = JSON.stringify({user,issue_id});
+            console.log(jsondata);
+            var getvoteSummit = voteSubmitService.getvoteSummit(jsondata).then(function (data) {
+                var getvoteSubmit = data.data;
+                console.log(getvoteSubmit);
+                if(!getvoteSubmit.success){
+                    $rootScope.globaloverlay = "";
+                    $scope.hide = 0;
+                    $scope.error = "" + getvoteSubmit.error + ""
+                    
+                }
+                else{
+                    $rootScope.globaloverlay = "";
+                    $('#voteModal').modal('hide');
+                    $('.modal-backdrop').hide();
+                }
+            }); 
+    }
+    $scope.close = function () {
+        $scope.hide = 1;
+    }
+}]);
+
+vdbApp.controller('confirmVoteCtrl', ['$scope','$rootScope','$routeParams','confirmVoteService','$location', function ($scope,$rootScope,$routeParams,confirmVoteService,$location) {
+    $scope.successConfirm = false;
+    $scope.cancelConfirm = false;
+    $scope.showerror = false;
+    $scope.errorUnfollow = false;
+
+    console.log("target action : " + $rootScope.targetAction);
+    var hash = $routeParams.hashkey;
+    $rootScope.hashSession = hash;
+
+    $rootScope.globaloverlay = "active";
+    var authorisation_hash = $rootScope.hashSession;
+    var jsondata = JSON.stringify({
+        "hash": "" + authorisation_hash + ""
+    });
+    console.log(jsondata);
+    var getConfirmVote = confirmVoteService.getConfirmVote(jsondata).then(function (data) {
+        var getConfirmVote = data.data;
+        console.log(getConfirmVote);
+        if (!getConfirmVote.success) {
+            $scope.message = getConfirmVote.error;
+            $rootScope.globaloverlay = "";
+        } else {
+            $scope.message = getConfirmVote.message;
+            var getdata = data.data;
+            $rootScope.globaloverlay = "";
+            $location.path('/melding/'+getdata.issue_id);
+            $rootScope.voteMessage = getdata.message;
+            $rootScope.successVote = 1;
+        }
+
+    });
+    $rootScope.hashSession = null;
+    $rootScope.targetAction = null;
 }])

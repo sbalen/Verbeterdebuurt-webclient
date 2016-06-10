@@ -191,6 +191,15 @@ h6 {
   margin-bottom: 20px;
   
 } 
+
+.report-list-council{
+    padding-left:15px;
+    padding-top: 5px;
+    color: #555;
+    
+    
+}
+
 #reportBoxHeader{
   width: 100%;
   height: auto;
@@ -968,7 +977,7 @@ margin-right: 10px; margin-top: 10px;
 
         white-space: nowrap; /*Prevents Wrapping*/
         height: 90px;
-        overflow-x: scroll;
+        overflow-x: hidden;
         overflow-y: hidden;
         display: block;
         width: calc(100% - 20px);
@@ -1033,15 +1042,22 @@ margin-right: 10px; margin-top: 10px;
 }
 
 #duplicate-bubble{
-    height: 100px;
+    height: auto;
+    width: auto;
     position: absolute;
-    width: 300px;
+    max-width: 300px;
     border: 1px solid #007AC3;
     border-radius: 4px;
     background: #fff;
     z-index: 100;
     padding: 10px;
-
+    font-size: 12px;
+    
+    a{
+        font-size:10px;
+        
+    }
+    
     
 }
 
