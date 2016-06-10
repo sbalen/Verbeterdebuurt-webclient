@@ -95,6 +95,27 @@ window.onload = function () {
         maxlng = map.getBounds().getNorthEast().lng();
         minlat = map.getBounds().getSouthWest().lat();
         minlng = map.getBounds().getSouthWest().lng();
+        geocoder.geocode({'latLng': map.getCenter()} , function (result , status){
+                sendLatitude = map.getCenter().lng();
+                sendLongitude = map.getCenter().lat();
+                if (status == google.maps.GeocoderStatus.OK){
+
+                for (var i=0; i<result[0].address_components.length; i++) {
+                for (var b=0;b<result[0].address_components[i].types.length;b++) {
+                  //if you want the change the area ..
+                if (result[0].address_components[i].types[b] == "administrative_area_level_2") {
+                   // name of city
+                    city= result[0].address_components[i];
+                    break;
+                        }
+                    }
+                }
+                     // console.log("drag googlemap:"+city.long_name);
+                      // showIssue(infoWindow,infoWindowContent);
+                }
+                
+
+               });
     });
 
     // maxlat  = 52.17899981092104;
@@ -1271,9 +1292,32 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     }, 3000);
     if (!$routeParams.cityName) {
         if (!$rootScope.lastCity) {
-            var jsoncity = JSON.stringify({
-                "council": "Leiden"
+            $timeout(function(){
+                var jsoncity = JSON.stringify({
+                "council": city.long_name
             });
+                console.log(city.long_name);
+                console.log(jsoncity);
+            var getReport = reportService.getReport(jsoncity).then(function (data) {
+                    var getdata = data.data;
+                    $rootScope.reportList = getdata.report;
+                });
+
+            var getAgreement = agreementSevice.getAgreement(jsoncity).then(function (data) {
+                    var getdata = data.data;
+                    $rootScope.agreement = getdata;
+                    $timeout(function () {
+                        if (!getdata.logo) {
+                            $rootScope.hideLogo = 1;
+                        } else {
+                            $rootScope.hideLogo = 0;
+                            console.log($scope.hideLogo);
+                        }
+                    })
+
+                });
+            },3000)
+            
         } else if ($rootScope.lastCity) {
             var jsoncity = JSON.stringify({
                 "council": "" + $rootScope.lastCity + ""
