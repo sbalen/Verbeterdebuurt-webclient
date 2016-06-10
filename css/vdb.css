@@ -122,6 +122,11 @@ h6 {
   border-width: thin;
   margin-bottom: 20px; }
 
+.report-list-council {
+  padding-left: 15px;
+  padding-top: 5px;
+  color: #555; }
+
 #reportBoxHeader {
   width: 100%;
   height: auto;
