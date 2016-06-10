@@ -4013,10 +4013,12 @@ vdbApp.controller('unfollowIssueCtrl', ['$scope', '$rootScope', '$routeParams', 
             $rootScope.globaloverlay = "";
             $scope.errorUnfollow = true;
         } else {
-            $scope.message = "Je volgt deze melding niet meer.";
-            var getdata = data.data;
+            $scope.message = getUnfollowIssue.message;
+            if(!$scope.message) $scope.message = "Je volgt deze melding niet meer.";
             $rootScope.globaloverlay = "";
-            $scope.errorUnfollow = true;
+            $rootScope.standardTemp = $scope.message;
+            var issueID = getUnfollowIssue.issue_id;
+            $location.path("/melding/" + issueID);
         }
 
     });
