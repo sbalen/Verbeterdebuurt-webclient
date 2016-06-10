@@ -141,7 +141,7 @@ h6 {
 
 
 .footer{
-    
+    width: 1140px;
     height: 50px;
     background-color: white;
     text-align: center;
@@ -155,7 +155,7 @@ h6 {
     border-style: solid;
     border-width: thin;
     z-index: 1020;
-    
+    border-radius: 4px;
     
     
     
@@ -502,11 +502,12 @@ margin-right: 10px; margin-top: 10px;
 }
 
 .mfooter {
-    width: 57%;
+    width: 80%;
+    
     height: 50px;
     background-color: white;
     text-align: center;
-    margin-left: 21%;
+ 
     bottom: 20px;
     position: absolute;
     border-color: #007AC3;
@@ -582,7 +583,7 @@ margin-right: 10px; margin-top: 10px;
     }
     
 .footer {
-    width: 100;
+    width: 100%;
     height: 100px;
     background-color: white;
     text-align: center;
