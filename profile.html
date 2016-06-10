@@ -38,10 +38,10 @@
                         
             </div>
                 
-            <h1 class="registerm registeri register">Profiel</h1>
+            <h1 class="registerm registeri register fontM">Profiel</h1>
                         <form class="form-horizontal position1" role="form">
                             <div class="panel-body">
-                                <h4>Inloggegevens</h4>
+                                <h4 class="fontM">Inloggegevens</h4>
                                 <div class="form-group">
                                     <div class="col-sm-12 form-col" ng-class="{'has-error': errorNewUsername}">
                                         <input type="text" class="form-control" id="username" placeholder="Gebruikersnaam" ng-model="username" disabled>
@@ -57,7 +57,7 @@
                                         <input type="password" style="margin-bottom: 15px"  class="form-control" id="password-1" placeholder="Oud wachtwoord" ng-model="password_old">
                                     </div>
                                     <div class="col-sm-12 form-col" ng-class="{'has-error': errorPassword3}">
-                                        <input type="password" style="margin-bottom: 15px" class="form-control" id="password-2" placeholder="Nieuwe wachtwoord " ng-model="password_new">
+                                        <input type="password" style="margin-bottom: 15px" class="form-control" id="password-2" placeholder="Nieuw wachtwoord " ng-model="password_new">
                                     </div>
                                      <div class="col-sm-12 form-col" ng-class="{'has-error': errorPassword3}">
                                         <input type="password" class="form-control" id="password-3" placeholder="Wachtwoord harlen " ng-model="rpassword">
@@ -65,8 +65,8 @@
                                 </div>
                     </div>
                             <div class="panel-body">
-                                <h4>Persoonsgegevens</h4>
-                                <h5 style="color:green; margin-right: 26px;">Deze gegevens zijn nodig voor de gemeente om aan je melding te kunnen werken. Ze worden niet openbaar gemaakt en nooit gebruikt voor marketingdoeleinden.</h5>
+                                <h4 class="fontM">Persoonsgegevens</h4>
+                                <h5 style="color:green; margin-right: 26px;font-family: Merriweather;">Deze gegevens zijn nodig voor de gemeente om aan je melding te kunnen werken. Ze worden niet openbaar gemaakt en nooit gebruikt voor marketingdoeleinden.</h5>
                                 <div class="form-group" ng-class="{'has-error': errorSex }" >
                                         <div class="col-sm-2 form-col marginwidth">
                                             <select class="combobox" id="category"  ng-model ="sex">
@@ -105,8 +105,8 @@
                                 </div>
                             </div>
             
-                            <div class="panel-body">
-                                <h4 style="margin-left: 5px;">Verbinden met social media</h4>
+                            <div class="panel-body ">
+                                <h4 class="fontM " style="margin-left: 5px;">Verbinden met social media</h4>
                                 <table class="mediamargin mediamobile">
 <!--
                                     <tr>

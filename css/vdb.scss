@@ -138,22 +138,22 @@ h6 {
 }
 //footer
 .footer{
-  width: 80%;
-  height: 100px;
-  background-color:white;
-  text-align: center;
-  margin-left: 10%;
-  bottom: 20px;
-  position: absolute;
-  border-color: #007AC3;
-  border-style: solid;
-  border-width: thin;
-  z-index: 1020;
+    width: 82%;
+    height: 50px;
+    background-color: white;
+    text-align: center;
+    margin-left: 8.2%;
+    bottom: 20px;
+    position: absolute;
+    border-color: #007AC3;
+    border-style: solid;
+    border-width: thin;
+    z-index: 1020;
   
     .footertext{
         width: 100%;
         height: 60%;
-        padding-top:40px;
+        padding-top:15px;
         text-align: center;
         
         .footer-element{
@@ -231,6 +231,11 @@ h6 {
     overflow: visible;
 }
 
+//font
+.fontM
+{
+    font-family: Merriweather;
+}
 // login
 .checkbox{
   margin-bottom: 15px !important;
@@ -324,6 +329,11 @@ h6 {
     }
 }
 
+//button
+.btn
+{
+    font-family: "Arial";
+}
 
 //for dropdown menu
 .subnav {
@@ -615,6 +625,14 @@ margin-right: 10px; margin-top: 10px;
     {
         height: 114px;
         margin-bottom: -8px;
+        
+        
+.footertext {
+    width: 100%;
+    height: 60%;
+    padding-top: 40px;
+    text-align: center;
+}
     }
     
 .pagination {
@@ -683,13 +701,16 @@ margin-right: 10px; margin-top: 10px;
 
 .selectproblem-container{
     
-    padding-top: 20px;
+    padding-top: 5px;
+    padding-bottom: 20px;
+    
     
 }
 
 .melding-description{
     
-    padding:10px;
+    padding: 10px;
+    padding-bottom: 25px;
 }
 
 
@@ -712,7 +733,7 @@ margin-right: 10px; margin-top: 10px;
     
     &.big{
          padding-top: 82px;
-         width: 82px;
+         width: 100px;
         background: url(../img/problem-big.png) no-repeat top;
     }
 }
