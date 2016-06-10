@@ -552,7 +552,7 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
 
     //confirm the vote
     .when('/stem/bevestigen/:hashkey', {
-            templateUrl: 'map.html',
+            templateUrl: 'confirmation.html',
             controller: 'confirmVoteCtrl',
             resolve: {
                 targetAction: function ($rootScope) {
@@ -1161,7 +1161,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     $timeout(function () {
        
         
-        if (!$routeParams.cityName && !$routeParams.id && !$routeParams.postalcode) {
+        if (!$routeParams.cityName && !$routeParams.id && !$routeParams.postalcode && !$routeParams.hashkey) {
             
 
             if (geolocationValid == 0) {
@@ -1676,6 +1676,8 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
     var jsondata = JSON.stringify({
         "issue_id": $routeParams.id
     });
+    console.log($rootScope.successCreateLogin);
+    console.log($rootScope.successCreateNon);
     if ($rootScope.lastUrl == null) {
         $rootScope.lastUrl == '/';
     }
@@ -1684,10 +1686,15 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
         $scope.successClass = "successAlert";
         $scope.successMessage = $rootScope.standardTemp;
     }
-    if ($rootScope.successCreate == 1) {
+    if ($rootScope.successCreateLogin == 1) {
         $scope.hideError = 0;
         $scope.successClass = "successAlert";
         $scope.successMessageNonApi = "Je melding is verstuurd!";
+    }
+    if ($rootScope.successCreateNonLogin == 1 ) {
+        $scope.hideError = 0;
+        $scope.successClass = "successAlert";
+        $scope.successMessageNonApi = "Bevestiging probleem bij uw e-mail";
     }
     if($rootScope.successVote ==1){
         $scope.hideError = 0;
@@ -1918,7 +1925,8 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
         $scope.errorVote = "";
     }
     $rootScope.standardTemp = null;
-    $rootScope.successCreate = 0;
+    $rootScope.successCreateLogin = 0;
+    $rootScope.successCreateNonLogin = 0;
     $rootScope.successVote = 0;
 
     //show my issue
@@ -2006,10 +2014,15 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope', '$routeParams', '$http', '$ro
         $scope.successClass = "successAlert";
         $scope.successMessage = $rootScope.standardTemp;
     }
-    if ($rootScope.successCreate == 1) {
+    if ($rootScope.successCreateLogin == 1) {
         $scope.hideError = 0;
         $scope.successClass = "successAlert";
         $scope.successMessageNonApi = "Je melding is verstuurd!";
+    }
+    if ($rootScope.successCreateNonLogin == 1 ) {
+        $scope.hideError = 0;
+        $scope.successClass = "successAlert";
+        $scope.successMessageNonApi = "Bevestiging probleem bij uw e-mail";
     }
     var jsondata = JSON.stringify({
         "user": {
@@ -2147,7 +2160,9 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope', '$routeParams', '$http', '$ro
         }
         //delete success Create
     $rootScope.standardTemp = null;
-    $rootScope.successCreate = 0;
+    $rootScope.successCreateLogin = 0;
+    $rootScope.successCreateNonLogin = 0;
+    $rootScope.successVote = 0;
 
     //show my issue
                 if ($cookies.getObject('user')) {
@@ -3460,12 +3475,13 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
                 } else {
                     //success
                     var issueId = issueData.issue_id;
-                    $rootScope.successCreate = 1;
                     //login
                     if ($cookies.getObject('user')) {
                         $location.path(/mijn-meldingen/ + issueId);
+                        $rootScope.successCreateLogin = 1;
                     } else {
                         $location.path(/melding/ + issueId);
+                        $rootScope.successCreateNonLogin = 1;
                     }
                     $rootScope.globaloverlay = "";
                     var jsondata = JSON.stringify({
@@ -3545,9 +3561,10 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
                     var issueId = issueData.issue_id;
                     if ($cookies.getObject('user')) {
                         $location.path(/mijn-meldingen/ + issueId);
-                        $rootScope.successCreate = "Geregistreerd bij gemeente";
+                        $rootScope.successCreateLogin = 1;
                     } else {
                         $location.path(/melding/ + issueId);
+                        $rootScope.successCreateNonLogin = 1;
                     }
                     $rootScope.globaloverlay = "";
                     var jsondata = JSON.stringify({
@@ -3894,11 +3911,12 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
                     //success
                     $rootScope.successCreate = 1;
                     var issueId = issueData.issue_id;
-                    if ($cookies.getObject('user')) {
+                     if ($cookies.getObject('user')) {
                         $location.path(/mijn-meldingen/ + issueId);
-                        $rootScope.successCreate = "Geregistreerd bij gemeente";
+                        $rootScope.successCreateLogin = 1;
                     } else {
                         $location.path(/melding/ + issueId);
+                        $rootScope.successCreateNonLogin = 1;
                     }
                     $rootScope.globaloverlay = "";
                     var jsondata = JSON.stringify({
@@ -3977,11 +3995,12 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
                     //success
                     var issueId = issueData.issue_id;
                     $rootScope.successCreate = 1;
-                    if ($cookies.getObject('user')) {
+                     if ($cookies.getObject('user')) {
                         $location.path(/mijn-meldingen/ + issueId);
-                        $rootScope.successCreate = "Geregistreerd bij gemeente";
+                        $rootScope.successCreateLogin = 1;
                     } else {
                         $location.path(/melding/ + issueId);
+                        $rootScope.successCreateNonLogin = 1;
                     }
                     $rootScope.globaloverlay = "";
                     var jsondata = JSON.stringify({
@@ -4202,6 +4221,7 @@ vdbApp.controller('unfollowIssueCtrl', ['$scope', '$rootScope', '$routeParams', 
     $scope.cancelConfirm = false;
     $scope.showerror = false;
     $scope.errorUnfollow = false;
+    $scope.errorVote = false;
     console.log("target action : " + $rootScope.targetAction);
 
     var hash = $routeParams.hashkey;
@@ -4251,6 +4271,7 @@ vdbApp.controller('registrationHashCtrl', ['$scope', '$rootScope', '$routeParams
     $scope.cancelConfirm = false;
     $scope.showerror = false;
     $scope.errorUnfollow = false;
+    $scope.errorVote = false;
 
     console.log("target action : " + $rootScope.targetAction);
     var hash = $routeParams.hashkey;
@@ -4355,6 +4376,7 @@ vdbApp.controller('confirmVoteCtrl', ['$scope','$rootScope','$routeParams','conf
     $scope.cancelConfirm = false;
     $scope.showerror = false;
     $scope.errorUnfollow = false;
+    $scope.errorVote = false;
 
     console.log("target action : " + $rootScope.targetAction);
     var hash = $routeParams.hashkey;
@@ -4372,6 +4394,7 @@ vdbApp.controller('confirmVoteCtrl', ['$scope','$rootScope','$routeParams','conf
         if (!getConfirmVote.success) {
             $scope.message = getConfirmVote.error;
             $rootScope.globaloverlay = "";
+            $scope.errorVote = true;
         } else {
             $scope.message = getConfirmVote.message;
             var getdata = data.data;
