@@ -1,4 +1,5 @@
-    <!-- body -->  
+    
+<!-- body -->  
     <div id="main-content" class="container">
 	    <!--  sidebar left -->
       
@@ -8,12 +9,12 @@
                             <strong>Report</strong>
                         </div>
             <div class="panel-body">
-                          <div class="list-group" ng-hide="reportList.council == null || reportList.council == 'undefined' " >
+                          <div class="list-group report-list-council" ng-hide="reportList.council == null || reportList.council == 'undefined' " >
                             <strong>Gemeente: {{reportList.council}}</strong></br>
                             Meldingen per maand: {{reportList.reports}} </br>
                             Oplossingen per maand: {{reportList.solutions}}
                           </div>
-                           <div class="list-group"  ng-show="reportList.council == null || reportList.council == 'undifined' ">
+                            <div class="list-group report-list-council"  ng-show="reportList.council == null || reportList.council == 'undifined' ">
                              geen locatieinformatie gevonden
                            </div>
             </div>  
