@@ -22,13 +22,13 @@
                                   <p>{{errorStreetNumber}}</p>
               </div>
 
-		        <h1 class="marginheader meldingheader">Nieuw Idee</h1>
+		        <h1 class="marginheader meldingheader fontM">Nieuw Idee</h1>
 
                
             <div class="idea"> 
                             <form class="form-horizontal" role="form">
                               <div class="panel-body">
-                                <h4>1. Bepaal de locatie</h4>
+                                <h4 class="fontM">1. Bepaal de locatie</h4>
                                 <div class="well well-sm locationpicker-well">
                                   <fieldset class="gllpLatlonPicker">
                                   <div class="input-group" style="width:100%; margin-left:0; ">
@@ -49,9 +49,9 @@
                               </div>
                             </div>
                             <div class="panel-body">
-                                <h4>2. Beschrijf de melding</h4>
+                                <h4 class="fontM">2. Beschrijf de melding</h4>
                                 <div class="form-group">
-            <h5 style="color:green; margin-right: 6px; margin-left: 6px;">Wij delen je idee met de gemeente &amp; met buurtbewoners. De ervaring leert dat lang niet alle idee&euml;n geholpen kunnen worden door de gemeente, maar dat je kansen kan vergroten met een goed verhaal en veel medestanders.</h5>
+            <h5 class="fontM" style="color:green; margin-right: 6px; margin-left: 6px;">Wij delen je idee met de gemeente &amp; met buurtbewoners. De ervaring leert dat lang niet alle idee&euml;n geholpen kunnen worden door de gemeente, maar dat je kansen kan vergroten met een goed verhaal en veel medestanders.</h5>
                                 </div>
                                <div class="form-group">
                                     <div class="col-sm-12 form-col" style="margin-bottom: 10px;" ng-class="{'has-error':errorTitle}">
@@ -74,7 +74,7 @@
                                 <input id="file-input-idea" type="file" class="file" style="width: 94%;margin-left: 3%;" data-show-upload="false" img-upload='imgData'>
                             </div>
                              <div class="panel-body" ng-hide="hideLogin">
-                                <h4>3. Contactgegevens</h4>
+                                <h4 class="fontM">3. Contactgegevens</h4>
                                 Of <a href="login">log in</a> om dit over te slaan
                                <div class="form-group">
                                     <div class="col-sm-12 form-col" ng-class="{'has-error': errorEmail}">
@@ -135,7 +135,7 @@
                         </div>
       			<div class="panel-body">
                           <div class="list-group" >
-                            <a href="/mijn-meldingen/{{myIssues.id}}" class="list-group-item clearfix" ng-repeat="myIssues in myIssuesList| orderBy : 'created_at' : true |limitTo:3  | filter : x as results" ng-click="clickIssues()">
+                            <a href="/mijn-meldingen/{{myIssues.id}}" class="list-group-item clearfix" ng-repeat="myIssues in myIssuesList| orderBy : 'created_at' : true |limitTo:2  | filter : x as results" ng-click="clickIssues()">
                               <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
                               <strong> {{myIssues.title}}</strong> {{myIssues.location.full_address}}
                               {{myIssues.status}}
@@ -145,6 +145,7 @@
                                 </button>
                               </span>
                             </a>
+                               <a href="/mijn-meldingen" style="margin-left:17px;">Meer >>></a>
                           </div>
                         </div>  
 		    </div>

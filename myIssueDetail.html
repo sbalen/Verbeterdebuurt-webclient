@@ -17,12 +17,12 @@
                                       <p>{{successMessageNonApi}}</p>
                 </div>
              </div> 
-            <h1>{{myIssues.title}}<br><small>{{myIssues.location.full_address}}</small></h1>
-            <div class="thumbnail right-caption span4">
+            <h1 class="fontM">{{myIssues.title}}<br><small>{{myIssues.location.full_address}}</small></h1>
+            <div class="thumbnail right-caption span4 fontM">
                 <img class="img-responsive" src="{{myIssues.image.image_url}}" alt="Plaatje van de situatie" ng-if="myIssues.image">
                 <img class="img-responsive" src="{{sateliteimg}}" alt="Plaatje van de situatie" ng-if="!myIssues.image">
 <!--                <div  class = "img-resposive" ng-if="!myIssues.image" id = "googleMapIssue" ng-init="googleMapIssue(myIssues.location.latitude,myIssues.location.longitude,myIssues.type)"></div>-->
-                  <div class="detail-table hidden-xs">
+                  <div class="detail-table hidden-xs fontM">
                     <table width="100%">
                             <tbody> 
                                 <tr>
@@ -64,32 +64,32 @@
                     </table>
                 </div>
               </div>
-              <div class="issueDetailTable">
+              <div class="issueDetailTable fontM">
                     <table>
                         <tr>
-                            <td ng-show="myIssues.type=='problem'"><h2>Beschrijving</h2></td>
-                            <td ng-show="myIssues.type=='idea'"><h2>Idee</h2></td>
+                            <td ng-show="myIssues.type=='problem'"><h2 class="fontM">Beschrijving</h2></td>
+                            <td ng-show="myIssues.type=='idea'"><h2 class="fontM">Idee</h2></td>
                         </tr>
                         <tr>
-                            <td class="issueDetailTableContent word-break"><p>{{myIssues.description}}</p></td>
+                            <td class="issueDetailTableContent word-break fontM"><p>{{myIssues.description}}</p></td>
                         </tr>
                         
                     </table>
               </div>
-              <div class="issueDetaiTable" ng-if="myIssues.type=='idea'">
+              <div class="issueDetaiTable fontM" ng-if="myIssues.type=='idea'">
                     <table>
                         <tr>
-                            <td><h2>Realisation</h2></td>
+                            <td><h2 class="fontM">Realisation</h2></td>
                         </tr>
                         <tr>
-                            <td class="issueDetailTableContent word-break"><p>{{myIssues.realization}}</p></td>
+                            <td class="issueDetailTableContent word-break fontM"><p>{{myIssues.realization}}</p></td>
                         </tr>
                     </table>
               </div>
              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="{{stemModal}}" ng-click="sessionValid()">Reageer <span class="badge">{{myIssues.comments}}</span></button>
               <button type="button" class="btn btn-primary" ng-click="voteSubmit()">Stem <span class="badge">{{myIssues.votes}}</span></button>
               <div ng-hide="results== 0 || commentList == null">
-              <h2>Reacties</h2>
+              <h2 class="fontM">Reacties</h2>
               <ul class="commentList" >
                         <li ng-repeat="comment in commentList | filter: x as results">
                             <div class="commentText">
@@ -132,7 +132,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" ng-click="close()">&times;</button>
-                <h1 class="modal-title">Reactie plaatsen</h1>
+                <h1  class="modal-title fontM">Reactie plaatsen</h1>
                 <div class="alert alert-danger {{hide}}" >
                                   <a class="close {{hide}}" aria-label="close" ng-click="close()" >&times;</a>
                                   <p>{{errorBody}}</p>
