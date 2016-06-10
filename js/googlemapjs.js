@@ -223,6 +223,7 @@ function callMarker (markers,zoom,map){
                       markers.push(marker);
                       google.maps.event.addListener(marker , 'click' , (function (marker,i){
                       return function(){
+                      window.history.pushState('map','map','/');
                       infoWindow.setContent(infoWindowContent[i]);
                       infoWindow.open(map,marker);
                       map.setCenter(marker.getPosition());

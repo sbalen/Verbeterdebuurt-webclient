@@ -7,12 +7,12 @@
                 <strong>Report</strong>
             </div>
            <div class="panel-body">
-                          <div class="list-group" ng-hide="reportList.council == null || reportList.council == 'undefined' " >
+                            <div class="list-group  report-list-council" ng-hide="reportList.council == null || reportList.council == 'undefined' " >
                             <strong>Stad : {{reportList.council}}</strong></br>
                             {{reportList.reports}} rapporten per maand</br>
                             {{reportList.solutions}} oplossing per maand
                           </div>
-                           <div class="list-group"  ng-show="reportList.council == null || reportList.council == 'undifined' ">
+                            <div class="list-group  report-list-council"  ng-show="reportList.council == null || reportList.council == 'undifined' ">
                              geen locatieinformatie gevonden
                            </div>
             </div>  
@@ -74,7 +74,8 @@
         <h1>{{newProblem.title}}<br><small>{{newProblem.location.full_address}}</small></h1>
         <div class="thumbnail right-caption span4">
             <img class="img-responsive" src="{{newProblem.image.image_url}}" alt="Plaatje van de situatie" ng-if="newProblem.image">
-            <div  class = "img-resposive" ng-if="!newProblem.image" id = "googleMapIssue" ng-init="googleMapIssue(newProblem.location.latitude,newProblem.location.longitude,newProblem.type)"></div>
+            <img class="img-responsive" src="{{sateliteimg}}" alt="Plaatje van de situatie" ng-if="!newProblem.image">
+<!--            <div  class = "img-resposive" ng-if="!newProblem.image" id = "googleMapIssue" ng-init="googleMapIssue(newProblem.location.latitude,newProblem.location.longitude,newProblem.type)"></div>-->
             <div class="detail-table hidden-xs">
                 <table width="100%">
                     <tbody> 
@@ -104,12 +105,12 @@
                         </tr> -->
                         <tr>
                             <td>Status:</td>
-                            <td>{{newProblem.status_description}} <a class="{{hideLogStatus}}  issueLog" ng-click="logStatus()">Meer >> </a></td>
+                            <td>{{newProblem.status_description}} <a class="{{hideLogStatus}}  issueLog" ng-click="logStatus()"> {{showDataText}} </a></td>
                         </tr>
                         <tr class="{{hideStatus}}">
                             <td colspan="3">
                                 <ul class="status-log">
-                                    <li ng-repeat="issueLog in issueLogList" class="list-group-item status-log-item"><span class="text-muted">{{issueLog.createdAt}}: </span>{{issueLog.message}}</li>
+                                    <li ng-repeat="issueLog in issueLogList" class="list-group-item status-log-item"><span class="text-muted"> {{issueLog.createdAt}}: </span>{{issueLog.message}}</li>
                                 </ul>
                             </td>
                         </tr> 
@@ -155,9 +156,27 @@
 
 </div>
 <!--  sidebar right -->
-<div class="col-lg-3">
-
-</div>  
+<div class="col-lg-3 hidden-xs" ng-hide="results.length == 0 || myIssuesList == null">
+            <div class="panel side-panel panel-default">
+                    <div class="panel-heading">
+                            <strong>Mijn Meldingen</strong>
+                        </div>
+                            <div class="panel-body">
+                          <div class="list-group" >
+                            <a href="/mijn-meldingen/{{myIssues.id}}" class="list-group-item clearfix" ng-repeat="myIssues in myIssuesList| orderBy : 'created_at' : true |limitTo:3  | filter : x as results" ng-click="clickIssues()">
+                              <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
+                              <strong> {{myIssues.title}}</strong> {{myIssues.location.full_address}}
+                              {{myIssues.status}}
+                              <span class="pull-right">
+                                <button class="btn btn-xs btn-success" >
+                                  <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
+                                </button>
+                              </span>
+                            </a>
+                          </div>
+                        </div>  
+            </div>
+        </div>  
 </div>	
 
 <!-- StemModal -->
@@ -299,6 +318,10 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h1 class="modal-title">Submit Vote Request</h1>
+                    <div class="alert alert-danger " ng-hide="hide" >
+                                  <a class="close " ng-hide="hide" aria-label="close" ng-click="close()" >&times;</a>
+                                  <p>{{error}}</p>
+                    </div>
             </div>
             <div class="modal-body">
                     <input type="text" class="form-control" id="email" placeholder="E-mailadres" ng-model="email" style="margin-bottom: 15px">
@@ -306,7 +329,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" ng-click="close()" data-dismiss="modal">Annuleren</button>
-                <button type="button" class="btn btn-success" data-dismiss="modal" ng-click="submit()">Verwijderen</button>
+                <button type="button" class="btn btn-success" ng-click="submit()">Verwijderen</button>
             </div>
         </div>
     </div>
