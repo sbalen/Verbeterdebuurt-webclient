@@ -1631,8 +1631,15 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
         mainLng = getdata.issues[0].location.longitude;
         map.setCenter({ lat: mainLat,
                         lng: mainLng});
+            
 
         },1000)
+        
+        var lat=getdata.issues[0].location.latitude;
+        var lng=getdata.issues[0].location.longitude;
+        $scope.sateliteimg = "http://maps.googleapis.com/maps/api/staticmap?center="+lat+","+lng+"&zoom=18&size=515x300&maptype=hybrid&format=jpg&key=AIzaSyCk3yxCifnV67hIJ2iyRupfH2iHvshna3I&markers=color:red%7C"+lat+","+lng+"&sensor=false";
+
+        
        
         $scope.hide = "";
         $rootScope.globaloverlay = "";
@@ -1766,7 +1773,8 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
     //googlemap
     $scope.googleMapIssue = function (lat, lng, type) {
             googleMapIssue(lat, lng, type);
-        }
+    }
+    
         //hide log Status
     if ($cookies.getObject('user')) {
         var logjsondata = JSON.stringify({
@@ -1925,11 +1933,20 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope', '$routeParams', '$http', '$ro
         for(var i = 0 ; i < getdata.count ; i++){
             if(getdata.issues[i].id == $routeParams.id){
                 $timeout(function(){
-                    mainLat = getdata.issues[0].location.latitude;
-                    mainLng = getdata.issues[0].location.longitude;
+                    mainLat = getdata.issues[i].location.latitude;
+                    mainLng = getdata.issues[i].location.longitude;
                     map.setCenter({ lat: mainLat,
                                     lng: mainLng});
+                    
+                    
                 },1000)
+                
+                var lat = getdata.issues[i].location.latitude;
+                var lng = getdata.issues[i].location.longitude;
+                $scope.sateliteimg = "http://maps.googleapis.com/maps/api/staticmap?center="+lat+","+lng+"&zoom=18&size=515x300&maptype=hybrid&format=jpg&key=AIzaSyCk3yxCifnV67hIJ2iyRupfH2iHvshna3I&markers=color:red%7C"+lat+","+lng+"&sensor=false";
+
+                 
+                
                 break;
             }
         }
