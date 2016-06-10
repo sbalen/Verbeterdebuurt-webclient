@@ -1752,18 +1752,17 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
         console.log(logjsondata);
         var getIssueLog = issueLogService.getIssueLog(logjsondata).then(function (data) {
             var getdata = data.data;
+            console.log(getdata);
             if (!getdata.success) {
                 $scope.hideLogStatus = "ng-hide";
-                console.log("gagal");
 
             } else if (getdata.success && getdata.counts == 0) {
                 $scope.hideLogStatus = "ng-hide";
-                console.log("no data");
 
             } else {
                 $scope.hideLogStatus = "";
+                $scope.showDataText = "Meer >>";
                 $scope.issueLogList = getdata.logs;
-                console.log(success);
 
             }
         });
