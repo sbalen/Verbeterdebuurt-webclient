@@ -34,6 +34,7 @@ var cancelRegistrationService = new Object();
 var confirmIssueService = new Object();
 var unfollowIssueService = new Object();
 var serviceStandartService = new Object();
+var confirmVoteService = new Object();
 var geolocationValid = 0;
 
 
@@ -507,7 +508,7 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
     //confirm the vote
     .when('/stem/bevestigen/:hashkey', {
             templateUrl: 'map.html',
-            controller: 'hashCtrl',
+            controller: 'confirmVoteCtrl',
             resolve: {
                 targetAction: function ($rootScope) {
                     $rootScope.targetAction = "confirm_vote";
@@ -1066,6 +1067,19 @@ vdbApp.factory('unfollowIssueService', ['$http', function ($http) {
     };
 }])
 
+vdbApp.factory('confirmVoteService', ["$http",function ($http) {
+    return {
+        getConfirmVote: function (jsondata){
+            return $http.post(APIURL+ 'confirmVote',jsondata)
+            .success(function (data){
+                confirmVoteService.data = data;
+                return confirmVoteService.data;
+            });
+            return confirmVoteService.data;
+        }
+
+    };
+}])
 
 vdbApp.run(['$rootScope', '$window', function ($rootScope, $window) {
     (function (d, s, id) {
@@ -4013,10 +4027,12 @@ vdbApp.controller('unfollowIssueCtrl', ['$scope', '$rootScope', '$routeParams', 
             $rootScope.globaloverlay = "";
             $scope.errorUnfollow = true;
         } else {
-            $scope.message = "Je volgt deze melding niet meer.";
-            var getdata = data.data;
+            $scope.message = getUnfollowIssue.message;
+            if(!$scope.message) $scope.message = "Je volgt deze melding niet meer.";
             $rootScope.globaloverlay = "";
-            $scope.errorUnfollow = true;
+            $rootScope.standardTemp = $scope.message;
+            var issueID = getUnfollowIssue.issue_id;
+            $location.path("/melding/" + issueID);
         }
 
     });
@@ -4103,9 +4119,10 @@ vdbApp.controller('registrationHashCtrl', ['$scope', '$rootScope', '$routeParams
 
 }])
 
-vdbApp.controller('voteCtrl', ['$scope','$routeParams','voteSubmitService', function ($scope,$routeParams,voteSubmitService) {
-    
+vdbApp.controller('voteCtrl', ['$scope','$rootScope','$routeParams','voteSubmitService', function ($scope,$rootScope,$routeParams,voteSubmitService) {
+    $scope.hide = 1;
     $scope.submit = function(){
+            $rootScope.globaloverlay = "active";
             console.log($scope.email);
             console.log($scope.name);
             var user = {};
@@ -4120,6 +4137,55 @@ vdbApp.controller('voteCtrl', ['$scope','$routeParams','voteSubmitService', func
             var getvoteSummit = voteSubmitService.getvoteSummit(jsondata).then(function (data) {
                 var getvoteSubmit = data.data;
                 console.log(getvoteSubmit);
+                if(!getvoteSubmit.success){
+                    $rootScope.globaloverlay = "";
+                    $scope.hide = 0;
+                    $scope.error = "" + getvoteSubmit.error + ""
+                    
+                }
+                else{
+                    $rootScope.globaloverlay = "";
+                    $('#StemModal').modal('hide');
+                    $('.modal-backdrop').hide();
+                }
             }); 
     }
+    $scope.close = function () {
+        $scope.hide = 1;
+    }
 }]);
+
+vdbApp.controller('confirmVoteCtrl', ['$scope','$rootScope','$routeParams','confirmVoteService', function ($scope,$rootScope,$routeParams,confirmVoteService) {
+    $scope.successConfirm = false;
+    $scope.cancelConfirm = false;
+    $scope.showerror = false;
+    $scope.errorUnfollow = false;
+
+    console.log("target action : " + $rootScope.targetAction);
+    var hash = $routeParams.hashkey;
+    $rootScope.hashSession = hash;
+
+    $rootScope.globaloverlay = "active";
+    var authorisation_hash = $rootScope.hashSession;
+    var jsondata = JSON.stringify({
+        "hash": "" + authorisation_hash + ""
+    });
+    console.log(jsondata);
+    var getConfirmVote = confirmVoteService.getConfirmVote(jsondata).then(function (data) {
+        var getConfirmVote = data.data;
+        console.log(getConfirmVote);
+        if (!getConfirmVote.success) {
+            $scope.message = getConfirmVote.error;
+            $rootScope.globaloverlay = "";
+            $scope.errorUnfollow = true;
+        } else {
+            $scope.message = getConfirmVote.message;
+            var getdata = data.data;
+            $rootScope.globaloverlay = "";
+            $scope.errorUnfollow = true;
+        }
+
+    });
+    $rootScope.hashSession = null;
+    $rootScope.targetAction = null;
+}])

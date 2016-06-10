@@ -299,6 +299,10 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h1 class="modal-title">Submit Vote Request</h1>
+                    <div class="alert alert-danger " ng-hide="hide" >
+                                  <a class="close " ng-hide="hide" aria-label="close" ng-click="close()" >&times;</a>
+                                  <p>{{error}}</p>
+                    </div>
             </div>
             <div class="modal-body">
                     <input type="text" class="form-control" id="email" placeholder="E-mailadres" ng-model="email" style="margin-bottom: 15px">
@@ -306,7 +310,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" ng-click="close()" data-dismiss="modal">Annuleren</button>
-                <button type="button" class="btn btn-success" data-dismiss="modal" ng-click="submit()">Verwijderen</button>
+                <button type="button" class="btn btn-success" ng-click="submit()">Verwijderen</button>
             </div>
         </div>
     </div>
