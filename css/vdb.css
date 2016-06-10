@@ -746,4 +746,8 @@ h6 {
   background-color: #3AB53A;
   border-color: #3AB53A; }
 
+.right-panel {
+  float: right;
+  margin-top: 20px; }
+
 /*# sourceMappingURL=vdb.css.map */

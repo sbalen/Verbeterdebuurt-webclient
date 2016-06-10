@@ -1127,7 +1127,7 @@ vdbApp.run(['$rootScope', '$window', function ($rootScope, $window) {
 
     }]);
 
-vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$rootScope', '$routeParams', '$http', 'issuesService', 'reportService', '$facebook', '$cacheFactory', 'agreementSevice', '$cookies', function ($scope, $timeout, $window, $location, $rootScope, $routeParams, $http, issuesService, reportService, $facebook, $cacheFactory, agreementSevice, $cookies) {
+vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$rootScope', '$routeParams', '$http', 'issuesService', 'reportService', '$facebook', '$cacheFactory', 'agreementSevice', '$cookies','myIssuesService', function ($scope, $timeout, $window, $location, $rootScope, $routeParams, $http, issuesService, reportService, $facebook, $cacheFactory, agreementSevice, $cookies, myIssuesService) {
 
     //for redirecting the action
     var nextaction = "";
@@ -1584,7 +1584,30 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
             $location.path('/' + selected);
         }
 
-    }
+    }           
+
+            //show my issue
+                if ($cookies.getObject('user')) {
+                    $scope.hideLogin = true
+                    var jsondata = JSON.stringify({
+                        "user": {
+                            "username": "" + $cookies.getObject('user').username + "",
+                            "password_hash": "" + $cookies.getObject('user').password_hash + ""
+
+                        }
+                    });
+                    var getMyIssues = myIssuesService.getMyIssues(jsondata).then(function (data) {
+                        var getdata = data.data;
+                        var count = getdata.count;
+                        $rootScope.myIssueCount = count;
+                        $rootScope.myIssuesList = getdata.issues;
+                    })
+                    $scope.hideLogin = true
+                } else {
+                    $scope.hideLogin = false;
+                }
+
+
 
 					}]);
 //Retrieving issues
@@ -1598,7 +1621,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
 
 
 
-vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParams', 'issuesService', 'reportService', 'usSpinnerService', '$location', '$anchorScroll', 'issueLogService', 'commentService', '$timeout', 'voteSubmitService', '$cookies', 'confirmIssueService', 'unfollowIssueService', function ($scope, $rootScope, $window, $routeParams, issuesService, reportService, usSpinnerService, $location, $anchorScroll, issueLogService, commentService, $timeout, voteSubmitService, $cookies, confirmIssueService, unfollowIssueService) {
+vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParams', 'issuesService', 'reportService', 'usSpinnerService', '$location', '$anchorScroll', 'issueLogService', 'commentService', '$timeout', 'voteSubmitService', '$cookies', 'confirmIssueService', 'unfollowIssueService','myIssuesService', function ($scope, $rootScope, $window, $routeParams, issuesService, reportService, usSpinnerService, $location, $anchorScroll, issueLogService, commentService, $timeout, voteSubmitService, $cookies, confirmIssueService, unfollowIssueService,myIssuesService) {
     $rootScope.globaloverlay = "active";
     $scope.hide = "ng-hide";
     $scope.overlay = "overlay";
@@ -1839,6 +1862,26 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
     $rootScope.standardTemp = null;
     $rootScope.successCreate = 0;
 
+    //show my issue
+                if ($cookies.getObject('user')) {
+                    $scope.hideLogin = true
+                    var jsondata = JSON.stringify({
+                        "user": {
+                            "username": "" + $cookies.getObject('user').username + "",
+                            "password_hash": "" + $cookies.getObject('user').password_hash + ""
+
+                        }
+                    });
+                    var getMyIssues = myIssuesService.getMyIssues(jsondata).then(function (data) {
+                        var getdata = data.data;
+                        var count = getdata.count;
+                        $rootScope.myIssueCount = count;
+                        $rootScope.myIssuesList = getdata.issues;
+                    })
+                    $scope.hideLogin = true
+                } else {
+                    $scope.hideLogin = false;
+                }
 }])
 
 
@@ -2037,6 +2080,27 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope', '$routeParams', '$http', '$ro
         //delete success Create
     $rootScope.standardTemp = null;
     $rootScope.successCreate = 0;
+
+    //show my issue
+                if ($cookies.getObject('user')) {
+                    $scope.hideLogin = true
+                    var jsondata = JSON.stringify({
+                        "user": {
+                            "username": "" + $cookies.getObject('user').username + "",
+                            "password_hash": "" + $cookies.getObject('user').password_hash + ""
+
+                        }
+                    });
+                    var getMyIssues = myIssuesService.getMyIssues(jsondata).then(function (data) {
+                        var getdata = data.data;
+                        var count = getdata.count;
+                        $rootScope.myIssueCount = count;
+                        $rootScope.myIssuesList = getdata.issues;
+                    })
+                    $scope.hideLogin = true
+                } else {
+                    $scope.hideLogin = false;
+                }
 
 }])
 
