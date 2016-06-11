@@ -548,6 +548,10 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
             templateUrl: 'profile.html',
             controller: 'profileCtrl'
         })
+        //success create issue
+        .when('/bevestiging-nieuwe-melding', {
+            templateUrl: 'confirmation.html'
+        })
         //handle the hash sessions
 
     //confirm the vote
@@ -621,6 +625,9 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
                 }
             }
         })
+    
+
+    
         //unfollow issue
         .when('/melding/afmelden/:hashkey', {
             templateUrl: 'confirmation.html',
@@ -1743,6 +1750,7 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
             var jsondata = JSON.stringify({
                 authorisation_hash
             });
+            console.log("confim");
             console.log(jsondata);
             var getConfirmIssue = confirmIssueService.getConfirmIssue(jsondata).then(function (data) {
                 var getConfirmIssue = data.data;
@@ -3426,6 +3434,7 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
             //without image
             var getIssueSubmit = issueSubmitService.getIssueSubmit(jsondataSubmit).then(function (data) {
                 var issueData = data.data;
+                console.log("tosubmit");
                 console.log(issueData);
                 if (!issueData.success) {
                     $scope.hide = "";
@@ -3480,8 +3489,12 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
                         $location.path(/mijn-meldingen/ + issueId);
                         $rootScope.successCreateLogin = 1;
                     } else {
-                        $location.path(/melding/ + issueId);
+                        
+                        //go to confirmation with a message
+//                        
+//                        $location.path(/melding/ + issueId);
                         $rootScope.successCreateNonLogin = 1;
+                        $location.path("/bevestiging-nieuwe-melding");
                     }
                     $rootScope.globaloverlay = "";
                     var jsondata = JSON.stringify({
@@ -4272,6 +4285,7 @@ vdbApp.controller('registrationHashCtrl', ['$scope', '$rootScope', '$routeParams
     $scope.showerror = false;
     $scope.errorUnfollow = false;
     $scope.errorVote = false;
+    $scope.notCreateIssue = true;
 
     console.log("target action : " + $rootScope.targetAction);
     var hash = $routeParams.hashkey;
@@ -4377,6 +4391,7 @@ vdbApp.controller('confirmVoteCtrl', ['$scope','$rootScope','$routeParams','conf
     $scope.showerror = false;
     $scope.errorUnfollow = false;
     $scope.errorVote = false;
+    $scope.notCreateIssue = true;
 
     console.log("target action : " + $rootScope.targetAction);
     var hash = $routeParams.hashkey;
