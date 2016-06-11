@@ -1805,7 +1805,7 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
         
         //resolve issue without comment 
         if($rootScope.targetAction === "resolve_issue_with_comment_no") {
-            $('#ResolveModal').modal('show');
+            $('#ResolveModalSimple').modal('show');
             $rootScope.getStatusId = $routeParams.id;
             console.log($rootScope.getStatusId);
             $rootScope.hashSession = null;
