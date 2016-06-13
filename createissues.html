@@ -82,9 +82,8 @@
                                             <div class="duplicate-item" ng-repeat="duplicateData in duplicateDataList" >
                                                     
                                                     <div class="bubble-description ">
-                                                        
-                                                        <strong>{{duplicateData.category}}</strong><br/>
-                                                        {{duplicateData.location.src_address}}
+                                    
+                                                        {{duplicateData.description}}
                                                         <br/>
                                                         <br/>
                                                         <a  href="melding/{{duplicateData.id}}">bekijken</a>
@@ -93,7 +92,8 @@
                                                 <div style="text-align:left;">
                                                 <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
                                                 <strong >{{duplicateData.title}}</strong>
-                                                {{duplicateData.description}}
+                                                <br/>
+                                                {{duplicateData.location.src_address}}
                                                 <span class="pull-right">
                                                                 <button style ="margin-left:15px"class="btn btn-xs btn-success" >
                                                                 <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
