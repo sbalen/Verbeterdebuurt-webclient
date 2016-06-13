@@ -67,6 +67,7 @@
                                       <p>{{errorVote}}</p>
                                       <p>{{successMessage}}</p>
                                       <p>{{successMessageNonApi}}</p>
+                                      <p>{{errorConfirmed}}</p>
              </div>    
 
          </div>
@@ -276,8 +277,12 @@
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <button type="button" class="close" data-dismiss="modal" ng-click="close()">&times;</button>
                 <h1 class="modal-title">Melding behandelenYes</h1>
+                <div class="alert alert-danger {{hide}}" >
+                                  <a class="close {{hide}}" aria-label="close" ng-click="close()" >&times;</a>
+                                  <p>{{error}}</p>
+              </div>
             </div>
             <div class="modal-body">
                 Behandelwijze:
@@ -285,7 +290,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Annuleren</button>
-                <button type="button" class="btn btn-success" data-dismiss="modal"  ng-click="resolve()">Melding behandelen</button>
+                <button type="button" class="btn btn-success" ng-click="resolve()">Melding behandelen</button>
             </div>
         </div>
     </div>
@@ -298,8 +303,12 @@
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <button type="button" class="close" data-dismiss="modal" ng-click="close()">&times;</button>
                 <h1 class="modal-title">Melding afwijzen</h1>
+                <div class="alert alert-danger {{hide}}" >
+                                  <a class="close {{hide}}" aria-label="close" ng-click="close()" >&times;</a>
+                                  <p>{{error}}</p>
+              </div>
             </div>
             <div class="modal-body">
                 reden van afwijzing:
