@@ -1416,7 +1416,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
         $timeout(function () {
             
             var jsoncity = JSON.stringify({
-                "council": "" + citynamegoogle.long_name + ""
+                "council": "" + city.long_name + ""
             });
             console.log(jsoncity);
             var getReport = reportService.getReport(jsoncity).then(function (data) {
