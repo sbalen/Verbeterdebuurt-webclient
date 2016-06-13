@@ -422,42 +422,10 @@ google.maps.event.addListener(map, 'dragend', function (e) {
 
 
     }); 
-    // google.maps.event.addListener(map, 'bounds_changed', function (e) {
-    //     marker.setPosition(map.getCenter());
-    //     markerLat = marker.getPosition().lat();
-    //     markerLng = marker.getPosition().lng();
-    //     geocoder.geocode({
-    //         'latLng': marker.getPosition()
-    //     }, function (result, status) {
-    //         if (status == google.maps.GeocoderStatus.OK) {
+    google.maps.event.addListener(map, 'bounds_changed', function (e) {
+        marker.setPosition(map.getCenter());
 
-    //             for (var i = 0; i < result[0].address_components.length; i++) {
-    //                 for (var b = 0; b < result[0].address_components[i].types.length; b++) {
-    //                     //if you want the change the area ..
-    //                     if (result[0].address_components[i].types[b] == "route") {
-    //                         // street name
-    //                         console.log("1");
-    //                         streetLocation = result[0].address_components[i].short_name;
-    //                         addressLocation = streetLocation;
-    //                         document.getElementById(location).value = addressLocation;
-    //                         break;
-    //                     }
-    //                     // if (result[0].address_components[i].types[b] == "street_number") {
-    //                     //    // street number
-    //                     //     street_number= result[0].address_components[i].short_name;
-    //                     //     break;
-    //                     //         }
-    //                 }
-
-
-    //             }
-    //         }
-
-
-    //     });
-
-
-    // });
+    });
 }
 //get location marker
 function getMarkerLocation(marker) {
