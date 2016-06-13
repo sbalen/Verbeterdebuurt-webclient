@@ -2417,7 +2417,7 @@ vdbApp.controller('loginCtrl', ['$scope', '$rootScope', '$window', 'loginService
                 //this is the same code as login succes, better to separate?
                 //temp for data session
                 var expired = new Date();
-                expired.setDate(expired.getDate() + ((1 / 24) * 2));
+                expired.setHours(expired.getHours() +2);
                 console.log(expired);
                 $cookies.putObject('user', getLogin.user, {
                     expires: expired
@@ -2484,7 +2484,7 @@ vdbApp.controller('loginCtrl', ['$scope', '$rootScope', '$window', 'loginService
             } else if (getLogin.success) {
                 //temp for data session
                 var expired = new Date();
-                expired.setDate(expired.getDate() + ((1 / 24) * 2));
+                expired.setHours(expired.getHours() +2);
                 console.log(expired);
                 $cookies.putObject('user', getLogin.user, {
                     expires: expired
@@ -3007,7 +3007,7 @@ vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileSer
                         var user = $cookies.getObject('user');
                         var user_profile = $cookies.getObject('user_profile');
                         var expired = new Date();
-                        expired.setDate(expired.getDate() + ((1 / 24) * 2));
+                        expired.setHours(expired.getHours() +2);
                         user_profile.facebookID = facebookID;
                         $cookies.putObject('user', user, {
                             expires: expired
@@ -3247,7 +3247,7 @@ vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileSer
                         console.log($cookies.getObject("user"));
                         $cookies.putObject('user_profile', getLogin.user_profile);
                         var expired = new Date();
-                        expired.setDate(expired.getDate() + ((1 / 24) * 2));
+                        expired.setHours(expired.getHours() +2);
                         $cookies.putObject('user', getLogin.user, {
                             expires: expired
                         });
