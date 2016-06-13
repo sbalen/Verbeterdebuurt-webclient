@@ -3066,7 +3066,6 @@ vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileSer
     $scope.postcode = c_user_profile.postcode;
     $scope.city = c_user_profile.city;
     $scope.phone = c_user_profile.phone;
-    $scope.newsletter = c_user_profile.subscribed_newsletter;
     console.log(c_user_profile);
 
 
@@ -3086,7 +3085,7 @@ vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileSer
         $scope.errorPasshash = "";
         $scope.errorFB = "";
         $scope.errorPassword3 = null;
-        $scope.newsletter = "";
+    
 
 
         $scope.hide = "ng-hide";
@@ -3224,20 +3223,20 @@ vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileSer
                         var getLogin = data.data;
 
 
-                        if ($scope.newsletter == true) {
-
-                            var jsonnewsletter = JSON.stringify({
-                                "user": {
-                                    "username": "" + $scope.username + "",
-                                    "password": "" + $scope.password + ""
-                                }
-                            })
-
-                            var getNewsletter = newsletterService.getNewsletter(jsonnewsletter).then(function (data) {
-                                var getNewsletter = data.data;
-                                console.log(getNewsletter);
-                            })
-                        }
+//                        if ($scope.newsletter == true) {
+//
+//                            var jsonnewsletter = JSON.stringify({
+//                                "user": {
+//                                    "username": "" + $scope.username + "",
+//                                    "password": "" + $scope.password + ""
+//                                }
+//                            })
+//
+//                            var getNewsletter = newsletterService.getNewsletter(jsonnewsletter).then(function (data) {
+//                                var getNewsletter = data.data;
+//                                console.log(getNewsletter);
+//                            })
+//                        }
 
                         console.log(jsondata);
                         console.log(jsonnewsletter);
