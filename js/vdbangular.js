@@ -3703,6 +3703,8 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
         }
         //dulicate data
     $scope.duplicateData = function () {
+        
+        $('#duplicate-bubble').hide();
         var user = {};
         if ($cookies.getObject('user')) {
             user.username = $cookies.getObject('user').username;
