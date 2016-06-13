@@ -226,7 +226,7 @@ function googleMapCreateProblem(latlng) {
     marker.setMap(map3);
     marker.setPosition(map3.getCenter());
     marker.setOptions({
-        draggable: true,
+        draggable: false,
         icon: "/img/icon_2_42_42.png"
     });
     map3.setOptions({
@@ -278,7 +278,7 @@ function googleMapCreateIdea(latlng) {
     marker.setMap(map4);
     marker.setPosition(map4.getCenter());
     marker.setOptions({
-        draggable: true,
+        draggable: false,
         icon: "/img/icon_idea_2_42_42.png"
     });
     map4.setOptions({
@@ -316,7 +316,6 @@ function sycGoogleMap4(map4) {
 }
 //marker at center
 function markerCenter(map, marker, location) {
-    google.maps.event.addListener(map, 'bounds_changed', function (e) {
         marker.setPosition(map.getCenter());
         markerLat = marker.getPosition().lat();
         markerLng = marker.getPosition().lng();
@@ -330,6 +329,7 @@ function markerCenter(map, marker, location) {
                         //if you want the change the area ..
                         if (result[0].address_components[i].types[b] == "route") {
                             // street name
+                            console.log("1");
                             streetLocation = result[0].address_components[i].short_name;
                             addressLocation = streetLocation;
                             document.getElementById(location).value = addressLocation;
@@ -350,7 +350,114 @@ function markerCenter(map, marker, location) {
         });
 
 
-    });
+    google.maps.event.addListener(map, 'drag', function (e) {
+        marker.setPosition(map.getCenter());
+        markerLat = marker.getPosition().lat();
+        markerLng = marker.getPosition().lng();
+        geocoder.geocode({
+            'latLng': marker.getPosition()
+        }, function (result, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+
+                for (var i = 0; i < result[0].address_components.length; i++) {
+                    for (var b = 0; b < result[0].address_components[i].types.length; b++) {
+                        //if you want the change the area ..
+                        if (result[0].address_components[i].types[b] == "route") {
+                            // street name
+                            console.log("1");
+                            streetLocation = result[0].address_components[i].short_name;
+                            addressLocation = streetLocation;
+                            document.getElementById(location).value = addressLocation;
+                            break;
+                        }
+                        // if (result[0].address_components[i].types[b] == "street_number") {
+                        //    // street number
+                        //     street_number= result[0].address_components[i].short_name;
+                        //     break;
+                        //         }
+                    }
+
+
+                }
+            }
+
+
+        });
+
+
+    }); 
+google.maps.event.addListener(map, 'dragend', function (e) {
+        marker.setPosition(map.getCenter());
+        markerLat = marker.getPosition().lat();
+        markerLng = marker.getPosition().lng();
+        geocoder.geocode({
+            'latLng': marker.getPosition()
+        }, function (result, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+
+                for (var i = 0; i < result[0].address_components.length; i++) {
+                    for (var b = 0; b < result[0].address_components[i].types.length; b++) {
+                        //if you want the change the area ..
+                        if (result[0].address_components[i].types[b] == "route") {
+                            // street name
+                            console.log("1");
+                            streetLocation = result[0].address_components[i].short_name;
+                            addressLocation = streetLocation;
+                            document.getElementById(location).value = addressLocation;
+                            break;
+                        }
+                        // if (result[0].address_components[i].types[b] == "street_number") {
+                        //    // street number
+                        //     street_number= result[0].address_components[i].short_name;
+                        //     break;
+                        //         }
+                    }
+
+
+                }
+            }
+
+
+        });
+
+
+    }); 
+    // google.maps.event.addListener(map, 'bounds_changed', function (e) {
+    //     marker.setPosition(map.getCenter());
+    //     markerLat = marker.getPosition().lat();
+    //     markerLng = marker.getPosition().lng();
+    //     geocoder.geocode({
+    //         'latLng': marker.getPosition()
+    //     }, function (result, status) {
+    //         if (status == google.maps.GeocoderStatus.OK) {
+
+    //             for (var i = 0; i < result[0].address_components.length; i++) {
+    //                 for (var b = 0; b < result[0].address_components[i].types.length; b++) {
+    //                     //if you want the change the area ..
+    //                     if (result[0].address_components[i].types[b] == "route") {
+    //                         // street name
+    //                         console.log("1");
+    //                         streetLocation = result[0].address_components[i].short_name;
+    //                         addressLocation = streetLocation;
+    //                         document.getElementById(location).value = addressLocation;
+    //                         break;
+    //                     }
+    //                     // if (result[0].address_components[i].types[b] == "street_number") {
+    //                     //    // street number
+    //                     //     street_number= result[0].address_components[i].short_name;
+    //                     //     break;
+    //                     //         }
+    //                 }
+
+
+    //             }
+    //         }
+
+
+    //     });
+
+
+    // });
 }
 //get location marker
 function getMarkerLocation(marker) {
