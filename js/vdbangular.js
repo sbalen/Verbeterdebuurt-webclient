@@ -1815,8 +1815,8 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
             $('#ResolveModalSimple').modal('show');
             $rootScope.getStatusId = $routeParams.id;
             console.log($rootScope.getStatusId);
-            $rootScope.hashSession = null;
-            $rootScope.targetAction = null;
+            // $rootScope.hashSession = null;
+            // $rootScope.targetAction = null;
         }
         
         //resolve issue without comment 
@@ -1824,8 +1824,8 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
             $('#ResolveModal').modal('show');
             $rootScope.getStatusId = $routeParams.id;
             console.log($rootScope.getStatusId);
-            $rootScope.hashSession = null;
-            $rootScope.targetAction = null;
+            // $rootScope.hashSession = null;
+            // $rootScope.targetAction = null;
         }
 
 
@@ -2417,7 +2417,7 @@ vdbApp.controller('loginCtrl', ['$scope', '$rootScope', '$window', 'loginService
                 //this is the same code as login succes, better to separate?
                 //temp for data session
                 var expired = new Date();
-                expired.setDate(expired.getDate() + ((1 / 24) * 2));
+                expired.setHours(expired.getHours() +2);
                 console.log(expired);
                 $cookies.putObject('user', getLogin.user, {
                     expires: expired
@@ -2484,7 +2484,7 @@ vdbApp.controller('loginCtrl', ['$scope', '$rootScope', '$window', 'loginService
             } else if (getLogin.success) {
                 //temp for data session
                 var expired = new Date();
-                expired.setDate(expired.getDate() + ((1 / 24) * 2));
+                expired.setHours(expired.getHours() +2);
                 console.log(expired);
                 $cookies.putObject('user', getLogin.user, {
                     expires: expired
@@ -3007,7 +3007,7 @@ vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileSer
                         var user = $cookies.getObject('user');
                         var user_profile = $cookies.getObject('user_profile');
                         var expired = new Date();
-                        expired.setDate(expired.getDate() + ((1 / 24) * 2));
+                        expired.setHours(expired.getHours() +2);
                         user_profile.facebookID = facebookID;
                         $cookies.putObject('user', user, {
                             expires: expired
@@ -3246,7 +3246,7 @@ vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileSer
                         console.log($cookies.getObject("user"));
                         $cookies.putObject('user_profile', getLogin.user_profile);
                         var expired = new Date();
-                        expired.setDate(expired.getDate() + ((1 / 24) * 2));
+                        expired.setHours(expired.getHours() +2);
                         $cookies.putObject('user', getLogin.user, {
                             expires: expired
                         });
@@ -4517,16 +4517,87 @@ vdbApp.controller('confirmVoteCtrl', ['$scope','$rootScope','$routeParams','conf
     $rootScope.targetAction = null;
 }])
 
-vdbApp.controller('resolveIssueCommentNoCtrl', ['$scope','$rootScope','$routeParams', function ($scope,$rootScope,$routeParams) {
+vdbApp.controller('resolveIssueCommentNoCtrl', ['$scope','$rootScope','$routeParams','statusChangeService','$location','issuesService',function ($scope,$rootScope,$routeParams,statusChangeService,$location,issuesService) {
+    $scope.hide= "ng-hide";
     $scope.resolve = function(){
-        var resolveComment = $scope.resolveComment;
+        $rootScope.globaloverlay = "active";
+        var user = {};
+        user.authorisation_hash = $rootScope.hashSession;
+        var comment = $scope.resolveComment;
         var issue_id = $rootScope.getStatusId;
+        var status = "resolved";
+
+        var jsondata = JSON.stringify({user,comment,issue_id,status});
+        console.log(jsondata);
+        var getStatusChange = statusChangeService.getStatusChange(jsondata).then(function (data){
+            var getStatusChange = data.data;
+            if(!getStatusChange.success){
+                $rootScope.globaloverlay = "";
+                $scope.hide="";
+                $scope.error = getStatusChange.error;
+            }
+            else{
+                $rootScope.globaloverlay = "";
+                console.log(getStatusChange);
+                $('#ResolveModalSimple').modal('hide');
+                $('.modal-backdrop').hide();
+                $rootScope.hashSession = null;
+                $rootScope.targetAction = null;
+                var jsondata = JSON.stringify({issue_id});
+                //get data for count comment
+                var getIssues = issuesService.getIssues(jsondata).then(function (data) {
+                    var getdata = data.data;
+                    $rootScope.problemIdList = getdata.issues;
+                });
+            }
+           
+
+        });
+    }
+    $scope.close =function(){
+        $scope.error="";
+        $scope.comment="";
     }
 }])
 
-vdbApp.controller('resolveIssueCommentYesCtrl', ['$scope','$rootScope','$routeParams', function ($scope,$rootScope,$routeParams) {
+vdbApp.controller('resolveIssueCommentYesCtrl', ['$scope','$rootScope','$routeParams','statusChangeService','issuesService', function ($scope,$rootScope,$routeParams,statusChangeService,issuesService) {
+    $scope.hide="ng-hide";
     $scope.resolve = function(){
-        var resolveComment = $scope.resolveComment;
+        $rootScope.globaloverlay = "active";
+        var user = {};
+        user.authorisation_hash = $rootScope.hashSession;
+        var comment = $scope.resolveComment;
         var issue_id = $rootScope.getStatusId;
+        var status = "resolved";
+
+        var jsondata = JSON.stringify({user,comment,issue_id,status});
+        console.log(jsondata);
+        var getStatusChange = statusChangeService.getStatusChange(jsondata).then(function (data){
+            var getStatusChange = data.data;
+            if(!getStatusChange.success){
+                $rootScope.globaloverlay = "";
+                $scope.hide="";
+                $scope.error = getStatusChange.error;
+            }
+            else{
+                $rootScope.globaloverlay = "";
+                console.log(getStatusChange);
+                $('#ResolveModal').modal('hide');
+                $('.modal-backdrop').hide();
+                $rootScope.hashSession = null;
+                $rootScope.targetAction = null;
+                var jsondata = JSON.stringify({issue_id});
+                //get data for count comment
+                var getIssues = issuesService.getIssues(jsondata).then(function (data) {
+                    var getdata = data.data;
+                    $rootScope.problemIdList = getdata.issues;
+                });
+            }
+
+        });
+    }
+     $scope.close =function(){
+        $scope.error="";
+        $scope.comment="";
     }
 }])
