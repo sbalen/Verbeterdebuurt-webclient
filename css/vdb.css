@@ -341,6 +341,9 @@ h6 {
     border-style: solid;
     border-width: thin;
     z-index: 1020; } }
+@media (max-width: 1199px) {
+  .col-md-3 {
+    width: 100%; } }
 @media (max-width: 767px) {
   .hidden-xs {
     display: none !important; }
