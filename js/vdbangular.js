@@ -1345,44 +1345,44 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
 
 
     }, 3000);
-    if (!$routeParams.cityName) {
-        if (!$rootScope.lastCity) {
-            $timeout(function(){
-                var jsoncity = JSON.stringify({
-                "council": city.long_name
-            });
-                console.log(city.long_name);
-                console.log(jsoncity);
-            var getReport = reportService.getReport(jsoncity).then(function (data) {
-                    var getdata = data.data;
-                    $rootScope.reportList = getdata.report;
-                });
+    // if (!$routeParams.cityName) {
+    //     if (!$rootScope.lastCity) {
+    //         $timeout(function(){
+    //             var jsoncity = JSON.stringify({
+    //             "council": city.long_name
+    //         });
+    //             console.log(city.long_name);
+    //             console.log(jsoncity);
+    //         var getReport = reportService.getReport(jsoncity).then(function (data) {
+    //                 var getdata = data.data;
+    //                 $rootScope.reportList = getdata.report;
+    //             });
 
-            var getAgreement = agreementSevice.getAgreement(jsoncity).then(function (data) {
-                    var getdata = data.data;
-                    $rootScope.agreement = getdata;
-                    $timeout(function () {
-                        if (!getdata.logo) {
-                            $rootScope.hideLogo = 1;
-                        } else {
-                            $rootScope.hideLogo = 0;
-                            console.log($scope.hideLogo);
-                        }
-                    })
+    //         var getAgreement = agreementSevice.getAgreement(jsoncity).then(function (data) {
+    //                 var getdata = data.data;
+    //                 $rootScope.agreement = getdata;
+    //                 $timeout(function () {
+    //                     if (!getdata.logo) {
+    //                         $rootScope.hideLogo = 1;
+    //                     } else {
+    //                         $rootScope.hideLogo = 0;
+    //                         console.log($scope.hideLogo);
+    //                     }
+    //                 })
 
-                });
-            },3000)
+    //             });
+    //         },3000)
             
-        } else if ($rootScope.lastCity) {
-            var jsoncity = JSON.stringify({
-                "council": "" + $rootScope.lastCity + ""
-            });
-        }
-    } else {
-        var jsoncity = JSON.stringify({
-            "council": "" + $routeParams.cityName + ""
-        });
-    }
+    //     } else if ($rootScope.lastCity) {
+    //         var jsoncity = JSON.stringify({
+    //             "council": "" + $rootScope.lastCity + ""
+    //         });
+    //     }
+    // } else {
+    //     var jsoncity = JSON.stringify({
+    //         "council": "" + $routeParams.cityName + ""
+    //     });
+    // }
     //send data to google map api for city
     $rootScope.urlBefore = $location.path();
     $window.cityName = $routeParams.cityName;
@@ -1392,24 +1392,33 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     $rootScope.errorSession = "";
 
     //promise for make asyncronise data factory to be syncronis first load
-    var getReport = reportService.getReport(jsoncity).then(function (data) {
-        var getdata = data.data;
-        $rootScope.reportList = getdata.report;
-    });
+    if(!$routeParams.cityName){
+        $timeout(function(){
+                 var jsoncity = JSON.stringify({
+                        "council": city.long_name
+                    });
+            var getReport = reportService.getReport(jsoncity).then(function (data) {
+                var getdata = data.data;
+                $rootScope.reportList = getdata.report;
+            });
 
-    var getAgreement = agreementSevice.getAgreement(jsoncity).then(function (data) {
-        var getdata = data.data;
-        $rootScope.agreement = getdata;
-        $timeout(function () {
-            if (!getdata.logo) {
-                $rootScope.hideLogo = 1;
-            } else {
-                $rootScope.hideLogo = 0;
-                console.log($scope.hideLogo);
-            }
-        })
+            var getAgreement = agreementSevice.getAgreement(jsoncity).then(function (data) {
+                var getdata = data.data;
+                $rootScope.agreement = getdata;
+                $timeout(function () {
+                    if (!getdata.logo) {
+                        $rootScope.hideLogo = 1;
+                    } else {
+                        $rootScope.hideLogo = 0;
+                        console.log($scope.hideLogo);
+                    }
+                })
 
-    });
+            });
+            },3000)
+    }
+    
+   
 
     //with postal code load
     if ($routeParams.postalcode) {
@@ -1445,8 +1454,8 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
 
     //click function at map
     $scope.alrCity = function () {
-            if ($window.city.long_name != null) {
-
+            if (city.long_name != null) {
+                console.log(city.long_name);
                 //url change validation	
                 if ($location.path().includes("/gemeente/") || $location.path().endsWith("/") || $routeParams.postalcode) {
                     if ($rootScope.lastCity != null) {
@@ -1455,7 +1464,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
                         console.log("baca");
 
                     } else {
-                        $location.path("/gemeente/" + $window.city.long_name);
+                        $location.path("/gemeente/" +city.long_name);
                     }
                     $rootScope.lastUrl = $location.path();
                     $scope.searchCity = city.long_name;
@@ -1474,7 +1483,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
 
 
                 var jsoncity = JSON.stringify({
-                    "council": "" + $routeParams.cityName + ""
+                    "council": "" + city.long_name + ""
                 });
                 var getReport = reportService.getReport(jsoncity).then(function (data) {
                     var getdata = data.data;
@@ -1486,10 +1495,8 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
                     $timeout(function () {
                         if (!getdata.logo) {
                             $rootScope.hideLogo = 1;
-                            console.log("hide");
                         } else {
                             $rootScope.hideLogo = 0;
-                            console.log("nothide");
                         }
                     })
                 });
@@ -1583,7 +1590,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
                     }
                 });
                 var jsoncity = JSON.stringify({
-                    "council": "" + citynamegoogle.short_name + ""
+                    "council": "" + city.long_name + ""
                 })
                 console.log(jsoncity);
                 var getReport = reportService.getReport(jsoncity).then(function (data) {
@@ -1604,8 +1611,8 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
                         }
                     })
                 });
-                $location.path("gemeente/" + citynamegoogle.long_name);
-                $rootScope.lastCity = citynamegoogle.long_name;
+                $location.path("gemeente/" + city.long_name);
+                $rootScope.lastCity = city.long_name;
             }, 3000)
 
 
