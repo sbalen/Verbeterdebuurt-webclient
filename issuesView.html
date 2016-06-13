@@ -271,21 +271,21 @@
         </div>
     </div>
 <!-- resolveModal -->
-<div id="ResolveModal" class="modal fade" role="dialog">
+<div id="ResolveModal" class="modal fade" role="dialog" ng-controller="resolveIssueCommentYesCtrl">
     <div class="modal-dialog">
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h1 class="modal-title">Melding behandelen</h1>
+                <h1 class="modal-title">Melding behandelenYes</h1>
             </div>
             <div class="modal-body">
                 Behandelwijze:
-                <textarea class="form-control" rows="5" id="comment"></textarea>
+                <textarea class="form-control" rows="5" id="comment" ng-model="resolveComment"></textarea>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Annuleren</button>
-                <button type="button" class="btn btn-success" data-dismiss="modal">Melding behandelen</button>
+                <button type="button" class="btn btn-success" data-dismiss="modal"  ng-click="resolve()">Melding behandelen</button>
             </div>
         </div>
     </div>
@@ -293,7 +293,7 @@
 
 
 <!-- resolveModal Simple -->
-<div id="ResolveModalSimple" class="modal fade" role="dialog">
+<div id="ResolveModalSimple" class="modal fade" role="dialog" ng-controller="resolveIssueCommentNoCtrl">
     <div class="modal-dialog">
         <!-- Modal content-->
         <div class="modal-content">
@@ -303,11 +303,11 @@
             </div>
             <div class="modal-body">
                 reden van afwijzing:
-                <textarea class="form-control" rows="5" id="comment-2"></textarea>
+                <textarea class="form-control" rows="5" id="comment-2" ng-model="resolveComment"></textarea>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Annuleren</button>
-                <button type="button" class="btn btn-success" data-dismiss="modal">Melding afwijzen</button>
+                <button type="button" class="btn btn-success" ng-click="resolve()">Melding afwijzen</button>
             </div>
         </div>
     </div>
@@ -340,7 +340,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h1 class="modal-title">Submit Vote Request</h1>
+                <h1 class="modal-title">Stem indienen</h1>
                     <div class="alert alert-danger " ng-hide="hide" >
                                   <a class="close " ng-hide="hide" aria-label="close" ng-click="close()" >&times;</a>
                                   <p>{{error}}</p>
@@ -352,7 +352,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" ng-click="close()" data-dismiss="modal">Annuleren</button>
-                <button type="button" class="btn btn-success" ng-click="submit()">Verwijderen</button>
+                <button type="button" class="btn btn-success" ng-click="submit()">Verzenden</button>
             </div>
         </div>
     </div>
