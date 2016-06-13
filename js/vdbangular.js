@@ -1410,6 +1410,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
         })
 
     });
+
     //with postal code load
     if ($routeParams.postalcode) {
         $window.postalcode = $routeParams.postalcode;
@@ -1689,7 +1690,6 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
         "issue_id": $routeParams.id
     });
     console.log($rootScope.successCreateLogin);
-
     if ($rootScope.lastUrl == null) {
         $rootScope.lastUrl == '/';
     }
@@ -3289,7 +3289,7 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
     $scope.loadCategory = 1;
     $scope.count = 0;
     $scope.standardMessage = "";
-
+    $rootScope.urlBefore = $location.path();
 
     $scope.email = "";
     $scope.username = "";
@@ -3772,6 +3772,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
     $scope.hideIssue = 1;
     $scope.myIssueCount = 0;
     $scope.initslide = "toggle-button2 ";
+    $rootScope.urlBefore = $location.path();
 
     $scope.email = "";
     $scope.username = "";
@@ -4506,4 +4507,18 @@ vdbApp.controller('confirmVoteCtrl', ['$scope','$rootScope','$routeParams','conf
     });
     $rootScope.hashSession = null;
     $rootScope.targetAction = null;
+}])
+
+vdbApp.controller('resolveIssueCommentNoCtrl', ['$scope','$rootScope','$routeParams', function ($scope,$rootScope,$routeParams) {
+    $scope.resolve = function(){
+        var resolveComment = $scope.resolveComment;
+        var issue_id = $rootScope.getStatusId;
+    }
+}])
+
+vdbApp.controller('resolveIssueCommentYesCtrl', ['$scope','$rootScope','$routeParams', function ($scope,$rootScope,$routeParams) {
+    $scope.resolve = function(){
+        var resolveComment = $scope.resolveComment;
+        var issue_id = $rootScope.getStatusId;
+    }
 }])
