@@ -69,7 +69,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group" ng-hide="count==0||count==null" style="z-index:50;">
-                                    <p>Mogelijke dubbele meldingen. Bekijk of bij deze meldingen misschien jouw probleem al gemeld is. Klik er dan op om deze melding te steunen</p>
+                                    <p style="color:green;">Mogelijke dubbele meldingen. Bekijk of bij deze meldingen misschien jouw probleem al gemeld is. Klik er dan op om deze melding te steunen</p>
                                     
                                     <div class="duplicate-wrapper">
                                         <div class="duplicate-left" ng-hide="count<=3" ng-click="moveDuplicate(-1)">&lang;</div>
@@ -81,12 +81,19 @@
 <!--                                            <a href="melding/{{duplicateData.id}}" ng-repeat="duplicateData in duplicateDataList">-->
                                             <div class="duplicate-item" ng-repeat="duplicateData in duplicateDataList" >
                                                     
-                                                    <div class="bubble-description">
-                                                        {{duplicateData.title}}<br/>
+                                                    <div class="bubble-description ">
+                                                        <a style="font-size:12px;" class="list-group-item clearfix" href="melding/{{duplicateData.id}}">
+                                                        <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
+                                                            <strong>{{duplicateData.title}}</strong><br/>
                                                         {{duplicateData.description}}
-                                                        <br/>
-                                                        <br/>
-                                                        <a href="melding/{{duplicateData.id}}">bekijken</a>
+                                                        
+                                                        
+                                                            <span class="pull-right">
+                                                                <button style ="margin-left:15px"class="btn btn-xs btn-success" >
+                                                                <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
+                                                                </button>
+                                                            </span>
+                                                            </a>
                                                     </div>
                                                     <p>{{duplicateData.category}}</p>
                                                     <p>{{duplicateData.location.src_address}}</p>
@@ -229,5 +236,5 @@
                 $('#duplicate-bubble').empty();
     });
     
-    
+   
 </script>

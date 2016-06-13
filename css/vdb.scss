@@ -519,6 +519,13 @@ margin-right: 10px; margin-top: 10px;
 
 }
 
+@media (max-width: 1199px)
+{
+.col-md-3 {
+    width: 100%;
+}
+}
+
 
 @media (max-width: 767px)
 {
