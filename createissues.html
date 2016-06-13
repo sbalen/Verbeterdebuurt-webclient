@@ -82,21 +82,24 @@
                                             <div class="duplicate-item" ng-repeat="duplicateData in duplicateDataList" >
                                                     
                                                     <div class="bubble-description ">
-                                                        <a style="font-size:12px;" class="list-group-item clearfix" href="melding/{{duplicateData.id}}">
-                                                        <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
-                                                            <strong>{{duplicateData.title}}</strong><br/>
+                                    
                                                         {{duplicateData.description}}
+                                                        <br/>
+                                                        <br/>
+                                                        <a  href="melding/{{duplicateData.id}}">bekijken</a>
                                                         
-                                                        
-                                                            <span class="pull-right">
+                                                    </div>
+                                                <div style="text-align:left;">
+                                                <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
+                                                <strong >{{duplicateData.title}}</strong>
+                                                <br/>
+                                                {{duplicateData.location.src_address}}
+                                                <span class="pull-right">
                                                                 <button style ="margin-left:15px"class="btn btn-xs btn-success" >
                                                                 <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
                                                                 </button>
                                                             </span>
-                                                            </a>
-                                                    </div>
-                                                    <p>{{duplicateData.category}}</p>
-                                                    <p>{{duplicateData.location.src_address}}</p>
+                                                </div>
                                                 </div>
 <!--                                            </a>-->
                                         </div>

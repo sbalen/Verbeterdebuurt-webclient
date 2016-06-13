@@ -83,11 +83,14 @@
                 <div class="collapse navbar-collapse" id="Navbar" data-toggle="collapse">
                     <ul class="nav navbar-nav hidden-lg hidden-sm hidden-md"> 
                         <li class="divider-vertical"></li>
-                        <li class="{{homeSelected}}"><a href="/" data-toggle="collapse" data-target=".navbar-collapse">Kaart</a></li>
+                        <li class="{{homeSelected}}"><a href="/" data-toggle="collapse"
+                            data-target=".navbar-collapse">Kaart</a></li>
                         <li class="divider-vertical"></li>
-                        <li class="{{mentionSelected}}"><a href="nieuwe-melding" data-toggle="collapse" data-target=".navbar-collapse">Melding maken</a></li>
+                        <li class="{{mentionSelected}}"><a href="nieuwe-melding" 
+                            data-toggle="collapse" data-target=".navbar-collapse">Melding maken</a></li>
                         <li class="divider-vertical"></li>
-                        <li class="{{myIssuesSelected}}"><a href="mijn-meldingen" data-toggle="collapse" data-target=".navbar-collapse">Mijn meldingen</a></li>  
+                        <li class="{{myIssuesSelected}}"><a href="mijn-meldingen" 
+                            data-toggle="collapse" data-target=".navbar-collapse">Mijn meldingen</a></li>  
                         <li class="divider-vertical"></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right" ng-if="!loginStatus()">
@@ -101,8 +104,10 @@
                             <span class="caret" ></span>
                         </button>
                         <ul ng-show="userpanel" class="dropdown-menu  navbar-right" style="margin-right: 24px;margin-top: -5px;">
-                            <li><a href="mijn-verbeterdebuurt" style="color: white;" data-toggle="collapse" data-target=".navbar-collapse" >Profiel</a></li>
-                            <li><a href="#" style="color: white;" ng-click="logout()" data-toggle="collapse" data-target=".navbar-collapse">Log out</a></li>    
+                            <li><a href="mijn-verbeterdebuurt" style="color: white;" 
+                            data-toggle="collapse" data-target=".navbar-collapse" >Profiel</a></li>
+                            <li><a href="#" style="color: white;" ng-click="logout()"
+                            data-toggle="collapse" data-target=".navbar-collapse">Log out</a></li>    
                         </ul>
                     
                     </div>
