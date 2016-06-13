@@ -3066,7 +3066,8 @@ vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileSer
     $scope.postcode = c_user_profile.postcode;
     $scope.city = c_user_profile.city;
     $scope.phone = c_user_profile.phone;
-
+    $scope.newsletter = c_user_profile.subscribed_newsletter;
+    console.log(c_user_profile);
 
 
     //console.log({user,password,user_profile});
@@ -3085,6 +3086,7 @@ vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileSer
         $scope.errorPasshash = "";
         $scope.errorFB = "";
         $scope.errorPassword3 = null;
+        $scope.newsletter = "";
 
 
         $scope.hide = "ng-hide";
