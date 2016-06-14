@@ -997,7 +997,8 @@ vdbApp.factory('issueSubmitServiceWithImage', ['$http', function ($http) {
             dataForm.append('json', jsondata);
             dataForm.append('image', img);
             return $http.post(APIURL + 'issueSubmit', dataForm, {
-                    transformRequest: angular.identity
+                    transformRequest: angular.identity,
+                    header : { 'Content-Type' : undefined}
                 })
                 .success(function (data, headers) {
                     console.log(data);
