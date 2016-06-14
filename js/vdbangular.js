@@ -3634,7 +3634,8 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
                 "issue" : {
                     "title" : issue.title,
                     "description" :  issue.description,
-
+                    "type" :  issue.type,
+                    "category_id" :  issue.category_id
                 }, 
                 "location" : {
                     "latitude" : location.latitude,
@@ -3664,7 +3665,8 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
                 "issue" : {
                     "title" : issue.title,
                     "description" :  issue.description,
-
+                    "type" :  issue.type,
+                    "category_id" :  issue.category_id
                 }, 
                 "location" : {
                     "latitude" : location.latitude,
@@ -3712,7 +3714,7 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
                         $scope.errorLocation = issueData.errors.location;
                     }
                     if (issueData.errors.initials) {
-                        $scope.errorInitials = "Voorsletters " + issueData.errors.initials;
+                        $scope.errorInitials = "Voorletters " + issueData.errors.initials;
                     }
                     if (issueData.errors.owner_city) {
                         $scope.errorCity = "Plaats " + issueData.errors.owner_city;
