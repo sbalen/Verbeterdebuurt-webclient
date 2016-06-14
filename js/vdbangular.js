@@ -1,4 +1,8 @@
-var vdbApp = angular.module('vdbApp', ['ngRoute', 'angularSpinner', 'angularUtils.directives.dirPagination', 'ngFacebook', 'ngCookies', 'naif.base64'])
+//var vdbApp = angular.module('vdbApp',[]);
+var vdbApp = angular.module('vdbApp', ['ngRoute', 'angularUtils.directives.dirPagination', 'ngFacebook', 'ngCookies', 'naif.base64'])
+
+
+
 var APIURL = "https://staging.verbeterdebuurt.nl/api.php/json_1_3/";
 var geocoder = new google.maps.Geocoder();
 var infoWindow = new google.maps.InfoWindow();
@@ -6,7 +10,7 @@ var infoWindowContent = [];
 var latlngChange;
 var marker;
 var map;
-postalcode = null;
+var postalcode = null;
 //define service
 var issuesService = new Object();
 var registerService = new Object();
@@ -1728,7 +1732,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
 
 
 
-vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParams', 'issuesService', 'reportService', 'usSpinnerService', '$location', '$anchorScroll', 'issueLogService', 'commentService', '$timeout', 'voteSubmitService', '$cookies', 'confirmIssueService', 'unfollowIssueService','myIssuesService', 'statusChangeService',function ($scope, $rootScope, $window, $routeParams, issuesService, reportService, usSpinnerService, $location, $anchorScroll, issueLogService, commentService, $timeout, voteSubmitService, $cookies, confirmIssueService, unfollowIssueService,myIssuesService,statusChangeService) {
+vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParams', 'issuesService', 'reportService', '$location', '$anchorScroll', 'issueLogService', 'commentService', '$timeout', 'voteSubmitService', '$cookies', 'confirmIssueService', 'unfollowIssueService','myIssuesService', 'statusChangeService',function ($scope, $rootScope, $window, $routeParams, issuesService, reportService, $location, $anchorScroll, issueLogService, commentService, $timeout, voteSubmitService, $cookies, confirmIssueService, unfollowIssueService,myIssuesService,statusChangeService) {
     $rootScope.globaloverlay = "active";
     $scope.hide = "ng-hide";
     $scope.overlay = "overlay";
@@ -2134,7 +2138,7 @@ vdbApp.controller('myIssuesCtrl', ['$scope', '$rootScope', '$window', '$location
 
 }])
 
-vdbApp.controller('myIssuesDetailCtrl', ['$scope', '$routeParams', '$http', '$rootScope', '$location', '$window', 'myIssuesService', 'usSpinnerService', 'issueLogService', 'commentService', 'voteSubmitService', '$cookies','$timeout', function ($scope, $routeParams, $http, $rootScope, $location, $window, myIssuesService, usSpinnerService, issueLogService, commentService, voteSubmitService, $cookies,$timeout) {
+vdbApp.controller('myIssuesDetailCtrl', ['$scope', '$routeParams', '$http', '$rootScope', '$location', '$window', 'myIssuesService', 'issueLogService', 'commentService', 'voteSubmitService', '$cookies','$timeout', function ($scope, $routeParams, $http, $rootScope, $location, $window, myIssuesService, issueLogService, commentService, voteSubmitService, $cookies,$timeout) {
     $scope.hide = "";
     $scope.hideStatus = "ng-hide";
     $scope.errorVote = "";
@@ -2330,7 +2334,7 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope', '$routeParams', '$http', '$ro
 
 }])
 
-vdbApp.controller('loginCtrl', ['$scope', '$rootScope', '$window', 'loginService', '$location', 'usSpinnerService', '$facebook', '$cookies', function ($scope, $rootScope, $window, loginService, $location, usSpinnerService, $facebook, $cookies) {
+vdbApp.controller('loginCtrl', ['$scope', '$rootScope', '$window', 'loginService', '$location', '$facebook', '$cookies', function ($scope, $rootScope, $window, loginService, $location, $facebook, $cookies) {
     $scope.hide = "ng-hide";
     $scope.lusername = "";
     $scope.lpassword = "";
@@ -2598,7 +2602,7 @@ vdbApp.controller('loginCtrl', ['$scope', '$rootScope', '$window', 'loginService
 }])
 
 
-vdbApp.controller('registerCtrl', ['$scope', '$rootScope', '$window', 'registerService', 'newsletterService', 'usSpinnerService', '$location', '$facebook', function ($scope, $rootScope, $window, registerService, newsletterService, usSpinnerService, $location, $facebook) {
+vdbApp.controller('registerCtrl', ['$scope', '$rootScope', '$window', 'registerService', 'newsletterService', '$location', '$facebook', function ($scope, $rootScope, $window, registerService, newsletterService, $location, $facebook) {
     $scope.home = function () {
         $location.path('/');
 
@@ -2822,7 +2826,7 @@ vdbApp.controller('registerCtrl', ['$scope', '$rootScope', '$window', 'registerS
 }])
 
 
-vdbApp.controller('regisconfCtrl', ['$scope', '$rootScope', '$window', 'usSpinnerService', '$location', function ($scope, $rootScope, $window, usSpinnerService, $location) {
+vdbApp.controller('regisconfCtrl', ['$scope', '$rootScope', '$window', '$location', function ($scope, $rootScope, $window, $location) {
 
     $scope.home = function () {
         $location.path('/');
@@ -2831,7 +2835,7 @@ vdbApp.controller('regisconfCtrl', ['$scope', '$rootScope', '$window', 'usSpinne
 
 
                                       }]);
-vdbApp.controller('commentSubmitCtrl', ['$scope', '$route', '$rootScope', '$window', '$routeParams', '$location', 'usSpinnerService', 'commentSubmitService', 'commentService', 'issuesService', 'myIssuesService', '$cookies', function ($scope, $route, $rootScope, $window, $routeParams, $location, usSpinnerService, commentSubmitService, commentService, issuesService, myIssuesService, $cookies) {
+vdbApp.controller('commentSubmitCtrl', ['$scope', '$route', '$rootScope', '$window', '$routeParams', '$location', 'commentSubmitService', 'commentService', 'issuesService', 'myIssuesService', '$cookies', function ($scope, $route, $rootScope, $window, $routeParams, $location, commentSubmitService, commentService, issuesService, myIssuesService, $cookies) {
     //comment Service :v
     $scope.hide = "ng-hide";
     $scope.commentSubmit = function (issueType) {
@@ -2912,7 +2916,7 @@ vdbApp.controller('commentSubmitCtrl', ['$scope', '$route', '$rootScope', '$wind
     }
  }])
 
-vdbApp.controller('forgotCtrl', ['$scope', '$rootScope', '$window', 'forgotService', 'usSpinnerService', '$location', function ($scope, $rootScope, $window, forgotService, usSpinnerService, $location) {
+vdbApp.controller('forgotCtrl', ['$scope', '$rootScope', '$window', 'forgotService', '$location', function ($scope, $rootScope, $window, forgotService, $location) {
     $scope.hide = "ng-hide";
     $scope.overlay = "overlay";
 
@@ -2961,7 +2965,7 @@ vdbApp.controller('forgotCtrl', ['$scope', '$rootScope', '$window', 'forgotServi
 
 
 
-vdbApp.controller('forgotconfCtrl', ['$scope', '$rootScope', '$window', 'usSpinnerService', '$location', function ($scope, $rootScope, $window, usSpinnerService, $location) {
+vdbApp.controller('forgotconfCtrl', ['$scope', '$rootScope', '$window', '$location', function ($scope, $rootScope, $window, $location) {
 
     $scope.home = function () {
         $location.path('/');
@@ -2973,7 +2977,7 @@ vdbApp.controller('forgotconfCtrl', ['$scope', '$rootScope', '$window', 'usSpinn
 
 
 
-vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileService', 'loginService', '$location', 'usSpinnerService', '$facebook', 'syncFBService', '$cookies', function ($scope, $rootScope, $window, profileService , loginService, $location, usSpinnerService, $facebook, syncFBService, $cookies) {
+vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileService', 'loginService', '$location', '$facebook', 'syncFBService', '$cookies', function ($scope, $rootScope, $window, profileService , loginService, $location, $facebook, syncFBService, $cookies) {
     $scope.hide = "ng-hide";
 
     $scope.home = function () {
