@@ -1811,10 +1811,15 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
             user.authorisation_hash = hashToDelete;
             var issue_id = $rootScope.getStatusId;
             var status = "deleted";
-            var jsondata = JSON.stringify({ 
-                user, issue_id, status
+            var jsondata = JSON.stringify({
+                "user" : {
+                    "authorisation_hash" : hashToDelete
+                },
+                "issue_id" : issue_id,
+                "status" : status        
             });
-            
+
+
             console.log(jsondata);
             
             var getStatusChange = statusChangeService.getStatusChange(jsondata).then(function (data) {
