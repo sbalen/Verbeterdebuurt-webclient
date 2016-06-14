@@ -3214,30 +3214,36 @@ vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileSer
 
         } else if ($scope.password_new == $scope.rpassword) {
             
-            var jsondata = JSON.stringify({
-                "user" : {
-                    "username" : c_user.username,
-                    "password_hash" : c_user.password_hash,
-                },
-                "password" : {
-                    "password_old" : $scope.password_old,
-                    "password_new" : $scope.password_new  
-                },
-                "user_profile" : {
-                    "initials" : $scope.initials,
-                    "tussenvoegsel" : $scope.tussenvoegsel,    
-                    "surname" : $scope.surname,
-                    "email" : $scope.email,
-                    "sex" : $scope.sex,
-                    "address_old" : $scope.address_old,
-                    "address" : $scope.address,
-                    "address_number": $scope.address_number,
-                    "address_suffix": $scope.address_suffix,
-                    "postcode" : $scope.postcode,
-                    "city" : $scope.city,
-                    "phone" : $scope.phone
-                } 
-            });
+            var jsondataObj = new Object();
+            jsondataObj.user = user;
+            jsondataObj.password = password;
+            jsondataObj.user_profile = user_profile;
+            var jsondata = JSON.stringify(jsondataObj);
+            
+//            var jsondata = JSON.stringify({
+//                "user" : {
+//                    "username" : c_user.username,
+//                    "password_hash" : c_user.password_hash,
+//                },
+//                "password" : {
+//                    "password_old" : $scope.password_old,
+//                    "password_new" : $scope.password_new  
+//                },
+//                "user_profile" : {
+//                    "initials" : $scope.initials,
+//                    "tussenvoegsel" : $scope.tussenvoegsel,    
+//                    "surname" : $scope.surname,
+//                    "email" : $scope.email,
+//                    "sex" : $scope.sex,
+//                    "address_old" : $scope.address_old,
+//                    "address" : $scope.address,
+//                    "address_number": $scope.address_number,
+//                    "address_suffix": $scope.address_suffix,
+//                    "postcode" : $scope.postcode,
+//                    "city" : $scope.city,
+//                    "phone" : $scope.phone
+//                } 
+//            });
             console.log(jsondata);
             var getProfile = profileService.getProfile(jsondata).then(function (data) {
 
@@ -4583,6 +4589,7 @@ vdbApp.controller('closeIssueCtrl', ['$scope', '$rootScope', '$routeParams', '$w
             var appreciation = parseInt($scope.rating);
         }
         var status = "closed";
+
         var jsondata = JSON.stringify({
             "user" : {
                     "username" : user.username,
@@ -4593,6 +4600,8 @@ vdbApp.controller('closeIssueCtrl', ['$scope', '$rootScope', '$routeParams', '$w
             "appreciation" : appreciation,
             "status" : status
         });
+        
+        
         var getStatusChange = statusChangeService.getStatusChange(jsondata).then(function (data) {
             var getStatusChange = data.data;
             console.log(getStatusChange);
