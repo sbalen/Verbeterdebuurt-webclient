@@ -3324,7 +3324,7 @@ vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileSer
 
 }])
 
-vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', 'duplicateIssuesService', '$cookies', 'serviceStandartService', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, duplicateIssuesService, $cookies, serviceStandartService) {
+vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', 'duplicateIssuesService', '$cookies', 'serviceStandartService','reportService','issuesService','agreementSevice', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, duplicateIssuesService, $cookies, serviceStandartService,reportService,issuesService,agreementSevice) {
     $scope.hide = "ng-hide";
     $scope.issueName = "Probleem"
     $scope.hideIssue = 1;
@@ -3466,10 +3466,30 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
             latitude, longitude
         });
         $timeout(function () {
+            
             var getCategories = categoriesService.getCategories(jsondataCity).then(function (data) {
                 $scope.categoriesList = data.data.categories;
                 $scope.loadCategory = 0;
             });
+            var jsoncity = JSON.stringify({
+                    "council": "" + city.long_name + ""
+                });
+                console.log(jsoncity);
+                var getReport = reportService.getReport(jsoncity).then(function (data) {
+                    var getdata = data.data;
+                    $rootScope.reportList = getdata.report;
+                });
+                var getAgreement = agreementSevice.getAgreement(jsoncity).then(function (data) {
+                    var getdata = data.data;
+                    $rootScope.agreement = getdata;
+                    $timeout(function () {
+                        if (!getdata.logo) {
+                            $rootScope.hideLogo = 1;
+                        } else {
+                            $rootScope.hideLogo = 0;
+                        }
+                    })
+                });
             var jsondata = JSON.stringify({
                 "coords_criterium": {
                     "max_lat": maxlat,
@@ -3480,12 +3500,13 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
             });
             getIssues = issuesService.getIssues(jsondata).then(function (data) {
                 var getdata = data.data;
+                $rootScope.newProblemList = getdata.issues;
                 if (getdata.count != 0 || !getdata) {
                     $window.issuesData = getdata;
                     showIssue(infoWindow, infoWindowContent);
                 }
             });
-        })
+        },1000)
 
 
     }
@@ -3733,6 +3754,56 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
 
 
     }
+    $scope.alrCityCreate = function () {
+                //Get city problem when click/drag
+                var jsondata = JSON.stringify({
+                    "coords_criterium": {
+                        "max_lat": maxlat,
+                        "min_lat": minlat,
+                        "max_long": maxlng,
+                        "min_long": minlng
+                    }
+                });
+
+
+                var jsoncity = JSON.stringify({
+                    "council": "" + city.long_name + ""
+                });
+                var getReport = reportService.getReport(jsoncity).then(function (data) {
+                    var getdata = data.data;
+                    $rootScope.reportList = getdata.report;
+                });
+                var getAgreement = agreementSevice.getAgreement(jsoncity).then(function (data) {
+                    var getdata = data.data;
+                    $rootScope.agreement = getdata;
+                    $timeout(function () {
+                        if (!getdata.logo) {
+                            $rootScope.hideLogo = 1;
+                        } else {
+                            $rootScope.hideLogo = 0;
+                        }
+                    })
+                });
+
+                var jsondata = JSON.stringify({
+                    "coords_criterium": {
+                        "max_lat": maxlat,
+                        "min_lat": minlat,
+                        "max_long": maxlng,
+                        "min_long": minlng
+                    }
+                });
+                getIssues = issuesService.getIssues(jsondata).then(function (data) {
+                    var getdata = data.data;
+                    $rootScope.newProblemList = getdata.issues;
+                    if (getdata.count != 0 || !getdata) {
+                        $window.issuesData = getdata;
+                        showIssue(infoWindow, infoWindowContent);
+                    }
+
+                });
+            }
+
     $scope.close = function () {
         $scope.hide = "ng-hide";
     }
@@ -3811,7 +3882,7 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
 
 		}])
 
-vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', '$cookies', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, $cookies) {
+vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', '$cookies','reportService','issuesService','agreementSevice', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, $cookies,reportService,issuesService,agreementSevice) {
     $scope.hide = "ng-hide";
     $scope.issueName = "Probleem"
     $scope.hideIssue = 1;
@@ -3912,6 +3983,24 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
             latitude, longitude
         });
         $timeout(function () {
+            var jsoncity = JSON.stringify({
+                    "council": "" + city.long_name + ""
+                });
+                var getReport = reportService.getReport(jsoncity).then(function (data) {
+                    var getdata = data.data;
+                    $rootScope.reportList = getdata.report;
+                });
+                var getAgreement = agreementSevice.getAgreement(jsoncity).then(function (data) {
+                    var getdata = data.data;
+                    $rootScope.agreement = getdata;
+                    $timeout(function () {
+                        if (!getdata.logo) {
+                            $rootScope.hideLogo = 1;
+                        } else {
+                            $rootScope.hideLogo = 0;
+                        }
+                    })
+                });
             var jsondata = JSON.stringify({
                 "coords_criterium": {
                     "max_lat": maxlat,
@@ -3921,16 +4010,68 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
                 }
             });
             getIssues = issuesService.getIssues(jsondata).then(function (data) {
-                var getdata = data.data;
-                if (getdata.count != 0 || !getdata) {
-                    $window.issuesData = getdata;
-                    showIssue(infoWindow, infoWindowContent);
-                }
+               var getdata = data.data;
+                    $rootScope.newProblemList = getdata.issues;
+                    if (getdata.count != 0 || !getdata) {
+                        $window.issuesData = getdata;
+                        showIssue(infoWindow, infoWindowContent);
+                    }
+
             });
         }, 1000)
 
 
     }
+
+    $scope.alrCityCreate = function () {
+                //Get city problem when click/drag
+                var jsondata = JSON.stringify({
+                    "coords_criterium": {
+                        "max_lat": maxlat,
+                        "min_lat": minlat,
+                        "max_long": maxlng,
+                        "min_long": minlng
+                    }
+                });
+
+
+                var jsoncity = JSON.stringify({
+                    "council": "" + city.long_name + ""
+                });
+                var getReport = reportService.getReport(jsoncity).then(function (data) {
+                    var getdata = data.data;
+                    $rootScope.reportList = getdata.report;
+                });
+                var getAgreement = agreementSevice.getAgreement(jsoncity).then(function (data) {
+                    var getdata = data.data;
+                    $rootScope.agreement = getdata;
+                    $timeout(function () {
+                        if (!getdata.logo) {
+                            $rootScope.hideLogo = 1;
+                        } else {
+                            $rootScope.hideLogo = 0;
+                        }
+                    })
+                });
+
+                var jsondata = JSON.stringify({
+                    "coords_criterium": {
+                        "max_lat": maxlat,
+                        "min_lat": minlat,
+                        "max_long": maxlng,
+                        "min_long": minlng
+                    }
+                });
+                getIssues = issuesService.getIssues(jsondata).then(function (data) {
+                    var getdata = data.data;
+                    $rootScope.newProblemList = getdata.issues;
+                    if (getdata.count != 0 || !getdata) {
+                        $window.issuesData = getdata;
+                        showIssue(infoWindow, infoWindowContent);
+                    }
+
+                });
+            }
 
     $scope.createIdea = function () {
         $rootScope.globaloverlay = "active";
@@ -3995,8 +4136,6 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
         //location
         location.latitude = markerLat;
         location.longitude = markerLng;
-        console.log(location.latitude);
-        console.log(location.longitude);
         var jsondataSubmit = JSON.stringify({
             user, user_profile, issue, location
         });
