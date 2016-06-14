@@ -36,7 +36,8 @@ var unfollowIssueService = new Object();
 var serviceStandartService = new Object();
 var confirmVoteService = new Object();
 var geolocationValid = 0;
-
+markers = null;
+markers = [];
 
 
 //google map
@@ -1549,6 +1550,10 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
                 });
                 getIssues = issuesService.getIssues(jsondata).then(function (data) {
                     var getdata = data.data;
+                    // console.log(markers.length);
+                    // for(var x=0 ; x< markers.length ; x++){
+                    //       markers[x].setMap(null);
+                    //     }
                     $rootScope.newProblemList = getdata.issues;
                     if (getdata.count != 0 || !getdata) {
                         $window.issuesData = getdata;
@@ -2219,6 +2224,7 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope', '$routeParams', '$http', '$ro
                 $scope.hideLogStatus = "ng-hide";
             } else {
                 $scope.hideLogStatus = "";
+                $scope.showDataText = "Meer >>";
                 $scope.issueLogList = getdata.logs;
             }
         });
@@ -2231,8 +2237,10 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope', '$routeParams', '$http', '$ro
     $scope.logStatus = function () {
             if ($scope.hideStatus == "ng-hide") {
                 $scope.hideStatus = "";
+                $scope.showDataText = "Minder <<";
             } else {
                 $scope.hideStatus = "ng-hide";
+                $scope.showDataText = "Meer >>";
             }
         }
         //comment
