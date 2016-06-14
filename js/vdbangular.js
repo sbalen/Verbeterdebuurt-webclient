@@ -997,8 +997,10 @@ vdbApp.factory('issueSubmitServiceWithImage', ['$http', function ($http) {
             dataForm.append('json', jsondata);
             dataForm.append('image', img);
             return $http.post(APIURL + 'issueSubmit', dataForm, {
-                    transformRequest: angular.identity
-                    
+                    transformRequest: angular.identity,
+                    headers: {
+                        'Content-Type': undefined
+                    }
                 })
                 .success(function (data, headers) {
                     console.log(data);
@@ -4588,16 +4590,16 @@ vdbApp.controller('closeIssueCtrl', ['$scope', '$rootScope', '$routeParams', '$w
         }
         var status = "closed";
 
-            var jsondata = JSON.stringify({
+        var jsondata = JSON.stringify({
             "user" : {
-            "username" : user.username,
-            "password_hash" : user.password_hash,
-        },
-                                      "issue_id" : issue_id,
-                                      "result" : result,
-                                      "appreciation" : appreciation,
-                                      "status" : status
-                                      });
+                    "username" : user.username,
+                    "password_hash" : user.password_hash,
+            },
+            "issue_id" : issue_id,
+            "result" : result,
+            "appreciation" : appreciation,
+            "status" : status
+        });
         
         
         var getStatusChange = statusChangeService.getStatusChange(jsondata).then(function (data) {
@@ -4821,7 +4823,7 @@ vdbApp.controller('voteCtrl', ['$scope','$rootScope','$routeParams','voteSubmitS
             var issue_id = $routeParams.id;
 
             var jsondata = JSON.stringify({
-                "user" : {
+                 "user" : {
                     "name" : user.name,
                     "email" : user.email,
                 },
@@ -4897,14 +4899,17 @@ vdbApp.controller('resolveIssueCommentNoCtrl', ['$scope','$rootScope','$routePar
         var comment = $scope.resolveComment;
         var issue_id = $rootScope.getStatusId;
         var status = "resolved";
-
-        var jsondata = JSON.stringify({
-            "user" : {
-                "authorisation_hash" : hashuser.authorisation_hash
-            
-                "comment" : comment,
-            "issue_id" : issue_ide_id,
+var jsondata = JSON.stringify({
+           "user" : {
+                    "authorisation_hash" : user.authorisation_hash
+            },
+            "comment" : comment,
+            "issue_id" : issue_id,
             "status" : status});
+        
+        
+        
+        
         console.log(jsondata);
         var getStatusChange = statusChangeService.getStatusChange(jsondata).then(function (data){
             var getStatusChange = data.data;
@@ -4949,11 +4954,11 @@ vdbApp.controller('resolveIssueCommentYesCtrl', ['$scope','$rootScope','$routePa
 
         var jsondata = JSON.stringify({
             "user" : {
-                "authorisation_hash" : user.authorisation_hash
+                    "authorisation_hash" : user.authorisation_hash
             },
-            "comment" : commentu
-            "issue_id" : issue_idt
-            "status" : status
+            "comment" : comment,
+            "issue_id" : issue_id,
+            "status" : status});
         console.log(jsondata);
         var getStatusChange = statusChangeService.getStatusChange(jsondata).then(function (data){
             var getStatusChange = data.data;
