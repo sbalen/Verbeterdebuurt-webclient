@@ -2,21 +2,22 @@
 <div id="main-content" class="container">
     <!--  sidebar left --> 
     <div class="col-md-3 hidden-sm hidden-xs hidden-md">
-        <div class="panel side-panel panel-default" id="new-problem-widget">
+     <div class="panel side-panel panel-default" id="new-problem-widget">
             <div class="panel-heading">
                 <strong>Report</strong>
             </div>
            <div class="panel-body">
                             <div class="list-group  report-list-council" ng-hide="reportList.council == null || reportList.council == 'undefined' " >
-                            <strong>Stad : {{reportList.council}}</strong></br>
-                            {{reportList.reports}} rapporten per maand</br>
-                            {{reportList.solutions}} oplossing per maand
+                            <strong>Gemeente: {{reportList.council}}</strong></br>
+                            Meldingen per maand: {{reportList.reports}} </br>
+                            Oplossingen per maand: {{reportList.solutions}}
                           </div>
                             <div class="list-group  report-list-council"  ng-show="reportList.council == null || reportList.council == 'undifined' ">
                              geen locatieinformatie gevonden
                            </div>
             </div>  
 </div>
+
 <div class="panel side-panel panel-default" id="new-problem-widget" ng-hide="results.length == 0 || newProblemList==null">
     <div class="panel-heading">
         <strong>Nieuwste problemen</strong>
@@ -35,6 +36,7 @@
         </div>
     </div>  
 </div>
+
 <div class="panel side-panel panel-default" ng-hide="results2.length == 0|| newProblemList==null">
     <div class="panel-heading" id="active-idea-widget">
         <strong>Actieve Idee&euml;n</strong>
@@ -126,7 +128,7 @@
                             <td ng-show="newProblem.type=='idea'"><h2 class="fontM">Idee</h2></td>
                         </tr>
                         <tr>
-                            <td class="issueDetailTableContent word-break fontM"><p>{{newProblem.description}}</p></td>
+                            <td class="issueDetailTableContent fontM"><p>{{newProblem.description}}</p></td>
                         </tr>
                         
                     </table>
@@ -137,7 +139,7 @@
                             <td><h2 class="fontM">Realisation</h2></td>
                         </tr>
                         <tr>
-                            <td class="issueDetailTableContent word-break fontM"><p>{{newProblem.realization}}</p></td>
+                            <td class="issueDetailTableContent fontM"><p>{{newProblem.realization}}</p></td>
                         </tr>
                     </table>
               </div>
