@@ -2965,7 +2965,7 @@ vdbApp.controller('forgotconfCtrl', ['$scope', '$rootScope', '$window', 'usSpinn
 
 
 
-vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileService', 'newsletterService', 'loginService', '$location', 'usSpinnerService', '$facebook', 'syncFBService', '$cookies', function ($scope, $rootScope, $window, profileService, newsletterService, loginService, $location, usSpinnerService, $facebook, syncFBService, $cookies) {
+vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileService', 'loginService', '$location', 'usSpinnerService', '$facebook', 'syncFBService', '$cookies', function ($scope, $rootScope, $window, profileService , loginService, $location, usSpinnerService, $facebook, syncFBService, $cookies) {
     $scope.hide = "ng-hide";
 
     $scope.home = function () {
@@ -3276,8 +3276,7 @@ vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileSer
 //                            })
 //                        }
 
-                        console.log(jsondata);
-                        console.log(jsonnewsletter);
+                       
 
                         console.log($cookies.getObject("user"));
                         $cookies.putObject('user', getLogin.user);
