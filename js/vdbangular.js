@@ -1811,7 +1811,7 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
             user.authorisation_hash = hashToDelete;
             var issue_id = $rootScope.getStatusId;
             var status = "deleted";
-            var jsondata = JSON.stringify({
+            var jsondata = JSON.stringify({ 
                 user, issue_id, status
             });
             
@@ -2853,9 +2853,14 @@ vdbApp.controller('commentSubmitCtrl', ['$scope', '$route', '$rootScope', '$wind
         } else {
             var body = $scope.comment;
         }
-
         var jsondata = JSON.stringify({
-            user, issue_id, type, body
+            "user" : {
+                "username" : user.username,
+                "password_hash" : user.password_hash
+            },
+            "issue_id" : issue_id,
+            "type" : type,
+            "body" : body            
         });
         console.log(jsondata);
         var getCommentSubmit = commentSubmitService.getCommentSubmit(jsondata).then(function (data) {
