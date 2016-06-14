@@ -3627,7 +3627,7 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
             jsondataSubmit = JSON.stringify({
                 "user" : {
                     "username" : user.username,
-                    "password_hash" : user.password_hash,
+                    "password_hash" : user.password_hash
                 },
                 "issue" : {
                     "title" : issue.title,
