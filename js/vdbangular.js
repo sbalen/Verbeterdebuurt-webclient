@@ -3050,7 +3050,7 @@ vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileSer
                         $cookies.putObject('user', user, {
                             expires: expired
                         });
-                        $cookies.putObject('user_profile', user_profiles, {
+                        $cookies.putObject('user_profile', user_profile, {
                             expires: expired
                         });
                     }
