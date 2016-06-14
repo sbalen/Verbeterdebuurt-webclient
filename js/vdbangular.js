@@ -2396,7 +2396,7 @@ vdbApp.controller('loginCtrl', ['$scope', '$rootScope', '$window', 'loginService
                         }
                         $rootScope.globaloverlay = "";
                         $rootScope.errorSession = "";
-                        if ($rootScope.urlBefore == '/registreren') {
+                        if ($rootScope.urlBefore == '/registreren' || $rootScope.urlBefore == '/bevestiging-registratie') {
                             $location.path('/map');
                         } else {
                             $location.path($rootScope.urlBefore);
@@ -4365,6 +4365,8 @@ vdbApp.controller('unfollowIssueCtrl', ['$scope', '$rootScope', '$routeParams', 
     $scope.showerror = false;
     $scope.errorUnfollow = false;
     $scope.errorVote = false;
+    $scope.notCreateIssue = true;
+
     console.log("target action : " + $rootScope.targetAction);
 
     var hash = $routeParams.hashkey;
@@ -4415,8 +4417,9 @@ vdbApp.controller('registrationHashCtrl', ['$scope', '$rootScope', '$routeParams
     $scope.showerror = false;
     $scope.errorUnfollow = false;
     $scope.errorVote = false;
+    $scope.notCreateIssue = true;
 
-
+    $rootScope.urlBefore = null;
     console.log("target action : " + $rootScope.targetAction);
     var hash = $routeParams.hashkey;
     $rootScope.hashSession = hash;
