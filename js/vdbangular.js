@@ -998,7 +998,6 @@ vdbApp.factory('issueSubmitServiceWithImage', ['$http', function ($http) {
             dataForm.append('image', img);
             return $http.post(APIURL + 'issueSubmit', dataForm, {
                     transformRequest: angular.identity
-                    
                 })
                 .success(function (data, headers) {
                     console.log(data);
@@ -4897,16 +4896,13 @@ vdbApp.controller('resolveIssueCommentNoCtrl', ['$scope','$rootScope','$routePar
         var comment = $scope.resolveComment;
         var issue_id = $rootScope.getStatusId;
         var status = "resolved";
-var jsondata = JSON.stringify({
+        var jsondata = JSON.stringify({
            "user" : {
                     "authorisation_hash" : user.authorisation_hash
             },
             "comment" : comment,
             "issue_id" : issue_id,
             "status" : status});
-        
-        
-        
         
         console.log(jsondata);
         var getStatusChange = statusChangeService.getStatusChange(jsondata).then(function (data){
@@ -4954,9 +4950,9 @@ vdbApp.controller('resolveIssueCommentYesCtrl', ['$scope','$rootScope','$routePa
             "user" : {
                 "authorisation_hash" : user.authorisation_hash
             },
-            "comment" : commentu
-            "issue_id" : issue_idt
-            "status" : status
+            "comment" : comment,
+            "issue_id" : issue_id,
+            "status" : status});
         console.log(jsondata);
         var getStatusChange = statusChangeService.getStatusChange(jsondata).then(function (data){
             var getStatusChange = data.data;
