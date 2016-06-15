@@ -997,7 +997,8 @@ vdbApp.factory('issueSubmitServiceWithImage', ['$http', function ($http) {
             dataForm.append('json', jsondata);
             dataForm.append('image', img);
             return $http.post(APIURL + 'issueSubmit', dataForm, {
-                    transformRequest: angular.identity
+                    transformRequest: angular.identity,
+                    headers : { 'Content-Type' : undefined }
                 })
                 .success(function (data, headers) {
                     console.log(data);
@@ -3626,7 +3627,7 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
             jsondataSubmit = JSON.stringify({
                 "user" : {
                     "username" : user.username,
-                    "password_hash" : user.password_hash,
+                    "password_hash" : user.password_hash
                 },
                 "issue" : {
                     "title" : issue.title,
