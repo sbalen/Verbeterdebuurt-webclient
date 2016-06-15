@@ -1002,9 +1002,7 @@ vdbApp.factory('issueSubmitServiceWithImage', ['$http', function ($http) {
             dataForm.append('image', img);
             return $http.post(APIURL + 'issueSubmit', dataForm, {
                     transformRequest: angular.identity,
-                    headers: {
-                        'Content-Type': undefined
-                    }
+                    headers : { 'Content-Type' : undefined }
                 })
                 .success(function (data, headers) {
                     console.log(data);
@@ -1816,9 +1814,14 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
             var issue_id = $rootScope.getStatusId;
             var status = "deleted";
             var jsondata = JSON.stringify({
-                user, issue_id, status
+                "user" : {
+                    "authorisation_hash" : hashToDelete
+                },
+                "issue_id" : issue_id,
+                "status" : status        
             });
-            
+
+
             console.log(jsondata);
             
             var getStatusChange = statusChangeService.getStatusChange(jsondata).then(function (data) {
@@ -1883,8 +1886,9 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
         if ($rootScope.targetAction === "confirm_issue") {
             $rootScope.globaloverlay = "active";
             var authorisation_hash = $rootScope.hashSession;
+            
             var jsondata = JSON.stringify({
-                authorisation_hash
+                "authorisation_hash" : authorisation_hash    
             });
             console.log("confim");
             console.log(jsondata);
@@ -2376,7 +2380,7 @@ vdbApp.controller('loginCtrl', ['$scope', '$rootScope', '$window', 'loginService
                 var facebookID = $scope.facebookuser.id;
                 var jsondata = JSON.stringify({
                     "user": {
-                        facebookID
+                        "facebookID" : facebookID
                     }
                 });
 
@@ -2857,9 +2861,14 @@ vdbApp.controller('commentSubmitCtrl', ['$scope', '$route', '$rootScope', '$wind
         } else {
             var body = $scope.comment;
         }
-
         var jsondata = JSON.stringify({
-            user, issue_id, type, body
+            "user" : {
+                "username" : user.username,
+                "password_hash" : user.password_hash
+            },
+            "issue_id" : issue_id,
+            "type" : type,
+            "body" : body            
         });
         console.log(jsondata);
         var getCommentSubmit = commentSubmitService.getCommentSubmit(jsondata).then(function (data) {
@@ -3014,7 +3023,8 @@ vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileSer
                 var username = $scope.username;
                 var facebookID = $scope.facebookuser.id;
                 var jsondata = JSON.stringify({
-                    username, facebookID
+                    "username" : username,
+                    "facebookID" : facebookID
                 });
 
                 //API call to connectFB
@@ -3205,10 +3215,37 @@ vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileSer
 
 
         } else if ($scope.password_new == $scope.rpassword) {
-
-            var jsondata = JSON.stringify({
-                user, password, user_profile
-            });
+            
+            var jsondataObj = new Object();
+            jsondataObj.user = user;
+            jsondataObj.password = password;
+            jsondataObj.user_profile = user_profile;
+            var jsondata = JSON.stringify(jsondataObj);
+            
+//            var jsondata = JSON.stringify({
+//                "user" : {
+//                    "username" : c_user.username,
+//                    "password_hash" : c_user.password_hash,
+//                },
+//                "password" : {
+//                    "password_old" : $scope.password_old,
+//                    "password_new" : $scope.password_new  
+//                },
+//                "user_profile" : {
+//                    "initials" : $scope.initials,
+//                    "tussenvoegsel" : $scope.tussenvoegsel,    
+//                    "surname" : $scope.surname,
+//                    "email" : $scope.email,
+//                    "sex" : $scope.sex,
+//                    "address_old" : $scope.address_old,
+//                    "address" : $scope.address,
+//                    "address_number": $scope.address_number,
+//                    "address_suffix": $scope.address_suffix,
+//                    "postcode" : $scope.postcode,
+//                    "city" : $scope.city,
+//                    "phone" : $scope.phone
+//                } 
+//            });
             console.log(jsondata);
             var getProfile = profileService.getProfile(jsondata).then(function (data) {
 
@@ -3257,7 +3294,7 @@ vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileSer
                         var jsondatalogin = JSON.stringify({
                             "user": {
                                 "username": "" + c_user.username + "",
-                                password
+                                "password" : $scope.password_new
                             }
                         });
                     } else {
@@ -3265,7 +3302,7 @@ vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileSer
                         var jsondatalogin = JSON.stringify({
                             "user": {
                                 "username": "" + c_user.username + "",
-                                password_hash
+                                "password_hash" : password_hash
                             }
                         });
                     }
@@ -3407,7 +3444,8 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
             var latitude = markerLat;
             var longitude = markerLng;
             var jsondataCity = JSON.stringify({
-                latitude, longitude
+                "latitude" : latitude,
+                "longitude" : longitude
             });
             var getCategories = categoriesService.getCategories(jsondataCity).then(function (data) {
                 $scope.categoriesList = data.data.categories;
@@ -3425,7 +3463,8 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
             var latitude = markerLat;
             var longitude = markerLng;
             var jsondataCity = JSON.stringify({
-                latitude, longitude
+                "latitude" : latitude,
+                "longitude" : longitude
             });
             var getCategories = categoriesService.getCategories(jsondataCity).then(function (data) {
                 $scope.categoriesList = data.data.categories;
@@ -3443,10 +3482,8 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
         var latitude = markerLat;
         var longitude = markerLng;
         var jsondataCity = JSON.stringify({
-            latitude, longitude
-        });
-        var jsondataCity = JSON.stringify({
-            latitude, longitude
+            "latitude" : latitude,
+            "longitude" : longitude
         });
         console.log(jsondataCity);
         $timeout(function () {
@@ -3470,12 +3507,14 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
         var latitude = markerLat;
         var longitude = markerLng;
         var jsondataCity = JSON.stringify({
-            latitude, longitude
+            "latitude" : latitude,
+            "longitude" : longitude
         });
         $rootScope.lastCity = $scope.searchCityCreate;
         console.log($rootScope.lastCity);
         var jsondataCity = JSON.stringify({
-            latitude, longitude
+            "latitude" : latitude,
+            "longitude" : longitude
         });
         $timeout(function () {
             
@@ -3586,9 +3625,73 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
         //location
         location.latitude = markerLat;
         location.longitude = markerLng;
+        
+        
+        if ($cookies.getObject('user')) { //login
+            jsondataSubmit = JSON.stringify({
+                "user" : {
+                    "username" : user.username,
+                    "password_hash" : user.password_hash
+                },
+                "issue" : {
+                    "title" : issue.title,
+                    "description" :  issue.description,
+                    "type" :  issue.type,
+                    "category_id" :  issue.category_id
+                }, 
+                "location" : {
+                    "latitude" : location.latitude,
+                    "longitude" : location.longitude
+                }
+            });
+
+
+        }else{
+            //not login
+            jsondataSubmit = JSON.stringify({
+                "user" : {
+                    "email" : user.email
+                },
+                "user_profile" : {
+                    "initials" : $scope.initials,
+                    "tussenvoegsel" : $scope.tussenvoegsel,    
+                    "surname" : $scope.surname,
+                    "sex" : $scope.sex,
+                    "address" : $scope.address,
+                    "address_number": $scope.address_number,
+                    "address_suffix": $scope.address_suffix,
+                    "postcode" : $scope.postcode,
+                    "city" : $scope.city,
+                    "phone" : $scope.phone                   
+                }, 
+                "issue" : {
+                    "title" : issue.title,
+                    "description" :  issue.description,
+                    "type" :  issue.type,
+                    "category_id" :  issue.category_id
+                }, 
+                "location" : {
+                    "latitude" : location.latitude,
+                    "longitude" : location.longitude
+                }
+            });
+
+        }
+        
+        //old 
+        /*
         var jsondataSubmit = JSON.stringify({
-            user, user_profile, issue, location
+            
+            "user": {
+                "username": "" + $cookies.getObject('user').username + "",
+                "password_hash": "" + $cookies.getObject('user').password_hash + ""
+
+            }
+            
+            , user_profile, issue, location
         });
+        */
+        
         console.log(jsondataSubmit);
         if (!file) {
             //without image
@@ -3613,7 +3716,7 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
                         $scope.errorLocation = issueData.errors.location;
                     }
                     if (issueData.errors.initials) {
-                        $scope.errorInitials = "Voorsletters " + issueData.errors.initials;
+                        $scope.errorInitials = "Voorletters " + issueData.errors.initials;
                     }
                     if (issueData.errors.owner_city) {
                         $scope.errorCity = "Plaats " + issueData.errors.owner_city;
@@ -3845,10 +3948,18 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
         $rootScope.currentPage = 1;
         $scope.totalPage = 5;
         var jsondataServiceStandard = JSON.stringify({
-            council, category_id
+            "council" : council,
+            "category_id" : category_id
         });
         var jsondataDuplicate = JSON.stringify({
-            user, lat, long, category_id
+            "user" : {
+                "username" : user.username,
+                "password_hash" : user.password_hash
+            }
+            ,
+            "lat" : lat,
+            "long" : long,
+            "ategory_id" : category_id
         });
         var getDuplicateIssue = duplicateIssuesService.getDuplicateIssue(jsondataDuplicate).then(function (data) {
             var getDuplicateIssue = data.data;
@@ -3992,8 +4103,14 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
         $rootScope.lastCity = $scope.searchCityCreate;
         console.log($rootScope.lastCity);
         var jsondataCity = JSON.stringify({
-            latitude, longitude
+            "latitude" : latitude,
+            "longitude" : longitude
         });
+        
+        
+        
+
+    
         $timeout(function () {
             var jsoncity = JSON.stringify({
                     "council": "" + city.long_name + ""
@@ -4148,9 +4265,60 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
         //location
         location.latitude = markerLat;
         location.longitude = markerLng;
-        var jsondataSubmit = JSON.stringify({
-            user, user_profile, issue, location
-        });
+        var jsondataSubmit;
+        if ($cookies.getObject('user')) { //login
+            jsondataSubmit = JSON.stringify({
+                "user" : {
+                    "username" : user.username,
+                    "password_hash" : user.password_hash,
+                },
+                "issue" : {
+                    "title" : issue.title,
+                    "description" :  issue.description,
+                    
+                }, 
+                "location" : {
+                    "latitude" : location.latitude,
+                    "longitude" : location.longitude
+                }
+            });
+            
+            
+        }else{
+            //not login
+            jsondataSubmit = JSON.stringify({
+                "user" : {
+                    "email" : user.email
+                },
+                "user_profile" : {
+                    "initials" : $scope.initials,
+                    "tussenvoegsel" : $scope.tussenvoegsel,    
+                    "surname" : $scope.surname,
+                    "sex" : $scope.sex,
+                    "address" : $scope.address,
+                    "address_number": $scope.address_number,
+                    "address_suffix": $scope.address_suffix,
+                    "postcode" : $scope.postcode,
+                    "city" : $scope.city,
+                    "phone" : $scope.phone                   
+                }, 
+                "issue" : {
+                    "title" : issue.title,
+                    "description" :  issue.description,
+
+                }, 
+                "location" : {
+                    "latitude" : location.latitude,
+                    "longitude" : location.longitude
+                }
+            });
+            
+        }
+            
+            
+        
+        
+        
         console.log(jsondataSubmit);
         if (!file) {
             var getIssueSubmit = issueSubmitService.getIssueSubmit(jsondataSubmit).then(function (data) {
@@ -4171,13 +4339,13 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
                         $scope.errorLocation = issueData.errors.location;
                     }
                     if (issueData.errors.initials) {
-                        $scope.errorInitials = "Voorsletters " + issueData.errors.initials;
+                        $scope.errorInitials = "Voorletters " + issueData.errors.initials;
                     }
                     if (issueData.errors.owner_city) {
                         $scope.errorCity = "Plaats " + issueData.errors.owner_city;
                     }
                     if (issueData.errors.surname) {
-                        $scope.errorSurname = "Acternaam " + issueData.errors.surname;
+                        $scope.errorSurname = "Achternaam " + issueData.errors.surname;
                     }
                     if (issueData.errors.owner_email) {
                         $scope.errorEmail = issueData.errors.owner_email;
@@ -4351,7 +4519,12 @@ vdbApp.controller('deleteIssueCtrl', ['$scope', '$rootScope', '$routeParams', '$
         var issue_id = $rootScope.getStatusId;
         var status = "deleted";
         var jsondata = JSON.stringify({
-            user, issue_id, status
+            "user" : {
+                "username" : user.username,
+                "password_hash" : user.password_hash,
+            },
+            "issue_id" : issue_id,
+             "status" : status
         });
         var getStatusChange = statusChangeService.getStatusChange(jsondata).then(function (data) {
             var getStatusChange = data.data;
@@ -4420,12 +4593,19 @@ vdbApp.controller('closeIssueCtrl', ['$scope', '$rootScope', '$routeParams', '$w
             var appreciation = parseInt($scope.rating);
         }
         var status = "closed";
-        console.log({
-            user, issue_id, result, appreciation, status
-        });
-        var jsondata = JSON.stringify({
-            user, issue_id, result, appreciation, status
-        });
+
+            var jsondata = JSON.stringify({
+            "user" : {
+            "username" : user.username,
+            "password_hash" : user.password_hash,
+        },
+                                      "issue_id" : issue_id,
+                                      "result" : result,
+                                      "appreciation" : appreciation,
+                                      "status" : status
+                                      });
+        
+        
         var getStatusChange = statusChangeService.getStatusChange(jsondata).then(function (data) {
             var getStatusChange = data.data;
             console.log(getStatusChange);
@@ -4646,7 +4826,13 @@ vdbApp.controller('voteCtrl', ['$scope','$rootScope','$routeParams','voteSubmitS
             user.name = $scope.name;
             var issue_id = $routeParams.id;
 
-            var jsondata = JSON.stringify({user,issue_id});
+            var jsondata = JSON.stringify({
+                "user" : {
+                    "name" : user.name,
+                    "email" : user.email,
+                },
+                issue_id : issue_id
+            });
             console.log(jsondata);
             var getvoteSummit = voteSubmitService.getvoteSummit(jsondata).then(function (data) {
                 var getvoteSubmit = data.data;
@@ -4717,8 +4903,14 @@ vdbApp.controller('resolveIssueCommentNoCtrl', ['$scope','$rootScope','$routePar
         var comment = $scope.resolveComment;
         var issue_id = $rootScope.getStatusId;
         var status = "resolved";
-
-        var jsondata = JSON.stringify({user,comment,issue_id,status});
+        var jsondata = JSON.stringify({
+           "user" : {
+                    "authorisation_hash" : user.authorisation_hash
+            },
+            "comment" : comment,
+            "issue_id" : issue_id,
+            "status" : status});
+        
         console.log(jsondata);
         var getStatusChange = statusChangeService.getStatusChange(jsondata).then(function (data){
             var getStatusChange = data.data;
@@ -4734,7 +4926,7 @@ vdbApp.controller('resolveIssueCommentNoCtrl', ['$scope','$rootScope','$routePar
                 $('.modal-backdrop').hide();
                 $rootScope.hashSession = null;
                 $rootScope.targetAction = null;
-                var jsondata = JSON.stringify({issue_id});
+                var jsondata = JSON.stringify({"issue_id" : issue_id});
                 //get data for count comment
                 var getIssues = issuesService.getIssues(jsondata).then(function (data) {
                     var getdata = data.data;
@@ -4761,7 +4953,13 @@ vdbApp.controller('resolveIssueCommentYesCtrl', ['$scope','$rootScope','$routePa
         var issue_id = $rootScope.getStatusId;
         var status = "resolved";
 
-        var jsondata = JSON.stringify({user,comment,issue_id,status});
+        var jsondata = JSON.stringify({
+            "user" : {
+                "authorisation_hash" : user.authorisation_hash
+            },
+            "comment" : comment,
+            "issue_id" : issue_id,
+            "status" : status});
         console.log(jsondata);
         var getStatusChange = statusChangeService.getStatusChange(jsondata).then(function (data){
             var getStatusChange = data.data;
@@ -4777,7 +4975,7 @@ vdbApp.controller('resolveIssueCommentYesCtrl', ['$scope','$rootScope','$routePa
                 $('.modal-backdrop').hide();
                 $rootScope.hashSession = null;
                 $rootScope.targetAction = null;
-                var jsondata = JSON.stringify({issue_id});
+                var jsondata = JSON.stringify({"issue_id" : issue_id});
                 //get data for count comment
                 var getIssues = issuesService.getIssues(jsondata).then(function (data) {
                     var getdata = data.data;
