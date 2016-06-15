@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html lang="en" >
 <head>
-    <title>Verbeterdebuurt &raquo; Hillegom &raquo; lantarenpalen die niet branden</title>
+    <title>Verbeterdebuurt</title>
     <!--META-->
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="description" content="de lantarenpalen in de straat doen het al een week niet." />
-    <meta name="keywords" content="Probleem Verlichting Margrietenlaan 30 Hillegom lantarenpalen die niet branden" />
-    <meta name="title" content="Verbeterdebuurt &raquo; Hillegom &raquo; lantarenpalen die niet branden" />
+    <meta name="title" content="Verbeterdebuurt">
+    <meta name="description" content="Op verbeterdebuurt.nl werken bewoners samen aan het verbeteren van hun buurten. Er kunnen problemen en ideeen worden geplaatst die worden doorgestuurd naar gemeente of stadsdeel. Zodat de buurt wordt verbeterd!">
+    <meta name="keywords" content="meldingen openbare ruimte, eparticipatie, idee, probleem, buurt, google maps, ideeen, problemen, wijk, stad, dorp, straat, afval, parkeren, groen, verlichting, veiligheid, bestrating, verkeer, overlast, burgerinitiatief, krachtwijken, vogelaarwijken, wijkpunt">
     <meta name="robots" content="index, follow" />
     <meta name="google-site-verification" content="beGZrRqprwpbGBDu-7NhQLUWr9-oi9xU0OBxcYoZXZE" />
-    <meta property="og:site-name" content="Verbeterdebuurt" /><meta property="og:title" content="lantarenpalen die niet branden" /><meta property="og:description" content="de lantarenpalen in de straat doen het al een week niet." /><meta property="og:url" content="http://www.verbeterdebuurt.nl/melding/89289" /><meta property="og:image" content="http://www.verbeterdebuurt.nl/images/fb_image.png" />        <meta name="apple-itunes-app" content="app-id=398177951"/>
+    
+    <meta property="og:site-name" content="Verbeterdebuurt"><meta property="og:title" content="Doe mee en draag bij aan een verbeterde buurt!"><meta property="og:description" content="Op verbeterdebuurt.nl werken bewoners samen aan het verbeteren van hun buurten. Er kunnen problemen en ideeen worden geplaatst die worden doorgestuurd naar gemeente of stadsdeel. Zodat de buurt wordt verbeterd!"><meta property="og:url" content="http://www.verbeterdebuurt.nl/"><meta property="og:image" content="http://www.verbeterdebuurt.nl/images/fb_image.png">		
+    <meta name="apple-itunes-app" content="app-id=398177951">
+    
+    
     <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon"/>
     <link rel="icon" href="./favicon.ico" type="image/x-icon"/>
 
@@ -31,7 +35,7 @@
 
     <!--Angular-->
     
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js" ></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.js" ></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular-resource.min.js"></script>
     <script src="https://code.angularjs.org/1.5.0/angular-route.js" ></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-cookies.min.js" ></script>
@@ -76,19 +80,22 @@
                     <a class="navbar-brand" href="/"><img  src="./img/Verbeterdebuurt-logo.png" class="vdblogo mvdblogo"></a>
                     
                 </div>
-                <div class="collapse navbar-collapse" id="Navbar">
+                <div class="collapse navbar-collapse" id="Navbar" data-toggle="collapse">
                     <ul class="nav navbar-nav hidden-lg hidden-sm hidden-md"> 
                         <li class="divider-vertical"></li>
-                        <li class="{{homeSelected}}"><a href="/">Kaart</a></li>
+                        <li class="{{homeSelected}}"><a href="/" data-toggle="collapse"
+                            data-target=".navbar-collapse">Kaart</a></li>
                         <li class="divider-vertical"></li>
-                        <li class="{{mentionSelected}}"><a href="nieuw-melding">Melding maken</a></li>
+                        <li class="{{mentionSelected}}"><a href="nieuwe-melding" 
+                            data-toggle="collapse" data-target=".navbar-collapse">Melding maken</a></li>
                         <li class="divider-vertical"></li>
-                        <li class="{{myIssuesSelected}}"><a href="mijn-meldingen">Mijn meldingen</a></li>  
+                        <li class="{{myIssuesSelected}}"><a href="mijn-meldingen" 
+                            data-toggle="collapse" data-target=".navbar-collapse">Mijn meldingen</a></li>  
                         <li class="divider-vertical"></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right" ng-if="!loginStatus()">
-                        <li><a href="registreren"><span class="glyphicon glyphicon-user"></span> Registreren</a></li>
-                        <li><a href="login"><span class="glyphicon glyphicon-log-in"></span> Inloggen</a></li>
+                        <li><a href="registreren" data-toggle="collapse" data-target=".navbar-collapse"><span class="glyphicon glyphicon-user"></span> Registreren</a></li>
+                        <li><a href="login" data-toggle="collapse" data-target=".navbar-collapse"><span class="glyphicon glyphicon-log-in"></span> Inloggen</a></li>
                     </ul>
                     <div class="nav navbar-nav navbar-right">
                         <button id="userpanelbtn" class="btn1 btn-default1 dropdown-toggle navbar-right " ng-click="showuserpanel()" ng-if="loginStatus()" type="button" data-toggle="dropdown">
@@ -97,8 +104,10 @@
                             <span class="caret" ></span>
                         </button>
                         <ul ng-show="userpanel" class="dropdown-menu  navbar-right" style="margin-right: 24px;margin-top: -5px;">
-                            <li><a href="mijn-verbeterdebuurt" style="color: white;" >Profiel</a></li>
-                            <li><a href="#" style="color: white;" ng-click="logout()">Log out</a></li>    
+                            <li><a href="mijn-verbeterdebuurt" style="color: white;" 
+                            data-toggle="collapse" data-target=".navbar-collapse" >Profiel</a></li>
+                            <li><a href="#" style="color: white;" ng-click="logout()"
+                            data-toggle="collapse" data-target=".navbar-collapse">Log out</a></li>    
                         </ul>
                     
                     </div>
@@ -133,7 +142,7 @@
           <div class="container {{globaloverlay}}" ng-view>
 
           </div>
-        <div class="footer footer1">
+        <div class="footer footer1 mfooter container ">
             <div class="footertext">
                 <div class="footer-element"><a href="http://blog.verbeterdebuurt.nl/apps/">Apps</a></div>&middot;
                 <div class="footer-element"><a href="http://blog.verbeterdebuurt.nl/hoe-werkt-verbeterdebuurt-2/">Hoe werkt het</a></div>&middot;

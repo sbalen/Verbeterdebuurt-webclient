@@ -23,7 +23,7 @@
                     <div class="alert alert-danger  {{hide}} {{successClass}}">
                         <a href="#" class="close"  aria-label="close" ng-click="close()">&times;</a>
                     
-                        <p>{{errorFB}}</p>  
+                <p>{{errorFB}}</p>  
                 <p>{{errorOldPassword}}</p>
                 <p>{{errorNewPassword}}</p>
                 <p>{{errorInitials}}</p>      
@@ -33,14 +33,15 @@
                 <p>{{errorPostcode}}</p>
                 <p>{{errorCity}}</p>
                 <p>{{successAlert}}</p>
+                <p>{{errorPassword3}}</p>
                       
                         
             </div>
                 
-            <h1 class="registerm registeri register">Profiel</h1>
+            <h1 class="registerm registeri register fontM">Profiel</h1>
                         <form class="form-horizontal position1" role="form">
                             <div class="panel-body">
-                                <h4>Inloggegevens</h4>
+                                <h4 class="fontM">Inloggegevens</h4>
                                 <div class="form-group">
                                     <div class="col-sm-12 form-col" ng-class="{'has-error': errorNewUsername}">
                                         <input type="text" class="form-control" id="username" placeholder="Gebruikersnaam" ng-model="username" disabled>
@@ -52,17 +53,20 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <div class="col-sm-12 form-col" ng-class="{'has-error': errorPassword}">
-                                        <input type="password" style="margin-bottom: 15px"  class="form-control" id="password-1" placeholder="Wachtwoord" ng-model="password_old">
+                                    <div class="col-sm-12 form-col" ng-class="{'has-error': errorOldPassword}">
+                                        <input type="password" style="margin-bottom: 15px"  class="form-control" id="password-1" placeholder="Oud wachtwoord" ng-model="password_old">
                                     </div>
-                                    <div class="col-sm-12 form-col" ng-class="{'has-error': errorPassword}">
-                                        <input type="password" class="form-control" id="password-2" placeholder="Wachtwoord herhalen" ng-model="password_new">
+                                    <div class="col-sm-12 form-col" ng-class="{'has-error': errorPassword3}">
+                                        <input type="password" style="margin-bottom: 15px" class="form-control" id="password-2" placeholder="Nieuw wachtwoord " ng-model="password_new">
+                                    </div>
+                                     <div class="col-sm-12 form-col" ng-class="{'has-error': errorPassword3}">
+                                        <input type="password" class="form-control" id="password-3" placeholder="Wachtwoord herhalen " ng-model="rpassword">
                                     </div>
                                 </div>
                     </div>
                             <div class="panel-body">
-                                <h4>Persoonsgegevens</h4>
-                                <h5 style="color:green; margin-right: 26px;">Deze gegevens zijn nodig voor de gemeente om aan je melding te kunnen werken. Ze worden niet openbaar gemaakt en nooit gebruikt voor marketingdoeleinden.</h5>
+                                <h4 class="fontM">Persoonsgegevens</h4>
+                                <h5 style="color:green; margin-right: 26px;font-family: Merriweather;">Deze gegevens zijn nodig voor de gemeente om aan je melding te kunnen werken. Ze worden niet openbaar gemaakt en nooit gebruikt voor marketingdoeleinden.</h5>
                                 <div class="form-group" ng-class="{'has-error': errorSex }" >
                                         <div class="col-sm-2 form-col marginwidth">
                                             <select class="combobox" id="category"  ng-model ="sex">
@@ -101,8 +105,8 @@
                                 </div>
                             </div>
             
-                            <div class="panel-body">
-                                <h4 style="margin-left: 5px;">Verbinden met social media</h4>
+                            <div class="panel-body ">
+                                <h4 class="fontM " style="margin-left: 5px;">Verbinden met social media</h4>
                                 <table class="mediamargin mediamobile">
 <!--
                                     <tr>
@@ -122,7 +126,7 @@
                                            <img class="img-rounded" alt="Facebook" width="49" height="49" src="./img/facebook_s.png">
                                         </td>
                                         <td class="hidden-xs"> 
-                                           Verbeterdebuurt verbinden met Facebook. Houd je vrienden op de hoogte!
+                                            Verbind Verbeterdebuurt met Facebook om eenvoudig in te loggen.
                                         </td>
                                         <td> 
                                             <button type="button" class="btn btn-default marginmedia" ng-click="connectFacebook()" ng-disabled="facebookExist">{{facebookMessages}}</button>
@@ -132,11 +136,6 @@
                                  
                             </div>
                             
-                            <div class="checkbox">
-                                    <label style="margin-left: 5px;">
-                                        <input type="checkbox" ng-model="newsletter"> Ik wil graag de nieuwsbrief ontvangen
-                                    </label>
-                                </div>
                             
                             <div class="submit-buttons">
                                 <button type="button" class="btn btn-danger submitm bsubmit bmsubmit" data-dismiss="modal" ng-click="home()">Annuleren</button>

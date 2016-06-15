@@ -6,7 +6,61 @@
     <div id="main-content" class="container">
 	   
       <div class="col-md-3 hidden-sm hidden-xs hidden-md">
-	    </div>
+	     <div class="panel side-panel panel-default" id="new-problem-widget">
+            <div class="panel-heading">
+                <strong>Report</strong>
+            </div>
+           <div class="panel-body">
+                            <div class="list-group  report-list-council" ng-hide="reportList.council == null || reportList.council == 'undefined' " >
+                            <strong>Gemeente: {{reportList.council}}</strong></br>
+                            Meldingen per maand: {{reportList.reports}} </br>
+                            Oplossingen per maand: {{reportList.solutions}}
+                          </div>
+                            <div class="list-group  report-list-council"  ng-show="reportList.council == null || reportList.council == 'undifined' ">
+                             geen locatieinformatie gevonden
+                           </div>
+            </div>  
+</div>
+
+<div class="panel side-panel panel-default" id="new-problem-widget" ng-hide="results.length == 0 || newProblemList==null">
+    <div class="panel-heading">
+        <strong>Nieuwste problemen</strong>
+    </div>
+    <div class="panel-body">
+        <div class="list-group" >
+            <a href="/melding/{{newProblem.id}}" class="list-group-item clearfix" ng-repeat="newProblem in newProblemList| filter : {type:'problem'} | filter: {status:'!closed'} | orderBy : 'created_at' : true |limitTo:3|filter:x as results" ng-click="clickIssues()">
+                <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
+                <strong> {{newProblem.title}}</strong> {{newProblem.location.full_address}}
+                <span class="pull-right">
+                    <button class="btn btn-xs btn-success" >
+                        <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
+                    </button>
+                </span>
+            </a>
+        </div>
+    </div>  
+</div>
+
+<div class="panel side-panel panel-default" ng-hide="results2.length == 0|| newProblemList==null">
+    <div class="panel-heading" id="active-idea-widget">
+        <strong>Actieve Idee&euml;n</strong>
+    </div>
+    <div class="panel-body">
+        <div class="list-group">
+            <a href="/melding/{{newProblem.id}}" class="list-group-item clearfix" ng-repeat="newProblem in newProblemList| filter : {type:'idea'} | filter: {status:'!closed'} | orderBy : 'created_at' : true |limitTo:3|filter:x as results2" 
+               ng-click="clickIssues()">
+                <img class="icon" src="./img/icon_idea_2_21_21.png" size="20px"/>
+                <strong>{{newProblem.title}}</strong> {{newProblem.location.full_address}}
+                <span class="pull-right">
+                    <button class="btn btn-xs btn-success">
+                        <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
+                    </button>
+                </span>
+            </a>
+        </div>
+    </div>  
+</div>
+      </div>
 	    <!-- main container -->
 	    <div class="col-lg-6 main-container marginbottom">
 	        <div class="panel panel-default main-panel margintop">
@@ -25,11 +79,11 @@
                                   <p>{{errorStreet}}</p>
                                   <p>{{errorStreetNumber}}</p>
               </div>
-		        <h1 class="marginheader meldingheader">Nieuw Probleem</h1>
+		        <h1 class="marginheader meldingheader fontM">Nieuw Probleem</h1>
             <div class="problem">
 		        <form class="form-horizontal" role="form">
                               <div class="panel-body">
-                                <h4>1. Bepaal de locatie</h4>
+                                <h4 class="fontM">1. Bepaal de locatie</h4>
                                 <div class="well well-sm locationpicker-well">
                                   <fieldset class="gllpLatlonPicker">
                                   <div class="input-group" style="width:100%; margin-left:0; ">
@@ -40,7 +94,7 @@
                                         <button class="btn btn-primary gllpSearchButton" type="button" ng-click="clickSearchCreateIssue()"><span class="glyphicon glyphicon-search"></span><span class="hidden-xs">Zoeken</span></button>
                                      </span>
                                   </div>
-                                  <div class="gllpMap" id="googleMapCreateProblem" ng-click="categoriesData()"></div>
+                                  <div class="gllpMap" id="googleMapCreateProblem" ng-click="categoriesData();alrCityCreate()"></div>
                                   <input type="hidden" class="gllpLatitude" value="52.158367"/>
                                   <input type="hidden" class="gllpLongitude" value="4.492999"/>
                                   <input type="hidden" class="gllpZoom" value="12"/>
@@ -50,7 +104,7 @@
                               </div>
                             </div>
                             <div class="panel-body">
-                                <h4>2. Beschrijf de melding</h4>
+                                <h4 class="fontM">2. Beschrijf de melding</h4>
 	                             <div class="form-group">
                                     <div class="col-sm-12 form-col" style="margin-bottom: 10px;" ng-class="{'has-error':errorTitle}">
                                         <input type="text" class="form-control" id="Onderwerp" placeholder="Onderwerp" ng-model="title">
@@ -69,7 +123,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group" ng-hide="count==0||count==null" style="z-index:50;">
-                                    <p>Mogelijke dubbele meldingen. Bekijk of bij deze meldingen misschien jouw probleem al gemeld is. Klik er dan op om deze melding te steunen</p>
+                                    <p style="color:green;">Mogelijke dubbele meldingen. Bekijk of bij deze meldingen misschien jouw probleem al gemeld is. Klik er dan op om deze melding te steunen</p>
                                     
                                     <div class="duplicate-wrapper">
                                         <div class="duplicate-left" ng-hide="count<=3" ng-click="moveDuplicate(-1)">&lang;</div>
@@ -81,15 +135,25 @@
 <!--                                            <a href="melding/{{duplicateData.id}}" ng-repeat="duplicateData in duplicateDataList">-->
                                             <div class="duplicate-item" ng-repeat="duplicateData in duplicateDataList" >
                                                     
-                                                    <div class="bubble-description">
-                                                        {{duplicateData.title}}<br/>
+                                                    <div class="bubble-description ">
+                                    
                                                         {{duplicateData.description}}
                                                         <br/>
                                                         <br/>
-                                                        <a href="melding/{{duplicateData.id}}">Details</a>
+                                                        <a  href="melding/{{duplicateData.id}}">bekijken</a>
+                                                        
                                                     </div>
-                                                    <p>{{duplicateData.category}}</p>
-                                                    <p>{{duplicateData.location.src_address}}</p>
+                                                <div style="text-align:left;">
+                                                <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
+                                                <strong >{{duplicateData.title}}</strong>
+                                                <br/>
+                                                {{duplicateData.location.src_address}}
+                                                <span class="pull-right">
+                                                                <button style ="margin-left:15px"class="btn btn-xs btn-success" >
+                                                                <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
+                                                                </button>
+                                                            </span>
+                                                </div>
                                                 </div>
 <!--                                            </a>-->
                                         </div>
@@ -108,7 +172,7 @@
                                 <input id="file-input-problem" type="file" style="width: 94%;margin-left: 3%;" data-show-upload="false" img-upload='imgData'>
                             </div>
                             <div class="panel-body" ng-hide="hideLogin">
-                                <h4>3. Contactgegevens</h4>
+                                <h4 class="fontM">3. Contactgegevens</h4>
                                 Of <a href="login">log in</a> om dit over te slaan
                                 <div class="form-group">
                                     <div class="col-sm-12 form-col" ng-class="{'has-error': errorEmail}">
@@ -169,7 +233,7 @@
                         </div>
       			            <div class="panel-body">
                           <div class="list-group" >
-                            <a href="/mijn-meldingen/{{myIssues.id}}" class="list-group-item clearfix" ng-repeat="myIssues in myIssuesList| orderBy : 'created_at' : true |limitTo:3  | filter : x as results" ng-click="clickIssues()">
+                            <a href="/mijn-meldingen/{{myIssues.id}}" class="list-group-item clearfix" ng-repeat="myIssues in myIssuesList| orderBy : 'created_at' : true |limitTo:2  | filter : x as results" ng-click="clickIssues()">
                               <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
                               <strong> {{myIssues.title}}</strong> {{myIssues.location.full_address}}
                               {{myIssues.status}}
@@ -179,6 +243,7 @@
                                 </button>
                               </span>
                             </a>
+                              <a href="/mijn-meldingen" style="margin-left:17px;">Meer >>></a>
                           </div>
                         </div>  
 		    </div>
@@ -228,5 +293,5 @@
                 $('#duplicate-bubble').empty();
     });
     
-    
+   
 </script>

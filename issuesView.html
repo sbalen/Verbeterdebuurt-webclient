@@ -2,21 +2,22 @@
 <div id="main-content" class="container">
     <!--  sidebar left --> 
     <div class="col-md-3 hidden-sm hidden-xs hidden-md">
-        <div class="panel side-panel panel-default" id="new-problem-widget">
+     <div class="panel side-panel panel-default" id="new-problem-widget">
             <div class="panel-heading">
                 <strong>Report</strong>
             </div>
            <div class="panel-body">
-                          <div class="list-group" ng-hide="reportList.council == null || reportList.council == 'undefined' " >
-                            <strong>Stad : {{reportList.council}}</strong></br>
-                            {{reportList.reports}} rapporten per maand</br>
-                            {{reportList.solutions}} oplossing per maand
+                            <div class="list-group  report-list-council" ng-hide="reportList.council == null || reportList.council == 'undefined' " >
+                            <strong>Gemeente: {{reportList.council}}</strong></br>
+                            Meldingen per maand: {{reportList.reports}} </br>
+                            Oplossingen per maand: {{reportList.solutions}}
                           </div>
-                           <div class="list-group"  ng-show="reportList.council == null || reportList.council == 'undifined' ">
+                            <div class="list-group  report-list-council"  ng-show="reportList.council == null || reportList.council == 'undifined' ">
                              geen locatieinformatie gevonden
                            </div>
             </div>  
 </div>
+
 <div class="panel side-panel panel-default" id="new-problem-widget" ng-hide="results.length == 0 || newProblemList==null">
     <div class="panel-heading">
         <strong>Nieuwste problemen</strong>
@@ -35,6 +36,7 @@
         </div>
     </div>  
 </div>
+
 <div class="panel side-panel panel-default" ng-hide="results2.length == 0|| newProblemList==null">
     <div class="panel-heading" id="active-idea-widget">
         <strong>Actieve Idee&euml;n</strong>
@@ -66,15 +68,18 @@
                                       <a class="close " aria-label="close" ng-click="closeError()" ng-hide="hideError" >&times;</a>
                                       <p>{{errorVote}}</p>
                                       <p>{{successMessage}}</p>
+                                      <p>{{successMessageNonApi}}</p>
+                                      <p>{{errorConfirmed}}</p>
              </div>    
 
          </div>
 
-        <h1>{{newProblem.title}}<br><small>{{newProblem.location.full_address}}</small></h1>
+        <h1 class="fontM">{{newProblem.title}}<br><small>{{newProblem.location.full_address}}</small></h1>
         <div class="thumbnail right-caption span4">
             <img class="img-responsive" src="{{newProblem.image.image_url}}" alt="Plaatje van de situatie" ng-if="newProblem.image">
-            <div  class = "img-resposive" ng-if="!newProblem.image" id = "googleMapIssue" ng-init="googleMapIssue(newProblem.location.latitude,newProblem.location.longitude,newProblem.type)"></div>
-            <div class="detail-table hidden-xs">
+            <img class="img-responsive" src="{{sateliteimg}}" alt="Plaatje van de situatie" ng-if="!newProblem.image">
+<!--            <div  class = "img-resposive" ng-if="!newProblem.image" id = "googleMapIssue" ng-init="googleMapIssue(newProblem.location.latitude,newProblem.location.longitude,newProblem.type)"></div>-->
+            <div class="detail-table hidden-xs fontM">
                 <table width="100%">
                     <tbody> 
                         <tr>
@@ -103,12 +108,12 @@
                         </tr> -->
                         <tr>
                             <td>Status:</td>
-                            <td>{{newProblem.status_description}} <a class="{{hideLogStatus}}  issueLog" ng-click="logStatus()">Meer >> </a></td>
+                            <td>{{newProblem.status_description}} <a class="{{hideLogStatus}}  issueLog" ng-click="logStatus()"> {{showDataText}} </a></td>
                         </tr>
                         <tr class="{{hideStatus}}">
                             <td colspan="3">
                                 <ul class="status-log">
-                                    <li ng-repeat="issueLog in issueLogList" class="list-group-item status-log-item"><span class="text-muted">{{issueLog.createdAt}}: </span>{{issueLog.message}}</li>
+                                    <li ng-repeat="issueLog in issueLogList" class="list-group-item status-log-item"><span class="text-muted"> {{issueLog.createdAt}}: </span>{{issueLog.message}}</li>
                                 </ul>
                             </td>
                         </tr> 
@@ -119,29 +124,29 @@
          <div class="issueDetailTable">
                     <table>
                         <tr>
-                            <td ng-show="newProblem.type=='problem'"><h2>Beschrijving</h2></td>
-                            <td ng-show="newProblem.type=='idea'"><h2>Idee</h2></td>
+                            <td ng-show="newProblem.type=='problem'"><h2 class="fontM">Beschrijving</h2></td>
+                            <td ng-show="newProblem.type=='idea'"><h2 class="fontM">Idee</h2></td>
                         </tr>
                         <tr>
-                            <td class="issueDetailTableContent word-break"><p>{{newProblem.description}}</p></td>
+                            <td class="issueDetailTableContent fontM"><p>{{newProblem.description}}</p></td>
                         </tr>
                         
                     </table>
               </div>
-              <div class="issueDetaiTable" ng-if="newProblem.type=='idea'">
+              <div class="issueDetaiTable fontM" ng-if="newProblem.type=='idea'">
                     <table>
                         <tr>
-                            <td><h2>Realisation</h2></td>
+                            <td><h2 class="fontM">Realisation</h2></td>
                         </tr>
                         <tr>
-                            <td class="issueDetailTableContent word-break"><p>{{newProblem.realization}}</p></td>
+                            <td class="issueDetailTableContent fontM"><p>{{newProblem.realization}}</p></td>
                         </tr>
                     </table>
               </div>
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="{{stemModal}}" ng-click="sessionValid()">Reageer <span class="badge">{{newProblem.comments}}</span></button>
         <button type="button" class="btn btn-primary" ng-click="voteSubmit()">Stem <span class="badge">{{newProblem.votes}}</span></button>
         <div ng-hide="results==0 || commentList == null">
-            <h2>Reacties</h2>
+            <h2 class="fontM">Reacties</h2>
         <ul class="commentList" >
             <li ng-repeat="comment in commentList | filter: x as results">
                 <div class="commentText">
@@ -154,9 +159,28 @@
 
 </div>
 <!--  sidebar right -->
-<div class="col-lg-3">
-
-</div>  
+<div class="col-lg-3 hidden-xs" ng-hide="results.length == 0 || myIssuesList == null">
+            <div class="panel side-panel panel-default">
+                    <div class="panel-heading">
+                            <strong>Mijn Meldingen</strong>
+                        </div>
+                            <div class="panel-body">
+                          <div class="list-group" >
+                            <a href="/mijn-meldingen/{{myIssues.id}}" class="list-group-item clearfix" ng-repeat="myIssues in myIssuesList| orderBy : 'created_at' : true |limitTo:2  | filter : x as results" ng-click="clickIssues()">
+                              <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
+                              <strong> {{myIssues.title}}</strong> {{myIssues.location.full_address}}
+                              {{myIssues.status}}
+                              <span class="pull-right">
+                                <button class="btn btn-xs btn-success" >
+                                  <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
+                                </button>
+                              </span>
+                            </a>
+                              <a href="/mijn-meldingen" style="margin-left:17px;">Meer >>></a>
+                          </div>
+                        </div>  
+            </div>
+        </div>  
 </div>	
 
 <!-- StemModal -->
@@ -166,7 +190,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" ng-click="close()">&times;</button>
-                <h1 class="modal-title">Reactie plaatsen</h1>
+                <h1 class="modal-title fontM">Reactie plaatsen</h1>
                 <div class="alert alert-danger {{hide}}" >
                                   <a class="close {{hide}}" aria-label="close" ng-click="close()" >&times;</a>
                                   <p>{{errorBody}}</p>
@@ -250,21 +274,51 @@
         </div>
     </div>
 <!-- resolveModal -->
-<div id="ResolveModal" class="modal fade" role="dialog">
+<div id="ResolveModal" class="modal fade" role="dialog" ng-controller="resolveIssueCommentYesCtrl">
     <div class="modal-dialog">
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <button type="button" class="close" data-dismiss="modal" ng-click="close()">&times;</button>
                 <h1 class="modal-title">Melding behandelen</h1>
+                <div class="alert alert-danger {{hide}}" >
+                                  <a class="close {{hide}}" aria-label="close" ng-click="close()" >&times;</a>
+                                  <p>{{error}}</p>
+              </div>
             </div>
             <div class="modal-body">
                 Behandelwijze:
-                <textarea class="form-control" rows="5" id="comment"></textarea>
+                <textarea class="form-control" rows="5" id="comment" ng-model="resolveComment"></textarea>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Annuleren</button>
-                <button type="button" class="btn btn-success" data-dismiss="modal">Melding behandelen</button>
+                <button type="button" class="btn btn-success" ng-click="resolve()">Melding behandelen</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- resolveModal Simple -->
+<div id="ResolveModalSimple" class="modal fade" role="dialog" ng-controller="resolveIssueCommentNoCtrl">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" ng-click="close()">&times;</button>
+                <h1 class="modal-title">Melding afwijzen</h1>
+                <div class="alert alert-danger {{hide}}" >
+                                  <a class="close {{hide}}" aria-label="close" ng-click="close()" >&times;</a>
+                                  <p>{{error}}</p>
+              </div>
+            </div>
+            <div class="modal-body">
+                reden van afwijzing:
+                <textarea class="form-control" rows="5" id="comment-2" ng-model="resolveComment"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Annuleren</button>
+                <button type="button" class="btn btn-success" ng-click="resolve()">Melding afwijzen</button>
             </div>
         </div>
     </div>
@@ -284,12 +338,36 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Annuleren</button>
-                <button type="button" class="btn btn-success" data-dismiss="modal">Verwijderen</button>
+                <button type="button" class="btn btn-success" data-dismiss="modal" ng-click="deleteIssueWithHash()">Verwijderen</button>
             </div>
         </div>
     </div>
 </div>
 
+<!-- voteModal -->
+<div id="voteModal" class="modal fade" role="dialog" ng-controller="voteCtrl">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h1 class="modal-title">Stem indienen</h1>
+                    <div class="alert alert-danger " ng-hide="hide" >
+                                  <a class="close " ng-hide="hide" aria-label="close" ng-click="close()" >&times;</a>
+                                  <p>{{error}}</p>
+                    </div>
+            </div>
+            <div class="modal-body">
+                    <input type="text" class="form-control" id="email" placeholder="E-mailadres" ng-model="email" style="margin-bottom: 15px">
+                    <input type="text" class="form-control" id="initials" placeholder="voorletters" ng-model="name" style="margin-bottom: 15px" >
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" ng-click="close()" data-dismiss="modal">Annuleren</button>
+                <button type="button" class="btn btn-success" ng-click="submit()">Verzenden</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Page specific js -->
 <!-- <script src="./js/vdb-start.js"></script> -->

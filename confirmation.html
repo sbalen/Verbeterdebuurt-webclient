@@ -11,6 +11,7 @@
         <div class="col-lg-6 main-container col-md-3 marginbottom" ng-show="successConfirm">   
             <div class="panel panel-default main-panel margintop">
                 <div id="side_bar" class="clearfix" style="margin-bottom:15px;">
+                    <a href="/" class="close" aria-label="close">×</a>
                     <h2 style="float: left;">Registratie succesvol</h2><br><br><br>
                     <br><p style="float: left">De registratie is voltooid.<br />
                     Je kunt inloggen op de <a href="/login">inlogpagina.</a></p>
@@ -22,6 +23,7 @@
         <div class="col-lg-6 main-container col-md-3 marginbottom" ng-show="cancelConfirm">   
             <div class="panel panel-default main-panel margintop">
                 <div id="side_bar" class="clearfix" style="margin-bottom:15px;">
+                    <a href="/" class="close" aria-label="close">×</a>
                     <h2 style="float: left;">Registratie geannuleerd</h2><br><br><br>
                     <br><p style="float: left">De registratie is geannuleerd.</p>
                 </div>		    
@@ -32,12 +34,50 @@
         <div class="col-lg-6 main-container col-md-3 marginbottom" ng-show="showerror">   
             <div class="panel panel-default main-panel margintop" >
                 <div id="side_bar" class="clearfix" style="margin-bottom:15px;">
+                    <a href="/" class="close" aria-label="close">×</a>
                     <h2 style="float: left;">Registratie bevestigen mislukt
                     </h2><br><br><br>
                     <br><p style="float: left">{{message}}</p>
                 </div>		    
             </div>
         </div>
+        
+        
+        <div class="col-lg-6 main-container col-md-3 marginbottom" ng-show="errorUnfollow">   
+            <div class="panel panel-default main-panel margintop" >
+                <div id="side_bar" class="clearfix" style="margin-bottom:15px;">
+                    <a href="/" class="close" aria-label="close">×</a>
+                    <h2 style="float: left;">Updates stoppen
+                    </h2><br><br><br>
+                    <br><p style="float: left">{{message}}</p>
+                </div>		    
+            </div>
+        </div>
+        
+
+        <div class="col-lg-6 main-container col-md-3 marginbottom" ng-show="errorVote">   
+            <div class="panel panel-default main-panel margintop" >
+                <div id="side_bar" class="clearfix" style="margin-bottom:15px;">
+                    <a href="/" class="close" aria-label="close">×</a>
+                    <h2 style="float: left;">Steem Error
+                    </h2><br><br><br>
+                    <br><p style="float: left">{{message}}</p>
+                </div>          
+            </div>
+        </div>
+        
+        
+        <div class="col-lg-6 main-container col-md-3 marginbottom" ng-hide="notCreateIssue">   
+            <div class="panel panel-default main-panel margintop">
+                <div id="side_bar" class="clearfix" style="margin-bottom:15px;">
+                    <a href="/" class="close" aria-label="close">×</a>
+                    <h2 style="float: left;">Bevestiging nodig</h2><br><br><br>
+                    <br><p style="float: left">Bevestig je melding door op de link in de mail te klikken die we gestuurd hebben.<br />
+                    Terug naar <a href="/">home</a></p>
+                </div>		    
+            </div>
+        </div>
+        
         
     </div>
 
