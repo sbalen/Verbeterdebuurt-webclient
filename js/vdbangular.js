@@ -3557,6 +3557,7 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
                     showIssue(infoWindow, infoWindowContent);
                 }
             });
+            marker.setPosition(map.getCenter());
         },1000)
 
 
@@ -4147,6 +4148,9 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
                     }
 
             });
+            
+            marker.setPosition(map.getCenter());
+            
         }, 1000)
 
 
