@@ -1,5 +1,5 @@
 //var vdbApp = angular.module('vdbApp',[]);
-var vdbApp = angular.module('vdbApp', ['ngRoute', 'angularUtils.directives.dirPagination', 'ngFacebook', 'ngCookies', 'naif.base64'])
+var vdbApp = angular.module('vdbApp', ['ngRoute', 'angularUtils.directives.dirPagination', 'ngFacebook', 'ngCookies', 'naif.base64','angulartics', 'angulartics.google.analytics'])
 
 
 
@@ -402,7 +402,7 @@ function getMarkerLocation(marker) {
     });
 }
 // get location search at create issue
-function geocodeAddressCreateProblem(geocoder, resultsMap, address) {
+function geocodeAddressCreateProblem(geocoder, resultsMap, address,location) {
     var address = address;
     geocoder.geocode({
         'address': address
@@ -416,6 +416,31 @@ function geocodeAddressCreateProblem(geocoder, resultsMap, address) {
             minlat = map.getBounds().getSouthWest().lat();
             minlng = map.getBounds().getSouthWest().lng();
             showIssue(infoWindow, infoWindowContent);
+            //get address after search
+                     geocoder.geocode({
+                        'latLng': results[0].geometry.location
+                }, function (result, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        for (var i = 0; i < result[0].address_components.length; i++) {
+                            for (var b = 0; b < result[0].address_components[i].types.length; b++) {
+                                //if you want the change the area ..
+                                if (result[0].address_components[i].types[b] == "route") {
+                                    // street name
+                                    street = result[0].address_components[i].short_name;
+                                    console.log(street);
+                                    document.getElementById(location).value = result[0].address_components[i].short_name;
+                                    break;
+                                }
+                                // if (result[0].address_components[i].types[b] == "street_number") {
+                                //     // street number
+                                //     street_number = result[0].address_components[i].short_name;
+                                //     break;
+                                // }
+                            }
+                        }
+                    }
+                });
+
         } else {
             alert('Geocode was not successful for the following reason: ' + status);
         }
@@ -3501,7 +3526,7 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
 
 
     $scope.clickSearchCreateIssue = function () {
-        geocodeAddressCreateProblem(geocoder, map3, $scope.searchCityCreate);
+        geocodeAddressCreateProblem(geocoder, map3, $scope.searchCityCreate,"location");
         $scope.loadCategory = 1;
         city.long_name = $scope.searchCityCreate;
         var latitude = markerLat;
@@ -4097,7 +4122,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
         $scope.hideNonLogin = "ng-hide"
     }
     $scope.clickSearchCreateIssue = function () {
-        geocodeAddressCreateProblem(geocoder, map4, $scope.searchCityCreate);
+        geocodeAddressCreateProblem(geocoder, map4, $scope.searchCityCreate,"location2");
         city.long_name = $scope.searchCityCreate;
         var latitude = markerLat;
         var longitude = markerLng;
