@@ -334,10 +334,24 @@ function markerCenter(map, marker, location) {
                         //if you want the change the area ..
                         if (result[0].address_components[i].types[b] == "route") {
                             // street name
-                            console.log("1");
+                            //console.log("1");
                             streetLocation = result[0].address_components[i].short_name;
                             addressLocation = streetLocation;
-                            document.getElementById(location).value = addressLocation;
+                            
+                            
+                            var the_street_number = "";
+                            for(var c = 0; c < result[0].address_components.length; c++){
+                                for (var d = 0; d < result[0].address_components[c].types.length; d++) {
+                                    if (result[0].address_components[c].types[d] == "street_number") {
+                                        the_street_number = result[0].address_components[c].short_name;
+                                    }
+                                    break;
+                                }  
+                            }
+                            document.getElementById(location).value = addressLocation + " " + the_street_number;
+                            
+                            
+                            
                             break;
                         }
                         // if (result[0].address_components[i].types[b] == "street_number") {
@@ -373,7 +387,22 @@ function markerCenter(map, marker, location) {
                             console.log("1");
                             streetLocation = result[0].address_components[i].short_name;
                             addressLocation = streetLocation;
-                            document.getElementById(location).value = addressLocation;
+                            
+                            
+                            var the_street_number = "";
+                            for(var c = 0; c < result[0].address_components.length; c++){
+                                for (var d = 0; d < result[0].address_components[c].types.length; d++) {
+                                    if (result[0].address_components[c].types[d] == "street_number") {
+                                        the_street_number = result[0].address_components[c].short_name;
+                                    }
+                                    break;
+                                }  
+                            }
+                            document.getElementById(location).value = addressLocation + " " + the_street_number;
+
+                            
+                            
+                            
                             break;
                         }
                         // if (result[0].address_components[i].types[b] == "street_number") {
@@ -427,8 +456,20 @@ function geocodeAddressCreateProblem(geocoder, resultsMap, address,location) {
                                 if (result[0].address_components[i].types[b] == "route") {
                                     // street name
                                     street = result[0].address_components[i].short_name;
-                                    console.log(street);
-                                    document.getElementById(location).value = result[0].address_components[i].short_name;
+                                    
+                                    var the_street_number = "";
+                                    for(var c = 0; c < result[0].address_components.length; c++){
+                                        for (var d = 0; d < result[0].address_components[c].types.length; d++) {
+                                            if (result[0].address_components[c].types[d] == "street_number") {
+                                                the_street_number = result[0].address_components[c].short_name;
+                                            }
+                                            break;
+                                        }  
+                                    }
+                                    document.getElementById(location).value = street + " " + the_street_number;
+
+                                    
+                                    
                                     break;
                                 }
                                 // if (result[0].address_components[i].types[b] == "street_number") {
@@ -460,7 +501,18 @@ function markerGetAddress(marker, location) {
                         if (result[0].address_components[i].types[b] == "route") {
                             // street name
                             street = result[0].address_components[i].short_name;
-                            document.getElementById(location).value = street;
+                            
+                            var the_street_number = "";
+                            for(var c = 0; c < result[0].address_components.length; c++){
+                                for (var d = 0; d < result[0].address_components[c].types.length; d++) {
+                                    if (result[0].address_components[c].types[d] == "street_number") {
+                                        the_street_number = result[0].address_components[c].short_name;
+                                    }
+                                    break;
+                                }  
+                            }
+                            document.getElementById(location).value = street + " " + the_street_number;
+
                             break;
                         }
                         // if (result[0].address_components[i].types[b] == "street_number") {
