@@ -3635,6 +3635,14 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
                 }
             });
             marker.setPosition(map.getCenter());
+            
+            //change location after search
+            markerLat = marker.getPosition().lat();
+            markerLng = marker.getPosition().lng();
+            
+            
+            
+            
         },1000)
 
 
@@ -4227,6 +4235,11 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
             });
             
             marker.setPosition(map.getCenter());
+            
+            //change location after search
+            markerLat = marker.getPosition().lat();
+            markerLng = marker.getPosition().lng();
+
             
         }, 1000)
 
