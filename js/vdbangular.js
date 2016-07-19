@@ -167,7 +167,7 @@ function googleMapIssue(lat, lng, type) {
     var mapOption2 = {
         center: location,
         zoom: 18,
-        mapTypeId: google.maps.MapTypeId.SATELLITE,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
         styles: [
             {
                 featureType: "poi",
@@ -236,6 +236,7 @@ function googleMapCreateProblem(latlng) {
     map3.setOptions({
         draggable: true,
         zoomControl: true,
+        clickable: true,
         scrollwheel: false,
         disableDoubleClickZoom: true,
         streetViewControl: false,
@@ -290,7 +291,7 @@ function googleMapCreateIdea(latlng) {
         scrollwheel: false,
         disableDoubleClickZoom: true,
         streetViewControl: false,
-        disableDefaultUI: true
+        disableDefaultUI: true,
     });
     markerLat = marker.getPosition().lat();
     markerLng = marker.getPosition().lng();
