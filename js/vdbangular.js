@@ -1804,15 +1804,16 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
     if ($rootScope.lastUrl == null) {
         $rootScope.lastUrl == '/';
     }
-    if ($rootScope.standardTemp) {
-        $scope.hideError = 0;
-        $scope.successClass = "successAlert";
-        $scope.successMessage = $rootScope.standardTemp;
-    }
+    // if ($rootScope.standardTemp) {
+    //     $scope.hideError = 0;
+    //     $scope.successClass = "successAlert";
+    //     $scope.successMessage = $rootScope.standardTemp;
+    // }
     if ($rootScope.successCreateLogin == 1) {
         $scope.hideError = 0;
         $scope.successClass = "successAlert";
         $scope.successMessageNonApi = "Je melding is verstuurd!";
+        $scope.successMessage = $rootScope.standardTemp;
     }
     if ($rootScope.successCreateNonLogin == 1 ) {
         $scope.hideError = 0;
@@ -2210,11 +2211,11 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope', '$routeParams', '$http', '$ro
         $scope.successClass = "successAlert";
         $scope.successMessage = $rootScope.standardTemp;
     }
-    if ($rootScope.successCreateLogin == 1) {
-        $scope.hideError = 0;
-        $scope.successClass = "successAlert";
-        $scope.successMessageNonApi = "Je melding is verstuurd!";
-    }
+    // if ($rootScope.successCreateLogin == 1) {
+    //     $scope.hideError = 0;
+    //     $scope.successClass = "successAlert";
+    //     $scope.successMessageNonApi = "Je melding is verstuurd!";
+    // }
     if ($rootScope.successCreateNonLogin == 1 ) {
         $scope.hideError = 0;
         $scope.successClass = "successAlert";
@@ -3774,7 +3775,6 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
                         //go to confirmation with a message
 //                        
 //                        $location.path(/melding/ + issueId);
-                        $rootScope.successCreateNonLogin = 1;
                         $location.path("/bevestiging-nieuwe-melding");
                     }
                     $rootScope.globaloverlay = "";
@@ -3854,8 +3854,8 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
                         $location.path(/mijn-meldingen/ + issueId);
                         $rootScope.successCreateLogin = 1;
                     } else {
-                        $location.path(/melding/ + issueId);
-                        $rootScope.successCreateNonLogin = 1;
+                        // $location.path(/melding/ + issueId);
+                         $location.path("/bevestiging-nieuwe-melding");
                     }
                     $rootScope.globaloverlay = "";
                     var jsondata = JSON.stringify({
@@ -4396,8 +4396,9 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
                         $location.path(/mijn-meldingen/ + issueId);
                         $rootScope.successCreateLogin = 1;
                     } else {
-                        $location.path(/melding/ + issueId);
-                        $rootScope.successCreateNonLogin = 1;
+                        // $location.path(/melding/ + issueId);
+                        // $rootScope.successCreateNonLogin = 1;
+                         $location.path("/bevestiging-nieuwe-melding");
                     }
                     $rootScope.globaloverlay = "";
                     var jsondata = JSON.stringify({
@@ -4477,8 +4478,9 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
                         $location.path(/mijn-meldingen/ + issueId);
                         $rootScope.successCreateLogin = 1;
                     } else {
-                        $location.path(/melding/ + issueId);
-                        $rootScope.successCreateNonLogin = 1;
+                        // $location.path(/melding/ + issueId);
+                        // $rootScope.successCreateNonLogin = 1;
+                        $location.path("/bevestiging-nieuwe-melding");
                     }
                     $rootScope.globaloverlay = "";
                     var jsondata = JSON.stringify({
