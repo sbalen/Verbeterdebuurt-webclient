@@ -129,7 +129,6 @@ window.onload = function () {
     // minlat = 4.545096343219029;
     // minlng = 4.487203543841588;
 
-
     if (cityName != null) {
         geocodeAddress(geocoder, map);
         cityName = null;
@@ -1410,10 +1409,14 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
 
     if ($location.path() == "/plaats/" + $routeParams.cityNameplaats + nextaction) {
         $location.path('gemeente/' + $routeParams.cityNameplaats + nextaction);
+        $window.cityName = $routeParams.cityNameplaats;
+        geocodeAddress(geocoder, map);
     }
 
     if ($location.path() == "/" + $routeParams.cityNameClone + nextaction) {
         $location.path('gemeente/' + $routeParams.cityNameClone + nextaction);
+        $window.cityName = $routeParams.cityNameClone;
+        geocodeAddress(geocoder, map);
     }
 
 
@@ -1497,6 +1500,9 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     $window.cityName = $routeParams.cityName;
     if ($routeParams.cityName) {
         $scope.searchCity = $routeParams.cityName;
+        $window.cityName = $routeParams.cityName;
+        geocodeAddress(geocoder,map);
+        //$window.cityName=null;
     }
     $rootScope.errorSession = "";
 
@@ -1531,6 +1537,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     //with postal code load
     if ($routeParams.postalcode) {
         $window.postalcode = $routeParams.postalcode;
+        geocodeAddress(geocoder,map);
         $timeout(function () {
             
             var jsoncity = JSON.stringify({
