@@ -79,7 +79,6 @@ function getLocation(map) {
         if (result[0].address_components[i].types[b] == "administrative_area_level_2") {
            // name of city
             city= result[0].address_components[i];
-            console.log(city);
             //console.log(searchCity);
             break;
                 }
@@ -104,7 +103,6 @@ function geocodeAddress(geocoder, resultsMap) {
         }
         if(cityName!=null){
           var address = cityName;
-          console.log("1",address);
         }
         else if(postalcode!=null){
           var address = postalcode;
@@ -117,7 +115,6 @@ function geocodeAddress(geocoder, resultsMap) {
                 minlat = map.getBounds().getSouthWest().lat();
                 minlng = map.getBounds().getSouthWest().lng();
 
-                console.log(map.getCenter().lat()+" "+map.getCenter().lng());
                 //console.log("nasiduk");
                 citynamegoogle= {};
                 citynamegoogle.long_name = null;
@@ -126,9 +123,7 @@ function geocodeAddress(geocoder, resultsMap) {
                   //if you want the change the area ..
                 if (results[0].address_components[i].types[b] == "administrative_area_level_2") {
                    // name of city
-                   console.log("nasiduk");
                     citynamegoogle = results[0].address_components[i];
-                    console.log(results[0].address_components[i]);
                     break;
                         }
                     }
