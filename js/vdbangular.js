@@ -1411,12 +1411,14 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
         $location.path('gemeente/' + $routeParams.cityNameplaats + nextaction);
         $window.cityName = $routeParams.cityNameplaats;
         geocodeAddress(geocoder, map);
+        //$window.cityName = null;
     }
 
     if ($location.path() == "/" + $routeParams.cityNameClone + nextaction) {
         $location.path('gemeente/' + $routeParams.cityNameClone + nextaction);
         $window.cityName = $routeParams.cityNameClone;
         geocodeAddress(geocoder, map);
+       // $window.cityName = null;
     }
 
 
@@ -1500,9 +1502,8 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     $window.cityName = $routeParams.cityName;
     if ($routeParams.cityName) {
         $scope.searchCity = $routeParams.cityName;
-        $window.cityName = $routeParams.cityName;
-        geocodeAddress(geocoder,map);
-        //$window.cityName=null;
+        // $window.cityName = $routeParams.cityName;
+        // geocodeAddress(geocoder,map);
     }
     $rootScope.errorSession = "";
 
@@ -1538,6 +1539,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     if ($routeParams.postalcode) {
         $window.postalcode = $routeParams.postalcode;
         geocodeAddress(geocoder,map);
+        $window.postalcode = null;
         $timeout(function () {
             
             var jsoncity = JSON.stringify({
