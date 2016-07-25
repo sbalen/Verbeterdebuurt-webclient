@@ -4013,7 +4013,7 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
             ,
             "lat" : lat,
             "long" : long,
-            "ategory_id" : category_id
+            "category_id" : category_id
         });
         console.log(jsondataDuplicate);
         var getDuplicateIssue = duplicateIssuesService.getDuplicateIssue(jsondataDuplicate).then(function (data) {
@@ -4027,7 +4027,6 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
             var getServiceStandard = data.data;
             $scope.standardMessage = getServiceStandard.standard;
             $rootScope.standardTemp = getServiceStandard.standard;
-            console.log( $scope.standardMessage)
         })
 
 
