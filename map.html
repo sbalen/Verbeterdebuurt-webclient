@@ -11,6 +11,7 @@
             <div class="panel-body">
                           <div class="list-group report-list-council" ng-hide="reportList.council == null || reportList.council == 'undefined' " >
                             <strong>Gemeente: {{reportList.council}}</strong></br>
+                            {{agreement.agreement}}</strong></br></br>
                             Meldingen per maand: {{reportList.reports}} </br>
                             Oplossingen per maand: {{reportList.solutions}}
                           </div>
@@ -24,6 +25,7 @@
                             <strong>Nieuwste problemen</strong>
                         </div>
       			<div class="panel-body">
+
                           <div class="list-group" >
                               <a href="/melding/{{newProblem.id}}" class="list-group-item clearfix " ng-repeat="newProblem in newProblemList| filter : {type:'problem'} | filter: {status:'!closed'} | orderBy : 'created_at' : true|limitTo:3|filter:x as results" ng-click="clickIssues()">
                               <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>

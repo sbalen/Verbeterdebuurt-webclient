@@ -857,6 +857,22 @@ vdbApp.directive('imgUpload', ['$parse', function ($parse) {
     };
 }])
 
+vdbApp.filter('datefilter',function(){
+    return function(date){
+        var newdate=[];
+        newdate[0]=date[8]
+        newdate[1]=date[9]
+        newdate[2]=date[7]
+        newdate[3]=date[5]
+        newdate[4]=date[6]
+        newdate[5]=date[4]
+        newdate[6]=date[0]
+        newdate[7]=date[1]
+        newdate[8]=date[2]
+        newdate[9]=date[3]
+        return newdate.toString().replace( /,/g ,"");
+    }
+})
 vdbApp.factory('issuesService', ['$http', function ($http) {
     return {
         getIssues: function (jsondata) {
@@ -1295,7 +1311,15 @@ vdbApp.run(['$rootScope', '$window', function ($rootScope, $window) {
     }]);
 
 vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$rootScope', '$routeParams', '$http', 'issuesService', 'reportService', '$facebook', '$cacheFactory', 'agreementSevice', '$cookies','myIssuesService', function ($scope, $timeout, $window, $location, $rootScope, $routeParams, $http, issuesService, reportService, $facebook, $cacheFactory, agreementSevice, $cookies, myIssuesService) {
-
+    //check android or not
+    $rootScope.dynamicTitle = "";
+    var isAndroid = /(android)/i.test(navigator.userAgent);
+    if (isAndroid) {
+        console.log("android");
+    }
+    else{
+        console.log("not android");
+    }
     //for redirecting the action
     var nextaction = "";
     if (!(typeof $routeParams.nextaction === 'undefined')) {
@@ -1345,6 +1369,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
                                 var getdata = data.data;
                                 $rootScope.newProblemList = getdata.issues;
                                 //initial google map marker
+                                 deletemarker(markers);
                                 if (getdata.count != 0 || !getdata) {
                                     $window.issuesData = getdata;
                                     showIssue(infoWindow, infoWindowContent);
@@ -1468,6 +1493,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
             //initial google map marker
             if (getdata.count != 0 || !getdata) {
                 $window.issuesData = getdata;
+                 deletemarker(markers);
                 showIssue(infoWindow, infoWindowContent);
             }
         });
@@ -1658,6 +1684,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
                     $rootScope.newProblemList = getdata.issues;
                     if (getdata.count != 0 || !getdata) {
                         $window.issuesData = getdata;
+                        deletemarker(markers);
                         showIssue(infoWindow, infoWindowContent);
                     }
 
@@ -1834,7 +1861,8 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
     $scope.hideStatus = "ng-hide";
     $scope.errorVote = "";
     $scope.hideError = 1;
-
+    $scope.highlightid = $routeParams.id;
+    $rootScope.dynamicTitle = "melding";
     var jsondata = JSON.stringify({
         "issue_id": $routeParams.id
     });
@@ -2195,6 +2223,7 @@ vdbApp.controller('mentionCtrl', ['$scope', '$rootScope', '$window', '$location'
 }])
 
 vdbApp.controller('myIssuesCtrl', ['$scope', '$rootScope', '$window', '$location', 'myIssuesService', '$cookies', function ($scope, $rootScope, $window, $location, myIssuesService, $cookies) {
+    $rootScope.dynamicTitle = "mijn-meldingen";
     $scope.hide = "";
     menuSelected($rootScope, 'myIssues');
 
@@ -2229,6 +2258,7 @@ vdbApp.controller('myIssuesCtrl', ['$scope', '$rootScope', '$window', '$location
 }])
 
 vdbApp.controller('myIssuesDetailCtrl', ['$scope', '$routeParams', '$http', '$rootScope', '$location', '$window', 'myIssuesService', 'issueLogService', 'commentService', 'voteSubmitService', '$cookies','$timeout', function ($scope, $routeParams, $http, $rootScope, $location, $window, myIssuesService, issueLogService, commentService, voteSubmitService, $cookies,$timeout) {
+    $rootScope.dynamicTitle = "mijn-meldingen";
     $scope.hide = "";
     $scope.hideStatus = "ng-hide";
     $scope.errorVote = "";
@@ -2424,6 +2454,7 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope', '$routeParams', '$http', '$ro
 }])
 
 vdbApp.controller('loginCtrl', ['$scope', '$rootScope', '$window', 'loginService', '$location', '$facebook', '$cookies', function ($scope, $rootScope, $window, loginService, $location, $facebook, $cookies) {
+    $rootScope.dynamicTitle = "login";
     $scope.hide = "ng-hide";
     $scope.lusername = "";
     $scope.lpassword = "";
@@ -2689,6 +2720,7 @@ vdbApp.controller('loginCtrl', ['$scope', '$rootScope', '$window', 'loginService
 
 
 vdbApp.controller('registerCtrl', ['$scope', '$rootScope', '$window', 'registerService', 'newsletterService', '$location', '$facebook', function ($scope, $rootScope, $window, registerService, newsletterService, $location, $facebook) {
+    $rootScope.dynamicTitle = "registreren";
     $scope.home = function () {
         $location.path('/');
 
@@ -3003,7 +3035,7 @@ vdbApp.controller('commentSubmitCtrl', ['$scope', '$route', '$rootScope', '$wind
 vdbApp.controller('forgotCtrl', ['$scope', '$rootScope', '$window', 'forgotService', '$location', function ($scope, $rootScope, $window, forgotService, $location) {
     $scope.hide = "ng-hide";
     $scope.overlay = "overlay";
-
+    $rootScope.dynamicTitle = "wachtwoord";
 
 
 
@@ -3047,7 +3079,7 @@ vdbApp.controller('forgotCtrl', ['$scope', '$rootScope', '$window', 'forgotServi
 
 
 vdbApp.controller('forgotconfCtrl', ['$scope', '$rootScope', '$window', '$location', function ($scope, $rootScope, $window, $location) {
-
+    $rootScope.dynamicTitle = "wachtwoord";
     $scope.home = function () {
         $location.path('/');
 
@@ -3060,7 +3092,7 @@ vdbApp.controller('forgotconfCtrl', ['$scope', '$rootScope', '$window', '$locati
 
 vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileService', 'loginService', '$location', '$facebook', 'syncFBService', '$cookies', function ($scope, $rootScope, $window, profileService , loginService, $location, $facebook, syncFBService, $cookies) {
     $scope.hide = "ng-hide";
-
+    $rootScope.dynamicTitle = "Profiel";
     $scope.home = function () {
         $location.path('/');
     }
@@ -3441,6 +3473,7 @@ vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileSer
 }])
 
 vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', 'duplicateIssuesService', '$cookies', 'serviceStandartService','reportService','issuesService','agreementSevice', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, duplicateIssuesService, $cookies, serviceStandartService,reportService,issuesService,agreementSevice) {
+    $rootScope.dynamicTitle = "nieuw-probleem";
     $scope.hide = "ng-hide";
     $scope.issueName = "Probleem"
     $scope.hideIssue = 1;
@@ -4059,6 +4092,7 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
 		}])
 
 vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', '$cookies','reportService','issuesService','agreementSevice', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, $cookies,reportService,issuesService,agreementSevice) {
+    $rootScope.dynamicTitle = "nieuw-idee";
     $scope.hide = "ng-hide";
     $scope.issueName = "Probleem"
     $scope.hideIssue = 1;
