@@ -39,7 +39,7 @@
                                 </tr>
                                 <tr>
                                     <td>Datum:</td>
-                                    <td>{{myIssues.created_at}}</td>
+                                    <td>{{myIssues.created_at | datefilter}}</td>
                                 </tr>
                                 <tr ng-if="myIssues.type=='problem'">
                                     <td>Categorie:</td>

@@ -856,6 +856,22 @@ vdbApp.directive('imgUpload', ['$parse', function ($parse) {
     };
 }])
 
+vdbApp.filter('datefilter',function(){
+    return function(date){
+        var newdate=[];
+        newdate[0]=date[8]
+        newdate[1]=date[9]
+        newdate[2]=date[7]
+        newdate[3]=date[5]
+        newdate[4]=date[6]
+        newdate[5]=date[4]
+        newdate[6]=date[0]
+        newdate[7]=date[1]
+        newdate[8]=date[2]
+        newdate[9]=date[3]
+        return newdate.toString().replace( /,/g ,"");
+    }
+})
 vdbApp.factory('issuesService', ['$http', function ($http) {
     return {
         getIssues: function (jsondata) {
