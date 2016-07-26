@@ -217,9 +217,12 @@ function callMarker (markers,zoom,map) {
 }
 
 function deletemarker(markers){
+    //google.maps.event.addListener(map,'dragend' ,function(){
     for(var x=0 ; x< markers.length ; x++) {
       markers[x].setMap(null);
     }
     markers=null;
     console.log(markers);
+    //})
+   
 }

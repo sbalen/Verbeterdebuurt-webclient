@@ -240,7 +240,7 @@ function googleMapCreateProblem(latlng) {
         scrollwheel: false,
         disableDoubleClickZoom: true,
         streetViewControl: false,
-        disableDefaultUI: true
+        disableDefaultUI: false
     });
     markerLat = marker.getPosition().lat();
     markerLng = marker.getPosition().lng();
@@ -291,7 +291,7 @@ function googleMapCreateIdea(latlng) {
         scrollwheel: false,
         disableDoubleClickZoom: true,
         streetViewControl: false,
-        disableDefaultUI: true,
+        disableDefaultUI: false,
     });
     markerLat = marker.getPosition().lat();
     markerLng = marker.getPosition().lng();
@@ -431,7 +431,7 @@ function getMarkerLocation(marker) {
 function geocodeAddressCreateProblem(geocoder, resultsMap, address,location) {
     var address = address;
     geocoder.geocode({
-        'address': address
+        'address': address,componentRestrictions: {country: 'nl'}
     }, function (results, status) {
         if (status === google.maps.GeocoderStatus.OK) {
             resultsMap.setCenter(results[0].geometry.location);
@@ -1369,7 +1369,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
                                 var getdata = data.data;
                                 $rootScope.newProblemList = getdata.issues;
                                 //initial google map marker
-                                 deletemarker(markers);
+                                 // deletemarker(markers);
                                 if (getdata.count != 0 || !getdata) {
                                     $window.issuesData = getdata;
                                     showIssue(infoWindow, infoWindowContent);
@@ -1493,7 +1493,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
             //initial google map marker
             if (getdata.count != 0 || !getdata) {
                 $window.issuesData = getdata;
-                 deletemarker(markers);
+                 // deletemarker(markers);
                 showIssue(infoWindow, infoWindowContent);
             }
         });
@@ -1684,7 +1684,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
                     $rootScope.newProblemList = getdata.issues;
                     if (getdata.count != 0 || !getdata) {
                         $window.issuesData = getdata;
-                        deletemarker(markers);
+                        // deletemarker(markers);
                         showIssue(infoWindow, infoWindowContent);
                     }
 
