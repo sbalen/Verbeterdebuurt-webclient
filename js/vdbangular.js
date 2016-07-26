@@ -1833,6 +1833,7 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
     $scope.hideStatus = "ng-hide";
     $scope.errorVote = "";
     $scope.hideError = 1;
+    $scope.highlightid = $routeParams.id;
 
     var jsondata = JSON.stringify({
         "issue_id": $routeParams.id
