@@ -1368,6 +1368,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
                                 var getdata = data.data;
                                 $rootScope.newProblemList = getdata.issues;
                                 //initial google map marker
+                                 deletemarker(markers);
                                 if (getdata.count != 0 || !getdata) {
                                     $window.issuesData = getdata;
                                     showIssue(infoWindow, infoWindowContent);
@@ -1491,6 +1492,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
             //initial google map marker
             if (getdata.count != 0 || !getdata) {
                 $window.issuesData = getdata;
+                 deletemarker(markers);
                 showIssue(infoWindow, infoWindowContent);
             }
         });
@@ -1681,6 +1683,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
                     $rootScope.newProblemList = getdata.issues;
                     if (getdata.count != 0 || !getdata) {
                         $window.issuesData = getdata;
+                        deletemarker(markers);
                         showIssue(infoWindow, infoWindowContent);
                     }
 

@@ -213,7 +213,13 @@ function callMarker (markers,zoom,map) {
         map.setCenter(marker.getPosition());
       }
     })(marker,i));
-
-
   }
+}
+
+function deletemarker(markers){
+    for(var x=0 ; x< markers.length ; x++) {
+      markers[x].setMap(null);
+    }
+    markers=null;
+    console.log(markers);
 }
