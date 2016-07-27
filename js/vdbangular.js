@@ -44,6 +44,33 @@ var geolocationValid = 0;
 markers = null;
 markers = [];
 
+//polyfill for includes for internet explore not support js
+if (!String.prototype.includes) {
+  String.prototype.includes = function(search, start) {
+    'use strict';
+    if (typeof start !== 'number') {
+      start = 0;
+    }
+    
+    if (start + search.length > this.length) {
+      return false;
+    } else {
+      return this.indexOf(search, start) !== -1;
+    }
+  };
+}
+//polyfill for endswith internet explore not support js
+if (!String.prototype.endsWith) {
+  String.prototype.endsWith = function(searchString, position) {
+      var subjectString = this.toString();
+      if (typeof position !== 'number' || !isFinite(position) || Math.floor(position) !== position || position > subjectString.length) {
+        position = subjectString.length;
+      }
+      position -= searchString.length;
+      var lastIndex = subjectString.indexOf(searchString, position);
+      return lastIndex !== -1 && lastIndex === position;
+  };
+}
 
 //google map
 window.onload = function () {
@@ -140,6 +167,13 @@ window.onload = function () {
     getLatLng(map);
     //start location picker
 
+    var tempurl = window.location.pathname;
+    if(tempurl.includes('gemeente') && !(tempurl.includes('nieuw-probleem')||tempurl.includes('nieuw-idee')||tempurl.includes('nieuwe-melding'))){
+        var citytemp = tempurl.substring(tempurl.slice(0,tempurl.length-1).lastIndexOf('/')+1);
+        cityName = citytemp.substring(0,citytemp.length-1);
+        console.log(cityName);
+        geocodeAddress(geocoder, map);
+    }
 
     $('#duplicate-bubble').hide();
 
@@ -437,8 +471,6 @@ function geocodeAddressCreateProblem(geocoder, resultsMap, address,location) {
             marker.setPosition(resultsMap.getCenter());
             markerLat = resultsMap.getCenter().lat();
             markerLng = resultsMap.getCenter().lng();
-            console.log('lat'+markerLat);
-            console.log('long'+markerLng);
             maxlat = map.getBounds().getNorthEast().lat();
             maxlng = map.getBounds().getNorthEast().lng();
             minlat = map.getBounds().getSouthWest().lat();
@@ -527,33 +559,7 @@ function markerGetAddress(marker, location) {
         
     });
 }
-//polyfill for includes for internet explore not support js
-if (!String.prototype.includes) {
-  String.prototype.includes = function(search, start) {
-    'use strict';
-    if (typeof start !== 'number') {
-      start = 0;
-    }
-    
-    if (start + search.length > this.length) {
-      return false;
-    } else {
-      return this.indexOf(search, start) !== -1;
-    }
-  };
-}
-//polyfill for endswith internet explore not support js
-if (!String.prototype.endsWith) {
-  String.prototype.endsWith = function(searchString, position) {
-      var subjectString = this.toString();
-      if (typeof position !== 'number' || !isFinite(position) || Math.floor(position) !== position || position > subjectString.length) {
-        position = subjectString.length;
-      }
-      position -= searchString.length;
-      var lastIndex = subjectString.indexOf(searchString, position);
-      return lastIndex !== -1 && lastIndex === position;
-  };
-}
+
 //change menu selected
 function menuSelected($scope, selected) {
     $scope.homeSelected = "";
@@ -624,6 +630,18 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
         .when('/gemeente/:cityName/', {
             templateUrl: 'map.html',
             controller: 'mainCtrl'
+        })
+        .when('/gemeente/:cityName/nieuwe-melding', {
+            templateUrl: 'selectproblem.html',
+            controller: 'createissueCtrl'
+        })
+        .when('/gemeente/:cityName/nieuw-probleem', {
+            templateUrl: 'createissues.html',
+            controller: 'createissueCtrl'
+        })
+        .when('/gemeente/:cityName/nieuw-idee', {
+            templateUrl: 'createIdea.html',
+            controller: 'createIdeaCtrl'
         })
         .when('/gemeente/:cityName/:action?', {
             templateUrl: 'map.html',
@@ -1452,7 +1470,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     //google map aouto complete
     var input = document.getElementById('searchCity');
     var options = {
-        types: ['(cities)'],
+        types: ['geocode'],
         componentRestrictions: {
             country: 'nl'
         }
@@ -1502,15 +1520,15 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
 
 
         //auto redirection to new problem
-        if (!(typeof $routeParams.action === 'undefined')) {
-            if ($routeParams.action == "nieuwe-melding") {
-                $location.path('/nieuwe-melding');
-            } else if ($routeParams.action == "nieuw-probleem") {
-                $location.path('/nieuw-probleem');
-            } else if ($routeParams.action == "nieuw-idee") {
-                $location.path('/nieuw-idee');
-            }
-        }
+        // if (!(typeof $routeParams.action === 'undefined')) {
+        //     if ($routeParams.action == "nieuwe-melding") {
+        //         $location.path('/nieuwe-melding');
+        //     } else if ($routeParams.action == "nieuw-probleem") {
+        //         $location.path('/nieuw-probleem');
+        //     } else if ($routeParams.action == "nieuw-idee") {
+        //         $location.path('/nieuw-idee');
+        //     }
+        // }
 
 
     }, 3000);
@@ -1557,9 +1575,10 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     $window.cityName = $routeParams.cityName;
     if ($routeParams.cityName) {
         $scope.searchCity = $routeParams.cityName;
-        // $window.cityName = $routeParams.cityName;
+        $window.cityName = $routeParams.cityName;
         // geocodeAddress(geocoder,map);
     }
+
     $rootScope.errorSession = "";
 
     //promise for make asyncronise data factory to be syncronis first load
@@ -3473,7 +3492,7 @@ vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileSer
 
 }])
 
-vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', 'duplicateIssuesService', '$cookies', 'serviceStandartService','reportService','issuesService','agreementSevice', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, duplicateIssuesService, $cookies, serviceStandartService,reportService,issuesService,agreementSevice) {
+vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', 'duplicateIssuesService', '$cookies', 'serviceStandartService','reportService','issuesService','agreementSevice','$routeParams', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, duplicateIssuesService, $cookies, serviceStandartService,reportService,issuesService,agreementSevice,$routeParams) {
     $rootScope.dynamicTitle = "nieuw-probleem";
     $scope.hide = "ng-hide";
     $scope.issueName = "Probleem"
@@ -3485,6 +3504,12 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
     $scope.count = 0;
     $scope.standardMessage = "";
     $rootScope.urlBefore = $location.path();
+
+    //to send to another city gemeente/Amsterdam/niew-probleem
+    if($routeParams.cityName){
+        $window.cityName = $routeParams.cityName;
+        geocodeAddress(geocoder, map);
+    }
 
     $scope.email = "";
     $scope.username = "";
@@ -4093,7 +4118,7 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
 
 		}])
 
-vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', '$cookies','reportService','issuesService','agreementSevice', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, $cookies,reportService,issuesService,agreementSevice) {
+vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', '$cookies','reportService','issuesService','agreementSevice','$routeParams', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, $cookies,reportService,issuesService,agreementSevice,$routeParams) {
     $rootScope.dynamicTitle = "nieuw-idee";
     $scope.hide = "ng-hide";
     $scope.issueName = "Probleem"
@@ -4101,6 +4126,12 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
     $scope.myIssueCount = 0;
     $scope.initslide = "toggle-button2 ";
     $rootScope.urlBefore = $location.path();
+
+    //to send to another city gemeente/Amsterdam/niew-probleem
+    if($routeParams.cityName){
+        $window.cityName = $routeParams.cityName;
+        geocodeAddress(geocoder, map);
+    }
 
     $scope.email = "";
     $scope.username = "";

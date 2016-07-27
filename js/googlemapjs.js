@@ -98,15 +98,17 @@ function getLocation(map) {
 }
 function geocodeAddress(geocoder, resultsMap) {
         var address = null;
-        if(document.getElementById('searchCity').value){
-        var address = document.getElementById('searchCity').value;
-        }
+        
         if(cityName!=null){
           var address = cityName;
         }
         else if(postalcode!=null){
           var address = postalcode;
         }
+        else if(document.getElementById('searchCity').value){
+        var address = document.getElementById('searchCity').value;
+        }
+        
         geocoder.geocode({'address': address,componentRestrictions: {country: 'nl'}}, function(results, status) {
           if (status === google.maps.GeocoderStatus.OK) {
                 resultsMap.setCenter(results[0].geometry.location);
