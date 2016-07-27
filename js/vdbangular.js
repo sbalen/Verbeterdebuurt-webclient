@@ -167,7 +167,7 @@ window.onload = function () {
     //start location picker
 
     var tempurl = window.location.pathname;
-    if(tempurl.includes('gemeente')){
+    if(tempurl.includes('gemeente') && !(tempurl.includes('nieuw-probleem')||tempurl.includes('nieuw-idee')||tempurl.includes('nieuwe-melding'))){
         var citytemp = tempurl.substring(tempurl.slice(0,tempurl.length-1).lastIndexOf('/')+1);
         cityName = citytemp.substring(0,citytemp.length-1);
         console.log(cityName);
@@ -629,6 +629,18 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
         .when('/gemeente/:cityName/', {
             templateUrl: 'map.html',
             controller: 'mainCtrl'
+        })
+        .when('/gemeente/:cityName/nieuwe-melding', {
+            templateUrl: 'selectproblem.html',
+            controller: 'createissueCtrl'
+        })
+        .when('/gemeente/:cityName/nieuw-probleem', {
+            templateUrl: 'createissues.html',
+            controller: 'createissueCtrl'
+        })
+        .when('/gemeente/:cityName/nieuw-idee', {
+            templateUrl: 'createIdea.html',
+            controller: 'createIdeaCtrl'
         })
         .when('/gemeente/:cityName/:action?', {
             templateUrl: 'map.html',
@@ -1507,15 +1519,15 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
 
 
         //auto redirection to new problem
-        if (!(typeof $routeParams.action === 'undefined')) {
-            if ($routeParams.action == "nieuwe-melding") {
-                $location.path('/nieuwe-melding');
-            } else if ($routeParams.action == "nieuw-probleem") {
-                $location.path('/nieuw-probleem');
-            } else if ($routeParams.action == "nieuw-idee") {
-                $location.path('/nieuw-idee');
-            }
-        }
+        // if (!(typeof $routeParams.action === 'undefined')) {
+        //     if ($routeParams.action == "nieuwe-melding") {
+        //         $location.path('/nieuwe-melding');
+        //     } else if ($routeParams.action == "nieuw-probleem") {
+        //         $location.path('/nieuw-probleem');
+        //     } else if ($routeParams.action == "nieuw-idee") {
+        //         $location.path('/nieuw-idee');
+        //     }
+        // }
 
 
     }, 3000);
@@ -3479,7 +3491,7 @@ vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileSer
 
 }])
 
-vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', 'duplicateIssuesService', '$cookies', 'serviceStandartService','reportService','issuesService','agreementSevice', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, duplicateIssuesService, $cookies, serviceStandartService,reportService,issuesService,agreementSevice) {
+vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', 'duplicateIssuesService', '$cookies', 'serviceStandartService','reportService','issuesService','agreementSevice','$routeParams', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, duplicateIssuesService, $cookies, serviceStandartService,reportService,issuesService,agreementSevice,$routeParams) {
     $rootScope.dynamicTitle = "nieuw-probleem";
     $scope.hide = "ng-hide";
     $scope.issueName = "Probleem"
@@ -3491,6 +3503,12 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
     $scope.count = 0;
     $scope.standardMessage = "";
     $rootScope.urlBefore = $location.path();
+
+    //to send to another city gemeente/Amsterdam/niew-probleem
+    if($routeParams.cityName){
+        $window.cityName = $routeParams.cityName;
+        geocodeAddress(geocoder, map);
+    }
 
     $scope.email = "";
     $scope.username = "";
@@ -4097,7 +4115,7 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
 
 		}])
 
-vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', '$cookies','reportService','issuesService','agreementSevice', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, $cookies,reportService,issuesService,agreementSevice) {
+vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', '$cookies','reportService','issuesService','agreementSevice','$routeParams', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, $cookies,reportService,issuesService,agreementSevice,$routeParams) {
     $rootScope.dynamicTitle = "nieuw-idee";
     $scope.hide = "ng-hide";
     $scope.issueName = "Probleem"
@@ -4105,6 +4123,12 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
     $scope.myIssueCount = 0;
     $scope.initslide = "toggle-button2 ";
     $rootScope.urlBefore = $location.path();
+
+    //to send to another city gemeente/Amsterdam/niew-probleem
+    if($routeParams.cityName){
+        $window.cityName = $routeParams.cityName;
+        geocodeAddress(geocoder, map);
+    }
 
     $scope.email = "";
     $scope.username = "";
