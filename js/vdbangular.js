@@ -43,6 +43,33 @@ var geolocationValid = 0;
 markers = null;
 markers = [];
 
+//polyfill for includes for internet explore not support js
+if (!String.prototype.includes) {
+  String.prototype.includes = function(search, start) {
+    'use strict';
+    if (typeof start !== 'number') {
+      start = 0;
+    }
+    
+    if (start + search.length > this.length) {
+      return false;
+    } else {
+      return this.indexOf(search, start) !== -1;
+    }
+  };
+}
+//polyfill for endswith internet explore not support js
+if (!String.prototype.endsWith) {
+  String.prototype.endsWith = function(searchString, position) {
+      var subjectString = this.toString();
+      if (typeof position !== 'number' || !isFinite(position) || Math.floor(position) !== position || position > subjectString.length) {
+        position = subjectString.length;
+      }
+      position -= searchString.length;
+      var lastIndex = subjectString.indexOf(searchString, position);
+      return lastIndex !== -1 && lastIndex === position;
+  };
+}
 
 //google map
 window.onload = function () {
@@ -139,6 +166,13 @@ window.onload = function () {
     getLatLng(map);
     //start location picker
 
+    var tempurl = window.location.pathname;
+    if(tempurl.includes('gemeente')){
+        var citytemp = tempurl.substring(tempurl.slice(0,tempurl.length-1).lastIndexOf('/')+1);
+        cityName = citytemp.substring(0,citytemp.length-1);
+        console.log(cityName);
+        geocodeAddress(geocoder, map);
+    }
 
     $('#duplicate-bubble').hide();
 
@@ -436,8 +470,6 @@ function geocodeAddressCreateProblem(geocoder, resultsMap, address,location) {
             marker.setPosition(resultsMap.getCenter());
             markerLat = resultsMap.getCenter().lat();
             markerLng = resultsMap.getCenter().lng();
-            console.log('lat'+markerLat);
-            console.log('long'+markerLng);
             maxlat = map.getBounds().getNorthEast().lat();
             maxlng = map.getBounds().getNorthEast().lng();
             minlat = map.getBounds().getSouthWest().lat();
@@ -526,33 +558,7 @@ function markerGetAddress(marker, location) {
         
     });
 }
-//polyfill for includes for internet explore not support js
-if (!String.prototype.includes) {
-  String.prototype.includes = function(search, start) {
-    'use strict';
-    if (typeof start !== 'number') {
-      start = 0;
-    }
-    
-    if (start + search.length > this.length) {
-      return false;
-    } else {
-      return this.indexOf(search, start) !== -1;
-    }
-  };
-}
-//polyfill for endswith internet explore not support js
-if (!String.prototype.endsWith) {
-  String.prototype.endsWith = function(searchString, position) {
-      var subjectString = this.toString();
-      if (typeof position !== 'number' || !isFinite(position) || Math.floor(position) !== position || position > subjectString.length) {
-        position = subjectString.length;
-      }
-      position -= searchString.length;
-      var lastIndex = subjectString.indexOf(searchString, position);
-      return lastIndex !== -1 && lastIndex === position;
-  };
-}
+
 //change menu selected
 function menuSelected($scope, selected) {
     $scope.homeSelected = "";
@@ -1451,7 +1457,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     //google map aouto complete
     var input = document.getElementById('searchCity');
     var options = {
-        types: ['(cities)'],
+        types: ['geocode'],
         componentRestrictions: {
             country: 'nl'
         }
@@ -1556,9 +1562,10 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     $window.cityName = $routeParams.cityName;
     if ($routeParams.cityName) {
         $scope.searchCity = $routeParams.cityName;
-        // $window.cityName = $routeParams.cityName;
+        $window.cityName = $routeParams.cityName;
         // geocodeAddress(geocoder,map);
     }
+
     $rootScope.errorSession = "";
 
     //promise for make asyncronise data factory to be syncronis first load
