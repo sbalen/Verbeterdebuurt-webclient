@@ -325,7 +325,6 @@ function markerCenter(map, marker, location) {
             'latLng': marker.getPosition()
         }, function (result, status) {
             if (status == google.maps.GeocoderStatus.OK) {
-
                 for (var i = 0; i < result[0].address_components.length; i++) {
                     for (var b = 0; b < result[0].address_components[i].types.length; b++) {
                         //if you want the change the area ..
@@ -434,9 +433,11 @@ function geocodeAddressCreateProblem(geocoder, resultsMap, address,location) {
     }, function (results, status) {
         if (status === google.maps.GeocoderStatus.OK) {
             resultsMap.setCenter(results[0].geometry.location);
-            marker.setPosition(map.getCenter());
-            markerLat = marker.getPosition().lat();
-            markerLng = marker.getPosition().lng();
+            marker.setPosition(resultsMap.getCenter());
+            markerLat = resultsMap.getCenter().lat();
+            markerLng = resultsMap.getCenter().lng();
+            console.log('lat'+markerLat);
+            console.log('long'+markerLng);
             maxlat = map.getBounds().getNorthEast().lat();
             maxlng = map.getBounds().getNorthEast().lng();
             minlat = map.getBounds().getSouthWest().lat();
@@ -3718,7 +3719,8 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
         //location
         location.latitude = markerLat;
         location.longitude = markerLng;
-        
+        console.log("createlat:"+location.latitude);
+        console.log("createlong:"+location.longitude);
         
         if ($cookies.getObject('user')) { //login
             jsondataSubmit = JSON.stringify({
