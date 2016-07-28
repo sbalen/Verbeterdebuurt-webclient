@@ -121,6 +121,18 @@ window.onload = function () {
     };
 
     map = new google.maps.Map(document.getElementById('googlemaps'), mapOptions);
+
+    google.maps.event.addListener(map,'mouseover',function(){
+        if((window.location.pathname=='/'||window.location.pathname.includes('gemeente'))&&!(window.location.pathname.includes('nieuw-probleem')||window.location.pathname.includes('nieuw-idee')||window.location.pathname.includes('nieuwe-melding'))){
+        map.setOptions({
+        scrollwheel: true})
+    }
+    else{
+        map.setOptions({
+        scrollwheel: false})
+    }
+    })
+    
     getLocation(map);
     var geocoder = new google.maps.Geocoder();
     google.maps.event.addListener(map, 'bounds_changed', function (e) {
@@ -1329,6 +1341,17 @@ vdbApp.run(['$rootScope', '$window', function ($rootScope, $window) {
     }]);
 
 vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$rootScope', '$routeParams', '$http', 'issuesService', 'reportService', '$facebook', '$cacheFactory', 'agreementSevice', '$cookies','myIssuesService', function ($scope, $timeout, $window, $location, $rootScope, $routeParams, $http, issuesService, reportService, $facebook, $cacheFactory, agreementSevice, $cookies, myIssuesService) {
+    // //validate zoom at map
+    // $timeout(function(){
+    //      if($location.path()=='/'){
+    //     map.setOptions({
+    //     scrollwheel: true})
+    // }
+    // else{
+    //     map.setOptions({
+    //     scrollwheel: false})
+    // }
+    // },3000)
     //check android or not
     $rootScope.dynamicTitle = "";
     var isAndroid = /(android)/i.test(navigator.userAgent);

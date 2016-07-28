@@ -155,15 +155,15 @@ function showIssue(infoWindow,infoWindowContent) {
 
 function callMarker (markers,zoom,map) {
   if(zoom < 14) {
-    for(var x=0 ; x< markers.length ; x++) {
-      markers[x].setMap(null);
+    for(var x=0 ; x< markerid.length ; x++) {
+      markers[markerid[x]].setMap(null);
+      markers[markerid[x]]=null;
+      markerid.splice(x,1);
     }
-    markers=null;
     return;
   }
   //check if not at the rage area of map
   for(var y=0 ; y < markerid.length ; y++){
-    console.log(issuesData.count);
     if(issuesData.count==0){
       markers[markerid[y]].setMap(null);
       markers[markerid[y]]=null;
@@ -237,7 +237,9 @@ function callMarker (markers,zoom,map) {
         infoWindow.setContent(marker.contentString);
         infoWindow.open(map,marker);
         map.setCenter(marker.getPosition());
-      }
+         map.setOptions({
+                scrollwheel: true})
+              }
     })(marker,i));
     }
     else{
