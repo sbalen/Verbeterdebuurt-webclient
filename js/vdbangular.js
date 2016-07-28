@@ -70,6 +70,12 @@ if (!String.prototype.endsWith) {
       return lastIndex !== -1 && lastIndex === position;
   };
 }
+//console log()iff you want to deactive it, change the paremeter from true to false
+logger = function(string){
+    if(true){
+       console.log(string);
+    }
+}
 
 //google map
 window.onload = function () {
@@ -155,7 +161,7 @@ window.onload = function () {
                         }
                     }
                 }
-                     // console.log("drag googlemap:"+city.long_name);
+                     // logger("drag googlemap:"+city.long_name);
                       // showIssue(infoWindow,infoWindowContent);
                 }
                 
@@ -182,7 +188,7 @@ window.onload = function () {
     if(tempurl.includes('gemeente') && !(tempurl.includes('nieuw-probleem')||tempurl.includes('nieuw-idee')||tempurl.includes('nieuwe-melding'))){
         var citytemp = tempurl.substring(tempurl.slice(0,tempurl.length-1).lastIndexOf('/')+1);
         cityName = citytemp.substring(0,citytemp.length-1);
-        console.log(cityName);
+        logger(cityName);
         geocodeAddress(geocoder, map);
     }
 
@@ -376,7 +382,7 @@ function markerCenter(map, marker, location) {
                         //if you want the change the area ..
                         if (result[0].address_components[i].types[b] == "route") {
                             // street name
-                            //console.log("1");
+                            //logger("1");
                             streetLocation = result[0].address_components[i].short_name;
                             addressLocation = streetLocation;
                             
@@ -413,7 +419,7 @@ function markerCenter(map, marker, location) {
 
     google.maps.event.addListener(map, 'click', function (e) {
         marker.setPosition(e.latLng);
-        // console.log(e.latLng);
+        // logger(e.latLng);
         markerLat = marker.getPosition().lat();
         markerLng = marker.getPosition().lng();
         geocoder.geocode({
@@ -1151,8 +1157,8 @@ vdbApp.factory('issueSubmitServiceWithImage', ['$http', function ($http) {
                     headers : { 'Content-Type' : undefined }
                 })
                 .success(function (data, headers) {
-                    console.log(data);
-                    console.log(headers);
+                    logger(data);
+                    logger(headers);
                 })
         }
 
@@ -1356,10 +1362,10 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     $rootScope.dynamicTitle = "";
     var isAndroid = /(android)/i.test(navigator.userAgent);
     if (isAndroid) {
-        console.log("android");
+        logger("android");
     }
     else{
-        console.log("not android");
+        logger("not android");
     }
     //for redirecting the action
     var nextaction = "";
@@ -1534,7 +1540,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
                 $window.issuesData = getdata;
                  // deletemarker(markers);
                 showIssue(infoWindow, infoWindowContent);
-                 //console.log(markers);
+                 //logger(markers);
             }
         });
 
@@ -1559,8 +1565,8 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     //             var jsoncity = JSON.stringify({
     //             "council": city.long_name
     //         });
-    //             console.log(city.long_name);
-    //             console.log(jsoncity);
+    //             logger(city.long_name);
+    //             logger(jsoncity);
     //         var getReport = reportService.getReport(jsoncity).then(function (data) {
     //                 var getdata = data.data;
     //                 $rootScope.reportList = getdata.report;
@@ -1574,7 +1580,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     //                         $rootScope.hideLogo = 1;
     //                     } else {
     //                         $rootScope.hideLogo = 0;
-    //                         console.log($scope.hideLogo);
+    //                         logger($scope.hideLogo);
     //                     }
     //                 })
 
@@ -1718,7 +1724,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
                 });
                 getIssues = issuesService.getIssues(jsondata).then(function (data) {
                     var getdata = data.data;
-                    // console.log(markers.length);
+                    // logger(markers.length);
                     // for(var x=0 ; x< markers.length ; x++){
                     //       markers[x].setMap(null);
                     //     }
@@ -2283,7 +2289,7 @@ vdbApp.controller('myIssuesCtrl', ['$scope', '$rootScope', '$window', '$location
         }
     });
     //to get hash password
-    // console.log(jsondata);
+    // logger(jsondata);
     var getMyIssues = myIssuesService.getMyIssues(jsondata).then(function (data) {
         var getdata = data.data;
         $rootScope.count = getdata.count;
@@ -2542,14 +2548,14 @@ vdbApp.controller('loginCtrl', ['$scope', '$rootScope', '$window', 'loginService
                     }
                 });
 
-                console.log($scope.facebookuser);
+                logger($scope.facebookuser);
 
-                //console.log(jsondata);
+                //logger(jsondata);
 
                 var getLogin = loginService.getLogin(jsondata).then(function (data) {
 
                     var result = data.data;
-                    console.log(result);
+                    logger(result);
                     if (!result.success) {
                         //fix this if false
                         $location.path('/registreren');
@@ -2602,7 +2608,7 @@ vdbApp.controller('loginCtrl', ['$scope', '$rootScope', '$window', 'loginService
         var jsondata = JSON.stringify({
             "ondernemingsdossierURL": "" + $location.url() + ""
         });
-        console.log("jsondata:" + jsondata);
+        logger("jsondata:" + jsondata);
         var getLogin = loginService.getLogin(jsondata).then(function (data) {
             var getLogin = data.data;
 
@@ -2630,19 +2636,19 @@ vdbApp.controller('loginCtrl', ['$scope', '$rootScope', '$window', 'loginService
                 //temp for data session
                 var expired = new Date();
                 expired.setHours(expired.getHours() +2);
-                console.log(expired);
+                logger(expired);
                 $cookies.putObject('user', getLogin.user, {
                     expires: expired
                 });
                 $cookies.putObject('user_profile', getLogin.user_profile, {
                     expires: expired
                 });
-                console.log($cookies.getObject('user'));
+                logger($cookies.getObject('user'));
                 //remember me
                 if ($scope.rememberMe === true) {
                     var expired = new Date();
                     expired.setDate(expired.getDate() + 7);
-                    console.log(expired);
+                    logger(expired);
                     $cookies.put('username', $scope.lusername, {
                         expires: expired
                     });
@@ -2666,7 +2672,7 @@ vdbApp.controller('loginCtrl', ['$scope', '$rootScope', '$window', 'loginService
                 $rootScope.globaloverlay = "";
                 $rootScope.errorSession = "";
                 var postcode = $location.search().postcode;
-                console.log(postcode);
+                logger(postcode);
                 if (postcode != undefined) {
                     $location.search({});
                     $location.path('/postcode/' + (postcode.replace(/ /g, "").toUpperCase()));
@@ -2809,7 +2815,7 @@ vdbApp.controller('registerCtrl', ['$scope', '$rootScope', '$window', 'registerS
     }
 
     if ($window.sessionStorage.ondernemingsdossierID != undefined) {
-        console.log($window.sessionStorage.name);
+        logger($window.sessionStorage.name);
         if ($window.sessionStorage.name) $scope.username = $window.sessionStorage.name.replace(/\+/g, "").replace(/-/g, "").replace(/_/g, "").replace(/\//g, "").replace(/ /g, "").toLowerCase();
         if ($window.sessionStorage.email) $scope.email = $window.sessionStorage.email;
         if ($window.sessionStorage.postcode) $scope.postcode = $window.sessionStorage.postcode;
@@ -3273,7 +3279,7 @@ vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileSer
     $scope.phone = c_user_profile.phone;
 
 
-    //console.log({user,password,user_profile});
+    //logger({user,password,user_profile});
     $scope.profile = function () {
         $rootScope.globaloverlay = "active";
         $scope.errorEmail = "";
@@ -3463,7 +3469,7 @@ vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileSer
 //
 //                            var getNewsletter = newsletterService.getNewsletter(jsonnewsletter).then(function (data) {
 //                                var getNewsletter = data.data;
-//                                console.log(getNewsletter);
+//                                logger(getNewsletter);
 //                            })
 //                        }
 
@@ -3767,8 +3773,8 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
         //location
         location.latitude = markerLat;
         location.longitude = markerLng;
-        console.log("createlat:"+location.latitude);
-        console.log("createlong:"+location.longitude);
+        logger("createlat:"+location.latitude);
+        logger("createlong:"+location.longitude);
         
         if ($cookies.getObject('user')) { //login
             jsondataSubmit = JSON.stringify({
@@ -4095,12 +4101,12 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
             "long" : long,
             "category_id" : category_id
         });
-        console.log(jsondataDuplicate);
+        logger(jsondataDuplicate);
         var getDuplicateIssue = duplicateIssuesService.getDuplicateIssue(jsondataDuplicate).then(function (data) {
             var getDuplicateIssue = data.data;
             $scope.count = data.data.count;
             $scope.duplicateDataList = getDuplicateIssue.issues;
-            console.log(getDuplicateIssue);
+            logger(getDuplicateIssue);
 
         });
         var getServiceStandard = serviceStandartService.getServiceStandard(jsondataServiceStandard).then(function (data) {
