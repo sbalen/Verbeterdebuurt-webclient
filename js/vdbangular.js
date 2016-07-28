@@ -1140,6 +1140,9 @@ vdbApp.factory('issueSubmitService', ['$http', function ($http) {
                 .success(function (data) {
                     issueSubmitService.data = data;
                     return issueSubmitService.data;
+                })
+                .error(function(data, status, headers, config){
+        logger('error')
                 });
             return issueSubmitService.data;
         }
@@ -4452,13 +4455,13 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
                     "city" : $scope.city,
                     "phone" : $scope.phone                   
                 }, 
-                "issue" : {
-                    "title" : issue.title,
-                    "description" :  issue.description,
-                    "type" : issue.type,
-                    "realization" : issue.realization
+                // "issue" : {
+                //     "title" : issue.title,
+                //     "description" :  issue.description,
+                //     "type" : issue.type,
+                //     "realization" : issue.realization
                     
-                }, 
+                // }, 
                 "location" : {
                     "latitude" : location.latitude,
                     "longitude" : location.longitude
