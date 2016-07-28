@@ -1142,7 +1142,9 @@ vdbApp.factory('issueSubmitService', ['$http', function ($http) {
                     return issueSubmitService.data;
                 })
                 .error(function(data, status, headers, config){
-        logger('error')
+                    logger('error')
+                    alert('you get some error. click there to go to home page');
+                    window.location.href ='/';
                 });
             return issueSubmitService.data;
         }
