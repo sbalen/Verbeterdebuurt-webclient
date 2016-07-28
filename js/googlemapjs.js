@@ -161,6 +161,26 @@ function callMarker (markers,zoom,map) {
     markers=null;
     return;
   }
+  //check if not at the rage area of map
+  for(var y=0 ; y < markerid.length ; y++){
+    console.log(issuesData.count);
+    if(issuesData.count==0){
+      markers[markerid[y]].setMap(null);
+      markers[markerid[y]]=null;
+      markerid.splice(y,1);
+    }
+    for(var i= 0 ; i < issuesData.count ; i++){
+      if(markerid[y]==issuesData.issues[i].id){
+        break;
+      }
+      else if(i==issuesData.count-1){
+        markers[markerid[y]].setMap(null);
+        markers[markerid[y]]=null;
+        markerid.splice(y,1);
+        break;
+      }
+    }
+  }
 
   for(var i= 0 ; i < issuesData.count ; i++) {
     var latLng = {lat:issuesData.issues[i].location.latitude , lng : issuesData.issues[i].location.longitude}
@@ -203,11 +223,15 @@ function callMarker (markers,zoom,map) {
     }
     
     infoWindowContent[i]= "<a href=/melding/"+issuesData.issues[i].id+"><span style=color:green;>"+issuesData.issues[i].title+"</span></a><br>"+tempType[i]+", "+tempStatus[i]+"<br>"+issuesData.issues[i].location.src_address+"";
+      var marker = new google.maps.Marker(markerOption);
+      marker.contentString = "<a href=/melding/"+issuesData.issues[i].id+"><span style=color:green;>"+issuesData.issues[i].title+"</span></a><br>"+tempType[i]+", "+tempStatus[i]+"<br>"+issuesData.issues[i].location.src_address+"";
+      marker.set('id',issuesData.issues[i].id);
+    // markers.push(marker);
 
-    var marker = new google.maps.Marker(markerOption);
-    marker.contentString = "<a href=/melding/"+issuesData.issues[i].id+"><span style=color:green;>"+issuesData.issues[i].title+"</span></a><br>"+tempType[i]+", "+tempStatus[i]+"<br>"+issuesData.issues[i].location.src_address+"";
-    markers.push(marker);
-    google.maps.event.addListener(marker , 'click' , (function (marker,i) {
+    if(markers[marker.id] == null){
+      markerid.push(marker.id);
+      markers[marker.id] = marker;
+      google.maps.event.addListener(marker , 'click' , (function (marker,i) {
       return function() {
         window.history.pushState('map','map','/');
         infoWindow.setContent(marker.contentString);
@@ -215,16 +239,24 @@ function callMarker (markers,zoom,map) {
         map.setCenter(marker.getPosition());
       }
     })(marker,i));
+    }
+    else{
+      marker.setMap(null);
+      marker=null;
+    }
+
   }
 }
 
 function deletemarker(markers){
-    //google.maps.event.addListener(map,'dragend' ,function(){
     for(var x=0 ; x< markers.length ; x++) {
-      markers[x].setMap(null);
+      if(markers[x]!=null){
+        markers[x].setMap(null);
+
+      }
+       //console.log(x);
     }
     markers=null;
     console.log(markers);
-    //})
    
 }

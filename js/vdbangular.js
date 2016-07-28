@@ -42,7 +42,7 @@ var confirmVoteService = new Object();
 var geolocationValid = 0;
 markers = null;
 markers = [];
-
+markerid = [];
 //polyfill for includes for internet explore not support js
 if (!String.prototype.includes) {
   String.prototype.includes = function(search, start) {
@@ -1493,8 +1493,6 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     }
 
 
-
-
     $scope.userpanel = 1;
     $timeout(function () {
         var jsondata = JSON.stringify({
@@ -1513,6 +1511,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
                 $window.issuesData = getdata;
                  // deletemarker(markers);
                 showIssue(infoWindow, infoWindowContent);
+                 //console.log(markers);
             }
         });
 
@@ -1701,11 +1700,11 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
                     //       markers[x].setMap(null);
                     //     }
                     $rootScope.newProblemList = getdata.issues;
-                    if (getdata.count != 0 || !getdata) {
+                    //if (getdata.count != 0 || !getdata) {
                         $window.issuesData = getdata;
                         // deletemarker(markers);
                         showIssue(infoWindow, infoWindowContent);
-                    }
+                   // }
 
                 });
             }
@@ -1759,6 +1758,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
             $rootScope.globaloverlay = "active";
             $window.cityName = null;
             $window.postalcode = null;
+            // deletemarker(markers);
             //$rootScope.lastCity = city.long_name;
             geocodeAddress(geocoder, map);
             $timeout(function () {
@@ -1927,7 +1927,7 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
         $scope.sateliteimg = "http://maps.googleapis.com/maps/api/staticmap?center="+lat+","+lng+"&zoom=18&size=515x300&maptype=hybrid&format=jpg&key=AIzaSyCk3yxCifnV67hIJ2iyRupfH2iHvshna3I&markers=color:red%7C"+lat+","+lng+"&sensor=false";
 
         
-       
+
         $scope.hide = "";
         $rootScope.globaloverlay = "";
         //                        var jsoncity = JSON.stringify({"council":""+getdata.issues[0].council+""});
