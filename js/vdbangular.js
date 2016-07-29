@@ -2375,7 +2375,7 @@ vdbApp.controller('mentionCtrl', ['$scope', '$rootScope', '$window', '$location'
 }])
 
 vdbApp.controller('myIssuesCtrl', ['$scope', '$rootScope', '$window', '$location', 'myIssuesService', '$cookies', function ($scope, $rootScope, $window, $location, myIssuesService, $cookies) {
-    $rootScope.dynamicTitle = "mijn-meldingen";
+    $rootScope.dynamicTitle = "Mijn meldingen |";
     $scope.hide = "";
     menuSelected($rootScope, 'myIssues');
 
@@ -2410,7 +2410,7 @@ vdbApp.controller('myIssuesCtrl', ['$scope', '$rootScope', '$window', '$location
 }])
 
 vdbApp.controller('myIssuesDetailCtrl', ['$scope', '$routeParams', '$http', '$rootScope', '$location', '$window', 'myIssuesService', 'issueLogService', 'commentService', 'voteSubmitService', '$cookies','$timeout', function ($scope, $routeParams, $http, $rootScope, $location, $window, myIssuesService, issueLogService, commentService, voteSubmitService, $cookies,$timeout) {
-    $rootScope.dynamicTitle = "mijn-meldingen";
+    $rootScope.dynamicTitle = "Mijn meldingen |";
     $scope.hide = "";
     $scope.hideStatus = "ng-hide";
     $scope.errorVote = "";
@@ -2606,7 +2606,7 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope', '$routeParams', '$http', '$ro
 }])
 
 vdbApp.controller('loginCtrl', ['$scope', '$rootScope', '$window', 'loginService', '$location', '$facebook', '$cookies', function ($scope, $rootScope, $window, loginService, $location, $facebook, $cookies) {
-    $rootScope.dynamicTitle = "login";
+    $rootScope.dynamicTitle = "Login |";
     $scope.hide = "ng-hide";
     $scope.lusername = "";
     $scope.lpassword = "";
@@ -2872,7 +2872,7 @@ vdbApp.controller('loginCtrl', ['$scope', '$rootScope', '$window', 'loginService
 
 
 vdbApp.controller('registerCtrl', ['$scope', '$rootScope', '$window', 'registerService', 'newsletterService', '$location', '$facebook', function ($scope, $rootScope, $window, registerService, newsletterService, $location, $facebook) {
-    $rootScope.dynamicTitle = "registreren";
+    $rootScope.dynamicTitle = "Registreren";
     $scope.home = function () {
         $location.path('/');
 
@@ -3187,7 +3187,7 @@ vdbApp.controller('commentSubmitCtrl', ['$scope', '$route', '$rootScope', '$wind
 vdbApp.controller('forgotCtrl', ['$scope', '$rootScope', '$window', 'forgotService', '$location', function ($scope, $rootScope, $window, forgotService, $location) {
     $scope.hide = "ng-hide";
     $scope.overlay = "overlay";
-    $rootScope.dynamicTitle = "wachtwoord";
+    $rootScope.dynamicTitle = "Wachtwoord vergeten |";
 
 
 
@@ -3244,7 +3244,7 @@ vdbApp.controller('forgotconfCtrl', ['$scope', '$rootScope', '$window', '$locati
 
 vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileService', 'loginService', '$location', '$facebook', 'syncFBService', '$cookies', function ($scope, $rootScope, $window, profileService , loginService, $location, $facebook, syncFBService, $cookies) {
     $scope.hide = "ng-hide";
-    $rootScope.dynamicTitle = "Profiel";
+    $rootScope.dynamicTitle = "Mijn profiel |";
     $scope.home = function () {
         $location.path('/');
     }
@@ -3625,7 +3625,7 @@ vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileSer
 }])
 
 vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', 'duplicateIssuesService', '$cookies', 'serviceStandartService','reportService','issuesService','agreementSevice','$routeParams', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, duplicateIssuesService, $cookies, serviceStandartService,reportService,issuesService,agreementSevice,$routeParams) {
-    $rootScope.dynamicTitle = "nieuw-probleem";
+    $rootScope.dynamicTitle = "Nieuw probleem |";
     $scope.hide = "ng-hide";
     $scope.issueName = "Probleem"
     $scope.hideIssue = 1;
@@ -4250,7 +4250,7 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
 		}])
 
 vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', '$cookies','reportService','issuesService','agreementSevice','$routeParams', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, $cookies,reportService,issuesService,agreementSevice,$routeParams) {
-    $rootScope.dynamicTitle = "nieuw-idee";
+    $rootScope.dynamicTitle = "Nieuw idee |";
     $scope.hide = "ng-hide";
     $scope.issueName = "Probleem"
     $scope.hideIssue = 1;
