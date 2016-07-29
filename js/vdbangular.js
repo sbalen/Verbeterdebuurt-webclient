@@ -76,7 +76,12 @@ logger = function(string){
        console.log(string);
     }
 }
-
+//error api handler
+errorhandler = function(){
+    logger('error')
+    alert('you get some error. click there to go to home page');
+    window.location.href ='/';
+}
 //google map
 window.onload = function () {
     var mainLat = 52.371828;
@@ -1142,9 +1147,7 @@ vdbApp.factory('issueSubmitService', ['$http', function ($http) {
                     return issueSubmitService.data;
                 })
                 .error(function(data, status, headers, config){
-                    logger('error')
-                    alert('you get some error. click there to go to home page');
-                    window.location.href ='/';
+                    errorhandler()
                 });
             return issueSubmitService.data;
         }
