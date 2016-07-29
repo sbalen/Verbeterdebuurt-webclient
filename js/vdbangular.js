@@ -77,6 +77,19 @@ logger = function(string){
     }
 }
 
+//google map auto compleate change string to make it by id
+googleautocompleate = function(stringid){
+      var input = document.getElementById(stringid);
+      var options = {
+        types: ['geocode'],
+        componentRestrictions: {
+            country: 'nl'
+        }
+    };
+
+    var autocomplete = new google.maps.places.Autocomplete(input, options);
+}
+
 //google map
 window.onload = function () {
     var mainLat = 52.371828;
@@ -1495,16 +1508,9 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
 
     menuSelected($rootScope, 'home');
     //$scope.hideLogo = 1;
+    
     //google map aouto complete
-    var input = document.getElementById('searchCity');
-    var options = {
-        types: ['geocode'],
-        componentRestrictions: {
-            country: 'nl'
-        }
-    };
-
-    var autocomplete = new google.maps.places.Autocomplete(input, options);
+    googleautocompleate('searchCity');
 
 
     if ($location.path() == "/plaats/" + $routeParams.cityNameplaats + nextaction) {
@@ -3538,7 +3544,8 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
         $window.cityName = $routeParams.cityName;
         geocodeAddress(geocoder, map);
     }
-
+    //googlemapautocompleate
+    googleautocompleate('searchCityProblem');
     $scope.email = "";
     $scope.username = "";
     $scope.password = "";
@@ -4152,7 +4159,9 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
     $scope.myIssueCount = 0;
     $scope.initslide = "toggle-button2 ";
     $rootScope.urlBefore = $location.path();
-
+    //google map auto compleate
+    googleautocompleate('searchCityIdea');
+    
     //to send to another city gemeente/Amsterdam/niew-probleem
     if($routeParams.cityName){
         $window.cityName = $routeParams.cityName;
