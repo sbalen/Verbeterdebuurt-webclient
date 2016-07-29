@@ -186,7 +186,7 @@ h6 {
     position: inherit; }
 
 .input-group {
-  width: 115%;
+  width: 94%;
   margin-left: 3.5%; }
 
 #googleMapCreateProblem {
@@ -792,5 +792,8 @@ h6 {
 .right-panel {
   float: right;
   margin-top: 20px; }
+
+.input-group.searchMap {
+  width: 115%; }
 
 /*# sourceMappingURL=vdb.css.map */

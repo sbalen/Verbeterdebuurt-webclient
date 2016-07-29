@@ -4888,6 +4888,7 @@ vdbApp.controller('closeIssueCtrl', ['$scope', '$rootScope', '$routeParams', '$w
             "user" : {
             "username" : user.username,
             "password_hash" : user.password_hash,
+            "authorisation_hash": user.authorisation_hash,
         },
                                       "issue_id" : issue_id,
                                       "result" : result,

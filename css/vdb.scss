@@ -287,7 +287,7 @@ h6 {
 }
 // input file
 .input-group{
-  width: 115%;
+  width: 94%;
   margin-left: 3.5%;
 }
 #googleMapCreateProblem{
@@ -1137,4 +1137,8 @@ margin-right: 10px; margin-top: 10px;
 .right-panel{
   float: right;
   margin-top: 20px;
+}
+
+.input-group.searchMap{
+    width: 115%;
 }
