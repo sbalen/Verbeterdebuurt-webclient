@@ -69,7 +69,7 @@ function getLocation(map) {
         maxlng  = map.getBounds().getNorthEast().lng();
         minlat = map.getBounds().getSouthWest().lat();
         minlng = map.getBounds().getSouthWest().lng();
-        console.log(maxlat,minlat,maxlng,minlng)
+        //console.log(maxlat,minlat,maxlng,minlng)
        geocoder.geocode({'latLng':e.latLng} , function (result , status){
         if (status == google.maps.GeocoderStatus.OK){
 
@@ -259,6 +259,6 @@ function deletemarker(markers){
        //console.log(x);
     }
     markers=null;
-    console.log(markers);
+   //console.log(markers);
    
 }
