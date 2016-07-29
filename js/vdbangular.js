@@ -677,7 +677,7 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
         })
         .when('/gemeente/:cityName/nieuwe-melding', {
             templateUrl: 'selectproblem.html',
-            controller: 'createissueCtrl'
+            controller: 'selectProblemCtrl'
         })
         .when('/gemeente/:cityName/nieuw-probleem', {
             templateUrl: 'createissues.html',
@@ -742,7 +742,7 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
         })
         .when('/nieuwe-melding', {
             templateUrl: 'selectproblem.html',
-            controller: 'createissueCtrl'
+            controller: 'selectProblemCtrl'
         })
         .when('/nieuw-probleem', {
             templateUrl: 'createissues.html',
@@ -3623,6 +3623,26 @@ vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileSer
 
 
 
+}])
+
+vdbApp.controller('selectProblemCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', 'duplicateIssuesService', '$cookies', 'serviceStandartService','reportService','issuesService','agreementSevice','$routeParams', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, duplicateIssuesService, $cookies, serviceStandartService,reportService,issuesService,agreementSevice,$routeParams) {
+     //$rootScope.dynamicTitle = "Nieuw Melding |";
+     $scope.redirectproblem = function(){
+        if($routeParams.cityName){
+            $location.path('gemeente/'+$routeParams.cityName+'/nieuw-probleem');
+        }
+        else{
+            $location.path('/nieuw-probleem');
+        }
+     }
+      $scope.redirectidea = function(){
+        if($routeParams.cityName){
+            $location.path('gemeente/'+$routeParams.cityName+'/nieuw-idee');
+        }
+        else{
+            $location.path('/nieuw-idee');
+        }
+     }
 }])
 
 vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', 'duplicateIssuesService', '$cookies', 'serviceStandartService','reportService','issuesService','agreementSevice','$routeParams', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, duplicateIssuesService, $cookies, serviceStandartService,reportService,issuesService,agreementSevice,$routeParams) {
