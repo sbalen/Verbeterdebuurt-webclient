@@ -2075,8 +2075,8 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
         if ($rootScope.targetAction === "close_issue") {
             $('#CloseModal').modal('show');
             $rootScope.getStatusId = $routeParams.id;
-            $rootScope.hashSession = null;
-            $rootScope.targetAction = null;
+            // $rootScope.hashSession = null;
+            // $rootScope.targetAction = null;
         }
         
         var hashToDelete = $rootScope.hashSession;
@@ -2131,8 +2131,8 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
         if ($rootScope.targetAction === "delete_issue") {
             $('#DeleteModal').modal('show');
             $rootScope.getStatusId = $routeParams.id;
-            $rootScope.hashSession = null;
-            $rootScope.targetAction = null;
+            // $rootScope.hashSession = null;
+            // $rootScope.targetAction = null;
         }
         
         
