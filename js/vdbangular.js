@@ -2014,7 +2014,7 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
     $scope.errorVote = "";
     $scope.hideError = 1;
     $scope.highlightid = $routeParams.id;
-    $rootScope.dynamicTitle = "melding";
+    $rootScope.dynamicTitle = "Melding |";
     var jsondata = JSON.stringify({
         "issue_id": $routeParams.id
     });
@@ -2046,6 +2046,7 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
     var getIssues = issuesService.getIssues(jsondata).then(function (data) {
         var getdata = data.data;
         $rootScope.problemIdList = getdata.issues;
+         $rootScope.dynamicTitle = ''+getdata.issues[0].title+' |';
         $timeout(function(){
         mainLat = getdata.issues[0].location.latitude;
         mainLng = getdata.issues[0].location.longitude;
@@ -3625,7 +3626,13 @@ vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileSer
 }])
 
 vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', 'duplicateIssuesService', '$cookies', 'serviceStandartService','reportService','issuesService','agreementSevice','$routeParams', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, duplicateIssuesService, $cookies, serviceStandartService,reportService,issuesService,agreementSevice,$routeParams) {
-    $rootScope.dynamicTitle = "Nieuw probleem |";
+    if($location.path().includes('nieuwe-melding')){
+        $rootScope.dynamicTitle = "Nieuw Melding |";
+    }
+    else{
+        $rootScope.dynamicTitle = "Nieuw probleem |";
+    }
+    
     $scope.hide = "ng-hide";
     $scope.issueName = "Probleem"
     $scope.hideIssue = 1;
