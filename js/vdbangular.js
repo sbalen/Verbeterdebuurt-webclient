@@ -72,7 +72,7 @@ if (!String.prototype.endsWith) {
 }
 //console log()iff you want to deactive it, change the paremeter from true to false
 logger = function(string){
-    if(true){
+    if(false){
        console.log(string);
     }
 }
