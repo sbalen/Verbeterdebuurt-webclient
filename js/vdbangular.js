@@ -507,7 +507,7 @@ function getMarkerLocation(marker) {
 }
 // get location search at create issue
 function geocodeAddressCreateProblem(geocoder, resultsMap, address,location) {
-    var address = address;
+    var address = document.getElementById('searchCityProblem').value;
     geocoder.geocode({
         'address': address,componentRestrictions: {country: 'nl'}
     }, function (results, status) {
@@ -4288,7 +4288,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
     $scope.initslide = "toggle-button2 ";
     $rootScope.urlBefore = $location.path();
     //google map auto compleate
-    googleautocompleate('searchCityIdea');
+    googleautocompleate('searchCityProblem');
     
     //to send to another city gemeente/Amsterdam/niew-probleem
     if($routeParams.cityName){
@@ -4888,7 +4888,9 @@ vdbApp.controller('closeIssueCtrl', ['$scope', '$rootScope', '$routeParams', '$w
             "user" : {
             "username" : user.username,
             "password_hash" : user.password_hash,
-            "authorisation_hash": user.authorisation_hash,
+            "authorisation_hash": user.authorisation_hash
+
+            ,
         },
                                       "issue_id" : issue_id,
                                       "result" : result,
