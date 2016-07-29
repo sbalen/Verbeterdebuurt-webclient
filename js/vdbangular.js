@@ -3233,7 +3233,7 @@ vdbApp.controller('forgotCtrl', ['$scope', '$rootScope', '$window', 'forgotServi
 
 
 vdbApp.controller('forgotconfCtrl', ['$scope', '$rootScope', '$window', '$location', function ($scope, $rootScope, $window, $location) {
-    $rootScope.dynamicTitle = "wachtwoord";
+    $rootScope.dynamicTitle = "Wachtwoord |";
     $scope.home = function () {
         $location.path('/');
 
@@ -3627,7 +3627,7 @@ vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileSer
 }])
 
 vdbApp.controller('selectProblemCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', 'duplicateIssuesService', '$cookies', 'serviceStandartService','reportService','issuesService','agreementSevice','$routeParams', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, duplicateIssuesService, $cookies, serviceStandartService,reportService,issuesService,agreementSevice,$routeParams) {
-     $rootScope.dynamicTitle = "Nieuw Melding |";
+     $rootScope.dynamicTitle = "Nieuw melding |";
      $scope.redirectproblem = function(){
         if($routeParams.cityName){
             $location.path('gemeente/'+$routeParams.cityName+'/nieuw-probleem');
@@ -3648,7 +3648,7 @@ vdbApp.controller('selectProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
 
 vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', 'duplicateIssuesService', '$cookies', 'serviceStandartService','reportService','issuesService','agreementSevice','$routeParams', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, duplicateIssuesService, $cookies, serviceStandartService,reportService,issuesService,agreementSevice,$routeParams) {
     if($location.path().includes('nieuwe-melding')){
-        $rootScope.dynamicTitle = "Nieuw Melding |";
+        $rootScope.dynamicTitle = "Nieuw melding |";
     }
     else{
         $rootScope.dynamicTitle = "Nieuw probleem |";
@@ -3789,7 +3789,7 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
         geocodeAddressCreateProblem(geocoder, map3, $scope.searchCityCreate,"location");
         $scope.loadCategory = 1;
         city.long_name = $scope.searchCityCreate;
-        $rootScope.lastCity = $scope.searchCityCreate;
+        $rootScope.lastCity = city.long_name;
         $timeout(function(){
             marker.setPosition(map.getCenter());
         },1000)
