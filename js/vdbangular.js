@@ -3627,7 +3627,7 @@ vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileSer
 }])
 
 vdbApp.controller('selectProblemCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', 'duplicateIssuesService', '$cookies', 'serviceStandartService','reportService','issuesService','agreementSevice','$routeParams', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, duplicateIssuesService, $cookies, serviceStandartService,reportService,issuesService,agreementSevice,$routeParams) {
-     //$rootScope.dynamicTitle = "Nieuw Melding |";
+     $rootScope.dynamicTitle = "Nieuw Melding |";
      $scope.redirectproblem = function(){
         if($routeParams.cityName){
             $location.path('gemeente/'+$routeParams.cityName+'/nieuw-probleem');
