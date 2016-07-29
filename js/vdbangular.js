@@ -77,9 +77,10 @@ logger = function(string){
        console.log(string);
     }
 }
+    initMap();
 
 //google map auto compleate change string to make it by id
-googleautocompleate = function(stringid){
+googleautocompleate = function(stringid) {
       var input = document.getElementById(stringid);
       var options = {
         types: ['geocode'],
@@ -89,6 +90,8 @@ googleautocompleate = function(stringid){
     };
 
     var autocomplete = new google.maps.places.Autocomplete(input, options);
+    autocomplete.bindTo('bounds',map);
+
 }
 
 
@@ -105,14 +108,7 @@ errorhandler = function(rootScope){
     
 };
 
-//google map
-window.onload = function () {
-    var mainLat = 52.371828;
-    var mainLng = 4.902220;
-    this._map_center = {
-        lat: mainLat,
-        lng: mainLng
-    };
+function initMap() {
     //this._marker_positions = [{lat: 27.1959742, lng: 78.02423269999100}, {lat: 27.1959733, lng: 78.02423269999992}] ;
     var mapOptions = {
         zoom: 15,
@@ -140,8 +136,8 @@ window.onload = function () {
                     {
                         visibility: "off"
                     }
-				        		]
-				    },
+                                ]
+                    },
             {
                 featureType: "transit.station",
                 stylers: [
@@ -150,11 +146,23 @@ window.onload = function () {
                     }
                 ]
             }
-			    ]
+                ]
 
     };
 
     map = new google.maps.Map(document.getElementById('googlemaps'), mapOptions);
+}
+
+//google map
+window.onload = function () {
+    console.log("window onload");
+    var mainLat = 52.371828;
+    var mainLng = 4.902220;
+    this._map_center = {
+        lat: mainLat,
+        lng: mainLng
+    };
+    
 
     google.maps.event.addListener(map,'mouseover',function(){
         if((window.location.pathname=='/'||window.location.pathname.includes('gemeente'))&&!(window.location.pathname.includes('nieuw-probleem')||window.location.pathname.includes('nieuw-idee')||window.location.pathname.includes('nieuwe-melding'))){
