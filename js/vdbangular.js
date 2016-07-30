@@ -77,7 +77,7 @@ logger = function(string){
        console.log(string);
     }
 }
-    initMap();
+    
 
 //google map auto compleate change string to make it by id
 googleautocompleate = function(stringid) {
@@ -90,7 +90,7 @@ googleautocompleate = function(stringid) {
     };
 
     var autocomplete = new google.maps.places.Autocomplete(input, options);
-    autocomplete.bindTo('bounds',map);
+    // autocomplete.bindTo('bounds',map);
 
 }
 
@@ -163,7 +163,7 @@ window.onload = function () {
         lng: mainLng
     };
     
-
+    initMap();
     google.maps.event.addListener(map,'mouseover',function(){
         if((window.location.pathname=='/'||window.location.pathname.includes('gemeente'))&&!(window.location.pathname.includes('nieuw-probleem')||window.location.pathname.includes('nieuw-idee')||window.location.pathname.includes('nieuwe-melding'))){
         map.setOptions({
