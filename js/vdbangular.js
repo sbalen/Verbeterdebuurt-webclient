@@ -41,6 +41,8 @@ var unfollowIssueService = new Object();
 var serviceStandartService = new Object();
 var confirmVoteService = new Object();
 var geolocationValid = 0;
+cityName=null;
+postalcode=null;
 maxlat  = null;
 maxlng  = null;
 minlat = null;
@@ -101,6 +103,7 @@ googleautocompleate = function(stringid) {
     };
 
     autocomplete = new google.maps.places.Autocomplete(input, options);
+    autocomplete.bindTo('bounds',map)
     // autocomplete.bindTo('bounds',map);
     google.maps.event.addListener(autocomplete, 'place_changed', function() {
             autocomplete.bindTo('bounds',map)
@@ -169,7 +172,7 @@ function initMap() {
 
 
 //google map
-window.onload = function () {
+function googlemapinit () {
     console.log("window onload");
     var mainLat = 52.371828;
     var mainLng = 4.902220;
@@ -255,6 +258,10 @@ window.onload = function () {
     $('#duplicate-bubble').hide();
 
 }
+//call google map at first 
+vdbApp.run(function(){
+    googlemapinit();
+})
 
 function getLatLng(map) {
     google.maps.event.addListener(map, 'bounds_changed', function () {
