@@ -112,10 +112,10 @@ function geocodeAddress(geocoder, resultsMap) {
         geocoder.geocode({'address': address,componentRestrictions: {country: 'nl'}}, function(results, status) {
           if (status === google.maps.GeocoderStatus.OK) {
                 resultsMap.setCenter(results[0].geometry.location);
-                maxlat  = map.getBounds().getNorthEast().lat();
-                maxlng  = map.getBounds().getNorthEast().lng();
-                minlat = map.getBounds().getSouthWest().lat();
-                minlng = map.getBounds().getSouthWest().lng();
+                maxlat  = resultsMap.getBounds().getNorthEast().lat();
+                maxlng  = resultsMap.getBounds().getNorthEast().lng();
+                minlat = resultsMap.getBounds().getSouthWest().lat();
+                minlng = resultsMap.getBounds().getSouthWest().lng();
 
                 //console.log("nasiduk");
                 citynamegoogle= {};

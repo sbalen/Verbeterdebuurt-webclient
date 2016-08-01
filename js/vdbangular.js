@@ -41,6 +41,10 @@ var unfollowIssueService = new Object();
 var serviceStandartService = new Object();
 var confirmVoteService = new Object();
 var geolocationValid = 0;
+maxlat  = null;
+maxlng  = null;
+minlat = null;
+minlng = null
 markers = null;
 markers = [];
 markerid = [];
@@ -73,7 +77,7 @@ if (!String.prototype.endsWith) {
 }
 //console log()iff you want to deactive it, change the paremeter from true to false
 logger = function(string){
-    if(false){
+    if(true){
        console.log(string);
     }
 }
@@ -82,15 +86,25 @@ logger = function(string){
 //google map auto compleate change string to make it by id
 googleautocompleate = function(stringid) {
       var input = document.getElementById(stringid);
+      if(maxlat){
+         var defaultBounds = new google.maps.LatLngBounds(
+            new google.maps.LatLng(maxlat,maxlng),
+            new google.maps.LatLng(minlat,minlng)
+        );
+      }
       var options = {
         types: ['geocode'],
         componentRestrictions: {
             country: 'nl'
-        }
+        },
+        bounds:defaultBounds,
     };
 
-    var autocomplete = new google.maps.places.Autocomplete(input, options);
+    autocomplete = new google.maps.places.Autocomplete(input, options);
     // autocomplete.bindTo('bounds',map);
+    google.maps.event.addListener(autocomplete, 'place_changed', function() {
+            autocomplete.bindTo('bounds',map)
+        });
 
 }
 
@@ -152,6 +166,7 @@ function initMap() {
 
     map = new google.maps.Map(document.getElementById('googlemaps'), mapOptions);
 }
+
 
 //google map
 window.onload = function () {
@@ -221,13 +236,22 @@ window.onload = function () {
     //start location picker
 
     var tempurl = window.location.pathname;
-    if(tempurl.includes('gemeente') && !(tempurl.includes('nieuw-probleem')||tempurl.includes('nieuw-idee')||tempurl.includes('nieuwe-melding'))){
+    if(tempurl.includes('gemeente')){
+        // logger('jalan');
+        if(tempurl.includes('nieuw-probleem')){
+            tempurl = tempurl.replace('nieuw-probleem','');
+        }
+        else if(tempurl.includes('nieuw-idee')){
+            tempurl = tempurl.replace('nieuw-idee','');
+        }
+        else if(tempurl.includes('nieuwe-melding')){
+            tempurl = tempurl.replace('nieuwe-melding','');
+        }
         var citytemp = tempurl.substring(tempurl.slice(0,tempurl.length-1).lastIndexOf('/')+1);
         cityName = citytemp.substring(0,citytemp.length-1);
-        logger(cityName);
+        // logger(cityName);
         geocodeAddress(geocoder, map);
     }
-
     $('#duplicate-bubble').hide();
 
 }
@@ -313,6 +337,14 @@ function googleMapCreateProblem(latlng) {
 			    ]
     }
     map3 = new google.maps.Map(document.getElementById("googleMapCreateProblem"), mapOption3);
+    var tempurl = window.location.pathname.replace('nieuw-probleem','');;
+    // logger(tempurl);
+    if(tempurl.includes('gemeente')){
+        var citytemp = tempurl.substring(tempurl.slice(0,tempurl.length-1).lastIndexOf('/')+1);
+        cityName = citytemp.substring(0,citytemp.length-1);
+        // logger(cityName);
+        geocodeAddress(geocoder, map3);
+    }
     marker = new google.maps.Marker();
     marker.setMap(map3);
     marker.setPosition(map3.getCenter());
@@ -335,6 +367,7 @@ function googleMapCreateProblem(latlng) {
     markerCenter(map3, marker, "location");
     getMarkerLocation(marker);
     markerGetAddress(marker, "location");
+    
 }
 
 function googleMapCreateIdea(latlng) {
@@ -386,6 +419,14 @@ function googleMapCreateIdea(latlng) {
     markerCenter(map4, marker, "location2");
     getMarkerLocation(marker);
     markerGetAddress(marker, "location2");
+    var tempurl = window.location.pathname.replace('nieuw-idee','');;
+    // logger(tempurl);
+    if(tempurl.includes('gemeente')){
+        var citytemp = tempurl.substring(tempurl.slice(0,tempurl.length-1).lastIndexOf('/')+1);
+        cityName = citytemp.substring(0,citytemp.length-1);
+        // logger(cityName);
+        geocodeAddress(geocoder, map4);
+    }
 }
 
 //to make other map syncronise
@@ -1618,7 +1659,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     
     //google map aouto complete
     googleautocompleate('searchCity');
-
+   
 
     if ($location.path() == "/plaats/" + $routeParams.cityNameplaats + nextaction) {
         $location.path('gemeente/' + $routeParams.cityNameplaats + nextaction);
@@ -3796,7 +3837,11 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
     $scope.clickSearchCreateIssue = function () {
         geocodeAddressCreateProblem(geocoder, map3, $scope.searchCityCreate,"location");
         $scope.loadCategory = 1;
-        city.long_name = $scope.searchCityCreate;
+        if(document.getElementById('searchCityProblem').value){
+           var citytemp = document.getElementById('searchCityProblem').value ;         
+           city.long_name =  citytemp.substring(citytemp.lastIndexOf(',')+1).replace(" ","");
+           $location.path('gemeente/'+city.long_name+'/nieuw-probleem');      
+        }
         $rootScope.lastCity = city.long_name;
         $timeout(function(){
             marker.setPosition(map.getCenter());
@@ -4388,7 +4433,11 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
     }
     $scope.clickSearchCreateIssue = function () {
         geocodeAddressCreateProblem(geocoder, map4, $scope.searchCityCreate,"location2");
-        city.long_name = $scope.searchCityCreate;
+        if(document.getElementById('searchCityProblem').value){
+           var citytemp = document.getElementById('searchCityProblem').value ;         
+           city.long_name =  citytemp.substring(citytemp.lastIndexOf(',')+1).replace(" ","");
+           $location.path('gemeente/'+city.long_name+'/nieuw-probleem');      
+        }
         var latitude = markerLat;
         var longitude = markerLng;
         $rootScope.lastCity = $scope.searchCityCreate;
