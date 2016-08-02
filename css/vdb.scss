@@ -1144,16 +1144,21 @@ margin-right: 10px; margin-top: 10px;
 }
 
 //smart banner
+#smartbanner{
+  position:relative !important;
+  top: 0;
+}
 #smartbanner.android
 {
   background-color: #2FBC3C;
   background-image: none;
+  border-top: 5px solid #2FBC3C;
 }
-#smartbanner .sb-icon{
+#smartbanner.android .sb-icon{
   background-color: white;
 }
 
-#smartbanner .sb-info > span {
+#smartbanner.android .sb-info > span {
     color: white;
 }
 
