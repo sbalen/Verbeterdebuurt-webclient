@@ -10,10 +10,17 @@
     <meta name="robots" content="index, follow" />
     <meta name="google-site-verification" content="beGZrRqprwpbGBDu-7NhQLUWr9-oi9xU0OBxcYoZXZE" />
     
-    <meta property="og:site-name" content="Verbeterdebuurt"><meta property="og:title" content="Doe mee en draag bij aan een verbeterde buurt!"><meta property="og:description" content="Op verbeterdebuurt.nl werken bewoners samen aan het verbeteren van hun buurten. Er kunnen problemen en ideeen worden geplaatst die worden doorgestuurd naar gemeente of stadsdeel. Zodat de buurt wordt verbeterd!"><meta property="og:url" content="http://www.verbeterdebuurt.nl/"><meta property="og:image" content="http://www.verbeterdebuurt.nl/images/fb_image.png">		
+    <meta property="og:site-name" content="Verbeterdebuurt">
+    <meta property="og:title" content="Doe mee en draag bij aan een verbeterde buurt!">
+    <meta property="og:description" content="Op verbeterdebuurt.nl werken bewoners samen aan het verbeteren van hun buurten. Er kunnen problemen en ideeen worden geplaatst die worden doorgestuurd naar gemeente of stadsdeel. Zodat de buurt wordt verbeterd!">
+    <meta property="og:url" content="http://www.verbeterdebuurt.nl/">
+    <meta property="og:image" content="http://www.verbeterdebuurt.nl/images/fb_image.png">		
+    
+    <!-- //smartbanner -->
     <meta name="apple-itunes-app" content="app-id=398177951">
-    
-    
+    <meta name="google-play-app" content="app-id=nl.verbeterdebuurt">
+    <link rel="stylesheet" href="node_modules/smartbanner/jquery.smartbanner.css" type="text/css" media="screen">
+
     <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon"/>
     <link rel="icon" href="./favicon.ico" type="image/x-icon"/>
 
@@ -60,7 +67,6 @@
     <!-- analytics -->
     <script src="js/angulartics.js"></script>
     <script src="js/angulartics-ga.js"></script>
-    
 </head>
 <body ng-controller="mainCtrl" >
     <div id="app-container">
@@ -186,7 +192,16 @@
         
         */
     </script>
-    
+    <!-- smart banner -->
+    <script src="node_modules/smartbanner/jquery.smartbanner.js"></script>
+    <script type="text/javascript">
+        $.smartbanner({
+            icon:"img/icon_2_42_42.png",
+            title:"Verbeterdebuurt",
+            price: 'FREE', // Price of the app
+            appStoreLanguage: 'nl' // Language code for App Store
+        })
+    </script>
 </body>
 </html>
 <!-- Page specific js -->
