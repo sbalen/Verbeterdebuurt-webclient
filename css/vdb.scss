@@ -1142,3 +1142,37 @@ margin-right: 10px; margin-top: 10px;
 .input-group.searchMap{
     width: 115%;
 }
+
+//smart banner
+#smartbanner.android
+{
+  background-color: #2FBC3C;
+  background-image: none;
+}
+#smartbanner .sb-icon{
+  background-color: white;
+}
+
+#smartbanner .sb-info > span {
+    color: white;
+}
+
+#smartbanner.android .sb-button {
+  border: none;
+}
+
+#smartbanner.android .sb-button span{
+  background-image:none;
+  background-color:white;
+  color: #04A723;
+  border: none;
+   border-radius: 3px;
+}
+#smartbanner.android .sb-close{
+    background-color: #2FBC3C;
+    border: 2px solid white;
+    border-color: white;
+    box-shadow: none;
+    color: white;
+    line-height: 12px;
+}
