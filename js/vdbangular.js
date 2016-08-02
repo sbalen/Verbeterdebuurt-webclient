@@ -2075,6 +2075,9 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
     var jsondata = JSON.stringify({
         "issue_id": $routeParams.id
     });
+    $rootScope.metaTitle = "vdb"
+    $rootScope.metaDescription = "test data"
+    $rootScope.metaUrl="vdb.gaze.asia"
     if ($rootScope.lastUrl == null) {
         $rootScope.lastUrl == '/';
     }
