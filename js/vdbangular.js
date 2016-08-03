@@ -2264,7 +2264,7 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
             $scope.stemModal = "#StemModal";
         }
     };
-    $('#selectVoteModal').modal('show');
+    // $('#selectVoteModal').modal('show');
     //validation for submit vote
     $scope.voteSubmit = function () {
         if (!$cookies.getObject('user')) {
