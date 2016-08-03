@@ -3706,6 +3706,8 @@ vdbApp.controller('selectProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
 }])
 
 vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', 'duplicateIssuesService', '$cookies', 'serviceStandartService','reportService','issuesService','agreementSevice','$routeParams', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, duplicateIssuesService, $cookies, serviceStandartService,reportService,issuesService,agreementSevice,$routeParams) {
+    $scope.privateMessageHide = true;
+
     if($location.path().includes('nieuwe-melding')){
         $rootScope.dynamicTitle = "Nieuw melding |";
     }
@@ -4339,6 +4341,13 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
 
     }
 
+    $scope.privateMessageClick = function(){
+        if($scope.privateMessageHide){
+            $scope.privateMessageHide = false;
+        }else{
+            $scope.privateMessageHide = true;
+        }
+    }
 
 		}])
 

@@ -163,8 +163,18 @@
                                         
                                 </div>
                                 <div class="form-group">
-                                    <div class="col-sm-12 form-col" ng-class="{'has-error':errorDescription}">  
+                                    <div class="col-sm-12 form-col" ng-class="{'has-error':errorDescription}" style="margin-bottom: 10px;">  
                                         <textarea class="form-control" rows="5" id="description" placeholder="Beschrijving" ng-model="description"></textarea>
+                                    </div>
+                                </div >
+                                <div class="form-group">
+                                    <div class="col-sm-12 form-col" style="margin-bottom: 10px;">  
+                                        <span ng-click="privateMessageClick()">Private Message Click here</span>
+                                    </div>
+                                </div>
+                                <div class="form-group" ng-hide="privateMessageHide">
+                                    <div class="col-sm-12 form-col" ng-class="{'has-error':errorDescription}" style="margin-bottom: 10px;">  
+                                        <textarea class="form-control" rows="5" id="description" placeholder="Private Message" ng-model="description"></textarea>
                                     </div>
                                 </div>
                                 <!--<label class="control-label">Select File</label>-->
