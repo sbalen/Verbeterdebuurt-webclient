@@ -2264,7 +2264,7 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
             $scope.stemModal = "#StemModal";
         }
     };
-
+    $('#selectVoteModal').modal('show');
     //validation for submit vote
     $scope.voteSubmit = function () {
         if (!$cookies.getObject('user')) {
@@ -2272,34 +2272,36 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
              $('#voteModal').modal('show');
 
         } else {
-            $rootScope.globaloverlay = "active";
-            var jsonVoteSubmit = JSON.stringify({
-                "user": {
-                    "username": "" + $cookies.getObject('user').username + "",
-                    "password_hash": "" + $cookies.getObject('user').password_hash + ""
-                },
-                "issue_id": $routeParams.id
-            });
-            var getvoteSummit = voteSubmitService.getvoteSummit(jsonVoteSubmit).then(function (data) {
-                var getvoteSummit = data.data;
-                if (!getvoteSummit.success) {
-                    $scope.hideError = 0;
-                    $scope.errorVote = "" + getvoteSummit.error + "";
-                    $(window).scrollTop(0);
-                } else {
-                    var jsondata = JSON.stringify({
-                        "issue_id": $routeParams.id
-                    });
-                    var getIssues = issuesService.getIssues(jsondata).then(function (data) {
-                        var getdata = data.data;
-                        $rootScope.problemIdList = getdata.issues;
-                    });
+            //$rootScope.globaloverlay = "active";
+             $('#selectVoteModal').modal('show');
 
-                }
-                //vote reload
+            // var jsonVoteSubmit = JSON.stringify({
+            //     "user": {
+            //         "username": "" + $cookies.getObject('user').username + "",
+            //         "password_hash": "" + $cookies.getObject('user').password_hash + ""
+            //     },
+            //     "issue_id": $routeParams.id
+            // });
+            // var getvoteSummit = voteSubmitService.getvoteSummit(jsonVoteSubmit).then(function (data) {
+            //     var getvoteSummit = data.data;
+            //     if (!getvoteSummit.success) {
+            //         $scope.hideError = 0;
+            //         $scope.errorVote = "" + getvoteSummit.error + "";
+            //         $(window).scrollTop(0);
+            //     } else {
+            //         var jsondata = JSON.stringify({
+            //             "issue_id": $routeParams.id
+            //         });
+            //         var getIssues = issuesService.getIssues(jsondata).then(function (data) {
+            //             var getdata = data.data;
+            //             $rootScope.problemIdList = getdata.issues;
+            //         });
 
-                $rootScope.globaloverlay = "";
-            });
+            //     }
+            //     //vote reload
+
+            //     $rootScope.globaloverlay = "";
+            // });
         }
     }
 
@@ -3706,7 +3708,7 @@ vdbApp.controller('selectProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
 }])
 
 vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', 'duplicateIssuesService', '$cookies', 'serviceStandartService','reportService','issuesService','agreementSevice','$routeParams', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, duplicateIssuesService, $cookies, serviceStandartService,reportService,issuesService,agreementSevice,$routeParams) {
-    $scope.privateMessageHide = true;
+    $scope.privateMessageHide = false;
 
     if($location.path().includes('nieuwe-melding')){
         $rootScope.dynamicTitle = "Nieuw melding |";
@@ -4341,13 +4343,6 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
 
     }
 
-    $scope.privateMessageClick = function(){
-        if($scope.privateMessageHide){
-            $scope.privateMessageHide = false;
-        }else{
-            $scope.privateMessageHide = true;
-        }
-    }
 
 		}])
 
@@ -4361,7 +4356,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
     $rootScope.urlBefore = $location.path();
     //google map auto compleate
     googleautocompleate('searchCityProblem');
-    
+    $scope.privateMessageHide = false;
     //to send to another city gemeente/Amsterdam/niew-probleem
     if($routeParams.cityName){
         $window.cityName = $routeParams.cityName;

@@ -169,12 +169,18 @@
                                 </div >
                                 <div class="form-group">
                                     <div class="col-sm-12 form-col" style="margin-bottom: 10px;">  
-                                        <span ng-click="privateMessageClick()">Private Message Click here</span>
+                                        <table cellspacing="2px">
+                                          <tr> 
+                                            <td><input type="checkbox" class="privatecheckbox" name="checkbox" ng-model="privateMessageHide"></td>
+                                            <td><span>Private Message</span> </td>
+                                          </tr>
+                                        </table>
+                                       
                                     </div>
                                 </div>
-                                <div class="form-group" ng-hide="privateMessageHide">
+                                <div class="form-group" ng-show="privateMessageHide">
                                     <div class="col-sm-12 form-col" ng-class="{'has-error':errorDescription}" style="margin-bottom: 10px;">  
-                                        <textarea class="form-control" rows="5" id="description" placeholder="Private Message" ng-model="description"></textarea>
+                                        <textarea class="form-control" rows="5" id="description" placeholder="Private Message" ng-model="privateMessage"></textarea>
                                     </div>
                                 </div>
                                 <!--<label class="control-label">Select File</label>-->
@@ -221,7 +227,7 @@
                                         <input type="text" class="form-control " id="city" placeholder="Plaats" ng-model="city" style="margin-bottom: 15px">
                                     </div>
                                     <div class="col-sm-12 form-col">
-                                        <input type="text" class="form-control" id="telephonenumber" placeholder="Telefoonnummer (optioneel)" ng-model="phone">
+                                        <input type="text" class="form-control" id="telephonenumber" placeholder="Telefoonnummer" ng-model="phone">
                                     </div>
                                 </div>
                             </div>

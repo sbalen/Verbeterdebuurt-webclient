@@ -369,6 +369,33 @@
     </div>
 </div>
 
+<div id="selectVoteModal" class="modal fade" role="dialog" ng-controller="voteCtrl">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h1 class="modal-title">Stemmen</h1>
+                    <div class="alert alert-danger " ng-hide="hide" >
+                                  <a class="close " ng-hide="hide" aria-label="close" ng-click="close()" >&times;</a>
+                    </div>
+            </div>
+            <div class="modal-body" id="selectedBody">
+                <div class="selectedBody">
+                    <div class="selectedIcon">
+                        <div class="selectedText">Stem zelf</div>
+                    </div>
+                    <div class="selectedIcon">
+                        <div class="selectedText">Stem voor een ander</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Page specific js -->
 <!-- <script src="./js/vdb-start.js"></script> -->
 <script type='text/javascript'>
