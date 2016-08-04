@@ -965,4 +965,17 @@ input[type="checkbox"].privatecheckbox:focus + label {
 .warning-text {
   margin-top: 3px; }
 
+.checkPrivate {
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: normal; }
+
+input[type=checkbox] + label {
+  cursor: pointer;
+  font-style: normal; }
+
+input[type=checkbox]:checked + label {
+  cursor: pointer;
+  font-style: normal; }
+
 /*# sourceMappingURL=vdb.css.map */

@@ -125,14 +125,15 @@
                                 </div>
                                 <div class="form-group">
                                     <div class="col-sm-12 form-col" style="margin-bottom: 10px;">  
-                                       <table cellspacing="2px" style="border-spacing:4px; border-collapse: separate;">
+                                        <table cellspacing="2px" style="border-spacing:4px; border-collapse: separate;">
                                           <tr> 
-                                            <td><input type="checkbox" class="privatecheckbox" name="checkbox" ng-model="privateMessageHide"></td>
-                                            <td><span>Voeg prive bericht toe</span> </td>
+                                            <td><input type="checkbox" class="privatecheckbox" id="checkPrivate" name="checkbox" ng-model="privateMessageHide"></td>
+                                            <td class="privateTable" ng-click="expression"><label for="checkPrivate" class="checkPrivate">Voeg priv&eacute; bericht toe</label></td>
                                           </tr>
                                         </table>
                                        
                                     </div>
+                                </div>
                                 </div>
                                 <div class="form-group" ng-show="privateMessageHide">
                                     <div class="col-sm-12 form-col" ng-class="{'has-error':errorDescription}" style="margin-bottom: 10px;">  
