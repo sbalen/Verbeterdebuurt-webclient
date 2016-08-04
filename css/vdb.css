@@ -962,5 +962,7 @@ input[type="checkbox"].privatecheckbox:focus + label {
   .otherVote {
     float: none;
     margin-left: 0px; } }
+.warning-text {
+  margin-top: 3px; }
 
 /*# sourceMappingURL=vdb.css.map */
