@@ -1277,16 +1277,16 @@ input[type="checkbox"].privatecheckbox:focus + label {
 
   }
   .selfVote:hover{
-    color: red;
+    text-decoration: underline;
   }
   .otherVote:hover{
-    color: red;
+    text-decoration: underline;
   }
 @media (max-width : 470px) {
   .mobilebtn{
     width: 40%;
     margin-left: 5%;
-    float: left;
+    // float: left;
     
   }
   .badge{
@@ -1295,7 +1295,7 @@ input[type="checkbox"].privatecheckbox:focus + label {
     }
   }
   .selectionBox{
-    margin-left: 50%;
+    margin-left: 51%;
     width: 40%;
     text-align: start;
     margin-top: 5px;
@@ -1318,16 +1318,16 @@ input[type="checkbox"].privatecheckbox:focus + label {
 }
 @media (max-width :410px) {
   .mobilebtn{
-    width: 35%;
+    width: 40%;
     margin-left: 5%;
-    float: left;
+    // float: left;
     height: 28px;
     font-size: 12px;
     
   }
    .selectionBox{
-    margin-left: 45%;
-    width: 35%;
+    margin-left: 51%;
+    width: 40%;
     text-align: start;
     font-size: 11px;
   }
@@ -1350,13 +1350,13 @@ input[type="checkbox"].privatecheckbox:focus + label {
   .mobilebtn{
     width: 40%;
     margin-left: 5%;
-    float: left;
+    // float: left;
     height: 29px;
     font-size: 11px;
     
   }
    .selectionBox{
-    margin-left: 50%;
+    margin-left: 51%;
     width: 40%;
     text-align: start;
     font-size: 10px;

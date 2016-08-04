@@ -2532,6 +2532,7 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope', '$routeParams', '$http', '$ro
     $scope.successClass = "";
     menuSelected($rootScope, 'myIssues');
     $rootScope.globaloverlay = "active";
+    $scope.hideSelection = true;
     $scope.id = function () {
         return $routeParams.id;
     }
@@ -2647,36 +2648,79 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope', '$routeParams', '$http', '$ro
 
     //voteSubmit
     $scope.voteSubmit = function () {
+
             if (!$cookies.getObject('user')) {
                 $location.path("/login");
                 $rootScope.errorSession = "Voor deze actie moet je ingelogd zijn."
             } else {
-                $rootScope.globaloverlay = "active";
-                var jsonVoteSubmit = JSON.stringify({
-                    "user": {
-                        "username": "" + $cookies.getObject('user').username + "",
-                        "password_hash": "" + $cookies.getObject('user').password_hash + ""
-                    },
-                    "issue_id": $routeParams.id
-                });
-                var getvoteSummit = voteSubmitService.getvoteSummit(jsonVoteSubmit).then(function (data) {
-                    var getvoteSummit = data.data;
-                    if (!getvoteSummit.success) {
-                        $scope.hideError = 0;
-                        $scope.errorVote = "" + getvoteSummit.error + "";
-                    } else {
-                        var getMyIssues = myIssuesService.getMyIssues(jsondata).then(function (data) {
-                            var getdata = data.data;
-                            $rootScope.myIssuesList = getdata.issues;
-                        });
+            if($scope.hideSelection){
+                    $scope.hideSelection = false;
+                }else{
+                    $scope.hideSelection = true;
+                }
 
-                    }
-                    //vote reload
+            //     $rootScope.globaloverlay = "active";
+            //     var jsonVoteSubmit = JSON.stringify({
+            //         "user": {
+            //             "username": "" + $cookies.getObject('user').username + "",
+            //             "password_hash": "" + $cookies.getObject('user').password_hash + ""
+            //         },
+            //         "issue_id": $routeParams.id
+            //     });
+            //     var getvoteSummit = voteSubmitService.getvoteSummit(jsonVoteSubmit).then(function (data) {
+            //         var getvoteSummit = data.data;
+            //         if (!getvoteSummit.success) {
+            //             $scope.hideError = 0;
+            //             $scope.errorVote = "" + getvoteSummit.error + "";
+            //         } else {
+            //             var getMyIssues = myIssuesService.getMyIssues(jsondata).then(function (data) {
+            //                 var getdata = data.data;
+            //                 $rootScope.myIssuesList = getdata.issues;
+            //             });
 
-                    $rootScope.globaloverlay = "";
-                });
+            //         }
+            //         //vote reload
+
+            //         $rootScope.globaloverlay = "";
+            //     });
             }
         }
+
+        $scope.selfVote = function(){
+        $rootScope.globaloverlay = "active";
+        var jsonVoteSubmit = JSON.stringify({
+                "user": {
+                    "username": "" + $cookies.getObject('user').username + "",
+                    "password_hash": "" + $cookies.getObject('user').password_hash + ""
+                },
+                "issue_id": $routeParams.id
+            });
+            var getvoteSummit = voteSubmitService.getvoteSummit(jsonVoteSubmit).then(function (data) {
+                var getvoteSummit = data.data;
+                if (!getvoteSummit.success) {
+                    $scope.hideError = 0;
+                    $scope.errorVote = "" + getvoteSummit.error + "";
+                    $(window).scrollTop(0);
+                } else {
+                    var jsondata = JSON.stringify({
+                        "issue_id": $routeParams.id
+                    });
+                    var getIssues = issuesService.getIssues(jsondata).then(function (data) {
+                        var getdata = data.data;
+                        $rootScope.problemIdList = getdata.issues;
+                    });
+
+                }
+                //vote reload
+
+                $rootScope.globaloverlay = "";
+                $scope.hideSelection = true;
+            });
+    }
+    $scope.otherVote = function(){
+            $('#voteModal').modal('show');
+            $scope.hideSelection = true;
+    }
         //show comment
     var commentjsondata = JSON.stringify({
         "issue_id": "" + $routeParams.id + ""
