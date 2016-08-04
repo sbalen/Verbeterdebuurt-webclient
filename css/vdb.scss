@@ -1200,35 +1200,178 @@ input[type="checkbox"].privatecheckbox:focus + label {
 }
 
 //selected box
-.modal-body#selectedBody{
-  width: 100%;
-  height: 160px;
+//Modal 
+// .modal-body#selectedBody{
+//   width: 100%;
+//   height: 160px;
+// }
+// .selectedBody{
+//   margin-left: 15%;
+//   width: 70%;
+//   height: 100%;
+// }
+
+// .selectedIcon{
+//   width: 40%;
+//   height: 90%;
+//   margin-left: 6.6%;
+//   margin-top: 1.5%; 
+//   float: left;
+//   border: 2px solid #A9A5A5;
+//   border-radius : 10px;
+// }
+// .selectedText{
+//   width: 50%;
+//   height: 50%;
+//   text-align: center;
+//   vertical-align: middle;
+//   margin-top: 25%;
+//   margin-left: 20%;
+// }
+
+// .selectedBody:hover{
+//   border-color:#2FBC3C;
+//   color: #2FBC3C;
+// }
+
+//SELECTION BOX 
+.selectionBox{
+      background-color: #2FBC3C;
+      border-color:#ffffff;
 }
-.selectedBody{
-  margin-left: 15%;
-  width: 70%;
-  height: 100%;
+.btn.btn-primary.selectionBox:active{
+  background-color: #2FBC3C;
+  border-color:#ffffff;
+  box-shadow:none;
+}
+  /* style */
+.selectionBox:hover{
+  background-color: #2FBC3C;
+  border-color:#ffffff;
+}
+.selectionBox:active{
+  background-color: #2FBC3C;
+  border-color:#ffffff;
+}
+.selectionBox:focus{
+  background-color: #2FBC3C;
+  border-color:#ffffff;
+}
+.selectionBox:target{
+  background-color: #2FBC3C;
+  border-color:#ffffff;
+}
+  .selfVote{
+    float: left;
+    margin-right: 10px;
+  }
+  .otherVote{
+    float: left;
+    margin-left: 10px;
+  }
+  .line{
+    width: 1px;
+    float: left;
+    height: 18px;
+    background-color:#ffffff;
+
+  }
+  .selfVote:hover{
+    color: red;
+  }
+  .otherVote:hover{
+    color: red;
+  }
+@media (max-width : 470px) {
+  .mobilebtn{
+    width: 40%;
+    margin-left: 5%;
+    float: left;
+    
+  }
+  .badge{
+    #mobilebtn{
+      text-align: end;
+    }
+  }
+  .selectionBox{
+    margin-left: 50%;
+    width: 40%;
+    text-align: start;
+    margin-top: 5px;
+  }
+  .selfVote{
+    margin-left:0px;
+    float: none;
+    margin-top: 0px;
+  }
+  .line{
+    float: none;
+    width: 100%;
+    height: 1px;
+  }
+  .otherVote{
+    float: none;
+    margin-left:0px;
+    margin-top: 0px;
+  }
+}
+@media (max-width :410px) {
+  .mobilebtn{
+    width: 35%;
+    margin-left: 5%;
+    float: left;
+    height: 28px;
+    font-size: 12px;
+    
+  }
+   .selectionBox{
+    margin-left: 45%;
+    width: 35%;
+    text-align: start;
+    font-size: 11px;
+  }
+  .selfVote{
+    margin-left:0px;
+    float: none;
+  }
+  .line{
+    float: none;
+    width: 100%;
+    height: 1px;
+  }
+  .otherVote{
+    float: none;
+    margin-left:0px;
+  }
 }
 
-.selectedIcon{
-  width: 40%;
-  height: 90%;
-  margin-left: 6.6%;
-  margin-top: 1.5%; 
-  float: left;
-  border: 2px solid #A9A5A5;
-  border-radius : 10px;
-}
-.selectedText{
-  width: 50%;
-  height: 50%;
-  text-align: center;
-  vertical-align: middle;
-  margin-top: 25%;
-  margin-left: 20%;
-}
-
-.selectedBody:hover{
-  border-color:#2FBC3C;
-  color: #2FBC3C;
+@media (max-width:370px) {
+  .mobilebtn{
+    width: 40%;
+    margin-left: 5%;
+    float: left;
+    height: 29px;
+    font-size: 11px;
+    
+  }
+   .selectionBox{
+    margin-left: 50%;
+    width: 40%;
+    text-align: start;
+    font-size: 10px;
+  }
+  .selfVote{
+    margin-left:0px;
+    float: none;
+  }
+  .line{
+    float: none;
+    width: 100%;
+    height: 1px;
+  }
+  .otherVote{
+    float: none;
+    margin-left:0px;
+  }
 }

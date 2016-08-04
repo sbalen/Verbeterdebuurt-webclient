@@ -2072,6 +2072,7 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
     $scope.hideError = 1;
     $scope.highlightid = $routeParams.id;
     $rootScope.dynamicTitle = "Melding |";
+    $scope.hideSelection = true;
     var jsondata = JSON.stringify({
         "issue_id": $routeParams.id
     });
@@ -2264,6 +2265,15 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
             $scope.stemModal = "#StemModal";
         }
     };
+    //selectionvote
+    $scope.voteSelect = function(){
+                if($scope.hideSelection){
+                    $scope.hideSelection = false;
+                }else{
+                    $scope.hideSelection = true;
+                }
+                
+             }
     // $('#selectVoteModal').modal('show');
     //validation for submit vote
     $scope.voteSubmit = function () {
@@ -2272,8 +2282,13 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
              $('#voteModal').modal('show');
 
         } else {
+            if($scope.hideSelection){
+                    $scope.hideSelection = false;
+                }else{
+                    $scope.hideSelection = true;
+                }
             //$rootScope.globaloverlay = "active";
-             $('#selectVoteModal').modal('show');
+             // $('#selectVoteModal').modal('show');
 
             // var jsonVoteSubmit = JSON.stringify({
             //     "user": {
@@ -2303,6 +2318,42 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
             //     $rootScope.globaloverlay = "";
             // });
         }
+    }
+
+    $scope.selfVote = function(){
+        $rootScope.globaloverlay = "active";
+        var jsonVoteSubmit = JSON.stringify({
+                "user": {
+                    "username": "" + $cookies.getObject('user').username + "",
+                    "password_hash": "" + $cookies.getObject('user').password_hash + ""
+                },
+                "issue_id": $routeParams.id
+            });
+            var getvoteSummit = voteSubmitService.getvoteSummit(jsonVoteSubmit).then(function (data) {
+                var getvoteSummit = data.data;
+                if (!getvoteSummit.success) {
+                    $scope.hideError = 0;
+                    $scope.errorVote = "" + getvoteSummit.error + "";
+                    $(window).scrollTop(0);
+                } else {
+                    var jsondata = JSON.stringify({
+                        "issue_id": $routeParams.id
+                    });
+                    var getIssues = issuesService.getIssues(jsondata).then(function (data) {
+                        var getdata = data.data;
+                        $rootScope.problemIdList = getdata.issues;
+                    });
+
+                }
+                //vote reload
+
+                $rootScope.globaloverlay = "";
+                $scope.hideSelection = true;
+            });
+    }
+    $scope.otherVote = function(){
+            $('#voteModal').modal('show');
+            $scope.hideSelection = true;
     }
 
     //close the detail;

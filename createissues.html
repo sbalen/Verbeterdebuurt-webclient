@@ -172,7 +172,7 @@
                                         <table cellspacing="2px">
                                           <tr> 
                                             <td><input type="checkbox" class="privatecheckbox" name="checkbox" ng-model="privateMessageHide"></td>
-                                            <td><span>Private Message</span> </td>
+                                            <td><span>Voeg prive bericht toe</span> </td>
                                           </tr>
                                         </table>
                                        
@@ -180,7 +180,8 @@
                                 </div>
                                 <div class="form-group" ng-show="privateMessageHide">
                                     <div class="col-sm-12 form-col" ng-class="{'has-error':errorDescription}" style="margin-bottom: 10px;">  
-                                        <textarea class="form-control" rows="5" id="description" placeholder="Private Message" ng-model="privateMessage"></textarea>
+                                        <textarea class="form-control" rows="5" id="description" placeholder="[ Prive bericht …. ]" ng-model="privateMessage"></textarea>
+                                        <p class="warning-text text-primary ng-binding">Een prive bericht wordt enkel naar de gemeente/afhandelaar gestuurd. Het prive bericht zal niet openbaar op verbeterdebuurt getoond worden.</p>
                                     </div>
                                 </div>
                                 <!--<label class="control-label">Select File</label>-->
