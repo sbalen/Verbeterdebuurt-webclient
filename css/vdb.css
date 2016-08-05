@@ -306,9 +306,6 @@ h6 {
 .mediamargin {
   margin: 30px; }
 
-@media (min-width: 1199px) {
-  .pac-container, .pac-item {
-    width: 240px !important; } }
 @media (max-width: 1199px) {
   .container {
     width: 750px; }

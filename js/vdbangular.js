@@ -95,7 +95,6 @@ googleautocompleate = function(stringid) {
         );
       }
       var options = {
-        types: ['geocode'],
         componentRestrictions: {
             country: 'nl'
         },
