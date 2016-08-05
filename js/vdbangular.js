@@ -4067,6 +4067,11 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
         } else {
             issue.description = "";
         }
+        if ($scope.privateMessage) {
+            issue.privateMessage = $scope.privateMessage;
+        } else {
+            issue.privateMessage = "";
+        }
         //location
         location.latitude = markerLat;
         location.longitude = markerLng;
@@ -4083,14 +4088,14 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
                     "title" : issue.title,
                     "description" :  issue.description,
                     "type" :  issue.type,
-                    "category_id" :  issue.category_id
+                    "category_id" :  issue.category_id,
+                    "private_message" : issue.privateMessage
                 }, 
                 "location" : {
                     "latitude" : location.latitude,
                     "longitude" : location.longitude
                 }
             });
-
 
         }else{
             //not login
@@ -4114,14 +4119,14 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
                     "title" : issue.title,
                     "description" :  issue.description,
                     "type" :  issue.type,
-                    "category_id" :  issue.category_id
+                    "category_id" :  issue.category_id,
+                    "private_message" : issue.privateMessage
                 }, 
                 "location" : {
                     "latitude" : location.latitude,
                     "longitude" : location.longitude
                 }
             });
-
         }
         
         //old 
@@ -4718,6 +4723,11 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
         } else {
             issue.description = "";
         }
+        if ($scope.privateMessage) {
+            issue.privateMessage = $scope.privateMessage;
+        } else {
+            issue.privateMessage = "";
+        }
         //location
         location.latitude = markerLat;
         location.longitude = markerLng;
@@ -4732,7 +4742,8 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
                     "title" : issue.title,
                     "description" :  issue.description,
                     "type" : issue.type,
-                    "realization" : issue.realization
+                    "realization" : issue.realization,
+                    "private_message" : issue.privateMessage
                     
                 }, 
                 "location" : {
@@ -4740,7 +4751,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
                     "longitude" : location.longitude
                 }
             });
-            
+            console.log(jsondataSubmit);
             
         }else{
             //not login
@@ -4764,7 +4775,8 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
                     "title" : issue.title,
                     "description" :  issue.description,
                     "type" : issue.type,
-                    "realization" : issue.realization
+                    "realization" : issue.realization,
+                    "private_message" : issue.privateMessage
                     
                 }, 
                 "location" : {
@@ -4772,7 +4784,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
                     "longitude" : location.longitude
                 }
             });
-            
+            console.log(jsondataSubmit);
         }
             
             
