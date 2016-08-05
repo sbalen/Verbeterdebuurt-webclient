@@ -3821,11 +3821,11 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
     $scope.standardMessage = "";
     $rootScope.urlBefore = $location.path();
 
-    //to send to another city gemeente/Amsterdam/niew-probleem
-    if($routeParams.cityName){
-        $window.cityName = $routeParams.cityName;
-        geocodeAddress(geocoder, map);
-    }
+    // //to send to another city gemeente/Amsterdam/niew-probleem
+    // if($routeParams.cityName){
+    //     $window.cityName = $routeParams.cityName;
+    //     geocodeAddress(geocoder, map);
+    // }
     //googlemapautocompleate
     googleautocompleate('searchCityProblem');
     $scope.email = "";
@@ -3951,7 +3951,7 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
         }
         $rootScope.lastCity = city.long_name;
         $timeout(function(){
-            marker.setPosition(map.getCenter());
+            marker.setPosition(map3.getCenter());
         },1000)
         $timeout(function () {
             var latitude = marker.getPosition().lat();
@@ -3998,7 +3998,7 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
                     showIssue(infoWindow, infoWindowContent);
                 }
             });
-
+            marker.setPosition(map3.getCenter());
         },2000)
 
 
@@ -4456,10 +4456,10 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
     googleautocompleate('searchCityProblem');
     $scope.privateMessageHide = false;
     //to send to another city gemeente/Amsterdam/niew-probleem
-    if($routeParams.cityName){
-        $window.cityName = $routeParams.cityName;
-        geocodeAddress(geocoder, map);
-    }
+    // if($routeParams.cityName){
+    //     $window.cityName = $routeParams.cityName;
+    //     geocodeAddress(geocoder, map);
+    // }
 
     $scope.email = "";
     $scope.username = "";
@@ -4548,7 +4548,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
         if(document.getElementById('searchCityProblem').value){
            var citytemp = document.getElementById('searchCityProblem').value ;         
            city.long_name =  citytemp.substring(citytemp.lastIndexOf(',')+1).replace(" ","");
-           $location.path('gemeente/'+city.long_name+'/nieuw-probleem');      
+           $location.path('gemeente/'+city.long_name+'/nieuw-idee');      
         }
         var latitude = markerLat;
         var longitude = markerLng;
@@ -4599,7 +4599,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
 
             });
             
-            marker.setPosition(map.getCenter());
+            marker.setPosition(map4.getCenter());
             
             //change location after search
             markerLat = marker.getPosition().lat();
@@ -4607,7 +4607,9 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
 
             
         }, 1000)
-
+        $timeout(function(){
+            marker.setPosition(map4.getCenter());
+        },1500)
 
     }
 

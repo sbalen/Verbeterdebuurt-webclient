@@ -108,7 +108,6 @@ function geocodeAddress(geocoder, resultsMap) {
         else if(document.getElementById('searchCity').value){
         var address = document.getElementById('searchCity').value;
         }
-        
         geocoder.geocode({'address': address,componentRestrictions: {country: 'nl'}}, function(results, status) {
           if (status === google.maps.GeocoderStatus.OK) {
                 resultsMap.setCenter(results[0].geometry.location);
