@@ -79,7 +79,7 @@ if (!String.prototype.endsWith) {
 }
 //console log()iff you want to deactive it, change the paremeter from true to false
 logger = function(string){
-    if(true){
+    if(false){
        console.log(string);
     }
 }
@@ -173,7 +173,6 @@ function initMap() {
 
 //google map
 function googlemapinit () {
-    console.log("window onload");
     var mainLat = 52.371828;
     var mainLng = 4.902220;
     this._map_center = {
@@ -4751,7 +4750,6 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
                     "longitude" : location.longitude
                 }
             });
-            console.log(jsondataSubmit);
             
         }else{
             //not login
@@ -4784,7 +4782,6 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
                     "longitude" : location.longitude
                 }
             });
-            console.log(jsondataSubmit);
         }
             
             
