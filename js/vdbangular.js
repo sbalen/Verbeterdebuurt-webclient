@@ -41,6 +41,7 @@ var unfollowIssueService = new Object();
 var serviceStandartService = new Object();
 var confirmVoteService = new Object();
 var geolocationValid = 0;
+var searchCreateTemp = 0;
 cityName=null;
 postalcode=null;
 maxlat  = null;
@@ -259,6 +260,7 @@ function googlemapinit () {
 //call google map at first 
 vdbApp.run(function(){
     googlemapinit();
+    console.log("mapchange");
 })
 
 function getLatLng(map) {
@@ -342,14 +344,14 @@ function googleMapCreateProblem(latlng) {
 			    ]
     }
     map3 = new google.maps.Map(document.getElementById("googleMapCreateProblem"), mapOption3);
-    var tempurl = window.location.pathname.replace('nieuw-probleem','');;
-    // logger(tempurl);
-    if(tempurl.includes('gemeente')){
-        var citytemp = tempurl.substring(tempurl.slice(0,tempurl.length-1).lastIndexOf('/')+1);
-        cityName = citytemp.substring(0,citytemp.length-1);
-        // logger(cityName);
-        geocodeAddress(geocoder, map3);
-    }
+    // var tempurl = window.location.pathname.replace('nieuw-probleem','');;
+    // // logger(tempurl);
+    // if(tempurl.includes('gemeente')){
+    //     var citytemp = tempurl.substring(tempurl.slice(0,tempurl.length-1).lastIndexOf('/')+1);
+    //     cityName = citytemp.substring(0,citytemp.length-1);
+    //     // logger(cityName);
+    //     geocodeAddress(geocoder, map3);
+    // }
     marker = new google.maps.Marker();
     marker.setMap(map3);
     marker.setPosition(map3.getCenter());
@@ -1666,14 +1668,15 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     googleautocompleate('searchCity');
    
 
-    if ($location.path() == "/plaats/" + $routeParams.cityNameplaats + nextaction) {
+    if ($location.path() == "/plaats/" + $routeParams.cityNameplaats + nextaction  && searchCreateTemp!=1) {
         $location.path('gemeente/' + $routeParams.cityNameplaats + nextaction);
         $window.cityName = $routeParams.cityNameplaats;
         geocodeAddress(geocoder, map);
+        searchCreateTemp =1;
         //$window.cityName = null;
     }
 
-    if ($location.path() == "/" + $routeParams.cityNameClone + nextaction) {
+    if ($location.path() == "/" + $routeParams.cityNameClone + nextaction && searchCreateTemp!=1) {
         $location.path('gemeente/' + $routeParams.cityNameClone + nextaction);
         $window.cityName = $routeParams.cityNameClone;
         geocodeAddress(geocoder, map);
@@ -1717,7 +1720,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
         // }
 
 
-    }, 3000);
+    },3000);
     // if (!$routeParams.cityName) {
     //     if (!$rootScope.lastCity) {
     //         $timeout(function(){
@@ -3821,11 +3824,7 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
     $scope.standardMessage = "";
     $rootScope.urlBefore = $location.path();
 
-    // //to send to another city gemeente/Amsterdam/niew-probleem
-    // if($routeParams.cityName){
-    //     $window.cityName = $routeParams.cityName;
-    //     geocodeAddress(geocoder, map);
-    // }
+   
     //googlemapautocompleate
     googleautocompleate('searchCityProblem');
     $scope.email = "";
@@ -3882,7 +3881,15 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
     //first initial
     $timeout(function () {
         if (latlngChange) {
-            googleMapCreateProblem(latlngChange);
+            
+             //to send to another city gemeente/Amsterdam/niew-probleem
+                if($routeParams.cityName && searchCreateTemp!=1){
+                    $window.cityName = $routeParams.cityName;
+                    geocodeAddress(geocoder, map);
+                    searchCreateTemp=1;
+
+                }
+                googleMapCreateProblem(latlngChange);
             var latitude = markerLat;
             var longitude = markerLng;
             var jsondataCity = JSON.stringify({
@@ -3901,6 +3908,13 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
                 lat: 52.158367,
                 lng: 4.492999
             };
+             //to send to another city gemeente/Amsterdam/niew-probleem
+                if($routeParams.cityName && searchCreateTemp!=1){
+                    $window.cityName = $routeParams.cityName;
+                    geocodeAddress(geocoder, map);
+                    searchCreateTemp=1;
+
+                }
             googleMapCreateProblem(latlngChange);
             var latitude = markerLat;
             var longitude = markerLng;
@@ -3947,7 +3961,7 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
         if(document.getElementById('searchCityProblem').value){
            var citytemp = document.getElementById('searchCityProblem').value ;         
            city.long_name =  citytemp.substring(citytemp.lastIndexOf(',')+1).replace(" ","");
-           $location.path('gemeente/'+city.long_name+'/nieuw-probleem');      
+           $location.path('gemeente/'+city.long_name+'/nieuw-probleem',false);      
         }
         $rootScope.lastCity = city.long_name;
         $timeout(function(){
@@ -4515,6 +4529,12 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
     //first initial
     $timeout(function () {
         if (latlngChange) {
+            if($routeParams.cityName && searchCreateTemp!=1){
+                    $window.cityName = $routeParams.cityName;
+                    geocodeAddress(geocoder, map);
+                    searchCreateTemp=1;
+
+                }
             googleMapCreateIdea(latlngChange);
             var latitude = markerLat;
             var longitude = markerLng;
@@ -4528,6 +4548,12 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
                 lat: 52.158367,
                 lng: 4.492999
             };
+            if($routeParams.cityName && searchCreateTemp!=1){
+                    $window.cityName = $routeParams.cityName;
+                    geocodeAddress(geocoder, map);
+                    searchCreateTemp=1;
+
+                }
             googleMapCreateIdea(latlngChange);
             latlngChange = null;
             var latitude = markerLat;
