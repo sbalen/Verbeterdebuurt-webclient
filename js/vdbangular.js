@@ -155,12 +155,15 @@ googleautocompleate = function(stringid,map) {
             console.log("luar");
             var place = autocomplete.getPlace();
              if (!place.geometry) {
-            geocodeAddress(geocoder, map);
+                console.log("kosong");
+                cityName = null;
+                postalcode = null;
+                geocodeAddress(geocoder, map);
             return;
             }
              if (place.geometry.viewport) {
             map.fitBounds(place.geometry.viewport);
-            map.setZoom(14);
+            map.setZoom(16);
             console.log("dalamkota");
             latlngChange = {
                 lat: place.geometry.location.lat(),
@@ -175,6 +178,7 @@ googleautocompleate = function(stringid,map) {
                 lat: place.geometry.location.lat(),
                 lng: place.geometry.location.lng()
             };
+            
             getaddressshow(latlngChange);
           }
         });
@@ -2037,11 +2041,14 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
 
     }
 
-    //search
+    //
+
+
     $scope.clickSearch = function () {
             $rootScope.globaloverlay = "active";
             $window.cityName = null;
             $window.postalcode = null;
+            console.log("jalan");
             // deletemarker(markers);
             //$rootScope.lastCity = city.long_name;
             // geocodeAddress(geocoder, map);
