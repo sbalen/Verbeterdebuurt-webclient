@@ -87,7 +87,7 @@ logger = function(string){
     
 
 //google map auto compleate change string to make it by id
-googleautocompleate = function(stringid) {
+googleautocompleate = function(stringid,map) {
       var input = document.getElementById(stringid);
       if(maxlat){
          var defaultBounds = new google.maps.LatLngBounds(
@@ -106,9 +106,26 @@ googleautocompleate = function(stringid) {
     autocomplete.bindTo('bounds',map)
     // autocomplete.bindTo('bounds',map);
     google.maps.event.addListener(autocomplete, 'place_changed', function() {
-            autocomplete.bindTo('bounds',map)
+            autocomplete.bindTo('bounds',map);
+            console.log(autocomplete.getPlace());
+            var place = autocomplete.getPlace();
+             if (place.geometry.viewport) {
+            map.fitBounds(place.geometry.viewport);
+            map.setZoom(13);
+            latlngChange = {
+                lat: place.geometry.location.lat(),
+                lng: place.geometry.location.lng()
+            };
+          } else {
+            map.setCenter(place.geometry.location);
+            map.setZoom(17);  // Why 17? Because it looks good.
+            latlngChange = {
+                lat: place.geometry.location.lat(),
+                lng: place.geometry.location.lng()
+            };
+          }
         });
-
+    
 }
 
 
@@ -541,6 +558,7 @@ function markerCenter(map, marker, location) {
                                 }  
                             }
                             document.getElementById(location).value = addressLocation + " " + the_street_number;
+                            console.log(addressLocation);
 
                             
                             
@@ -1685,7 +1703,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     //$scope.hideLogo = 1;
     
     //google map aouto complete
-    googleautocompleate('searchCity');
+    googleautocompleate('searchCity',map);
    
 
     if ($location.path() == "/plaats/" + $routeParams.cityNameplaats + nextaction  && searchCreateTemp!=1) {
@@ -1973,7 +1991,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
             $window.postalcode = null;
             // deletemarker(markers);
             //$rootScope.lastCity = city.long_name;
-            geocodeAddress(geocoder, map);
+            // geocodeAddress(geocoder, map);
             $timeout(function () {
                 var jsondata = JSON.stringify({
                     "coords_criterium": {
@@ -3845,8 +3863,6 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
     $scope.standardMessage = "";
     $rootScope.urlBefore = $location.path();
    
-    //googlemapautocompleate
-    googleautocompleate('searchCityProblem');
     $scope.email = "";
     $scope.username = "";
     $scope.password = "";
@@ -3909,6 +3925,8 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
                     searchCreateTemp=1;
                 }
                 googleMapCreateProblem(latlngChange);
+                //googlemapautocompleate
+    googleautocompleate('searchCityProblem',map3);
             var latitude = markerLat;
             var longitude = markerLng;
             var jsondataCity = JSON.stringify({
@@ -3935,6 +3953,8 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
 
                 }
             googleMapCreateProblem(latlngChange);
+            //googlemapautocompleate
+    googleautocompleate('searchCityProblem',map3);
             var latitude = markerLat;
             var longitude = markerLng;
             var jsondataCity = JSON.stringify({
@@ -3975,7 +3995,7 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
 
 
     $scope.clickSearchCreateIssue = function () {
-        geocodeAddressCreateProblem(geocoder, map3, $scope.searchCityCreate,"location");
+        // geocodeAddressCreateProblem(geocoder, map3, $scope.searchCityCreate,"location");
         $scope.loadCategory = 1;
         if(document.getElementById('searchCityProblem').value){
            var citytemp = document.getElementById('searchCityProblem').value ;         
@@ -4485,8 +4505,6 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
     $scope.myIssueCount = 0;
     $scope.initslide = "toggle-button2 ";
     $rootScope.urlBefore = $location.path();
-    //google map auto compleate
-    googleautocompleate('searchCityProblem');
     $scope.privateMessageHide = false;
     //to send to another city gemeente/Amsterdam/niew-probleem
     // if($routeParams.cityName){
@@ -4555,6 +4573,8 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
 
                 }
             googleMapCreateIdea(latlngChange);
+            //google map auto compleate
+    googleautocompleate('searchCityProblem',map4);
             var latitude = markerLat;
             var longitude = markerLng;
             // var jsondataCity = JSON.stringify({latitude,longitude});
@@ -4574,6 +4594,8 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
 
                 }
             googleMapCreateIdea(latlngChange);
+            //google map auto compleate
+    googleautocompleate('searchCityProblem',map4);
             latlngChange = null;
             var latitude = markerLat;
             var longitude = markerLng;
@@ -4589,7 +4611,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
         $scope.hideNonLogin = "ng-hide"
     }
     $scope.clickSearchCreateIssue = function () {
-        geocodeAddressCreateProblem(geocoder, map4, $scope.searchCityCreate,"location2");
+        // geocodeAddressCreateProblem(geocoder, map4, $scope.searchCityCreate,"location2");
         if(document.getElementById('searchCityProblem').value){
            var citytemp = document.getElementById('searchCityProblem').value ;         
            city.long_name =  citytemp.substring(citytemp.lastIndexOf(',')+1).replace(" ","");
