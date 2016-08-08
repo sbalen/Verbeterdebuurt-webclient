@@ -84,7 +84,51 @@ logger = function(string){
        console.log(string);
     }
 }
-    
+//get address
+getaddressshow = function(latlng){
+    geocoder.geocode({
+                        'latLng': latlng
+                }, function (result, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        for (var i = 0; i < result[0].address_components.length; i++) {
+                            for (var b = 0; b < result[0].address_components[i].types.length; b++) {
+                                //if you want the change the area ..
+                                if (result[0].address_components[i].types[b] == "route") {
+                                    // street name
+                                    street = result[0].address_components[i].short_name;
+                                    var the_street_number = "";
+                                    for(var c = 0; c < result[0].address_components.length; c++){
+                                        for (var d = 0; d < result[0].address_components[c].types.length; d++) {
+                                            if (result[0].address_components[c].types[d] == "street_number") {
+                                                the_street_number = result[0].address_components[c].short_name;
+                                            }
+                                            break;
+                                        }  
+                                    }
+                                     var tempurl = window.location.pathname;
+                                    if(tempurl.includes('nieuw-probleem')){
+                                        document.getElementById("location").value = street + " " + the_street_number;
+                                    }
+                                    if(tempurl.includes('nieuw-idee')){
+                                         document.getElementById("location2").value = street + " " + the_street_number;
+                                    }
+                                    
+                                    
+
+                                    
+                                    
+                                    break;
+                                }
+                                // if (result[0].address_components[i].types[b] == "street_number") {
+                                //     // street number
+                                //     street_number = result[0].address_components[i].short_name;
+                                //     break;
+                                // }
+                            }
+                        }
+                    }
+                });
+}
 
 //google map auto compleate change string to make it by id
 googleautocompleate = function(stringid,map) {
@@ -107,22 +151,31 @@ googleautocompleate = function(stringid,map) {
     // autocomplete.bindTo('bounds',map);
     google.maps.event.addListener(autocomplete, 'place_changed', function() {
             autocomplete.bindTo('bounds',map);
-            console.log(autocomplete.getPlace());
+            // console.log(autocomplete.getPlace());
+            console.log("luar");
             var place = autocomplete.getPlace();
+             if (!place.geometry) {
+            geocodeAddress(geocoder, map);
+            return;
+            }
              if (place.geometry.viewport) {
             map.fitBounds(place.geometry.viewport);
-            map.setZoom(13);
+            map.setZoom(14);
+            console.log("dalamkota");
             latlngChange = {
                 lat: place.geometry.location.lat(),
                 lng: place.geometry.location.lng()
             };
+            getaddressshow(latlngChange);
           } else {
+            console.log("dalamjalan");
             map.setCenter(place.geometry.location);
             map.setZoom(17);  // Why 17? Because it looks good.
             latlngChange = {
                 lat: place.geometry.location.lat(),
                 lng: place.geometry.location.lng()
             };
+            getaddressshow(latlngChange);
           }
         });
     
@@ -558,7 +611,7 @@ function markerCenter(map, marker, location) {
                                 }  
                             }
                             document.getElementById(location).value = addressLocation + " " + the_street_number;
-                            console.log(addressLocation);
+                            // console.log(addressLocation);
 
                             
                             
@@ -3995,7 +4048,8 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
 
 
     $scope.clickSearchCreateIssue = function () {
-        // geocodeAddressCreateProblem(geocoder, map3, $scope.searchCityCreate,"location");
+        
+        geocodeAddressCreateProblem(geocoder, map3, $scope.searchCityCreate,"location");
         $scope.loadCategory = 1;
         if(document.getElementById('searchCityProblem').value){
            var citytemp = document.getElementById('searchCityProblem').value ;         
@@ -4611,7 +4665,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
         $scope.hideNonLogin = "ng-hide"
     }
     $scope.clickSearchCreateIssue = function () {
-        // geocodeAddressCreateProblem(geocoder, map4, $scope.searchCityCreate,"location2");
+        geocodeAddressCreateProblem(geocoder, map4, $scope.searchCityCreate,"location2");
         if(document.getElementById('searchCityProblem').value){
            var citytemp = document.getElementById('searchCityProblem').value ;         
            city.long_name =  citytemp.substring(citytemp.lastIndexOf(',')+1).replace(" ","");

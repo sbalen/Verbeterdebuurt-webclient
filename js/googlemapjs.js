@@ -98,7 +98,6 @@ function getLocation(map) {
 }
 function geocodeAddress(geocoder, resultsMap) {
         var address = null;
-        
         if(cityName!=null){
           var address = cityName;
         }
@@ -111,6 +110,7 @@ function geocodeAddress(geocoder, resultsMap) {
         geocoder.geocode({'address': address,componentRestrictions: {country: 'nl'}}, function(results, status) {
           if (status === google.maps.GeocoderStatus.OK) {
                 resultsMap.setCenter(results[0].geometry.location);
+                console.log('jalanenter');
                 maxlat  = resultsMap.getBounds().getNorthEast().lat();
                 maxlng  = resultsMap.getBounds().getNorthEast().lng();
                 minlat = resultsMap.getBounds().getSouthWest().lat();
