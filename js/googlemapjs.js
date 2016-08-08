@@ -115,7 +115,10 @@ function geocodeAddress(geocoder, resultsMap) {
                 maxlng  = resultsMap.getBounds().getNorthEast().lng();
                 minlat = resultsMap.getBounds().getSouthWest().lat();
                 minlng = resultsMap.getBounds().getSouthWest().lng();
-
+                latlngChange = {
+                lat: results[0].geometry.location.lat(),
+                lng: results[0].geometry.location.lng()
+                };
                 //console.log("nasiduk");
                 citynamegoogle= {};
                 citynamegoogle.long_name = null;
@@ -132,7 +135,7 @@ function geocodeAddress(geocoder, resultsMap) {
 
                     
           } else {
-            alert('Geocode was not successful for the following reason: ' + status);
+            // alert('Geocode was not successful for the following reason: ' + status);
           }
           address = null;
           postalcode = null;

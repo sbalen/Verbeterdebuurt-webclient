@@ -234,7 +234,8 @@ function googlemapinit () {
         geocodeAddress(geocoder, map);
         postalcode = null;
     }
-    getLatLng(map);
+         
+   
     //start location picker
 
     var tempurl = window.location.pathname;
@@ -260,13 +261,23 @@ function googlemapinit () {
 //call google map at first 
 vdbApp.run(function(){
     googlemapinit();
-    console.log("mapchange");
+    // console.log("mapchange");
 })
 
 function getLatLng(map) {
-    google.maps.event.addListener(map, 'bounds_changed', function () {
-        latlngChange = map.getCenter();
+    google.maps.event.addListener(map, 'drag', function () {
+                latlngChange = map.getCenter();
+           
     })
+     google.maps.event.addListener(map, 'click', function () {
+                latlngChange = map.getCenter();
+               
+    })
+      google.maps.event.addListener(map, 'mouseover', function () {
+                latlngChange = map.getCenter();
+   
+    })
+    
 }
 
 function googleMapIssue(lat, lng, type) {
@@ -568,10 +579,16 @@ function geocodeAddressCreateProblem(geocoder, resultsMap, address,location) {
         'address': address,componentRestrictions: {country: 'nl'}
     }, function (results, status) {
         if (status === google.maps.GeocoderStatus.OK) {
+            console.log(results[0].geometry.location.lat());
+            console.log(results[0].geometry.location.lng());
             resultsMap.setCenter(results[0].geometry.location);
             marker.setPosition(resultsMap.getCenter());
             markerLat = resultsMap.getCenter().lat();
             markerLng = resultsMap.getCenter().lng();
+            latlngChange = {
+                lat: results[0].geometry.location.lat(),
+                lng: results[0].geometry.location.lng()
+            };
             maxlat = map.getBounds().getNorthEast().lat();
             maxlng = map.getBounds().getNorthEast().lng();
             minlat = map.getBounds().getSouthWest().lat();
@@ -615,7 +632,7 @@ function geocodeAddressCreateProblem(geocoder, resultsMap, address,location) {
                 });
 
         } else {
-            alert('Geocode was not successful for the following reason: ' + status);
+            // alert('Geocode was not successful for the following reason: ' + status);
         }
     });
 }
@@ -1528,13 +1545,16 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     // },3000)
     //check android or not
     $rootScope.dynamicTitle = "";
-    var isAndroid = /(android)/i.test(navigator.userAgent);
-    if (isAndroid) {
-        logger("android");
-    }
-    else{
-        logger("not android");
-    }
+        // logger('jalan');
+             getLatLng(map);
+       
+    // var isAndroid = /(android)/i.test(navigator.userAgent);
+    // if (isAndroid) {
+    //     logger("android");
+    // }
+    // else{
+    //     logger("not android");
+    // }
     //for redirecting the action
     var nextaction = "";
     if (!(typeof $routeParams.nextaction === 'undefined')) {
@@ -1674,12 +1694,14 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
         geocodeAddress(geocoder, map);
         searchCreateTemp =1;
         //$window.cityName = null;
+        // console.log("plaats");
     }
 
     if ($location.path() == "/" + $routeParams.cityNameClone + nextaction && searchCreateTemp!=1) {
         $location.path('gemeente/' + $routeParams.cityNameClone + nextaction);
         $window.cityName = $routeParams.cityNameClone;
         geocodeAddress(geocoder, map);
+        // console.log("geemente");
        // $window.cityName = null;
     }
 
@@ -3805,7 +3827,6 @@ vdbApp.controller('selectProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
 
 vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', 'duplicateIssuesService', '$cookies', 'serviceStandartService','reportService','issuesService','agreementSevice','$routeParams', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, duplicateIssuesService, $cookies, serviceStandartService,reportService,issuesService,agreementSevice,$routeParams) {
     $scope.privateMessageHide = false;
-
     if($location.path().includes('nieuwe-melding')){
         $rootScope.dynamicTitle = "Nieuw melding |";
     }
@@ -3823,7 +3844,6 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
     $scope.count = 0;
     $scope.standardMessage = "";
     $rootScope.urlBefore = $location.path();
-
    
     //googlemapautocompleate
     googleautocompleate('searchCityProblem');
@@ -3887,7 +3907,6 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
                     $window.cityName = $routeParams.cityName;
                     geocodeAddress(geocoder, map);
                     searchCreateTemp=1;
-
                 }
                 googleMapCreateProblem(latlngChange);
             var latitude = markerLat;
