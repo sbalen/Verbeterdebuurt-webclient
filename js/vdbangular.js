@@ -439,12 +439,12 @@ function googleMapCreateIdea(latlng) {
     markerGetAddress(marker, "location2");
     var tempurl = window.location.pathname.replace('nieuw-idee','');;
     // logger(tempurl);
-    if(tempurl.includes('gemeente')){
-        var citytemp = tempurl.substring(tempurl.slice(0,tempurl.length-1).lastIndexOf('/')+1);
-        cityName = citytemp.substring(0,citytemp.length-1);
-        // logger(cityName);
-        geocodeAddress(geocoder, map4);
-    }
+    // if(tempurl.includes('gemeente')){
+    //     var citytemp = tempurl.substring(tempurl.slice(0,tempurl.length-1).lastIndexOf('/')+1);
+    //     cityName = citytemp.substring(0,citytemp.length-1);
+    //     // logger(cityName);
+    //     geocodeAddress(geocoder, map4);
+    // }
 }
 
 //to make other map syncronise
