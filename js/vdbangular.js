@@ -525,7 +525,7 @@ function markerCenter(map, marker, location) {
                 for (var i = 0; i < result[0].address_components.length; i++) {
                     for (var b = 0; b < result[0].address_components[i].types.length; b++) {
                         //if you want the change the area ..
-                        if (result[0].address_components[i].types[b] == "route") {
+                        if (result[0].address_components[i].types[b] == "route") {.
                             // street name
                             streetLocation = result[0].address_components[i].short_name;
                             addressLocation = streetLocation;
@@ -536,8 +536,9 @@ function markerCenter(map, marker, location) {
                                 for (var d = 0; d < result[0].address_components[c].types.length; d++) {
                                     if (result[0].address_components[c].types[d] == "street_number") {
                                         the_street_number = result[0].address_components[c].short_name;
+                                        break;
                                     }
-                                    break;
+                                    
                                 }  
                             }
                             document.getElementById(location).value = addressLocation + " " + the_street_number;
