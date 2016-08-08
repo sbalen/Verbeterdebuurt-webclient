@@ -525,7 +525,7 @@ function markerCenter(map, marker, location) {
                 for (var i = 0; i < result[0].address_components.length; i++) {
                     for (var b = 0; b < result[0].address_components[i].types.length; b++) {
                         //if you want the change the area ..
-                        if (result[0].address_components[i].types[b] == "route") {.
+                        if (result[0].address_components[i].types[b] == "route") {
                             // street name
                             streetLocation = result[0].address_components[i].short_name;
                             addressLocation = streetLocation;
