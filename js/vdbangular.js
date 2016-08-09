@@ -568,6 +568,8 @@ function markerCenter(map, marker, location) {
         marker.setPosition(map.getCenter());
         markerLat = marker.getPosition().lat();
         markerLng = marker.getPosition().lng();
+        console.log(markerLat);
+        console.log(markerLng);
         geocoder.geocode({
             'latLng': marker.getPosition()
         }, function (result, status) {
@@ -580,7 +582,7 @@ function markerCenter(map, marker, location) {
                             //logger("1");
                             streetLocation = result[0].address_components[i].short_name;
                             addressLocation = streetLocation;
-                            
+                            console.log(addressLocation);
                             
                             var the_street_number = "";
                             for(var c = 0; c < result[0].address_components.length; c++){
@@ -4053,7 +4055,7 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
                 })
             });
         }
-    }, 1200);
+    }, 1500);
 
     $scope.categoriesData = function () {
         $scope.loadCategory = 1;
@@ -4688,7 +4690,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
             // 	$scope.categoriesList = data.data.categories;
             // });
         }
-    }, 1200);
+    }, 1500);
 
 
     if ($cookies.getObject('user')) {
