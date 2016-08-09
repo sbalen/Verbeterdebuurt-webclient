@@ -568,8 +568,6 @@ function markerCenter(map, marker, location) {
         marker.setPosition(map.getCenter());
         markerLat = marker.getPosition().lat();
         markerLng = marker.getPosition().lng();
-        console.log(markerLat);
-        console.log(markerLng);
         geocoder.geocode({
             'latLng': marker.getPosition()
         }, function (result, status) {
