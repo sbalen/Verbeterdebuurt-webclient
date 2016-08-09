@@ -152,7 +152,6 @@ googleautocompleate = function(stringid,resultmap) {
     google.maps.event.addListener(autocomplete, 'place_changed', function() {
             autocomplete.bindTo('bounds',map);
             // console.log(autocomplete.getPlace());
-            console.log("luar");
             var place = autocomplete.getPlace();
             if (!place.geometry) {
                 var tempurl = window.location.pathname;
@@ -580,7 +579,6 @@ function markerCenter(map, marker, location) {
                             //logger("1");
                             streetLocation = result[0].address_components[i].short_name;
                             addressLocation = streetLocation;
-                            console.log(addressLocation);
                             
                             var the_street_number = "";
                             for(var c = 0; c < result[0].address_components.length; c++){
