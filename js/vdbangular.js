@@ -131,7 +131,7 @@ getaddressshow = function(latlng){
 }
 
 //google map auto compleate change string to make it by id
-googleautocompleate = function(stringid,map) {
+googleautocompleate = function(stringid,resultmap) {
       var input = document.getElementById(stringid);
       if(maxlat){
          var defaultBounds = new google.maps.LatLngBounds(
@@ -154,32 +154,58 @@ googleautocompleate = function(stringid,map) {
             // console.log(autocomplete.getPlace());
             console.log("luar");
             var place = autocomplete.getPlace();
-             if (!place.geometry) {
-                console.log("kosong");
+            if (!place.geometry) {
+                var tempurl = window.location.pathname;
+                if(tempurl.includes('nieuw-probleem')){
+                geocodeAddressCreateProblem(geocoder, map3, document.getElementById('searchCityProblem').value,"location");
+                }
+                else if(tempurl.includes('nieuw-idee')){
+                geocodeAddressCreateProblem(geocoder, map4, document.getElementById('searchCityProblem').value,"location2");
+                }else{
                 cityName = null;
                 postalcode = null;
-                geocodeAddress(geocoder, map);
+                geocodeAddress(geocoder, resultmap);
+                }
+                
             return;
             }
              if (place.geometry.viewport) {
-            map.fitBounds(place.geometry.viewport);
-            map.setZoom(16);
-            console.log("dalamkota");
+                
+            resultmap.fitBounds(place.geometry.viewport);
+            resultmap.setZoom(16);
             latlngChange = {
                 lat: place.geometry.location.lat(),
                 lng: place.geometry.location.lng()
             };
             getaddressshow(latlngChange);
+            var tempurl = window.location.pathname;
+            if(tempurl.includes('nieuw-probleem')||tempurl.includes('nieuw-idee')){
+            markerLat = place.geometry.location.lat()
+            markerLng = place.geometry.location.lng()
+            maxlat = map.getBounds().getNorthEast().lat();
+            maxlng = map.getBounds().getNorthEast().lng();
+            minlat = map.getBounds().getSouthWest().lat();
+            minlng = map.getBounds().getSouthWest().lng();
+            showIssue(infoWindow, infoWindowContent);
+            }
           } else {
-            console.log("dalamjalan");
-            map.setCenter(place.geometry.location);
-            map.setZoom(17);  // Why 17? Because it looks good.
+            resultmap.setCenter(place.geometry.location);
+            resultmap.setZoom(17);  // Why 17? Because it looks good.
             latlngChange = {
                 lat: place.geometry.location.lat(),
                 lng: place.geometry.location.lng()
             };
-            
             getaddressshow(latlngChange);
+            var tempurl = window.location.pathname;
+             if(tempurl.includes('nieuw-probleem')||tempurl.includes('nieuw-idee')){
+            markerLat = place.geometry.location.lat()
+            markerLng = place.geometry.location.lng()
+            maxlat = map.getBounds().getNorthEast().lat();
+            maxlng = map.getBounds().getNorthEast().lng();
+            minlat = map.getBounds().getSouthWest().lat();
+            minlng = map.getBounds().getSouthWest().lng();
+            showIssue(infoWindow, infoWindowContent);
+            }
           }
         });
     
@@ -654,8 +680,6 @@ function geocodeAddressCreateProblem(geocoder, resultsMap, address,location) {
         'address': address,componentRestrictions: {country: 'nl'}
     }, function (results, status) {
         if (status === google.maps.GeocoderStatus.OK) {
-            console.log(results[0].geometry.location.lat());
-            console.log(results[0].geometry.location.lng());
             resultsMap.setCenter(results[0].geometry.location);
             marker.setPosition(resultsMap.getCenter());
             markerLat = resultsMap.getCenter().lat();
@@ -4055,8 +4079,6 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
 
 
     $scope.clickSearchCreateIssue = function () {
-        
-        geocodeAddressCreateProblem(geocoder, map3, $scope.searchCityCreate,"location");
         $scope.loadCategory = 1;
         if(document.getElementById('searchCityProblem').value){
            var citytemp = document.getElementById('searchCityProblem').value ;         
@@ -4672,7 +4694,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
         $scope.hideNonLogin = "ng-hide"
     }
     $scope.clickSearchCreateIssue = function () {
-        geocodeAddressCreateProblem(geocoder, map4, $scope.searchCityCreate,"location2");
+        // geocodeAddressCreateProblem(geocoder, map4, $scope.searchCityCreate,"location2");
         if(document.getElementById('searchCityProblem').value){
            var citytemp = document.getElementById('searchCityProblem').value ;         
            city.long_name =  citytemp.substring(citytemp.lastIndexOf(',')+1).replace(" ","");
