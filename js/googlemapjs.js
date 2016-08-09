@@ -98,19 +98,22 @@ function getLocation(map) {
 }
 function geocodeAddress(geocoder, resultsMap) {
         var address = null;
-        
         if(cityName!=null){
           var address = cityName;
+          console.log('1',address);
         }
         else if(postalcode!=null){
           var address = postalcode;
+          console.log('2',address);
         }
         else if(document.getElementById('searchCity').value){
         var address = document.getElementById('searchCity').value;
+          console.log('3',address);
         }
         geocoder.geocode({'address': address,componentRestrictions: {country: 'nl'}}, function(results, status) {
           if (status === google.maps.GeocoderStatus.OK) {
                 resultsMap.setCenter(results[0].geometry.location);
+                resultsMap.setZoom(16);
                 maxlat  = resultsMap.getBounds().getNorthEast().lat();
                 maxlng  = resultsMap.getBounds().getNorthEast().lng();
                 minlat = resultsMap.getBounds().getSouthWest().lat();

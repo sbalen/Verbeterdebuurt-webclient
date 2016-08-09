@@ -84,10 +84,54 @@ logger = function(string){
        console.log(string);
     }
 }
-    
+//get address
+getaddressshow = function(latlng){
+    geocoder.geocode({
+                        'latLng': latlng
+                }, function (result, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        for (var i = 0; i < result[0].address_components.length; i++) {
+                            for (var b = 0; b < result[0].address_components[i].types.length; b++) {
+                                //if you want the change the area ..
+                                if (result[0].address_components[i].types[b] == "route") {
+                                    // street name
+                                    street = result[0].address_components[i].short_name;
+                                    var the_street_number = "";
+                                    for(var c = 0; c < result[0].address_components.length; c++){
+                                        for (var d = 0; d < result[0].address_components[c].types.length; d++) {
+                                            if (result[0].address_components[c].types[d] == "street_number") {
+                                                the_street_number = result[0].address_components[c].short_name;
+                                            }
+                                            break;
+                                        }  
+                                    }
+                                     var tempurl = window.location.pathname;
+                                    if(tempurl.includes('nieuw-probleem')){
+                                        document.getElementById("location").value = street + " " + the_street_number;
+                                    }
+                                    if(tempurl.includes('nieuw-idee')){
+                                         document.getElementById("location2").value = street + " " + the_street_number;
+                                    }
+                                    
+                                    
+
+                                    
+                                    
+                                    break;
+                                }
+                                // if (result[0].address_components[i].types[b] == "street_number") {
+                                //     // street number
+                                //     street_number = result[0].address_components[i].short_name;
+                                //     break;
+                                // }
+                            }
+                        }
+                    }
+                });
+}
 
 //google map auto compleate change string to make it by id
-googleautocompleate = function(stringid) {
+googleautocompleate = function(stringid,resultmap) {
       var input = document.getElementById(stringid);
       if(maxlat){
          var defaultBounds = new google.maps.LatLngBounds(
@@ -106,9 +150,65 @@ googleautocompleate = function(stringid) {
     autocomplete.bindTo('bounds',map)
     // autocomplete.bindTo('bounds',map);
     google.maps.event.addListener(autocomplete, 'place_changed', function() {
-            autocomplete.bindTo('bounds',map)
+            autocomplete.bindTo('bounds',map);
+            // console.log(autocomplete.getPlace());
+            console.log("luar");
+            var place = autocomplete.getPlace();
+            if (!place.geometry) {
+                var tempurl = window.location.pathname;
+                if(tempurl.includes('nieuw-probleem')){
+                geocodeAddressCreateProblem(geocoder, map3, document.getElementById('searchCityProblem').value,"location");
+                }
+                else if(tempurl.includes('nieuw-idee')){
+                geocodeAddressCreateProblem(geocoder, map4, document.getElementById('searchCityProblem').value,"location2");
+                }else{
+                cityName = null;
+                postalcode = null;
+                geocodeAddress(geocoder, resultmap);
+                }
+                
+            return;
+            }
+             if (place.geometry.viewport) {
+                
+            resultmap.fitBounds(place.geometry.viewport);
+            resultmap.setZoom(16);
+            latlngChange = {
+                lat: place.geometry.location.lat(),
+                lng: place.geometry.location.lng()
+            };
+            getaddressshow(latlngChange);
+            var tempurl = window.location.pathname;
+            if(tempurl.includes('nieuw-probleem')||tempurl.includes('nieuw-idee')){
+            markerLat = place.geometry.location.lat()
+            markerLng = place.geometry.location.lng()
+            maxlat = map.getBounds().getNorthEast().lat();
+            maxlng = map.getBounds().getNorthEast().lng();
+            minlat = map.getBounds().getSouthWest().lat();
+            minlng = map.getBounds().getSouthWest().lng();
+            showIssue(infoWindow, infoWindowContent);
+            }
+          } else {
+            resultmap.setCenter(place.geometry.location);
+            resultmap.setZoom(17);  // Why 17? Because it looks good.
+            latlngChange = {
+                lat: place.geometry.location.lat(),
+                lng: place.geometry.location.lng()
+            };
+            getaddressshow(latlngChange);
+            var tempurl = window.location.pathname;
+             if(tempurl.includes('nieuw-probleem')||tempurl.includes('nieuw-idee')){
+            markerLat = place.geometry.location.lat()
+            markerLng = place.geometry.location.lng()
+            maxlat = map.getBounds().getNorthEast().lat();
+            maxlng = map.getBounds().getNorthEast().lng();
+            minlat = map.getBounds().getSouthWest().lat();
+            minlng = map.getBounds().getSouthWest().lng();
+            showIssue(infoWindow, infoWindowContent);
+            }
+          }
         });
-
+    
 }
 
 
@@ -542,6 +642,7 @@ function markerCenter(map, marker, location) {
                                 }  
                             }
                             document.getElementById(location).value = addressLocation + " " + the_street_number;
+                            // console.log(addressLocation);
 
                             
                             
@@ -580,8 +681,6 @@ function geocodeAddressCreateProblem(geocoder, resultsMap, address,location) {
         'address': address,componentRestrictions: {country: 'nl'}
     }, function (results, status) {
         if (status === google.maps.GeocoderStatus.OK) {
-            console.log(results[0].geometry.location.lat());
-            console.log(results[0].geometry.location.lng());
             resultsMap.setCenter(results[0].geometry.location);
             marker.setPosition(resultsMap.getCenter());
             markerLat = resultsMap.getCenter().lat();
@@ -1686,7 +1785,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     //$scope.hideLogo = 1;
     
     //google map aouto complete
-    googleautocompleate('searchCity');
+    googleautocompleate('searchCity',map);
    
 
     if ($location.path() == "/plaats/" + $routeParams.cityNameplaats + nextaction  && searchCreateTemp!=1) {
@@ -1967,14 +2066,17 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
 
     }
 
-    //search
+    //
+
+
     $scope.clickSearch = function () {
             $rootScope.globaloverlay = "active";
             $window.cityName = null;
             $window.postalcode = null;
+            console.log("jalan");
             // deletemarker(markers);
             //$rootScope.lastCity = city.long_name;
-            geocodeAddress(geocoder, map);
+            // geocodeAddress(geocoder, map);
             $timeout(function () {
                 var jsondata = JSON.stringify({
                     "coords_criterium": {
@@ -3846,8 +3948,6 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
     $scope.standardMessage = "";
     $rootScope.urlBefore = $location.path();
    
-    //googlemapautocompleate
-    googleautocompleate('searchCityProblem');
     $scope.email = "";
     $scope.username = "";
     $scope.password = "";
@@ -3910,6 +4010,8 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
                     searchCreateTemp=1;
                 }
                 googleMapCreateProblem(latlngChange);
+                //googlemapautocompleate
+    googleautocompleate('searchCityProblem',map3);
             var latitude = markerLat;
             var longitude = markerLng;
             var jsondataCity = JSON.stringify({
@@ -3936,6 +4038,8 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
 
                 }
             googleMapCreateProblem(latlngChange);
+            //googlemapautocompleate
+    googleautocompleate('searchCityProblem',map3);
             var latitude = markerLat;
             var longitude = markerLng;
             var jsondataCity = JSON.stringify({
@@ -3976,7 +4080,6 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
 
 
     $scope.clickSearchCreateIssue = function () {
-        geocodeAddressCreateProblem(geocoder, map3, $scope.searchCityCreate,"location");
         $scope.loadCategory = 1;
         if(document.getElementById('searchCityProblem').value){
            var citytemp = document.getElementById('searchCityProblem').value ;         
@@ -4486,8 +4589,6 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
     $scope.myIssueCount = 0;
     $scope.initslide = "toggle-button2 ";
     $rootScope.urlBefore = $location.path();
-    //google map auto compleate
-    googleautocompleate('searchCityProblem');
     $scope.privateMessageHide = false;
     //to send to another city gemeente/Amsterdam/niew-probleem
     // if($routeParams.cityName){
@@ -4556,6 +4657,8 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
 
                 }
             googleMapCreateIdea(latlngChange);
+            //google map auto compleate
+    googleautocompleate('searchCityProblem',map4);
             var latitude = markerLat;
             var longitude = markerLng;
             // var jsondataCity = JSON.stringify({latitude,longitude});
@@ -4575,6 +4678,8 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
 
                 }
             googleMapCreateIdea(latlngChange);
+            //google map auto compleate
+    googleautocompleate('searchCityProblem',map4);
             latlngChange = null;
             var latitude = markerLat;
             var longitude = markerLng;
@@ -4590,7 +4695,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
         $scope.hideNonLogin = "ng-hide"
     }
     $scope.clickSearchCreateIssue = function () {
-        geocodeAddressCreateProblem(geocoder, map4, $scope.searchCityCreate,"location2");
+        // geocodeAddressCreateProblem(geocoder, map4, $scope.searchCityCreate,"location2");
         if(document.getElementById('searchCityProblem').value){
            var citytemp = document.getElementById('searchCityProblem').value ;         
            city.long_name =  citytemp.substring(citytemp.lastIndexOf(',')+1).replace(" ","");
