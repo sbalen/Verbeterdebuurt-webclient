@@ -703,7 +703,7 @@ function markerCenter(map, marker, location) {
 
                 }
         });
-                        },2000)
+                        },1500)
                 }
             }
 
