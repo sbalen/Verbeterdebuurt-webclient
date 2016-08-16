@@ -350,7 +350,14 @@ function googlemapinit () {
             tempurl = tempurl.replace('nieuwe-melding','');
         }
         var citytemp = tempurl.substring(tempurl.slice(0,tempurl.length-1).lastIndexOf('/')+1);
-        cityName = citytemp.substring(0,citytemp.length-1);
+        
+        if(citytemp[citytemp.length-1]=='/'){
+            cityName = citytemp.substring(0,citytemp.length-1);
+        }
+        else{
+            cityName = citytemp;
+        }
+        
         // logger(cityName);
         geocodeAddress(geocoder, map);
     }
