@@ -352,7 +352,7 @@ function googlemapinit () {
         var citytemp = tempurl.substring(tempurl.slice(0,tempurl.length-1).lastIndexOf('/')+1);
         cityName = citytemp.substring(0,citytemp.length-1);
         // logger(cityName);
-        // geocodeAddress(geocoder, map);
+        geocodeAddress(geocoder, map);
     }
     $('#duplicate-bubble').hide();
 
@@ -4100,7 +4100,7 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
              //to send to another city gemeente/Amsterdam/niew-probleem
                 if($routeParams.cityName && searchCreateTemp!=1){
                     $window.cityName = $routeParams.cityName;
-                    geocodeAddress(geocoder, map);
+                    // geocodeAddress(geocoder, map);
                     searchCreateTemp=1;
                 }
                 googleMapCreateProblem(latlngChange);
@@ -4746,7 +4746,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
         if (latlngChange) {
             if($routeParams.cityName && searchCreateTemp!=1){
                     $window.cityName = $routeParams.cityName;
-                    geocodeAddress(geocoder, map);
+                    // geocodeAddress(geocoder, map);
                     searchCreateTemp=1;
 
                 }
