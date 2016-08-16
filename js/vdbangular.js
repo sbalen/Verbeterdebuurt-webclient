@@ -352,7 +352,7 @@ function googlemapinit () {
         var citytemp = tempurl.substring(tempurl.slice(0,tempurl.length-1).lastIndexOf('/')+1);
         cityName = citytemp.substring(0,citytemp.length-1);
         // logger(cityName);
-        geocodeAddress(geocoder, map);
+        // geocodeAddress(geocoder, map);
     }
     $('#duplicate-bubble').hide();
 
@@ -562,6 +562,7 @@ function sycGoogleMap4(map4) {
         map.setZoom(map4.getZoom());
     });
 }
+
 //marker at center
 function markerCenter(map, marker, location) {
         marker.setPosition(map.getCenter());
@@ -618,6 +619,7 @@ function markerCenter(map, marker, location) {
         geocoder.geocode({
             'latLng': e.latLng
         }, function (result, status) {
+            // console.log(status);
             if (status == google.maps.GeocoderStatus.OK) {
 
                 for (var i = 0; i < result[0].address_components.length; i++) {
@@ -655,6 +657,53 @@ function markerCenter(map, marker, location) {
                     }
 
 
+                }
+            }
+            else{
+            //prevent not show address
+                if(status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT){
+                        setTimeout(function(){
+                            geocoder.geocode({
+            'latLng': e.latLng
+        }, function (result, status) {
+                for (var i = 0; i < result[0].address_components.length; i++) {
+                    for (var b = 0; b < result[0].address_components[i].types.length; b++) {
+                        //if you want the change the area ..
+                        if (result[0].address_components[i].types[b] == "route") {
+                            // street name
+                            streetLocation = result[0].address_components[i].short_name;
+                            addressLocation = streetLocation;
+                            
+                            
+                            var the_street_number = "";
+                            for(var c = 0; c < result[0].address_components.length; c++){
+                                for (var d = 0; d < result[0].address_components[c].types.length; d++) {
+                                    if (result[0].address_components[c].types[d] == "street_number") {
+                                        the_street_number = result[0].address_components[c].short_name;
+                                        break;
+                                    }
+                                    
+                                }  
+                            }
+                            document.getElementById(location).value = addressLocation + " " + the_street_number;
+                            // console.log(addressLocation);
+
+                            
+                            
+                            
+                            break;
+                        }
+                        // if (result[0].address_components[i].types[b] == "street_number") {
+                        //    // street number
+                        //     street_number= result[0].address_components[i].short_name;
+                        //     break;
+                        //         }
+                    }
+
+
+                }
+        });
+                        },2000)
                 }
             }
 
@@ -768,6 +817,52 @@ function markerGetAddress(marker, location) {
                         //     break;
                         // }
                     }
+                }
+            }
+            else{
+                if(status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT){
+                        setTimeout(function(){
+                            geocoder.geocode({
+            'latLng': e.latLng
+        }, function (result, status) {
+                for (var i = 0; i < result[0].address_components.length; i++) {
+                    for (var b = 0; b < result[0].address_components[i].types.length; b++) {
+                        //if you want the change the area ..
+                        if (result[0].address_components[i].types[b] == "route") {
+                            // street name
+                            streetLocation = result[0].address_components[i].short_name;
+                            addressLocation = streetLocation;
+                            
+                            
+                            var the_street_number = "";
+                            for(var c = 0; c < result[0].address_components.length; c++){
+                                for (var d = 0; d < result[0].address_components[c].types.length; d++) {
+                                    if (result[0].address_components[c].types[d] == "street_number") {
+                                        the_street_number = result[0].address_components[c].short_name;
+                                        break;
+                                    }
+                                    
+                                }  
+                            }
+                            document.getElementById(location).value = addressLocation + " " + the_street_number;
+                            // console.log(addressLocation);
+
+                            
+                            
+                            
+                            break;
+                        }
+                        // if (result[0].address_components[i].types[b] == "street_number") {
+                        //    // street number
+                        //     street_number= result[0].address_components[i].short_name;
+                        //     break;
+                        //         }
+                    }
+
+
+                }
+        });
+                        },2000)
                 }
             }
         });
@@ -1799,6 +1894,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
         $location.path('gemeente/' + $routeParams.cityNameClone + nextaction);
         $window.cityName = $routeParams.cityNameClone;
         geocodeAddress(geocoder, map);
+        searchCreateTemp =1;
         // console.log("geemente");
        // $window.cityName = null;
     }
