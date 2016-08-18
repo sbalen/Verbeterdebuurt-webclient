@@ -569,9 +569,9 @@ function sycGoogleMap4(map4) {
         map.setZoom(map4.getZoom());
     });
 }
-
 //marker at center
 function markerCenter(map, marker, location) {
+        var addressDelay;
         marker.setPosition(map.getCenter());
         markerLat = marker.getPosition().lat();
         markerLng = marker.getPosition().lng();
@@ -619,6 +619,7 @@ function markerCenter(map, marker, location) {
 
 
     google.maps.event.addListener(map, 'click', function (e) {
+        clearTimeout(addressDelay);
         marker.setPosition(e.latLng);
         // logger(e.latLng);
         markerLat = marker.getPosition().lat();
@@ -669,10 +670,11 @@ function markerCenter(map, marker, location) {
             else{
             //prevent not show address
                 if(status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT){
-                        setTimeout(function(){
+                            addressDelay = setTimeout(function(){
+                            // console.log("timeout work");
                             geocoder.geocode({
             'latLng': e.latLng
-        }, function (result, status) {
+        }, function (result, status) {            
                 for (var i = 0; i < result[0].address_components.length; i++) {
                     for (var b = 0; b < result[0].address_components[i].types.length; b++) {
                         //if you want the change the area ..
@@ -710,7 +712,7 @@ function markerCenter(map, marker, location) {
 
                 }
         });
-                        },1500)
+                        },2000)
                 }
             }
 
@@ -793,7 +795,9 @@ function geocodeAddressCreateProblem(geocoder, resultsMap, address,location) {
 
 function markerGetAddress(marker, location) {
     //first time load
+    var addressDelay;
     google.maps.event.addListener(marker, 'dragend', function (e) {
+        clearTimeout(addressDelay);
         geocoder.geocode({
             'latLng': marker.getPosition()
         }, function (result, status) {
@@ -828,7 +832,7 @@ function markerGetAddress(marker, location) {
             }
             else{
                 if(status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT){
-                        setTimeout(function(){
+                        addressDelay = setTimeout(function(){
                             geocoder.geocode({
             'latLng': e.latLng
         }, function (result, status) {
