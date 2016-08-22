@@ -306,9 +306,6 @@ h6 {
 .mediamargin {
   margin: 30px; }
 
-@media (min-width: 1199px) {
-  .pac-container, .pac-item {
-    width: 240px !important; } }
 @media (max-width: 1199px) {
   .container {
     width: 750px; }
@@ -831,5 +828,151 @@ h6 {
 
 #smartbanner .sb-close {
   line-height: 12px; }
+
+input[type="checkbox"].privatecheckbox + label {
+  color: #ffffff; }
+
+input[type="checkbox"].privatecheckbox:focus + label {
+  color: #2FBC3C; }
+
+.selectionBox {
+  background-color: #2FBC3C;
+  border-color: #ffffff; }
+
+.btn.btn-primary.selectionBox:active {
+  background-color: #2FBC3C;
+  border-color: #ffffff;
+  box-shadow: none; }
+
+/* style */
+.selectionBox:hover {
+  background-color: #2FBC3C;
+  border-color: #ffffff; }
+
+.selectionBox:active {
+  background-color: #2FBC3C;
+  border-color: #ffffff; }
+
+.selectionBox:focus {
+  background-color: #2FBC3C;
+  border-color: #ffffff; }
+
+.selectionBox:target {
+  background-color: #2FBC3C;
+  border-color: #ffffff; }
+
+.selfVote {
+  float: left;
+  margin-right: 10px; }
+
+.otherVote {
+  float: left;
+  margin-left: 10px; }
+
+.line {
+  width: 1px;
+  float: left;
+  height: 18px;
+  background-color: #ffffff; }
+
+.selfVote:hover {
+  text-decoration: underline; }
+
+.otherVote:hover {
+  text-decoration: underline; }
+
+@media (max-width: 470px) {
+  .mobilebtn {
+    width: 40%;
+    margin-left: 5%; }
+
+  .badge #mobilebtn {
+    text-align: end; }
+
+  .selectionBox {
+    margin-left: 51%;
+    width: 40%;
+    text-align: start;
+    margin-top: 5px; }
+
+  .selfVote {
+    margin-left: 0px;
+    float: none;
+    margin-top: 0px; }
+
+  .line {
+    float: none;
+    width: 100%;
+    height: 1px; }
+
+  .otherVote {
+    float: none;
+    margin-left: 0px;
+    margin-top: 0px; } }
+@media (max-width: 410px) {
+  .mobilebtn {
+    width: 40%;
+    margin-left: 5%;
+    height: 28px;
+    font-size: 12px; }
+
+  .selectionBox {
+    margin-left: 51%;
+    width: 40%;
+    text-align: start;
+    font-size: 11px; }
+
+  .selfVote {
+    margin-left: 0px;
+    float: none; }
+
+  .line {
+    float: none;
+    width: 100%;
+    height: 1px; }
+
+  .otherVote {
+    float: none;
+    margin-left: 0px; } }
+@media (max-width: 370px) {
+  .mobilebtn {
+    width: 40%;
+    margin-left: 5%;
+    height: 29px;
+    font-size: 11px; }
+
+  .selectionBox {
+    margin-left: 51%;
+    width: 40%;
+    text-align: start;
+    font-size: 10px; }
+
+  .selfVote {
+    margin-left: 0px;
+    float: none; }
+
+  .line {
+    float: none;
+    width: 100%;
+    height: 1px; }
+
+  .otherVote {
+    float: none;
+    margin-left: 0px; } }
+.warning-text {
+  margin-top: 3px; }
+
+.checkPrivate {
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: normal; }
+
+input[type=checkbox] + label {
+  cursor: pointer;
+  font-style: normal; }
+
+input[type=checkbox]:checked + label {
+  cursor: pointer;
+  font-style: normal; }
 
 /*# sourceMappingURL=vdb.css.map */
