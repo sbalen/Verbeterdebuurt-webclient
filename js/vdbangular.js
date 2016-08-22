@@ -2560,41 +2560,41 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
              $('#voteModal').modal('show');
 
         } else {
-            // if($scope.hideSelection){
-            //         $scope.hideSelection = false;
-            //     }else{
-            //         $scope.hideSelection = true;
-            //     }
-            $rootScope.globaloverlay = "active";
-             $('#selectVoteModal').modal('show');
-
-            var jsonVoteSubmit = JSON.stringify({
-                "user": {
-                    "username": "" + $cookies.getObject('user').username + "",
-                    "password_hash": "" + $cookies.getObject('user').password_hash + ""
-                },
-                "issue_id": $routeParams.id
-            });
-            var getvoteSummit = voteSubmitService.getvoteSummit(jsonVoteSubmit).then(function (data) {
-                var getvoteSummit = data.data;
-                if (!getvoteSummit.success) {
-                    $scope.hideError = 0;
-                    $scope.errorVote = "" + getvoteSummit.error + "";
-                    $(window).scrollTop(0);
-                } else {
-                    var jsondata = JSON.stringify({
-                        "issue_id": $routeParams.id
-                    });
-                    var getIssues = issuesService.getIssues(jsondata).then(function (data) {
-                        var getdata = data.data;
-                        $rootScope.problemIdList = getdata.issues;
-                    });
-
+            if($scope.hideSelection){
+                    $scope.hideSelection = false;
+                }else{
+                    $scope.hideSelection = true;
                 }
-                //vote reload
+            // $rootScope.globaloverlay = "active";
+            //  $('#selectVoteModal').modal('show');
 
-                $rootScope.globaloverlay = "";
-            });
+            // var jsonVoteSubmit = JSON.stringify({
+            //     "user": {
+            //         "username": "" + $cookies.getObject('user').username + "",
+            //         "password_hash": "" + $cookies.getObject('user').password_hash + ""
+            //     },
+            //     "issue_id": $routeParams.id
+            // });
+            // var getvoteSummit = voteSubmitService.getvoteSummit(jsonVoteSubmit).then(function (data) {
+            //     var getvoteSummit = data.data;
+            //     if (!getvoteSummit.success) {
+            //         $scope.hideError = 0;
+            //         $scope.errorVote = "" + getvoteSummit.error + "";
+            //         $(window).scrollTop(0);
+            //     } else {
+            //         var jsondata = JSON.stringify({
+            //             "issue_id": $routeParams.id
+            //         });
+            //         var getIssues = issuesService.getIssues(jsondata).then(function (data) {
+            //             var getdata = data.data;
+            //             $rootScope.problemIdList = getdata.issues;
+            //         });
+
+            //     }
+            //     //vote reload
+
+            //     $rootScope.globaloverlay = "";
+            // });
         }
     }
 
@@ -2931,36 +2931,36 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope', '$routeParams', '$http', '$ro
                 $location.path("/login");
                 $rootScope.errorSession = "Voor deze actie moet je ingelogd zijn."
             } else {
-            // if($scope.hideSelection){
-            //         $scope.hideSelection = false;
-            //     }else{
-            //         $scope.hideSelection = true;
-            //     }
+            if($scope.hideSelection){
+                    $scope.hideSelection = false;
+                }else{
+                    $scope.hideSelection = true;
+                }
 
-                $rootScope.globaloverlay = "active";
-                var jsonVoteSubmit = JSON.stringify({
-                    "user": {
-                        "username": "" + $cookies.getObject('user').username + "",
-                        "password_hash": "" + $cookies.getObject('user').password_hash + ""
-                    },
-                    "issue_id": $routeParams.id
-                });
-                var getvoteSummit = voteSubmitService.getvoteSummit(jsonVoteSubmit).then(function (data) {
-                    var getvoteSummit = data.data;
-                    if (!getvoteSummit.success) {
-                        $scope.hideError = 0;
-                        $scope.errorVote = "" + getvoteSummit.error + "";
-                    } else {
-                        var getMyIssues = myIssuesService.getMyIssues(jsondata).then(function (data) {
-                            var getdata = data.data;
-                            $rootScope.myIssuesList = getdata.issues;
-                        });
+                // $rootScope.globaloverlay = "active";
+                // var jsonVoteSubmit = JSON.stringify({
+                //     "user": {
+                //         "username": "" + $cookies.getObject('user').username + "",
+                //         "password_hash": "" + $cookies.getObject('user').password_hash + ""
+                //     },
+                //     "issue_id": $routeParams.id
+                // });
+                // var getvoteSummit = voteSubmitService.getvoteSummit(jsonVoteSubmit).then(function (data) {
+                //     var getvoteSummit = data.data;
+                //     if (!getvoteSummit.success) {
+                //         $scope.hideError = 0;
+                //         $scope.errorVote = "" + getvoteSummit.error + "";
+                //     } else {
+                //         var getMyIssues = myIssuesService.getMyIssues(jsondata).then(function (data) {
+                //             var getdata = data.data;
+                //             $rootScope.myIssuesList = getdata.issues;
+                //         });
 
-                    }
-                    //vote reload
+                //     }
+                //     //vote reload
 
-                    $rootScope.globaloverlay = "";
-                });
+                //     $rootScope.globaloverlay = "";
+                // });
             }
         }
 
