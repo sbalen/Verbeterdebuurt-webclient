@@ -143,8 +143,19 @@
                         </tr>
                     </table>
               </div>
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="{{stemModal}}" ng-click="sessionValid()">Reageer <span class="badge">{{newProblem.comments}}</span></button>
-        <button type="button" class="btn btn-primary" ng-click="voteSubmit()">Stem <span class="badge">{{newProblem.votes}}</span></button>
+        <button type="button" class="btn btn-primary mobilebtn" data-toggle="modal" data-target="{{stemModal}}" ng-click="sessionValid()">Reageer <span class="badge"id="mobilebtn">{{newProblem.comments}}</span></button>
+        
+            <button type="button" class="btn btn-primary mobilebtn" ng-click="voteSubmit()">
+                <span style="text-align:start">Stem </span><span class="badge" id="mobilebtn">{{newProblem.votes}}</span></button>
+        <!-- selection Box -->
+        <div class="btn btn-primary selectionBox" ng-hide="hideSelection">
+            <div class="selectionBox selfVote" ng-click="selfVote()">Stem zelf</div>
+            <div class="line"></div>
+            <div class="selectionBox otherVote" ng-click="otherVote()">Stem voor een ander</div>
+        </div>
+
+
+
         <div ng-hide="results==0 || commentList == null">
             <h2 class="fontM">Reacties</h2>
         <ul class="commentList" >
@@ -344,26 +355,30 @@
     </div>
 </div>
 
-<!-- voteModal -->
-<div id="voteModal" class="modal fade" role="dialog" ng-controller="voteCtrl">
+
+
+<div id="selectVoteModal" class="modal fade" role="dialog" ng-controller="voteCtrl">
     <div class="modal-dialog">
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h1 class="modal-title">Stem indienen</h1>
+                <h1 class="modal-title">Stemmen</h1>
                     <div class="alert alert-danger " ng-hide="hide" >
                                   <a class="close " ng-hide="hide" aria-label="close" ng-click="close()" >&times;</a>
-                                  <p>{{error}}</p>
                     </div>
             </div>
-            <div class="modal-body">
-                    <input type="text" class="form-control" id="email" placeholder="E-mailadres" ng-model="email" style="margin-bottom: 15px">
-                    <input type="text" class="form-control" id="initials" placeholder="voorletters" ng-model="name" style="margin-bottom: 15px" >
+            <div class="modal-body" id="selectedBody">
+                <div class="selectedBody">
+                    <div class="selectedIcon">
+                        <div class="selectedText">Stem zelf</div>
+                    </div>
+                    <div class="selectedIcon">
+                        <div class="selectedText">Stem voor een ander</div>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" ng-click="close()" data-dismiss="modal">Annuleren</button>
-                <button type="button" class="btn btn-success" ng-click="submit()">Verzenden</button>
             </div>
         </div>
     </div>

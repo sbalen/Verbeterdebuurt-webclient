@@ -41,6 +41,7 @@ var unfollowIssueService = new Object();
 var serviceStandartService = new Object();
 var confirmVoteService = new Object();
 var geolocationValid = 0;
+var searchCreateTemp = 0;
 cityName=null;
 postalcode=null;
 maxlat  = null;
@@ -79,14 +80,58 @@ if (!String.prototype.endsWith) {
 }
 //console log()iff you want to deactive it, change the paremeter from true to false
 logger = function(string){
-    if(true){
+    if(false){
        console.log(string);
     }
 }
-    
+//get address
+getaddressshow = function(latlng){
+    geocoder.geocode({
+                        'latLng': latlng
+                }, function (result, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        for (var i = 0; i < result[0].address_components.length; i++) {
+                            for (var b = 0; b < result[0].address_components[i].types.length; b++) {
+                                //if you want the change the area ..
+                                if (result[0].address_components[i].types[b] == "route") {
+                                    // street name
+                                    street = result[0].address_components[i].short_name;
+                                    var the_street_number = "";
+                                    for(var c = 0; c < result[0].address_components.length; c++){
+                                        for (var d = 0; d < result[0].address_components[c].types.length; d++) {
+                                            if (result[0].address_components[c].types[d] == "street_number") {
+                                                the_street_number = result[0].address_components[c].short_name;
+                                            }
+                                            break;
+                                        }  
+                                    }
+                                     var tempurl = window.location.pathname;
+                                    if(tempurl.includes('nieuw-probleem')){
+                                        document.getElementById("location").value = street + " " + the_street_number;
+                                    }
+                                    if(tempurl.includes('nieuw-idee')){
+                                         document.getElementById("location2").value = street + " " + the_street_number;
+                                    }
+                                    
+                                    
+
+                                    
+                                    
+                                    break;
+                                }
+                                // if (result[0].address_components[i].types[b] == "street_number") {
+                                //     // street number
+                                //     street_number = result[0].address_components[i].short_name;
+                                //     break;
+                                // }
+                            }
+                        }
+                    }
+                });
+}
 
 //google map auto compleate change string to make it by id
-googleautocompleate = function(stringid) {
+googleautocompleate = function(stringid,resultmap) {
       var input = document.getElementById(stringid);
       if(maxlat){
          var defaultBounds = new google.maps.LatLngBounds(
@@ -95,7 +140,6 @@ googleautocompleate = function(stringid) {
         );
       }
       var options = {
-        types: ['geocode'],
         componentRestrictions: {
             country: 'nl'
         },
@@ -106,9 +150,64 @@ googleautocompleate = function(stringid) {
     autocomplete.bindTo('bounds',map)
     // autocomplete.bindTo('bounds',map);
     google.maps.event.addListener(autocomplete, 'place_changed', function() {
-            autocomplete.bindTo('bounds',map)
+            autocomplete.bindTo('bounds',map);
+            // console.log(autocomplete.getPlace());
+            var place = autocomplete.getPlace();
+            if (!place.geometry) {
+                var tempurl = window.location.pathname;
+                if(tempurl.includes('nieuw-probleem')){
+                geocodeAddressCreateProblem(geocoder, map3, document.getElementById('searchCityProblem').value,"location");
+                }
+                else if(tempurl.includes('nieuw-idee')){
+                geocodeAddressCreateProblem(geocoder, map4, document.getElementById('searchCityProblem').value,"location2");
+                }else{
+                cityName = null;
+                postalcode = null;
+                geocodeAddress(geocoder, resultmap);
+                }
+                
+            return;
+            }
+             if (place.geometry.viewport) {
+                
+            resultmap.fitBounds(place.geometry.viewport);
+            resultmap.setZoom(16);
+            latlngChange = {
+                lat: place.geometry.location.lat(),
+                lng: place.geometry.location.lng()
+            };
+            getaddressshow(latlngChange);
+            var tempurl = window.location.pathname;
+            if(tempurl.includes('nieuw-probleem')||tempurl.includes('nieuw-idee')){
+            markerLat = place.geometry.location.lat()
+            markerLng = place.geometry.location.lng()
+            maxlat = map.getBounds().getNorthEast().lat();
+            maxlng = map.getBounds().getNorthEast().lng();
+            minlat = map.getBounds().getSouthWest().lat();
+            minlng = map.getBounds().getSouthWest().lng();
+            showIssue(infoWindow, infoWindowContent);
+            }
+          } else {
+            resultmap.setCenter(place.geometry.location);
+            resultmap.setZoom(17);  // Why 17? Because it looks good.
+            latlngChange = {
+                lat: place.geometry.location.lat(),
+                lng: place.geometry.location.lng()
+            };
+            getaddressshow(latlngChange);
+            var tempurl = window.location.pathname;
+             if(tempurl.includes('nieuw-probleem')||tempurl.includes('nieuw-idee')){
+            markerLat = place.geometry.location.lat()
+            markerLng = place.geometry.location.lng()
+            maxlat = map.getBounds().getNorthEast().lat();
+            maxlng = map.getBounds().getNorthEast().lng();
+            minlat = map.getBounds().getSouthWest().lat();
+            minlng = map.getBounds().getSouthWest().lng();
+            showIssue(infoWindow, infoWindowContent);
+            }
+          }
         });
-
+    
 }
 
 
@@ -173,7 +272,6 @@ function initMap() {
 
 //google map
 function googlemapinit () {
-    console.log("window onload");
     var mainLat = 52.371828;
     var mainLng = 4.902220;
     this._map_center = {
@@ -235,7 +333,8 @@ function googlemapinit () {
         geocodeAddress(geocoder, map);
         postalcode = null;
     }
-    getLatLng(map);
+         
+   
     //start location picker
 
     var tempurl = window.location.pathname;
@@ -251,7 +350,14 @@ function googlemapinit () {
             tempurl = tempurl.replace('nieuwe-melding','');
         }
         var citytemp = tempurl.substring(tempurl.slice(0,tempurl.length-1).lastIndexOf('/')+1);
-        cityName = citytemp.substring(0,citytemp.length-1);
+        
+        if(citytemp[citytemp.length-1]=='/'){
+            cityName = citytemp.substring(0,citytemp.length-1);
+        }
+        else{
+            cityName = citytemp;
+        }
+        
         // logger(cityName);
         geocodeAddress(geocoder, map);
     }
@@ -261,12 +367,23 @@ function googlemapinit () {
 //call google map at first 
 vdbApp.run(function(){
     googlemapinit();
+    // console.log("mapchange");
 })
 
 function getLatLng(map) {
-    google.maps.event.addListener(map, 'bounds_changed', function () {
-        latlngChange = map.getCenter();
+    google.maps.event.addListener(map, 'drag', function () {
+                latlngChange = map.getCenter();
+           
     })
+     google.maps.event.addListener(map, 'click', function () {
+                latlngChange = map.getCenter();
+               
+    })
+      google.maps.event.addListener(map, 'mouseover', function () {
+                latlngChange = map.getCenter();
+   
+    })
+    
 }
 
 function googleMapIssue(lat, lng, type) {
@@ -344,14 +461,14 @@ function googleMapCreateProblem(latlng) {
 			    ]
     }
     map3 = new google.maps.Map(document.getElementById("googleMapCreateProblem"), mapOption3);
-    var tempurl = window.location.pathname.replace('nieuw-probleem','');;
-    // logger(tempurl);
-    if(tempurl.includes('gemeente')){
-        var citytemp = tempurl.substring(tempurl.slice(0,tempurl.length-1).lastIndexOf('/')+1);
-        cityName = citytemp.substring(0,citytemp.length-1);
-        // logger(cityName);
-        geocodeAddress(geocoder, map3);
-    }
+    // var tempurl = window.location.pathname.replace('nieuw-probleem','');;
+    // // logger(tempurl);
+    // if(tempurl.includes('gemeente')){
+    //     var citytemp = tempurl.substring(tempurl.slice(0,tempurl.length-1).lastIndexOf('/')+1);
+    //     cityName = citytemp.substring(0,citytemp.length-1);
+    //     // logger(cityName);
+    //     geocodeAddress(geocoder, map3);
+    // }
     marker = new google.maps.Marker();
     marker.setMap(map3);
     marker.setPosition(map3.getCenter());
@@ -428,12 +545,12 @@ function googleMapCreateIdea(latlng) {
     markerGetAddress(marker, "location2");
     var tempurl = window.location.pathname.replace('nieuw-idee','');;
     // logger(tempurl);
-    if(tempurl.includes('gemeente')){
-        var citytemp = tempurl.substring(tempurl.slice(0,tempurl.length-1).lastIndexOf('/')+1);
-        cityName = citytemp.substring(0,citytemp.length-1);
-        // logger(cityName);
-        geocodeAddress(geocoder, map4);
-    }
+    // if(tempurl.includes('gemeente')){
+    //     var citytemp = tempurl.substring(tempurl.slice(0,tempurl.length-1).lastIndexOf('/')+1);
+    //     cityName = citytemp.substring(0,citytemp.length-1);
+    //     // logger(cityName);
+    //     geocodeAddress(geocoder, map4);
+    // }
 }
 
 //to make other map syncronise
@@ -454,6 +571,7 @@ function sycGoogleMap4(map4) {
 }
 //marker at center
 function markerCenter(map, marker, location) {
+        var addressDelay;
         marker.setPosition(map.getCenter());
         markerLat = marker.getPosition().lat();
         markerLng = marker.getPosition().lng();
@@ -469,7 +587,6 @@ function markerCenter(map, marker, location) {
                             //logger("1");
                             streetLocation = result[0].address_components[i].short_name;
                             addressLocation = streetLocation;
-                            
                             
                             var the_street_number = "";
                             for(var c = 0; c < result[0].address_components.length; c++){
@@ -502,6 +619,7 @@ function markerCenter(map, marker, location) {
 
 
     google.maps.event.addListener(map, 'click', function (e) {
+        clearTimeout(addressDelay);
         marker.setPosition(e.latLng);
         // logger(e.latLng);
         markerLat = marker.getPosition().lat();
@@ -509,6 +627,7 @@ function markerCenter(map, marker, location) {
         geocoder.geocode({
             'latLng': e.latLng
         }, function (result, status) {
+            // console.log(status);
             if (status == google.maps.GeocoderStatus.OK) {
 
                 for (var i = 0; i < result[0].address_components.length; i++) {
@@ -525,11 +644,13 @@ function markerCenter(map, marker, location) {
                                 for (var d = 0; d < result[0].address_components[c].types.length; d++) {
                                     if (result[0].address_components[c].types[d] == "street_number") {
                                         the_street_number = result[0].address_components[c].short_name;
+                                        break;
                                     }
-                                    break;
+                                    
                                 }  
                             }
                             document.getElementById(location).value = addressLocation + " " + the_street_number;
+                            // console.log(addressLocation);
 
                             
                             
@@ -544,6 +665,54 @@ function markerCenter(map, marker, location) {
                     }
 
 
+                }
+            }
+            else{
+            //prevent not show address
+                if(status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT){
+                            addressDelay = setTimeout(function(){
+                            // console.log("timeout work");
+                            geocoder.geocode({
+            'latLng': e.latLng
+        }, function (result, status) {            
+                for (var i = 0; i < result[0].address_components.length; i++) {
+                    for (var b = 0; b < result[0].address_components[i].types.length; b++) {
+                        //if you want the change the area ..
+                        if (result[0].address_components[i].types[b] == "route") {
+                            // street name
+                            streetLocation = result[0].address_components[i].short_name;
+                            addressLocation = streetLocation;
+                            
+                            
+                            var the_street_number = "";
+                            for(var c = 0; c < result[0].address_components.length; c++){
+                                for (var d = 0; d < result[0].address_components[c].types.length; d++) {
+                                    if (result[0].address_components[c].types[d] == "street_number") {
+                                        the_street_number = result[0].address_components[c].short_name;
+                                        break;
+                                    }
+                                    
+                                }  
+                            }
+                            document.getElementById(location).value = addressLocation + " " + the_street_number;
+                            // console.log(addressLocation);
+
+                            
+                            
+                            
+                            break;
+                        }
+                        // if (result[0].address_components[i].types[b] == "street_number") {
+                        //    // street number
+                        //     street_number= result[0].address_components[i].short_name;
+                        //     break;
+                        //         }
+                    }
+
+
+                }
+        });
+                        },2000)
                 }
             }
 
@@ -572,6 +741,10 @@ function geocodeAddressCreateProblem(geocoder, resultsMap, address,location) {
             marker.setPosition(resultsMap.getCenter());
             markerLat = resultsMap.getCenter().lat();
             markerLng = resultsMap.getCenter().lng();
+            latlngChange = {
+                lat: results[0].geometry.location.lat(),
+                lng: results[0].geometry.location.lng()
+            };
             maxlat = map.getBounds().getNorthEast().lat();
             maxlng = map.getBounds().getNorthEast().lng();
             minlat = map.getBounds().getSouthWest().lat();
@@ -615,14 +788,16 @@ function geocodeAddressCreateProblem(geocoder, resultsMap, address,location) {
                 });
 
         } else {
-            alert('Geocode was not successful for the following reason: ' + status);
+            // alert('Geocode was not successful for the following reason: ' + status);
         }
     });
 }
 
 function markerGetAddress(marker, location) {
     //first time load
+    var addressDelay;
     google.maps.event.addListener(marker, 'dragend', function (e) {
+        clearTimeout(addressDelay);
         geocoder.geocode({
             'latLng': marker.getPosition()
         }, function (result, status) {
@@ -653,6 +828,52 @@ function markerGetAddress(marker, location) {
                         //     break;
                         // }
                     }
+                }
+            }
+            else{
+                if(status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT){
+                        addressDelay = setTimeout(function(){
+                            geocoder.geocode({
+            'latLng': e.latLng
+        }, function (result, status) {
+                for (var i = 0; i < result[0].address_components.length; i++) {
+                    for (var b = 0; b < result[0].address_components[i].types.length; b++) {
+                        //if you want the change the area ..
+                        if (result[0].address_components[i].types[b] == "route") {
+                            // street name
+                            streetLocation = result[0].address_components[i].short_name;
+                            addressLocation = streetLocation;
+                            
+                            
+                            var the_street_number = "";
+                            for(var c = 0; c < result[0].address_components.length; c++){
+                                for (var d = 0; d < result[0].address_components[c].types.length; d++) {
+                                    if (result[0].address_components[c].types[d] == "street_number") {
+                                        the_street_number = result[0].address_components[c].short_name;
+                                        break;
+                                    }
+                                    
+                                }  
+                            }
+                            document.getElementById(location).value = addressLocation + " " + the_street_number;
+                            // console.log(addressLocation);
+
+                            
+                            
+                            
+                            break;
+                        }
+                        // if (result[0].address_components[i].types[b] == "street_number") {
+                        //    // street number
+                        //     street_number= result[0].address_components[i].short_name;
+                        //     break;
+                        //         }
+                    }
+
+
+                }
+        });
+                        },2000)
                 }
             }
         });
@@ -706,6 +927,7 @@ function geocodeGetLocationFound(lat, lng) {
                     if (result[0].address_components[i].types[b] == "administrative_area_level_2") {
                         // name of city
                         cityFound = result[0].address_components[i];
+                        console.log(cityFound);
                         break;
                     }
                 }
@@ -1528,13 +1750,16 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     // },3000)
     //check android or not
     $rootScope.dynamicTitle = "";
-    var isAndroid = /(android)/i.test(navigator.userAgent);
-    if (isAndroid) {
-        logger("android");
-    }
-    else{
-        logger("not android");
-    }
+        // logger('jalan');
+             getLatLng(map);
+       
+    // var isAndroid = /(android)/i.test(navigator.userAgent);
+    // if (isAndroid) {
+    //     logger("android");
+    // }
+    // else{
+    //     logger("not android");
+    // }
     //for redirecting the action
     var nextaction = "";
     if (!(typeof $routeParams.nextaction === 'undefined')) {
@@ -1665,20 +1890,24 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     //$scope.hideLogo = 1;
     
     //google map aouto complete
-    googleautocompleate('searchCity');
+    googleautocompleate('searchCity',map);
    
 
-    if ($location.path() == "/plaats/" + $routeParams.cityNameplaats + nextaction) {
+    if ($location.path() == "/plaats/" + $routeParams.cityNameplaats + nextaction  && searchCreateTemp!=1) {
         $location.path('gemeente/' + $routeParams.cityNameplaats + nextaction);
         $window.cityName = $routeParams.cityNameplaats;
         geocodeAddress(geocoder, map);
+        searchCreateTemp =1;
         //$window.cityName = null;
+        // console.log("plaats");
     }
 
-    if ($location.path() == "/" + $routeParams.cityNameClone + nextaction) {
+    if ($location.path() == "/" + $routeParams.cityNameClone + nextaction && searchCreateTemp!=1) {
         $location.path('gemeente/' + $routeParams.cityNameClone + nextaction);
         $window.cityName = $routeParams.cityNameClone;
         geocodeAddress(geocoder, map);
+        searchCreateTemp =1;
+        // console.log("geemente");
        // $window.cityName = null;
     }
 
@@ -1719,7 +1948,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
         // }
 
 
-    }, 3000);
+    },3000);
     // if (!$routeParams.cityName) {
     //     if (!$rootScope.lastCity) {
     //         $timeout(function(){
@@ -1943,14 +2172,17 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
 
     }
 
-    //search
+    //
+
+
     $scope.clickSearch = function () {
             $rootScope.globaloverlay = "active";
             $window.cityName = null;
             $window.postalcode = null;
+            console.log("jalan");
             // deletemarker(markers);
             //$rootScope.lastCity = city.long_name;
-            geocodeAddress(geocoder, map);
+            // geocodeAddress(geocoder, map);
             $timeout(function () {
                 var jsondata = JSON.stringify({
                     "coords_criterium": {
@@ -2072,6 +2304,9 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
     $scope.hideError = 1;
     $scope.highlightid = $routeParams.id;
     $rootScope.dynamicTitle = "Melding |";
+    $scope.hideSelection = true;
+    var lat;
+    var lng;
     var jsondata = JSON.stringify({
         "issue_id": $routeParams.id
     });
@@ -2116,8 +2351,8 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
 
         },1000)
         
-        var lat=getdata.issues[0].location.latitude;
-        var lng=getdata.issues[0].location.longitude;
+        lat=getdata.issues[0].location.latitude;
+        lng=getdata.issues[0].location.longitude;
         $scope.sateliteimg = "http://maps.googleapis.com/maps/api/staticmap?center="+lat+","+lng+"&zoom=18&size=515x300&maptype=hybrid&format=jpg&key=AIzaSyCk3yxCifnV67hIJ2iyRupfH2iHvshna3I&markers=color:red%7C"+lat+","+lng+"&sensor=false";
 
         
@@ -2249,6 +2484,50 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
         }
 
     });
+    $timeout(function(){
+        var getIssues = issuesService.getIssues(jsondata).then(function (data) {
+                                var getdata = data.data;
+                                $rootScope.newProblemList = getdata.issues;
+                                //initial google map marker
+                                 // deletemarker(markers);
+                                if (getdata.count != 0 || !getdata) {
+                                    $window.issuesData = getdata;
+                                    showIssue(infoWindow, infoWindowContent);
+                                }
+                            });
+                            var getcity ;
+                            geocoder.geocode({
+                                        'location': {
+                                            'lat': lat,
+                                            'lng': lng
+                                        }
+                                    }, function (result, status) {
+                                        if (status == google.maps.GeocoderStatus.OK) {
+
+                                            for (var i = 0; i < result[0].address_components.length; i++) {
+                                                for (var b = 0; b < result[0].address_components[i].types.length; b++) {
+                                                    //if you want the change the area ..
+                                                    if (result[0].address_components[i].types[b] == "administrative_area_level_2") {
+                                                        // name of city
+                                                        getcity = result[0].address_components[i].long_name;
+                                                        var jsoncity = JSON.stringify({
+                                                                "council": "" + getcity + ""
+                                                            });
+                                                            var getReport = reportService.getReport(jsoncity).then(function (data) {
+                                                                var getdata = data.data;
+                                                                $rootScope.reportList = getdata.report;
+                                                            });
+                                                        break;
+                                                    }
+                                                }
+                                            }
+
+                                        }
+
+
+                                    });
+                            
+    },5000)
 
     $scope.id = function () {
         return $routeParams.id;
@@ -2264,7 +2543,16 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
             $scope.stemModal = "#StemModal";
         }
     };
-
+    //selectionvote
+    $scope.voteSelect = function(){
+                if($scope.hideSelection){
+                    $scope.hideSelection = false;
+                }else{
+                    $scope.hideSelection = true;
+                }
+                
+             }
+    // $('#selectVoteModal').modal('show');
     //validation for submit vote
     $scope.voteSubmit = function () {
         if (!$cookies.getObject('user')) {
@@ -2272,8 +2560,47 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
              $('#voteModal').modal('show');
 
         } else {
-            $rootScope.globaloverlay = "active";
-            var jsonVoteSubmit = JSON.stringify({
+            if($scope.hideSelection){
+                    $scope.hideSelection = false;
+                }else{
+                    $scope.hideSelection = true;
+                }
+            //$rootScope.globaloverlay = "active";
+             // $('#selectVoteModal').modal('show');
+
+            // var jsonVoteSubmit = JSON.stringify({
+            //     "user": {
+            //         "username": "" + $cookies.getObject('user').username + "",
+            //         "password_hash": "" + $cookies.getObject('user').password_hash + ""
+            //     },
+            //     "issue_id": $routeParams.id
+            // });
+            // var getvoteSummit = voteSubmitService.getvoteSummit(jsonVoteSubmit).then(function (data) {
+            //     var getvoteSummit = data.data;
+            //     if (!getvoteSummit.success) {
+            //         $scope.hideError = 0;
+            //         $scope.errorVote = "" + getvoteSummit.error + "";
+            //         $(window).scrollTop(0);
+            //     } else {
+            //         var jsondata = JSON.stringify({
+            //             "issue_id": $routeParams.id
+            //         });
+            //         var getIssues = issuesService.getIssues(jsondata).then(function (data) {
+            //             var getdata = data.data;
+            //             $rootScope.problemIdList = getdata.issues;
+            //         });
+
+            //     }
+            //     //vote reload
+
+            //     $rootScope.globaloverlay = "";
+            // });
+        }
+    }
+
+    $scope.selfVote = function(){
+        $rootScope.globaloverlay = "active";
+        var jsonVoteSubmit = JSON.stringify({
                 "user": {
                     "username": "" + $cookies.getObject('user').username + "",
                     "password_hash": "" + $cookies.getObject('user').password_hash + ""
@@ -2299,8 +2626,12 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
                 //vote reload
 
                 $rootScope.globaloverlay = "";
+                $scope.hideSelection = true;
             });
-        }
+    }
+    $scope.otherVote = function(){
+            $('#voteModal').modal('show');
+            $scope.hideSelection = true;
     }
 
     //close the detail;
@@ -2479,6 +2810,7 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope', '$routeParams', '$http', '$ro
     $scope.successClass = "";
     menuSelected($rootScope, 'myIssues');
     $rootScope.globaloverlay = "active";
+    $scope.hideSelection = true;
     $scope.id = function () {
         return $routeParams.id;
     }
@@ -2594,36 +2926,79 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope', '$routeParams', '$http', '$ro
 
     //voteSubmit
     $scope.voteSubmit = function () {
+
             if (!$cookies.getObject('user')) {
                 $location.path("/login");
                 $rootScope.errorSession = "Voor deze actie moet je ingelogd zijn."
             } else {
-                $rootScope.globaloverlay = "active";
-                var jsonVoteSubmit = JSON.stringify({
-                    "user": {
-                        "username": "" + $cookies.getObject('user').username + "",
-                        "password_hash": "" + $cookies.getObject('user').password_hash + ""
-                    },
-                    "issue_id": $routeParams.id
-                });
-                var getvoteSummit = voteSubmitService.getvoteSummit(jsonVoteSubmit).then(function (data) {
-                    var getvoteSummit = data.data;
-                    if (!getvoteSummit.success) {
-                        $scope.hideError = 0;
-                        $scope.errorVote = "" + getvoteSummit.error + "";
-                    } else {
-                        var getMyIssues = myIssuesService.getMyIssues(jsondata).then(function (data) {
-                            var getdata = data.data;
-                            $rootScope.myIssuesList = getdata.issues;
-                        });
+            if($scope.hideSelection){
+                    $scope.hideSelection = false;
+                }else{
+                    $scope.hideSelection = true;
+                }
 
-                    }
-                    //vote reload
+            //     $rootScope.globaloverlay = "active";
+            //     var jsonVoteSubmit = JSON.stringify({
+            //         "user": {
+            //             "username": "" + $cookies.getObject('user').username + "",
+            //             "password_hash": "" + $cookies.getObject('user').password_hash + ""
+            //         },
+            //         "issue_id": $routeParams.id
+            //     });
+            //     var getvoteSummit = voteSubmitService.getvoteSummit(jsonVoteSubmit).then(function (data) {
+            //         var getvoteSummit = data.data;
+            //         if (!getvoteSummit.success) {
+            //             $scope.hideError = 0;
+            //             $scope.errorVote = "" + getvoteSummit.error + "";
+            //         } else {
+            //             var getMyIssues = myIssuesService.getMyIssues(jsondata).then(function (data) {
+            //                 var getdata = data.data;
+            //                 $rootScope.myIssuesList = getdata.issues;
+            //             });
 
-                    $rootScope.globaloverlay = "";
-                });
+            //         }
+            //         //vote reload
+
+            //         $rootScope.globaloverlay = "";
+            //     });
             }
         }
+
+        $scope.selfVote = function(){
+        $rootScope.globaloverlay = "active";
+        var jsonVoteSubmit = JSON.stringify({
+                "user": {
+                    "username": "" + $cookies.getObject('user').username + "",
+                    "password_hash": "" + $cookies.getObject('user').password_hash + ""
+                },
+                "issue_id": $routeParams.id
+            });
+            var getvoteSummit = voteSubmitService.getvoteSummit(jsonVoteSubmit).then(function (data) {
+                var getvoteSummit = data.data;
+                if (!getvoteSummit.success) {
+                    $scope.hideError = 0;
+                    $scope.errorVote = "" + getvoteSummit.error + "";
+                    $(window).scrollTop(0);
+                } else {
+                    var jsondata = JSON.stringify({
+                        "issue_id": $routeParams.id
+                    });
+                    var getIssues = issuesService.getIssues(jsondata).then(function (data) {
+                        var getdata = data.data;
+                        $rootScope.problemIdList = getdata.issues;
+                    });
+
+                }
+                //vote reload
+
+                $rootScope.globaloverlay = "";
+                $scope.hideSelection = true;
+            });
+    }
+    $scope.otherVote = function(){
+            $('#voteModal').modal('show');
+            $scope.hideSelection = true;
+    }
         //show comment
     var commentjsondata = JSON.stringify({
         "issue_id": "" + $routeParams.id + ""
@@ -3706,6 +4081,7 @@ vdbApp.controller('selectProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
 }])
 
 vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', 'duplicateIssuesService', '$cookies', 'serviceStandartService','reportService','issuesService','agreementSevice','$routeParams', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, duplicateIssuesService, $cookies, serviceStandartService,reportService,issuesService,agreementSevice,$routeParams) {
+    $scope.privateMessageHide = false;
     if($location.path().includes('nieuwe-melding')){
         $rootScope.dynamicTitle = "Nieuw melding |";
     }
@@ -3723,14 +4099,7 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
     $scope.count = 0;
     $scope.standardMessage = "";
     $rootScope.urlBefore = $location.path();
-
-    //to send to another city gemeente/Amsterdam/niew-probleem
-    if($routeParams.cityName){
-        $window.cityName = $routeParams.cityName;
-        geocodeAddress(geocoder, map);
-    }
-    //googlemapautocompleate
-    googleautocompleate('searchCityProblem');
+   
     $scope.email = "";
     $scope.username = "";
     $scope.password = "";
@@ -3785,7 +4154,16 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
     //first initial
     $timeout(function () {
         if (latlngChange) {
-            googleMapCreateProblem(latlngChange);
+            
+             //to send to another city gemeente/Amsterdam/niew-probleem
+                if($routeParams.cityName && searchCreateTemp!=1){
+                    $window.cityName = $routeParams.cityName;
+                    // geocodeAddress(geocoder, map);
+                    searchCreateTemp=1;
+                }
+                googleMapCreateProblem(latlngChange);
+                //googlemapautocompleate
+    googleautocompleate('searchCityProblem',map3);
             var latitude = markerLat;
             var longitude = markerLng;
             var jsondataCity = JSON.stringify({
@@ -3804,7 +4182,16 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
                 lat: 52.158367,
                 lng: 4.492999
             };
+             //to send to another city gemeente/Amsterdam/niew-probleem
+                if($routeParams.cityName && searchCreateTemp!=1){
+                    $window.cityName = $routeParams.cityName;
+                    geocodeAddress(geocoder, map);
+                    searchCreateTemp=1;
+
+                }
             googleMapCreateProblem(latlngChange);
+            //googlemapautocompleate
+    googleautocompleate('searchCityProblem',map3);
             var latitude = markerLat;
             var longitude = markerLng;
             var jsondataCity = JSON.stringify({
@@ -3818,7 +4205,7 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
                 })
             });
         }
-    }, 1200);
+    }, 1500);
 
     $scope.categoriesData = function () {
         $scope.loadCategory = 1;
@@ -3845,16 +4232,15 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
 
 
     $scope.clickSearchCreateIssue = function () {
-        geocodeAddressCreateProblem(geocoder, map3, $scope.searchCityCreate,"location");
         $scope.loadCategory = 1;
         if(document.getElementById('searchCityProblem').value){
            var citytemp = document.getElementById('searchCityProblem').value ;         
            city.long_name =  citytemp.substring(citytemp.lastIndexOf(',')+1).replace(" ","");
-           $location.path('gemeente/'+city.long_name+'/nieuw-probleem');      
+           $location.path('gemeente/'+city.long_name+'/nieuw-probleem',false);      
         }
         $rootScope.lastCity = city.long_name;
         $timeout(function(){
-            marker.setPosition(map.getCenter());
+            marker.setPosition(map3.getCenter());
         },1000)
         $timeout(function () {
             var latitude = marker.getPosition().lat();
@@ -3901,7 +4287,7 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
                     showIssue(infoWindow, infoWindowContent);
                 }
             });
-
+            marker.setPosition(map3.getCenter());
         },2000)
 
 
@@ -3968,6 +4354,11 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
         } else {
             issue.description = "";
         }
+        if ($scope.privateMessage) {
+            issue.privateMessage = $scope.privateMessage;
+        } else {
+            issue.privateMessage = "";
+        }
         //location
         location.latitude = markerLat;
         location.longitude = markerLng;
@@ -3984,14 +4375,14 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
                     "title" : issue.title,
                     "description" :  issue.description,
                     "type" :  issue.type,
-                    "category_id" :  issue.category_id
+                    "category_id" :  issue.category_id,
+                    "private_message" : issue.privateMessage
                 }, 
                 "location" : {
                     "latitude" : location.latitude,
                     "longitude" : location.longitude
                 }
             });
-
 
         }else{
             //not login
@@ -4015,14 +4406,14 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
                     "title" : issue.title,
                     "description" :  issue.description,
                     "type" :  issue.type,
-                    "category_id" :  issue.category_id
+                    "category_id" :  issue.category_id,
+                    "private_message" : issue.privateMessage
                 }, 
                 "location" : {
                     "latitude" : location.latitude,
                     "longitude" : location.longitude
                 }
             });
-
         }
         
         //old 
@@ -4350,14 +4741,12 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
     $scope.myIssueCount = 0;
     $scope.initslide = "toggle-button2 ";
     $rootScope.urlBefore = $location.path();
-    //google map auto compleate
-    googleautocompleate('searchCityProblem');
-    
+    $scope.privateMessageHide = false;
     //to send to another city gemeente/Amsterdam/niew-probleem
-    if($routeParams.cityName){
-        $window.cityName = $routeParams.cityName;
-        geocodeAddress(geocoder, map);
-    }
+    // if($routeParams.cityName){
+    //     $window.cityName = $routeParams.cityName;
+    //     geocodeAddress(geocoder, map);
+    // }
 
     $scope.email = "";
     $scope.username = "";
@@ -4413,7 +4802,15 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
     //first initial
     $timeout(function () {
         if (latlngChange) {
+            if($routeParams.cityName && searchCreateTemp!=1){
+                    $window.cityName = $routeParams.cityName;
+                    // geocodeAddress(geocoder, map);
+                    searchCreateTemp=1;
+
+                }
             googleMapCreateIdea(latlngChange);
+            //google map auto compleate
+    googleautocompleate('searchCityProblem',map4);
             var latitude = markerLat;
             var longitude = markerLng;
             // var jsondataCity = JSON.stringify({latitude,longitude});
@@ -4426,7 +4823,15 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
                 lat: 52.158367,
                 lng: 4.492999
             };
+            if($routeParams.cityName && searchCreateTemp!=1){
+                    $window.cityName = $routeParams.cityName;
+                    geocodeAddress(geocoder, map);
+                    searchCreateTemp=1;
+
+                }
             googleMapCreateIdea(latlngChange);
+            //google map auto compleate
+    googleautocompleate('searchCityProblem',map4);
             latlngChange = null;
             var latitude = markerLat;
             var longitude = markerLng;
@@ -4435,18 +4840,18 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
             // 	$scope.categoriesList = data.data.categories;
             // });
         }
-    }, 1200);
+    }, 1500);
 
 
     if ($cookies.getObject('user')) {
         $scope.hideNonLogin = "ng-hide"
     }
     $scope.clickSearchCreateIssue = function () {
-        geocodeAddressCreateProblem(geocoder, map4, $scope.searchCityCreate,"location2");
+        // geocodeAddressCreateProblem(geocoder, map4, $scope.searchCityCreate,"location2");
         if(document.getElementById('searchCityProblem').value){
            var citytemp = document.getElementById('searchCityProblem').value ;         
            city.long_name =  citytemp.substring(citytemp.lastIndexOf(',')+1).replace(" ","");
-           $location.path('gemeente/'+city.long_name+'/nieuw-probleem');      
+           $location.path('gemeente/'+city.long_name+'/nieuw-idee');      
         }
         var latitude = markerLat;
         var longitude = markerLng;
@@ -4497,7 +4902,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
 
             });
             
-            marker.setPosition(map.getCenter());
+            marker.setPosition(map4.getCenter());
             
             //change location after search
             markerLat = marker.getPosition().lat();
@@ -4505,7 +4910,9 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
 
             
         }, 1000)
-
+        $timeout(function(){
+            marker.setPosition(map4.getCenter());
+        },1500)
 
     }
 
@@ -4619,6 +5026,11 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
         } else {
             issue.description = "";
         }
+        if ($scope.privateMessage) {
+            issue.privateMessage = $scope.privateMessage;
+        } else {
+            issue.privateMessage = "";
+        }
         //location
         location.latitude = markerLat;
         location.longitude = markerLng;
@@ -4633,7 +5045,8 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
                     "title" : issue.title,
                     "description" :  issue.description,
                     "type" : issue.type,
-                    "realization" : issue.realization
+                    "realization" : issue.realization,
+                    "private_message" : issue.privateMessage
                     
                 }, 
                 "location" : {
@@ -4641,7 +5054,6 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
                     "longitude" : location.longitude
                 }
             });
-            
             
         }else{
             //not login
@@ -4665,7 +5077,8 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
                     "title" : issue.title,
                     "description" :  issue.description,
                     "type" : issue.type,
-                    "realization" : issue.realization
+                    "realization" : issue.realization,
+                    "private_message" : issue.privateMessage
                     
                 }, 
                 "location" : {
@@ -4673,7 +5086,6 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
                     "longitude" : location.longitude
                 }
             });
-            
         }
             
             

@@ -98,7 +98,6 @@ function getLocation(map) {
 }
 function geocodeAddress(geocoder, resultsMap) {
         var address = null;
-        
         if(cityName!=null){
           var address = cityName;
         }
@@ -108,15 +107,18 @@ function geocodeAddress(geocoder, resultsMap) {
         else if(document.getElementById('searchCity').value){
         var address = document.getElementById('searchCity').value;
         }
-        
         geocoder.geocode({'address': address,componentRestrictions: {country: 'nl'}}, function(results, status) {
           if (status === google.maps.GeocoderStatus.OK) {
                 resultsMap.setCenter(results[0].geometry.location);
+                resultsMap.setZoom(16);
                 maxlat  = resultsMap.getBounds().getNorthEast().lat();
                 maxlng  = resultsMap.getBounds().getNorthEast().lng();
                 minlat = resultsMap.getBounds().getSouthWest().lat();
                 minlng = resultsMap.getBounds().getSouthWest().lng();
-
+                latlngChange = {
+                lat: results[0].geometry.location.lat(),
+                lng: results[0].geometry.location.lng()
+                };
                 //console.log("nasiduk");
                 citynamegoogle= {};
                 citynamegoogle.long_name = null;
@@ -133,7 +135,7 @@ function geocodeAddress(geocoder, resultsMap) {
 
                     
           } else {
-            alert('Geocode was not successful for the following reason: ' + status);
+            // alert('Geocode was not successful for the following reason: ' + status);
           }
           address = null;
           postalcode = null;
