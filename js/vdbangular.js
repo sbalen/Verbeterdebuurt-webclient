@@ -2557,7 +2557,7 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
     $scope.voteSubmit = function () {
         if (!$cookies.getObject('user')) {
             $rootScope.errorSession = "Voor deze actie moet je ingelogd zijn.";
-             $('#voteModal').modal('show');
+             $('#StemModal').modal('show');
 
         } else {
             // if($scope.hideSelection){
@@ -2566,7 +2566,7 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
             //         $scope.hideSelection = true;
             //     }
             $rootScope.globaloverlay = "active";
-             $('#selectVoteModal').modal('show');
+             // $('#selectVoteModal').modal('show');
 
             var jsonVoteSubmit = JSON.stringify({
                 "user": {
