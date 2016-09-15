@@ -2559,8 +2559,8 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
     //validation for submit vote
     $scope.voteSubmit = function () {
         if (!$cookies.getObject('user')) {
-            $rootScope.errorSession = "Voor deze actie moet je ingelogd zijn.";
-             $('#StemModal').modal('show');
+            // $rootScope.errorSession = "Voor deze actie moet je ingelogd zijn.";
+             $('#voteModal').modal('show');
 
         } else {
             // if($scope.hideSelection){
@@ -2954,9 +2954,13 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope', '$routeParams', '$http', '$ro
                         $scope.hideError = 0;
                         $scope.errorVote = "" + getvoteSummit.error + "";
                     } else {
-                         var jsondata = JSON.stringify({
+                    var jsondata = JSON.stringify({
+                        "user": {
+                        "username": "" + $cookies.getObject('user').username + "",
+                        "password_hash": "" + $cookies.getObject('user').password_hash + ""
+                        },
                         "issue_id": $routeParams.id
-                         });
+                    });
                         var getMyIssues = myIssuesService.getMyIssues(jsondata).then(function (data) {
                             var getdata = data.data;
                             $rootScope.myIssuesList = getdata.issues;
