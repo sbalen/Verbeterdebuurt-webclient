@@ -2485,6 +2485,9 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
 
     });
     $timeout(function(){
+        var jsondata = JSON.stringify({
+        "issue_id": $routeParams.id
+         });
         var getIssues = issuesService.getIssues(jsondata).then(function (data) {
                                 var getdata = data.data;
                                 $rootScope.newProblemList = getdata.issues;
@@ -2951,6 +2954,9 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope', '$routeParams', '$http', '$ro
                         $scope.hideError = 0;
                         $scope.errorVote = "" + getvoteSummit.error + "";
                     } else {
+                         var jsondata = JSON.stringify({
+                        "issue_id": $routeParams.id
+                         });
                         var getMyIssues = myIssuesService.getMyIssues(jsondata).then(function (data) {
                             var getdata = data.data;
                             $rootScope.myIssuesList = getdata.issues;
