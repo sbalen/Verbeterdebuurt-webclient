@@ -2179,7 +2179,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
             $rootScope.globaloverlay = "active";
             $window.cityName = null;
             $window.postalcode = null;
-            console.log("jalan");
+            // console.log("jalan");
             // deletemarker(markers);
             //$rootScope.lastCity = city.long_name;
             // geocodeAddress(geocoder, map);
@@ -2485,6 +2485,9 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
 
     });
     $timeout(function(){
+        var jsondata = JSON.stringify({
+        "issue_id": $routeParams.id
+         });
         var getIssues = issuesService.getIssues(jsondata).then(function (data) {
                                 var getdata = data.data;
                                 $rootScope.newProblemList = getdata.issues;
@@ -2556,7 +2559,7 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
     //validation for submit vote
     $scope.voteSubmit = function () {
         if (!$cookies.getObject('user')) {
-            $rootScope.errorSession = "Voor deze actie moet je ingelogd zijn.";
+            // $rootScope.errorSession = "Voor deze actie moet je ingelogd zijn.";
              $('#voteModal').modal('show');
 
         } else {
@@ -2566,7 +2569,7 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
             //         $scope.hideSelection = true;
             //     }
             $rootScope.globaloverlay = "active";
-             $('#selectVoteModal').modal('show');
+             // $('#selectVoteModal').modal('show');
 
             var jsonVoteSubmit = JSON.stringify({
                 "user": {
@@ -2951,6 +2954,13 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope', '$routeParams', '$http', '$ro
                         $scope.hideError = 0;
                         $scope.errorVote = "" + getvoteSummit.error + "";
                     } else {
+                    var jsondata = JSON.stringify({
+                        "user": {
+                        "username": "" + $cookies.getObject('user').username + "",
+                        "password_hash": "" + $cookies.getObject('user').password_hash + ""
+                        },
+                        "issue_id": $routeParams.id
+                    });
                         var getMyIssues = myIssuesService.getMyIssues(jsondata).then(function (data) {
                             var getdata = data.data;
                             $rootScope.myIssuesList = getdata.issues;
@@ -5600,6 +5610,8 @@ vdbApp.controller('voteCtrl', ['$scope','$rootScope','$routeParams','voteSubmitS
                 }
                 else{
                     $rootScope.globaloverlay = "";
+                    $scope.name="";
+                    $scope.email="";
                     $('#voteModal').modal('hide');
                     $('.modal-backdrop').hide();
                 }
