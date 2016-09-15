@@ -1889,6 +1889,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     menuSelected($rootScope, 'home');
     //$scope.hideLogo = 1;
     
+    
     //google map aouto complete
     googleautocompleate('searchCity',map);
    
