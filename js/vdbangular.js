@@ -2179,7 +2179,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
             $rootScope.globaloverlay = "active";
             $window.cityName = null;
             $window.postalcode = null;
-            console.log("jalan");
+            // console.log("jalan");
             // deletemarker(markers);
             //$rootScope.lastCity = city.long_name;
             // geocodeAddress(geocoder, map);
@@ -5610,6 +5610,8 @@ vdbApp.controller('voteCtrl', ['$scope','$rootScope','$routeParams','voteSubmitS
                 }
                 else{
                     $rootScope.globaloverlay = "";
+                    $scope.name="";
+                    $scope.email="";
                     $('#voteModal').modal('hide');
                     $('.modal-backdrop').hide();
                 }
