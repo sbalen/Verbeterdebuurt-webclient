@@ -1913,6 +1913,8 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
 
 
     $scope.userpanel = 1;
+    
+    
     $timeout(function () {
         var jsondata = JSON.stringify({
             "coords_criterium": {
@@ -2307,6 +2309,8 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
     $scope.hideSelection = true;
     var lat;
     var lng;
+    $scope.changeid = null;
+    $scope.changeid = $routeParams.id;
     var jsondata = JSON.stringify({
         "issue_id": $routeParams.id
     });
@@ -2484,8 +2488,9 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
         }
 
     });
-    $timeout(function(){
-        var jsondata = JSON.stringify({
+    
+    $scope.$watch('changeid',function(){
+         var jsondata = JSON.stringify({
         "issue_id": $routeParams.id
          });
         var getIssues = issuesService.getIssues(jsondata).then(function (data) {
@@ -2497,40 +2502,89 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
                                     $window.issuesData = getdata;
                                     showIssue(infoWindow, infoWindowContent);
                                 }
-                            });
-                            var getcity ;
-                            geocoder.geocode({
-                                        'location': {
-                                            'lat': lat,
-                                            'lng': lng
-                                        }
-                                    }, function (result, status) {
-                                        if (status == google.maps.GeocoderStatus.OK) {
+                                lat=getdata.issues[0].location.latitude;
+                                lng=getdata.issues[0].location.longitude;
+                                var getcity ;
+                                geocoder.geocode({
+                                            'location': {
+                                                'lat': lat,
+                                                'lng': lng
+                                            }
+                                        }, function (result, status) {
+                                            if (status == google.maps.GeocoderStatus.OK) {
 
-                                            for (var i = 0; i < result[0].address_components.length; i++) {
-                                                for (var b = 0; b < result[0].address_components[i].types.length; b++) {
-                                                    //if you want the change the area ..
-                                                    if (result[0].address_components[i].types[b] == "administrative_area_level_2") {
-                                                        // name of city
-                                                        getcity = result[0].address_components[i].long_name;
-                                                        var jsoncity = JSON.stringify({
-                                                                "council": "" + getcity + ""
-                                                            });
-                                                            var getReport = reportService.getReport(jsoncity).then(function (data) {
-                                                                var getdata = data.data;
-                                                                $rootScope.reportList = getdata.report;
-                                                            });
-                                                        break;
+                                                for (var i = 0; i < result[0].address_components.length; i++) {
+                                                    for (var b = 0; b < result[0].address_components[i].types.length; b++) {
+                                                        //if you want the change the area ..
+                                                        if (result[0].address_components[i].types[b] == "administrative_area_level_2") {
+                                                            // name of city
+                                                            getcity = result[0].address_components[i].long_name;
+                                                            var jsoncity = JSON.stringify({
+                                                                    "council": "" + getcity + ""
+                                                                });
+                                                                var getReport = reportService.getReport(jsoncity).then(function (data) {
+                                                                    var getdata = data.data;
+                                                                    $rootScope.reportList = getdata.report;
+                                                                });
+                                                            break;
+                                                        }
                                                     }
                                                 }
+
                                             }
 
-                                        }
+
+                                        });
+                                });
+    })
+
+    // $timeout(function(){
+    //     var jsondata = JSON.stringify({
+    //     "issue_id": $routeParams.id
+    //      });
+    //     var getIssues = issuesService.getIssues(jsondata).then(function (data) {
+    //                             var getdata = data.data;
+    //                             $rootScope.newProblemList = getdata.issues;
+    //                             //initial google map marker
+    //                              // deletemarker(markers);
+    //                             if (getdata.count != 0 || !getdata) {
+    //                                 $window.issuesData = getdata;
+    //                                 showIssue(infoWindow, infoWindowContent);
+    //                             }
+    //                         });
+    //                         var getcity ;
+    //                         geocoder.geocode({
+    //                                     'location': {
+    //                                         'lat': lat,
+    //                                         'lng': lng
+    //                                     }
+    //                                 }, function (result, status) {
+    //                                     if (status == google.maps.GeocoderStatus.OK) {
+
+    //                                         for (var i = 0; i < result[0].address_components.length; i++) {
+    //                                             for (var b = 0; b < result[0].address_components[i].types.length; b++) {
+    //                                                 //if you want the change the area ..
+    //                                                 if (result[0].address_components[i].types[b] == "administrative_area_level_2") {
+    //                                                     // name of city
+    //                                                     getcity = result[0].address_components[i].long_name;
+    //                                                     var jsoncity = JSON.stringify({
+    //                                                             "council": "" + getcity + ""
+    //                                                         });
+    //                                                         var getReport = reportService.getReport(jsoncity).then(function (data) {
+    //                                                             var getdata = data.data;
+    //                                                             $rootScope.reportList = getdata.report;
+    //                                                         });
+    //                                                     break;
+    //                                                 }
+    //                                             }
+    //                                         }
+
+    //                                     }
 
 
-                                    });
+    //                                 });
                             
-    },5000)
+    // },5000)
 
     $scope.id = function () {
         return $routeParams.id;
