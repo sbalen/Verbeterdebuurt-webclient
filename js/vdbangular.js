@@ -131,7 +131,7 @@ getaddressshow = function(latlng){
 }
 
 //google map auto compleate change string to make it by id
-googleautocompleate = function(stringid,resultmap) {
+googleautocomplete = function(stringid,resultmap) {
       var input = document.getElementById(stringid);
       if(maxlat){
          var defaultBounds = new google.maps.LatLngBounds(
@@ -1890,7 +1890,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     //$scope.hideLogo = 1;
     
     //google map aouto complete
-    googleautocompleate('searchCity',map);
+    googleautocomplete('searchCity',map);
    
 
     if ($location.path() == "/plaats/" + $routeParams.cityNameplaats + nextaction  && searchCreateTemp!=1) {
@@ -4227,7 +4227,7 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
                 }
                 googleMapCreateProblem(latlngChange);
                 //googlemapautocompleate
-    googleautocompleate('searchCityProblem',map3);
+    googleautocomplete('searchCityProblem',map3);
             var latitude = markerLat;
             var longitude = markerLng;
             var jsondataCity = JSON.stringify({
@@ -4255,7 +4255,7 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
                 }
             googleMapCreateProblem(latlngChange);
             //googlemapautocompleate
-    googleautocompleate('searchCityProblem',map3);
+    googleautocomplete('searchCityProblem',map3);
             var latitude = markerLat;
             var longitude = markerLng;
             var jsondataCity = JSON.stringify({
@@ -4874,7 +4874,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
                 }
             googleMapCreateIdea(latlngChange);
             //google map auto compleate
-    googleautocompleate('searchCityProblem',map4);
+    googleautocomplete('searchCityProblem',map4);
             var latitude = markerLat;
             var longitude = markerLng;
             // var jsondataCity = JSON.stringify({latitude,longitude});
@@ -4895,7 +4895,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
                 }
             googleMapCreateIdea(latlngChange);
             //google map auto compleate
-    googleautocompleate('searchCityProblem',map4);
+    googleautocomplete('searchCityProblem',map4);
             latlngChange = null;
             var latitude = markerLat;
             var longitude = markerLng;
