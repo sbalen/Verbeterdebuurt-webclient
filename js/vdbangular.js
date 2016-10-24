@@ -3,8 +3,10 @@
 var vdbApp = angular.module('vdbApp', ['ngRoute', 'angularUtils.directives.dirPagination', 'ngFacebook', 'ngCookies', 'naif.base64','angulartics', 'angulartics.google.analytics'])
 
 
-
-var APIURL = "https://staging.verbeterdebuurt.nl/api.php/json_1_3/";
+var LOGGING = true; 
+//var LOGGING = false; 
+var APIURL = "https://www.verbeterdebuurt.nl/api.php/json_1_3/";
+//var APIURL = "https://staging.verbeterdebuurt.nl/api.php/json_1_3/";
 var geocoder = new google.maps.Geocoder();
 var infoWindow = new google.maps.InfoWindow();
 var infoWindowContent = [];
@@ -38,7 +40,7 @@ var confirmRegistrationService = new Object();
 var cancelRegistrationService = new Object();
 var confirmIssueService = new Object();
 var unfollowIssueService = new Object();
-var serviceStandartService = new Object();
+var serviceStandardService = new Object();
 var confirmVoteService = new Object();
 var geolocationValid = 0;
 var searchCreateTemp = 0;
@@ -78,9 +80,9 @@ if (!String.prototype.endsWith) {
       return lastIndex !== -1 && lastIndex === position;
   };
 }
-//console log()iff you want to deactive it, change the paremeter from true to false
+//console log() iff you want to deactive it, change the parameter from true to false
 logger = function(string){
-    if(false){
+    if(LOGGING){
        console.log(string);
     }
 }
@@ -1671,18 +1673,18 @@ vdbApp.factory('confirmIssueService', ['$http','$rootScope', function ($http,$ro
     };
 }])
 
-vdbApp.factory('serviceStandartService', ['$http','$rootScope', function ($http,$rootScope) {
+vdbApp.factory('serviceStandardService', ['$http','$rootScope', function ($http,$rootScope) {
     return {
         getServiceStandard: function (jsondata) {
             return $http.post(APIURL + 'serviceStandard', jsondata)
                 .success(function (data) {
-                    serviceStandartService.data = data;
-                    return serviceStandartService.data;
+                    serviceStandardService.data = data;
+                    return serviceStandardService.data;
                 })
                 .error(function(data, status, headers, config){
                     errorhandler($rootScope)
                 });
-            return serviceStandartService.data;
+            return serviceStandardService.data;
         }
     };
 }])
@@ -4124,7 +4126,7 @@ vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileSer
 
 }])
 
-vdbApp.controller('selectProblemCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', 'duplicateIssuesService', '$cookies', 'serviceStandartService','reportService','issuesService','agreementSevice','$routeParams', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, duplicateIssuesService, $cookies, serviceStandartService,reportService,issuesService,agreementSevice,$routeParams) {
+vdbApp.controller('selectProblemCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', 'duplicateIssuesService', '$cookies', 'serviceStandardService','reportService','issuesService','agreementSevice','$routeParams', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, duplicateIssuesService, $cookies, serviceStandardService,reportService,issuesService,agreementSevice,$routeParams) {
      $rootScope.dynamicTitle = "Nieuwe melding |";
      $scope.redirectproblem = function(){
         if($routeParams.cityName){
@@ -4144,7 +4146,7 @@ vdbApp.controller('selectProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
      }
 }])
 
-vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', 'duplicateIssuesService', '$cookies', 'serviceStandartService','reportService','issuesService','agreementSevice','$routeParams', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, duplicateIssuesService, $cookies, serviceStandartService,reportService,issuesService,agreementSevice,$routeParams) {
+vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', 'duplicateIssuesService', '$cookies', 'serviceStandardService','reportService','issuesService','agreementSevice','$routeParams', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, duplicateIssuesService, $cookies, serviceStandardService,reportService,issuesService,agreementSevice,$routeParams) {
     $scope.privateMessageHide = false;
     if($location.path().includes('nieuwe-melding')){
         $rootScope.dynamicTitle = "Nieuw melding |";
@@ -4762,7 +4764,7 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
             logger(getDuplicateIssue);
 
         });
-        var getServiceStandard = serviceStandartService.getServiceStandard(jsondataServiceStandard).then(function (data) {
+        var getServiceStandard = serviceStandardService.getServiceStandard(jsondataServiceStandard).then(function (data) {
             var getServiceStandard = data.data;
             $scope.standardMessage = getServiceStandard.standard;
             $rootScope.standardTemp = getServiceStandard.standard;
