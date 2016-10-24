@@ -81,11 +81,8 @@ if (!String.prototype.endsWith) {
   };
 }
 //console log() iff you want to deactive it, change the parameter from true to false
-logger = function(string){
-    if(LOGGING){
-       console.log(string);
-    }
-}
+var logger = LOGGING ? console.log.bind(window.console) : function(){}
+
 //get address
 getaddressshow = function(latlng){
     geocoder.geocode({
@@ -153,7 +150,6 @@ googleautocomplete = function(stringid,resultmap) {
     // autocomplete.bindTo('bounds',map);
     google.maps.event.addListener(autocomplete, 'place_changed', function() {
             autocomplete.bindTo('bounds',map);
-            // console.log(autocomplete.getPlace());
             var place = autocomplete.getPlace();
             if (!place.geometry) {
                 var tempurl = window.location.pathname;
@@ -214,14 +210,19 @@ googleautocomplete = function(stringid,resultmap) {
 
 
 //error api handler
-errorhandler = function(rootScope){
-    logger('error')
+errorhandler = function(rootScope,errorInfo){
+    if (errorInfo != undefined) {
+        logger('showErrorHandler -> ' + (errorInfo.message != undefined ? errorInfo.message : ""));
+        logger(errorInfo);
+    } else {
+        logger('showErrorHandler')
+    }
     rootScope.globaloverlay="";
     $("#errorModal").modal({backdrop: 'static', keyboard: false});
     $("#errorModal").modal('show');
     $("#errorModal").on('click','#errorModalRedirect',function(){
-                $('#errorModal').modal('hide');
-                $('.modal-backdrop').hide();
+        $('#errorModal').modal('hide');
+        $('.modal-backdrop').hide();
     });
     
 };
@@ -369,7 +370,7 @@ function googlemapinit () {
 //call google map at first 
 vdbApp.run(function(){
     googlemapinit();
-    // console.log("mapchange");
+    // logger("mapchange");
 })
 
 function getLatLng(map) {
@@ -629,7 +630,7 @@ function markerCenter(map, marker, location) {
         geocoder.geocode({
             'latLng': e.latLng
         }, function (result, status) {
-            // console.log(status);
+            // logger(status);
             if (status == google.maps.GeocoderStatus.OK) {
 
                 for (var i = 0; i < result[0].address_components.length; i++) {
@@ -652,7 +653,7 @@ function markerCenter(map, marker, location) {
                                 }  
                             }
                             document.getElementById(location).value = addressLocation + " " + the_street_number;
-                            // console.log(addressLocation);
+                            // logger(addressLocation);
 
                             
                             
@@ -673,7 +674,7 @@ function markerCenter(map, marker, location) {
             //prevent not show address
                 if(status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT){
                             addressDelay = setTimeout(function(){
-                            // console.log("timeout work");
+                            // logger("timeout work");
                             geocoder.geocode({
             'latLng': e.latLng
         }, function (result, status) {            
@@ -697,7 +698,7 @@ function markerCenter(map, marker, location) {
                                 }  
                             }
                             document.getElementById(location).value = addressLocation + " " + the_street_number;
-                            // console.log(addressLocation);
+                            // logger(addressLocation);
 
                             
                             
@@ -858,7 +859,7 @@ function markerGetAddress(marker, location) {
                                 }  
                             }
                             document.getElementById(location).value = addressLocation + " " + the_street_number;
-                            // console.log(addressLocation);
+                            // logger(addressLocation);
 
                             
                             
@@ -929,7 +930,7 @@ function geocodeGetLocationFound(lat, lng) {
                     if (result[0].address_components[i].types[b] == "administrative_area_level_2") {
                         // name of city
                         cityFound = result[0].address_components[i];
-                        console.log(cityFound);
+                        logger(cityFound);
                         break;
                     }
                 }
@@ -1217,9 +1218,11 @@ vdbApp.filter('datefilter',function(){
         return newdate.toString().replace( /,/g ,"");
     }
 })
+
 vdbApp.factory('issuesService', ['$http','$rootScope', function ($http,$rootScope) {
     return {
         getIssues: function (jsondata) {
+            logger('issuesService.getIssues('+jsondata+')');
             return $http.post(APIURL + 'issues', jsondata)
                 .success(function (data) {
                     if (angular.isObject(data)) {
@@ -1229,7 +1232,8 @@ vdbApp.factory('issuesService', ['$http','$rootScope', function ($http,$rootScop
 
                 })
                 .error(function(data, status, headers, config){
-                    errorhandler($rootScope)
+                    logger("issueService.getIssues.error:")
+                    errorhandler($rootScope,{url:config.url,'data':config.data,'message':data})
                 });
             return issuesService.data;
         }
@@ -1241,6 +1245,7 @@ vdbApp.factory('issuesService', ['$http','$rootScope', function ($http,$rootScop
 vdbApp.factory('reportService', ['$http','$rootScope', function ($http,$rootScope) {
     return {
         getReport: function (jsondata) {
+            logger('reportService.getReport('+jsondata+')');
             return $http.post(APIURL + 'reports', jsondata)
                 .success(function (data) {
                     if (angular.isObject(data)) {
@@ -1249,7 +1254,8 @@ vdbApp.factory('reportService', ['$http','$rootScope', function ($http,$rootScop
                     }
                 })
                 .error(function(data, status, headers, config){
-                    errorhandler($rootScope)
+                    logger("reportService.getReport.error:")
+                    errorhandler($rootScope,{url:config.url,'data':config.data,'message':data})
                 });
             return reportService.data;
 
@@ -1260,6 +1266,7 @@ vdbApp.factory('reportService', ['$http','$rootScope', function ($http,$rootScop
 vdbApp.factory('loginService', ['$http','$rootScope', function ($http,$rootScope) {
     return {
         getLogin: function (jsondata) {
+            logger('loginService.getLogin('+jsondata+')');
             return $http.post(APIURL + 'login', jsondata)
                 .success(function (data) {
                     if (angular.isObject(data)) {
@@ -1268,7 +1275,8 @@ vdbApp.factory('loginService', ['$http','$rootScope', function ($http,$rootScope
                     }
                 })
                 .error(function(data, status, headers, config){
-                    errorhandler($rootScope)
+                    logger("loginService.getLogin.error:")
+                    errorhandler($rootScope,{url:config.url,'data':config.data,'message':data})
                 });
             return loginService.data;
         }
@@ -1280,6 +1288,7 @@ vdbApp.factory('loginService', ['$http','$rootScope', function ($http,$rootScope
 vdbApp.factory('commentService', ['$http','$rootScope', function ($http,$rootScope) {
     return {
         getComment: function (jsondata) {
+            logger('commentService.getComment('+jsondata+')');
             return $http.post(APIURL + 'comments', jsondata).success(function (data) {
                 if (angular.isObject) {
                     commentService.data = data;
@@ -1297,6 +1306,7 @@ vdbApp.factory('commentService', ['$http','$rootScope', function ($http,$rootSco
 vdbApp.factory('registerService', ['$http','$rootScope', function ($http,$rootScope) {
     return {
         getRegister: function (jsondata) {
+            logger('registerService.getRegister('+jsondata+')');
             return $http.post(APIURL + 'register', jsondata)
                 .success(function (data) {
                     if (angular.isObject(data)) {
@@ -1305,7 +1315,8 @@ vdbApp.factory('registerService', ['$http','$rootScope', function ($http,$rootSc
                     }
                 })
                 .error(function(data, status, headers, config){
-                    errorhandler($rootScope)
+                    logger("registerService.getRegister.error:")
+                    errorhandler($rootScope,{url:config.url,'data':config.data,'message':data})
                 });
             return registerService.data;
         }
@@ -1315,6 +1326,7 @@ vdbApp.factory('registerService', ['$http','$rootScope', function ($http,$rootSc
 vdbApp.factory('newsletterService', ['$http','$rootScope', function ($http,$rootScope) {
     return {
         getNewsletter: function (jsonnewsletter) {
+            logger('newsletterService.getNewsletter('+jsondata+')');
             return $http.post(APIURL + 'subscribeNewsletter', jsonnewsletter)
                 .success(function (data) {
                     if (angular.isObject(data)) {
@@ -1323,7 +1335,8 @@ vdbApp.factory('newsletterService', ['$http','$rootScope', function ($http,$root
                     }
                 })
                 .error(function(data, status, headers, config){
-                    errorhandler($rootScope)
+                    logger("newsletterService.getNewsletter.error:")
+                    errorhandler($rootScope,{url:config.url,'data':config.data,'message':data})
                 });
             return newsletterService.data;
         }
@@ -1335,6 +1348,7 @@ vdbApp.factory('newsletterService', ['$http','$rootScope', function ($http,$root
 vdbApp.factory('forgotService', ['$http','$rootScope', function ($http,$rootScope) {
     return {
         getForgot: function (jsondata) {
+            logger('forgotService.getForgot('+jsondata+')');
             return $http.post(APIURL + 'resetPassword', jsondata)
                 .success(function (data) {
                     if (angular.isObject(data)) {
@@ -1343,7 +1357,8 @@ vdbApp.factory('forgotService', ['$http','$rootScope', function ($http,$rootScop
                     }
                 })
                 .error(function(data, status, headers, config){
-                    errorhandler($rootScope)
+                    logger("forgotService.getForgot.error:")
+                    errorhandler($rootScope,{url:config.url,'data':config.data,'message':data})
                 });
             return forgotService.data;
 
@@ -1353,6 +1368,7 @@ vdbApp.factory('forgotService', ['$http','$rootScope', function ($http,$rootScop
 vdbApp.factory('myIssuesService', ['$http','$rootScope', function ($http,$rootScope) {
     return {
         getMyIssues: function (jsondata) {
+            logger('myIssuesService.getMyIssues('+jsondata+')');
             return $http.post(APIURL + 'myIssues', jsondata)
                 .success(function (data) {
                     if (angular.isObject(data)) {
@@ -1361,7 +1377,8 @@ vdbApp.factory('myIssuesService', ['$http','$rootScope', function ($http,$rootSc
                     }
                 })
                 .error(function(data, status, headers, config){
-                    errorhandler($rootScope)
+                    logger("myIssuesService.getMyIssues.error:")
+                    errorhandler($rootScope,{url:config.url,'data':config.data,'message':data})
                 });
             return myIssuesService.data;
 
@@ -1372,6 +1389,7 @@ vdbApp.factory('myIssuesService', ['$http','$rootScope', function ($http,$rootSc
 vdbApp.factory('commentSubmitService', ['$http','$rootScope', function ($http,$rootScope) {
     return {
         getCommentSubmit: function (jsondata) {
+            logger('commentSubmitService.getCommentSubmit('+jsondata+')');
             return $http.post(APIURL + 'commentSubmit', jsondata)
                 .success(function (data) {
                     if (angular.isObject(data)) {
@@ -1380,7 +1398,8 @@ vdbApp.factory('commentSubmitService', ['$http','$rootScope', function ($http,$r
                     }
                 })
                 .error(function(data, status, headers, config){
-                    errorhandler($rootScope)
+                    logger("commentSubmitService.getCommentSubmit.error:")
+                    errorhandler($rootScope,{url:config.url,'data':config.data,'message':data})
                 });
             return commentSubmitService.data;
         }
@@ -1391,6 +1410,7 @@ vdbApp.factory('commentSubmitService', ['$http','$rootScope', function ($http,$r
 vdbApp.factory('profileService', ['$http','$rootScope', function ($http,$rootScope) {
     return {
         getProfile: function (jsondata) {
+            logger('profileService.getProfile('+jsondata+')');
             return $http.post(APIURL + 'editSettings', jsondata)
                 .success(function (data) {
                     if (angular.isObject(data)) {
@@ -1399,7 +1419,8 @@ vdbApp.factory('profileService', ['$http','$rootScope', function ($http,$rootSco
                     }
                 })
                 .error(function(data, status, headers, config){
-                    errorhandler($rootScope)
+                    logger("profileService.getProfile.error:")
+                    errorhandler($rootScope,{url:config.url,'data':config.data,'message':data})
                 });
             return profileService.data;
 
@@ -1410,6 +1431,7 @@ vdbApp.factory('profileService', ['$http','$rootScope', function ($http,$rootSco
 vdbApp.factory('syncFBService', ['$http','$rootScope', function ($http,$rootScope) {
     return {
         getFBSync: function (jsondata) {
+            logger('syncFBService.getFBSync('+jsondata+')');
             return $http.post(APIURL + 'connectFacebook', jsondata)
                 .success(function (data) {
                     if (angular.isObject(data)) {
@@ -1418,7 +1440,8 @@ vdbApp.factory('syncFBService', ['$http','$rootScope', function ($http,$rootScop
                     }
                 })
                 .error(function(data, status, headers, config){
-                    errorhandler($rootScope)
+                    logger("syncFBService.getFBSync.error:")
+                    errorhandler($rootScope,{url:config.url,'data':config.data,'message':data})
                 });
             return syncFBService.data;
         }
@@ -1428,6 +1451,7 @@ vdbApp.factory('syncFBService', ['$http','$rootScope', function ($http,$rootScop
 vdbApp.factory('loginFBService', ['$http','$rootScope', function ($http,$rootScope) {
     return {
         getFBLogin: function (jsondata) {
+            logger('loginFBService.getFBLogin('+jsondata+')');
             return $http.post(APIURL + 'connectFacebook', jsondata)
                 .success(function (data) {
                     if (angular.isObject(data)) {
@@ -1436,7 +1460,8 @@ vdbApp.factory('loginFBService', ['$http','$rootScope', function ($http,$rootSco
                     }
                 })
                 .error(function(data, status, headers, config){
-                    errorhandler($rootScope)
+                    logger("loginFBService.getFBLogin.error:")
+                    errorhandler($rootScope,{url:config.url,'data':config.data,'message':data})
                 });
             return loginFBService.data;
         }
@@ -1450,6 +1475,7 @@ vdbApp.factory('loginFBService', ['$http','$rootScope', function ($http,$rootSco
 vdbApp.factory('workLogService', ['$http','$rootScope', function ($http,$rootScope) {
     return {
         getWorkLog: function (jsondata) {
+            logger('workLogService.getWorkLog('+jsondata+')');
             return $http.post(APIURL + 'worklogs', jsondata)
                 .success(function (data) {
                     if (angular.isObject(data)) {
@@ -1458,7 +1484,8 @@ vdbApp.factory('workLogService', ['$http','$rootScope', function ($http,$rootSco
                     }
                 })
                 .error(function(data, status, headers, config){
-                    errorhandler($rootScope)
+                    logger("workLogService.getWorkLog.error:")
+                    errorhandler($rootScope,{url:config.url,'data':config.data,'message':data})
                 });
             return workLogService.data;
         }
@@ -1468,6 +1495,7 @@ vdbApp.factory('workLogService', ['$http','$rootScope', function ($http,$rootSco
 vdbApp.factory('categoriesService', ['$http','$rootScope', function ($http,$rootScope) {
     return {
         getCategories: function (jsondata) {
+            logger('categoriesService.getCategories('+jsondata+')');
             return $http.post(APIURL + 'categories', jsondata)
                 .success(function (data) {
                     if (angular.isObject(data)) {
@@ -1476,7 +1504,8 @@ vdbApp.factory('categoriesService', ['$http','$rootScope', function ($http,$root
                     }
                 })
                 .error(function(data, status, headers, config){
-                    errorhandler($rootScope)
+                    logger("categoriesService.getCategories.error:")
+                    errorhandler($rootScope,{url:config.url,'data':config.data,'message':data})
                 });
             return categoriesService.data;
         }
@@ -1486,13 +1515,15 @@ vdbApp.factory('categoriesService', ['$http','$rootScope', function ($http,$root
 vdbApp.factory('issueSubmitService', ['$http','$rootScope', function ($http,$rootScope) {
     return {
         getIssueSubmit: function (jsondata) {
+            logger('issueSubmitService.getIssueSubmit('+jsondata+')');
             return $http.post(APIURL + 'issueSubmit', jsondata)
                 .success(function (data) {
                     issueSubmitService.data = data;
                     return issueSubmitService.data;
                 })
                 .error(function(data, status, headers, config){
-                    errorhandler($rootScope)
+                    logger("issueSubmitService.getIssueSubmit.error:")
+                    errorhandler($rootScope,{url:config.url,'data':config.data,'message':data})
                 });
             return issueSubmitService.data;
         }
@@ -1502,6 +1533,7 @@ vdbApp.factory('issueSubmitService', ['$http','$rootScope', function ($http,$roo
 vdbApp.factory('issueSubmitServiceWithImage', ['$http','$rootScope', function ($http,$rootScope) {
     return {
         getIssueSubmit: function (jsondata, img) {
+            logger('issueSubmitServiceWithImage.getIssueSubmit('+jsondata+')');
             var dataForm = new FormData();
             dataForm.append('json', jsondata);
             dataForm.append('image', img);
@@ -1514,7 +1546,8 @@ vdbApp.factory('issueSubmitServiceWithImage', ['$http','$rootScope', function ($
                     logger(headers);
                 })
                 .error(function(data, status, headers, config){
-                    errorhandler($rootScope)
+                    logger("issueSubmitServiceWithImage.getIssueSubmit.error:")
+                    errorhandler($rootScope,{url:config.url,'data':config.data,'message':data})
                 });
         }
 
@@ -1524,13 +1557,15 @@ vdbApp.factory('issueSubmitServiceWithImage', ['$http','$rootScope', function ($
 vdbApp.factory('voteSubmitService', ['$http','$rootScope', function ($http,$rootScope) {
     return {
         getvoteSummit: function (jsondata) {
+            logger('voteSubmitService.getvoteSummit('+jsondata+')');
             return $http.post(APIURL + 'voteSubmit', jsondata)
                 .success(function (data) {
                     voteSubmitService.data = data;
                     return voteSubmitService.data;
                 })
                 .error(function(data, status, headers, config){
-                    errorhandler($rootScope)
+                    logger("voteSubmitService.getvoteSummit.error:")
+                    errorhandler($rootScope,{url:config.url,'data':config.data,'message':data})
                 });
             return voteSubmitService.data;
         }
@@ -1541,13 +1576,15 @@ vdbApp.factory('voteSubmitService', ['$http','$rootScope', function ($http,$root
 vdbApp.factory('statusChangeService', ['$http','$rootScope', function ($http,$rootScope) {
     return {
         getStatusChange: function (jsondata) {
+            logger('statusChangeService.getStatusChange('+jsondata+')');
             return $http.post(APIURL + 'statusChange', jsondata)
                 .success(function (data) {
                     statusChangeService.data = data;
                     return statusChangeService.data;
                 })
                 .error(function(data, status, headers, config){
-                    errorhandler($rootScope)
+                    logger("statusChangeService.getStatusChange.error:")
+                    errorhandler($rootScope,{url:config.url,'data':config.data,'message':data})
                 });
             return statusChangeService.data;
         }
@@ -1557,13 +1594,15 @@ vdbApp.factory('statusChangeService', ['$http','$rootScope', function ($http,$ro
 vdbApp.factory('issueLogService', ['$http','$rootScope', function ($http,$rootScope) {
     return {
         getIssueLog: function (jsondata) {
+            logger('issueLogService.getIssueLog('+jsondata+')');
             return $http.post(APIURL + 'issueLog', jsondata)
                 .success(function (data) {
                     issueLogService.data = data;
                     return issueLogService.data;
                 })
                 .error(function(data, status, headers, config){
-                    errorhandler($rootScope)
+                    logger("issueLogService.getIssueLog.error:")
+                    errorhandler($rootScope,{url:config.url,'data':config.data,'message':data})
                 });
             return issueLogService.data;
         }
@@ -1573,13 +1612,15 @@ vdbApp.factory('issueLogService', ['$http','$rootScope', function ($http,$rootSc
 vdbApp.factory('agreementSevice', ['$http','$rootScope', function ($http,$rootScope) {
     return {
         getAgreement: function (jsondata) {
+            logger('agreementSevice.getAgreement('+jsondata+')');
             return $http.post(APIURL + 'agreement', jsondata)
                 .success(function (data) {
                     agreementSevice.data = data;
                     return agreementSevice.data;
                 })
                 .error(function(data, status, headers, config){
-                    errorhandler($rootScope)
+                    logger("agreementSevice.getAgreement.error:")
+                    errorhandler($rootScope,{url:config.url,'data':config.data,'message':data})
                 });
             return agreementSevice.data;
         }
@@ -1589,13 +1630,15 @@ vdbApp.factory('agreementSevice', ['$http','$rootScope', function ($http,$rootSc
 vdbApp.factory('duplicateIssuesService', ['$http','$rootScope', function ($http,$rootScope) {
     return {
         getDuplicateIssue: function (jsondata) {
+            logger('duplicateIssuesService.getDuplicateIssue('+jsondata+')');
             return $http.post(APIURL + 'duplicateIssues', jsondata)
                 .success(function (data) {
                     duplicateIssuesService.data = data;
                     return duplicateIssuesService.data;
                 })
                 .error(function(data, status, headers, config){
-                    errorhandler($rootScope)
+                    logger("duplicateIssuesService.getDuplicateIssue.error:")
+                    errorhandler($rootScope,{url:config.url,'data':config.data,'message':data})
                 });
             return duplicateIssuesService.data;
         }
@@ -1605,13 +1648,15 @@ vdbApp.factory('duplicateIssuesService', ['$http','$rootScope', function ($http,
 vdbApp.factory('getIssueService', ['$http','$rootScope', function ($http,$rootScope) {
     return {
         getIssue: function (jsondata) {
+            logger('getIssueService.getIssue('+jsondata+')');
             return $http.post(APIURL + 'issueForHash', jsondata)
                 .success(function (data) {
                     duplicateIssuesService.data = data;
                     return getIssueService.data;
                 })
                 .error(function(data, status, headers, config){
-                    errorhandler($rootScope)
+                    logger("getIssueService.getIssue.error:")
+                    errorhandler($rootScope,{url:config.url,'data':config.data,'message':data})
                 });
             return getIssueService.data;
         }
@@ -1621,6 +1666,7 @@ vdbApp.factory('getIssueService', ['$http','$rootScope', function ($http,$rootSc
 vdbApp.factory('confirmRegistrationService', ['$http','$rootScope', function ($http,$rootScope) {
     return {
         getConfirm: function (jsondata) {
+            logger('confirmRegistrationService.getConfirm('+jsondata+')');
             return $http.post(APIURL + 'confirmRegistration', jsondata)
                 .success(function (data) {
                     if (angular.isObject(data)) {
@@ -1629,7 +1675,8 @@ vdbApp.factory('confirmRegistrationService', ['$http','$rootScope', function ($h
                     }
                 })
                 .error(function(data, status, headers, config){
-                    errorhandler($rootScope)
+                    logger("confirmRegistrationService.getConfirm.error:")
+                    errorhandler($rootScope,{url:config.url,'data':config.data,'message':data})
                 });
             return confirmRegistrationService.data;
 
@@ -1640,6 +1687,7 @@ vdbApp.factory('confirmRegistrationService', ['$http','$rootScope', function ($h
 vdbApp.factory('cancelRegistrationService', ['$http','$rootScope', function ($http,$rootScope) {
     return {
         getConfirm: function (jsondata) {
+            logger('cancelRegistrationService.getConfirm('+jsondata+')');
             return $http.post(APIURL + 'cancelRegistration', jsondata)
                 .success(function (data) {
                     if (angular.isObject(data)) {
@@ -1648,7 +1696,8 @@ vdbApp.factory('cancelRegistrationService', ['$http','$rootScope', function ($ht
                     }
                 })
                 .error(function(data, status, headers, config){
-                    errorhandler($rootScope)
+                    logger("cancelRegistrationService.getConfirm.error:")
+                    errorhandler($rootScope,{url:config.url,'data':config.data,'message':data})
                 });
             return cancelRegistrationService.data;
 
@@ -1659,13 +1708,15 @@ vdbApp.factory('cancelRegistrationService', ['$http','$rootScope', function ($ht
 vdbApp.factory('confirmIssueService', ['$http','$rootScope', function ($http,$rootScope) {
     return {
         getConfirmIssue: function (jsondata) {
+            logger('confirmIssueService.getConfirmIssue('+jsondata+')');
             return $http.post(APIURL + 'confirmIssue', jsondata)
                 .success(function (data) {
                     confirmIssueService.data = data;
                     return confirmIssueService.data;
                 })
                 .error(function(data, status, headers, config){
-                    errorhandler($rootScope)
+                    logger("confirmIssueService.getConfirmIssue.error:")
+                    errorhandler($rootScope,{url:config.url,'data':config.data,'message':data})
                 });
             return getConfirmIssueService.data;
         }
@@ -1676,13 +1727,15 @@ vdbApp.factory('confirmIssueService', ['$http','$rootScope', function ($http,$ro
 vdbApp.factory('serviceStandardService', ['$http','$rootScope', function ($http,$rootScope) {
     return {
         getServiceStandard: function (jsondata) {
+            logger('serviceStandardService.getServiceStandard('+jsondata+')');
             return $http.post(APIURL + 'serviceStandard', jsondata)
                 .success(function (data) {
                     serviceStandardService.data = data;
                     return serviceStandardService.data;
                 })
                 .error(function(data, status, headers, config){
-                    errorhandler($rootScope)
+                    logger("serviceStandardService.getServiceStandard.error:")
+                    errorhandler($rootScope,{url:config.url,'data':config.data,'message':data})
                 });
             return serviceStandardService.data;
         }
@@ -1692,13 +1745,15 @@ vdbApp.factory('serviceStandardService', ['$http','$rootScope', function ($http,
 vdbApp.factory('unfollowIssueService', ['$http','$rootScope', function ($http,$rootScope) {
     return {
         getUnfollowIssue: function (jsondata) {
+            logger('unfollowIssueService.getUnfollowIssue('+jsondata+')');
             return $http.post(APIURL + 'unfollowIssue', jsondata)
                 .success(function (data) {
                     unfollowIssueService.data = data;
                     return unfollowIssueService.data;
                 })
                 .error(function(data, status, headers, config){
-                    errorhandler($rootScope)
+                    logger("unfollowIssueService.getUnfollowIssue.error:")
+                    errorhandler($rootScope,{url:config.url,'data':config.data,'message':data})
                 });
             return unfollowIssueService.data;
         }
@@ -1709,13 +1764,15 @@ vdbApp.factory('unfollowIssueService', ['$http','$rootScope', function ($http,$r
 vdbApp.factory('confirmVoteService', ["$http",'$rootScope',function ($http,$rootScope) {
     return {
         getConfirmVote: function (jsondata){
+            logger('confirmVoteService.getConfirmVote('+jsondata+')');
             return $http.post(APIURL+ 'confirmVote',jsondata)
             .success(function (data){
                 confirmVoteService.data = data;
                 return confirmVoteService.data;
             })
                 .error(function(data, status, headers, config){
-                    errorhandler($rootScope)
+                    logger("confirmVoteService.getConfirmVote.error:")
+                    errorhandler($rootScope,{url:config.url,'data':config.data,'message':data})
                 });
             return confirmVoteService.data;
         }
@@ -1901,7 +1958,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
         geocodeAddress(geocoder, map);
         searchCreateTemp =1;
         //$window.cityName = null;
-        // console.log("plaats");
+        // logger("plaats");
     }
 
     if ($location.path() == "/" + $routeParams.cityNameClone + nextaction && searchCreateTemp!=1) {
@@ -1909,7 +1966,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
         $window.cityName = $routeParams.cityNameClone;
         geocodeAddress(geocoder, map);
         searchCreateTemp =1;
-        // console.log("geemente");
+        // logger("geemente");
        // $window.cityName = null;
     }
 
@@ -2183,7 +2240,11 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
             $rootScope.globaloverlay = "active";
             $window.cityName = null;
             $window.postalcode = null;
+<<<<<<< HEAD
             // console.log("jalan");
+=======
+            
+>>>>>>> 498733e... getting logger info
             // deletemarker(markers);
             //$rootScope.lastCity = city.long_name;
             // geocodeAddress(geocoder, map);
@@ -2381,8 +2442,6 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
         
         var hashToDelete = $rootScope.hashSession;
         
-        
-        
         $scope.deleteIssueWithHash = function () {
             $rootScope.globaloverlay = "active";
             
@@ -2399,7 +2458,6 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
                 "status" : status        
             });
 
-
             
             var getStatusChange = statusChangeService.getStatusChange(jsondata).then(function (data) {
                 var getStatusChange = data.data;
@@ -2414,7 +2472,6 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
                         $scope.error = "";
                         $scope.hideError = "ng-hide";
                         $location.path("/bevestiging-verwijderen");
-                        
 
                     })
                     } else {
@@ -2422,7 +2479,6 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
                         $scope.hideError = "";
                         $rootScope.globaloverlay = "";
                     }
-                
 
             });
         }
@@ -2434,7 +2490,6 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
             // $rootScope.hashSession = null;
             // $rootScope.targetAction = null;
         }
-        
         
         //resolve issue without comment 
         if($rootScope.targetAction === "resolve_issue_with_comment_no") {
@@ -2451,10 +2506,6 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
             // $rootScope.hashSession = null;
             // $rootScope.targetAction = null;
         }
-
-
-        
-        
         
         //confirm issue with hash code
         if ($rootScope.targetAction === "confirm_issue") {
@@ -2490,7 +2541,6 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
         }
 
     });
-    
     $scope.$watch('changeid',function(){
          var jsondata = JSON.stringify({
         "issue_id": $routeParams.id
@@ -2539,55 +2589,7 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
                                         });
                                 });
     })
-
-    // $timeout(function(){
-    //     var jsondata = JSON.stringify({
-    //     "issue_id": $routeParams.id
-    //      });
-    //     var getIssues = issuesService.getIssues(jsondata).then(function (data) {
-    //                             var getdata = data.data;
-    //                             $rootScope.newProblemList = getdata.issues;
-    //                             //initial google map marker
-    //                              // deletemarker(markers);
-    //                             if (getdata.count != 0 || !getdata) {
-    //                                 $window.issuesData = getdata;
-    //                                 showIssue(infoWindow, infoWindowContent);
-    //                             }
-    //                         });
-    //                         var getcity ;
-    //                         geocoder.geocode({
-    //                                     'location': {
-    //                                         'lat': lat,
-    //                                         'lng': lng
-    //                                     }
-    //                                 }, function (result, status) {
-    //                                     if (status == google.maps.GeocoderStatus.OK) {
-
-    //                                         for (var i = 0; i < result[0].address_components.length; i++) {
-    //                                             for (var b = 0; b < result[0].address_components[i].types.length; b++) {
-    //                                                 //if you want the change the area ..
-    //                                                 if (result[0].address_components[i].types[b] == "administrative_area_level_2") {
-    //                                                     // name of city
-    //                                                     getcity = result[0].address_components[i].long_name;
-    //                                                     var jsoncity = JSON.stringify({
-    //                                                             "council": "" + getcity + ""
-    //                                                         });
-    //                                                         var getReport = reportService.getReport(jsoncity).then(function (data) {
-    //                                                             var getdata = data.data;
-    //                                                             $rootScope.reportList = getdata.report;
-    //                                                         });
-    //                                                     break;
-    //                                                 }
-    //                                             }
-    //                                         }
-
-    //                                     }
-
-
-    //                                 });
-                            
-    // },5000)
-
+  
     $scope.id = function () {
         return $routeParams.id;
     }
@@ -2795,25 +2797,28 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
     $rootScope.successVote = 0;
 
     //show my issue
-                if ($cookies.getObject('user')) {
-                    $scope.hideLogin = true
-                    var jsondata = JSON.stringify({
-                        "user": {
-                            "username": "" + $cookies.getObject('user').username + "",
-                            "password_hash": "" + $cookies.getObject('user').password_hash + ""
+    if ($cookies.getObject('user')) {
+        $scope.hideLogin = true
+        logger(jsondata);
+        var jsondata = JSON.stringify({
+            "user": {
+                "username": "" + $cookies.getObject('user').username + "",
+                "password_hash": "" + $cookies.getObject('user').password_hash + ""
 
-                        }
-                    });
-                    var getMyIssues = myIssuesService.getMyIssues(jsondata).then(function (data) {
-                        var getdata = data.data;
-                        var count = getdata.count;
-                        $rootScope.myIssueCount = count;
-                        $rootScope.myIssuesList = getdata.issues;
-                    })
-                    $scope.hideLogin = true
-                } else {
-                    $scope.hideLogin = false;
-                }
+            }
+        });
+        logger(jsondata);
+        logger("changed jsondata?")
+        var getMyIssues = myIssuesService.getMyIssues(jsondata).then(function (data) {
+            var getdata = data.data;
+            var count = getdata.count;
+            $rootScope.myIssueCount = count;
+            $rootScope.myIssuesList = getdata.issues;
+        })
+        $scope.hideLogin = true
+    } else {
+        $scope.hideLogin = false;
+    }
 }])
 
 
