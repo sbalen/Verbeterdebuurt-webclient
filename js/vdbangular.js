@@ -5,7 +5,8 @@ var vdbApp = angular.module('vdbApp', ['ngRoute', 'angularUtils.directives.dirPa
 var LOGGING = true; 
 //var LOGGING = false; 
 // var APIURL = "https://www.verbeterdebuurt.nl/api.php/json_1_3/";
-var APIURL = "https://staging.verbeterdebuurt.nl/api.php/json_1_3/";
+var ROOT = "https://staging.verbeterdebuurt.nl/";
+var APIURL = ROOT + "api.php/json_1_3/";
 var geocoder = new google.maps.Geocoder();
 var infoWindow = new google.maps.InfoWindow();
 var infoWindowContent = [];
@@ -1742,7 +1743,7 @@ vdbApp.factory('remindIssueService', ['$http','$rootScope', function ($http,$roo
     return {
         getRemindIssue: function (jsondata) {
             logger('remindIssueService.getRemindIssue('+jsondata+')');
-            return $http.post(APIURL + 'remindIssue', jsondata)
+            return $http.post(APIURL + 'emailLink', jsondata)
                 .success(function (data) {
                     remindIssueService.data = data;
                     return remindIssueService.data;
@@ -2513,12 +2514,12 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
         }
 
         //confirm issue with hash code
-        if ($rootScope.targetAction === "remind_issue") {
+        if ($rootScope.targetAction === "remind_issue") {            
             $rootScope.globaloverlay = "active";
             var authorisation_hash = $rootScope.hashSession;
             
             var jsondata = JSON.stringify({
-                "authorisation_hash" : authorisation_hash    
+                "link" : ROOT + "melding/herinneren/" + authorisation_hash    
             });
             var getRemindIssue = remindIssueService.getRemindIssue(jsondata).then(function (data) {
                 var getRemindIssue = data.data;
@@ -2544,7 +2545,6 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
             $rootScope.hashSession = null;
             $rootScope.targetAction = null;
         }
-
 
     });
     $scope.$watch('changeid',function(){
