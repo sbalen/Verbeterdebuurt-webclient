@@ -108,30 +108,33 @@ function geocodeAddress(geocoder, resultsMap) {
         var address = document.getElementById('searchCity').value;
         }
         geocoder.geocode({'address': address,componentRestrictions: {country: 'nl'}}, function(results, status) {
+          logger("geocodeAddress");
+          logger(results);
           if (status === google.maps.GeocoderStatus.OK) {
                 resultsMap.setCenter(results[0].geometry.location);
-                resultsMap.setZoom(16);
+                logger("fitbounds");
+                resultsMap.fitBounds(results[0].geometry.bounds);
+                //resultsMap.setZoom(16);
                 maxlat  = resultsMap.getBounds().getNorthEast().lat();
                 maxlng  = resultsMap.getBounds().getNorthEast().lng();
                 minlat = resultsMap.getBounds().getSouthWest().lat();
                 minlng = resultsMap.getBounds().getSouthWest().lng();
                 latlngChange = {
-                lat: results[0].geometry.location.lat(),
-                lng: results[0].geometry.location.lng()
+                  lat: results[0].geometry.location.lat(),
+                  lng: results[0].geometry.location.lng()
                 };
-                //console.log("nasiduk");
                 citynamegoogle= {};
                 citynamegoogle.long_name = null;
                 for (var i=0; i<results[0].address_components.length; i++) {
-                for (var b=0;b<results[0].address_components[i].types.length;b++) {
-                  //if you want the change the area ..
-                if (results[0].address_components[i].types[b] == "administrative_area_level_2") {
-                   // name of city
-                    citynamegoogle = results[0].address_components[i];
-                    break;
-                        }
+                  for (var b=0;b<results[0].address_components[i].types.length;b++) {
+                    //if you want the change the area ..
+                    if (results[0].address_components[i].types[b] == "administrative_area_level_2") {
+                      // name of city
+                      citynamegoogle = results[0].address_components[i];
+                      break;
                     }
-                }
+                  }
+                }   
 
                     
           } else {
