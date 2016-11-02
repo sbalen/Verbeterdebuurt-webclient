@@ -2,7 +2,6 @@
 //var vdbApp = angular.module('vdbApp',[]);
 var vdbApp = angular.module('vdbApp', ['ngRoute', 'angularUtils.directives.dirPagination', 'ngFacebook', 'ngCookies', 'naif.base64','angulartics', 'angulartics.google.analytics'])
 
-
 var LOGGING = true; 
 //var LOGGING = false; 
 // var APIURL = "https://www.verbeterdebuurt.nl/api.php/json_1_3/";
@@ -89,6 +88,7 @@ getaddressshow = function(latlng){
     geocoder.geocode({
                         'latLng': latlng
                 }, function (result, status) {
+                    logger("geocode result");
                     if (status == google.maps.GeocoderStatus.OK) {
                         for (var i = 0; i < result[0].address_components.length; i++) {
                             for (var b = 0; b < result[0].address_components[i].types.length; b++) {
@@ -132,16 +132,17 @@ getaddressshow = function(latlng){
 
 //google map auto compleate change string to make it by id
 googleautocomplete = function(stringid,resultmap) {
-      var input = document.getElementById(stringid);
-      if(maxlat){
-         var defaultBounds = new google.maps.LatLngBounds(
+    logger("googleautocomplete");
+    var input = document.getElementById(stringid);
+    if (maxlat) {
+        var defaultBounds = new google.maps.LatLngBounds(
             new google.maps.LatLng(maxlat,maxlng),
             new google.maps.LatLng(minlat,minlng)
         );
-      }
-      var options = {
+    }
+    var options = {
         componentRestrictions: {
-            country: 'nl'
+        country: 'nl'
         },
         bounds:defaultBounds,
     };
@@ -150,25 +151,24 @@ googleautocomplete = function(stringid,resultmap) {
     autocomplete.bindTo('bounds',map)
     // autocomplete.bindTo('bounds',map);
     google.maps.event.addListener(autocomplete, 'place_changed', function() {
-            autocomplete.bindTo('bounds',map);
-            var place = autocomplete.getPlace();
-            if (!place.geometry) {
-                var tempurl = window.location.pathname;
-                if(tempurl.includes('nieuw-probleem')){
+        logger("google place changed");
+        autocomplete.bindTo('bounds',map);
+        var place = autocomplete.getPlace();
+        if (!place.geometry) {
+            logger('place_changed without geometry');
+            var tempurl = window.location.pathname;
+            if(tempurl.includes('nieuw-probleem')){
                 geocodeAddressCreateProblem(geocoder, map3, document.getElementById('searchCityProblem').value,"location");
-                }
-                else if(tempurl.includes('nieuw-idee')){
+            } else if(tempurl.includes('nieuw-idee')) {
                 geocodeAddressCreateProblem(geocoder, map4, document.getElementById('searchCityProblem').value,"location2");
-                }else{
+            } else {
                 cityName = null;
                 postalcode = null;
                 geocodeAddress(geocoder, resultmap);
-                }
-                
-            return;
             }
-             if (place.geometry.viewport) {
-                
+          
+        } else if (place.geometry.viewport) {
+            logger('place_changed with geometry & viewport');
             resultmap.fitBounds(place.geometry.viewport);
             resultmap.setZoom(16);
             latlngChange = {
@@ -177,16 +177,17 @@ googleautocomplete = function(stringid,resultmap) {
             };
             getaddressshow(latlngChange);
             var tempurl = window.location.pathname;
-            if(tempurl.includes('nieuw-probleem')||tempurl.includes('nieuw-idee')){
-            markerLat = place.geometry.location.lat()
-            markerLng = place.geometry.location.lng()
-            maxlat = map.getBounds().getNorthEast().lat();
-            maxlng = map.getBounds().getNorthEast().lng();
-            minlat = map.getBounds().getSouthWest().lat();
-            minlng = map.getBounds().getSouthWest().lng();
-            showIssue(infoWindow, infoWindowContent);
+            if(tempurl.includes('nieuw-probleem')||tempurl.includes('nieuw-idee')) {
+                markerLat = place.geometry.location.lat()
+                markerLng = place.geometry.location.lng()
+                maxlat = map.getBounds().getNorthEast().lat();
+                maxlng = map.getBounds().getNorthEast().lng();
+                minlat = map.getBounds().getSouthWest().lat();
+                minlng = map.getBounds().getSouthWest().lng();
+                showIssue(infoWindow, infoWindowContent);
             }
-          } else {
+        } else {
+            logger('place_changed with geometry, but no viewport');
             resultmap.setCenter(place.geometry.location);
             resultmap.setZoom(17);  // Why 17? Because it looks good.
             latlngChange = {
@@ -195,18 +196,18 @@ googleautocomplete = function(stringid,resultmap) {
             };
             getaddressshow(latlngChange);
             var tempurl = window.location.pathname;
-             if(tempurl.includes('nieuw-probleem')||tempurl.includes('nieuw-idee')){
-            markerLat = place.geometry.location.lat()
-            markerLng = place.geometry.location.lng()
-            maxlat = map.getBounds().getNorthEast().lat();
-            maxlng = map.getBounds().getNorthEast().lng();
-            minlat = map.getBounds().getSouthWest().lat();
-            minlng = map.getBounds().getSouthWest().lng();
-            showIssue(infoWindow, infoWindowContent);
+            if(tempurl.includes('nieuw-probleem')||tempurl.includes('nieuw-idee')){
+                markerLat = place.geometry.location.lat()
+                markerLng = place.geometry.location.lng()
+                maxlat = map.getBounds().getNorthEast().lat();
+                maxlng = map.getBounds().getNorthEast().lng();
+                minlat = map.getBounds().getSouthWest().lat();
+                minlng = map.getBounds().getSouthWest().lng();
+                showIssue(infoWindow, infoWindowContent);
             }
-          }
-        });
-    
+        }
+    });
+
 }
 
 
