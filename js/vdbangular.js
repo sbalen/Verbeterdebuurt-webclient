@@ -2,12 +2,11 @@
 //var vdbApp = angular.module('vdbApp',[]);
 var vdbApp = angular.module('vdbApp', ['ngRoute', 'angularUtils.directives.dirPagination', 'ngFacebook', 'ngCookies', 'naif.base64','angulartics', 'angulartics.google.analytics'])
 
-var LOGGING = false; 
-// var LOGGING = true; 
+// var LOGGING = false; 
+var LOGGING = true; 
 
 // var ROOT = "https://www.verbeterdebuurt.nl/";
 var ROOT = "https://staging.verbeterdebuurt.nl/";
-
 var APIURL = ROOT + "api.php/json_1_3/";
 var geocoder = new google.maps.Geocoder();
 var infoWindow = new google.maps.InfoWindow();
@@ -56,6 +55,12 @@ minlng = null
 markers = null;
 markers = [];
 markerid = [];
+
+function checkZoomLevel($rootScope) {
+    logger("checkZoomLevel: " + map.getZoom());
+    $rootScope.pinsVisibleZoom = 14;
+    $rootScope.zoom = map.getZoom();
+}
 //polyfill for includes for internet explore not support js
 if (!String.prototype.includes) {
   String.prototype.includes = function(search, start) {
@@ -376,6 +381,7 @@ function googlemapinit () {
 vdbApp.run(function(){
     googlemapinit();
     // logger("mapchange");
+
 })
 
 function getLatLng(map) {
@@ -1846,9 +1852,10 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     // },3000)
     //check android or not
     $rootScope.dynamicTitle = "";
-        // logger('jalan');
-             getLatLng(map);
-       
+    getLatLng(map);
+
+    checkZoomLevel($rootScope);
+
     // var isAndroid = /(android)/i.test(navigator.userAgent);
     // if (isAndroid) {
     //     logger("android");
@@ -1923,7 +1930,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
 
                             var getAgreement = agreementSevice.getAgreement(jsoncity).then(function (data) {
                                 var getdata = data.data;
-                                $rootScope.agreement = getdata;
+                                $rootScope.agreement = getdata; logger(getdata);
                                 $timeout(function () {
                                     if (!getdata.logo) {
                                         $rootScope.hideLogo = 1;
@@ -1979,7 +1986,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
 
 
         }
-
+        checkZoomLevel($rootScope);
     }, 3000)
 
 
@@ -2033,6 +2040,8 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
                  //logger(markers);
             }
         });
+        
+        checkZoomLevel($rootScope);
 
     },3000);
    
@@ -2060,7 +2069,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
 
             var getAgreement = agreementSevice.getAgreement(jsoncity).then(function (data) {
                 var getdata = data.data;
-                $rootScope.agreement = getdata;
+                $rootScope.agreement = getdata; logger(getdata);
                 $timeout(function () {
                     if (!getdata.logo) {
                         $rootScope.hideLogo = 1;
@@ -2092,7 +2101,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
 
             var getAgreement = agreementSevice.getAgreement(jsoncity).then(function (data) {
                 var getdata = data.data;
-                $rootScope.agreement = getdata;
+                $rootScope.agreement = getdata; logger(getdata);
                 $timeout(function () {
                     if (!getdata.logo) {
                         $rootScope.hideLogo = 1;
@@ -2142,7 +2151,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
                 });
                 var getAgreement = agreementSevice.getAgreement(jsoncity).then(function (data) {
                     var getdata = data.data;
-                    $rootScope.agreement = getdata;
+                    $rootScope.agreement = getdata; logger(getdata);
                     $timeout(function () {
                         if (!getdata.logo) {
                             $rootScope.hideLogo = 1;
@@ -2258,7 +2267,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
                 });
                 var getAgreement = agreementSevice.getAgreement(jsoncity).then(function (data) {
                     var getdata = data.data;
-                    $rootScope.agreement = getdata;
+                    $rootScope.agreement = getdata; logger(getdata);
                     $rootScope.globaloverlay = "";
                     $timeout(function () {
                         if (!getdata.logo) {
@@ -4338,7 +4347,7 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
                 });
                 var getAgreement = agreementSevice.getAgreement(jsoncity).then(function (data) {
                     var getdata = data.data;
-                    $rootScope.agreement = getdata;
+                    $rootScope.agreement = getdata; logger(getdata);
                     $timeout(function () {
                         if (!getdata.logo) {
                             $rootScope.hideLogo = 1;
@@ -4698,7 +4707,7 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
                 });
                 var getAgreement = agreementSevice.getAgreement(jsoncity).then(function (data) {
                     var getdata = data.data;
-                    $rootScope.agreement = getdata;
+                    $rootScope.agreement = getdata; logger(getdata);
                     $timeout(function () {
                         if (!getdata.logo) {
                             $rootScope.hideLogo = 1;
@@ -4955,7 +4964,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
                 });
                 var getAgreement = agreementSevice.getAgreement(jsoncity).then(function (data) {
                     var getdata = data.data;
-                    $rootScope.agreement = getdata;
+                    $rootScope.agreement = getdata; logger(getdata);
                     $timeout(function () {
                         if (!getdata.logo) {
                             $rootScope.hideLogo = 1;
@@ -5018,7 +5027,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
                 });
                 var getAgreement = agreementSevice.getAgreement(jsoncity).then(function (data) {
                     var getdata = data.data;
-                    $rootScope.agreement = getdata;
+                    $rootScope.agreement = getdata; logger(getdata);
                     $timeout(function () {
                         if (!getdata.logo) {
                             $rootScope.hideLogo = 1;
