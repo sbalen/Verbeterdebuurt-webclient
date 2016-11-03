@@ -109,10 +109,8 @@ function geocodeAddress(geocoder, resultsMap) {
         }
         geocoder.geocode({'address': address,componentRestrictions: {country: 'nl'}}, function(results, status) {
           logger("geocodeAddress");
-          logger(results);
           if (status === google.maps.GeocoderStatus.OK) {
                 resultsMap.setCenter(results[0].geometry.location);
-                logger("fitbounds");
                 resultsMap.fitBounds(results[0].geometry.bounds);
                 //resultsMap.setZoom(16);
                 maxlat  = resultsMap.getBounds().getNorthEast().lat();
