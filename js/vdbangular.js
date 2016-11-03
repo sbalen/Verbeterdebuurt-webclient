@@ -2,10 +2,12 @@
 //var vdbApp = angular.module('vdbApp',[]);
 var vdbApp = angular.module('vdbApp', ['ngRoute', 'angularUtils.directives.dirPagination', 'ngFacebook', 'ngCookies', 'naif.base64','angulartics', 'angulartics.google.analytics'])
 
-var LOGGING = true; 
-//var LOGGING = false; 
-// var APIURL = "https://www.verbeterdebuurt.nl/api.php/json_1_3/";
+var LOGGING = false; 
+// var LOGGING = true; 
+
+// var ROOT = "https://www.verbeterdebuurt.nl/";
 var ROOT = "https://staging.verbeterdebuurt.nl/";
+
 var APIURL = ROOT + "api.php/json_1_3/";
 var geocoder = new google.maps.Geocoder();
 var infoWindow = new google.maps.InfoWindow();
