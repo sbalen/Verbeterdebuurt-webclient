@@ -5,9 +5,17 @@ var vdbApp = angular.module('vdbApp', ['ngRoute', 'angularUtils.directives.dirPa
 // var LOGGING = false; 
 var LOGGING = true; 
 
-// var ROOT = "https://www.verbeterdebuurt.nl/";
-var ROOT = "https://staging.verbeterdebuurt.nl/";
-var APIURL = ROOT + "api.php/json_1_3/";
+var PROTOCOL = "https";
+// var PROTOCOL = "http";
+
+// var ROOT = "www.verbeterdebuurt.nl/";
+var ROOT = "staging.verbeterdebuurt.nl/";
+
+var API_VERSION = "api.php/json_1_3/";
+
+var APIURL = PROTOCOL + "://" + ROOT + API_VERSION;
+
+
 var geocoder = new google.maps.Geocoder();
 var infoWindow = new google.maps.InfoWindow();
 var infoWindowContent = [];
@@ -557,14 +565,7 @@ function googleMapCreateIdea(latlng) {
     markerCenter(map4, marker, "location2");
     getMarkerLocation(marker);
     markerGetAddress(marker, "location2");
-    var tempurl = window.location.pathname.replace('nieuw-idee','');;
-    // logger(tempurl);
-    // if(tempurl.includes('gemeente')){
-    //     var citytemp = tempurl.substring(tempurl.slice(0,tempurl.length-1).lastIndexOf('/')+1);
-    //     cityName = citytemp.substring(0,citytemp.length-1);
-    //     // logger(cityName);
-    //     geocodeAddress(geocoder, map4);
-    // }
+    var tempurl = window.location.pathname.replace('nieuw-idee','');
 }
 
 //to make other map syncronise
@@ -2404,7 +2405,7 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
         
         lat=getdata.issues[0].location.latitude;
         lng=getdata.issues[0].location.longitude;
-        $scope.sateliteimg = "http://maps.googleapis.com/maps/api/staticmap?center="+lat+","+lng+"&zoom=18&size=515x300&maptype=hybrid&format=jpg&key=AIzaSyCk3yxCifnV67hIJ2iyRupfH2iHvshna3I&markers=color:red%7C"+lat+","+lng+"&sensor=false";
+        $scope.sateliteimg = "//maps.googleapis.com/maps/api/staticmap?center="+lat+","+lng+"&zoom=18&size=515x300&maptype=hybrid&format=jpg&key=AIzaSyCk3yxCifnV67hIJ2iyRupfH2iHvshna3I&markers=color:red%7C"+lat+","+lng+"&sensor=false";
 
         
 
@@ -2720,7 +2721,7 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
     //facebook & twitter share
     $scope.sharefacebook = function () {
         var text = encodeURI($location.absUrl());
-        var url = "http://www.facebook.com/sharer/sharer.php?u=" + text;
+        var url = "//www.facebook.com/sharer/sharer.php?u=" + text;
         var win = window.open(url, '_blank');
         win.focus();
 
@@ -2937,7 +2938,7 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope', '$routeParams', '$http', '$ro
                 
                 var lat = getdata.issues[i].location.latitude;
                 var lng = getdata.issues[i].location.longitude;
-                $scope.sateliteimg = "http://maps.googleapis.com/maps/api/staticmap?center="+lat+","+lng+"&zoom=18&size=515x300&maptype=hybrid&format=jpg&key=AIzaSyCk3yxCifnV67hIJ2iyRupfH2iHvshna3I&markers=color:red%7C"+lat+","+lng+"&sensor=false";
+                $scope.sateliteimg = "//maps.googleapis.com/maps/api/staticmap?center="+lat+","+lng+"&zoom=18&size=515x300&maptype=hybrid&format=jpg&key=AIzaSyCk3yxCifnV67hIJ2iyRupfH2iHvshna3I&markers=color:red%7C"+lat+","+lng+"&sensor=false";
 
                  
                 
