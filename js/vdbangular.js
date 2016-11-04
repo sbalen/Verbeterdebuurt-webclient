@@ -150,6 +150,9 @@ getaddressshow = function(latlng){
 googleautocomplete = function(stringid,resultmap) {
     logger("googleautocomplete");
     var input = document.getElementById(stringid);
+    //if input cannot be found yet, it's probably not loaded yet, so return doing nothing
+    if (input == undefined) return;
+
     if (maxlat) {
         var defaultBounds = new google.maps.LatLngBounds(
             new google.maps.LatLng(maxlat,maxlng),
@@ -253,41 +256,22 @@ function initMap() {
         minZoom: 13,
         scrollwheel: false,
         zoomControl: true,
-        zoomControlOptions: {
-            position: google.maps.ControlPosition.RIGHT_TOP
-        },
         // initialize zoom level - the max value is 21
         disableDefaultUI: true,
         streetViewControl: false, // hide the yellow Street View pegman
         /*scaleControl: false, // allow users to zoom the Google Map*/
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         center: this._map_center,
-        zoomControlOptions: {
-            position: google.maps.ControlPosition.RIGHT_BOTTOM
-        },
-        styles: [
-            {
-                featureType: "poi",
-                elementType: "labels",
-                stylers: [
-                    {
-                        visibility: "off"
-                    }
-                                ]
-                    },
-            {
-                featureType: "transit.station",
-                stylers: [
-                    {
-                        visibility: "off"
-                    }
-                ]
-            }
-                ]
-
+        zoomControlOptions: { position: google.maps.ControlPosition.RIGHT_BOTTOM },
+        styles: [ { featureType: "poi", elementType: "labels", stylers: [{visibility: "off"}] },
+                  { featureType: "transit.station", stylers: [ { visibility: "off" } ] } ]
     };
 
-    map = new google.maps.Map(document.getElementById('googlemaps'), mapOptions);
+    var mapObject = document.getElementById('googlemaps');
+    logger("initMap for object:");
+    logger(mapObject);
+
+    map = new google.maps.Map(mapObject, mapOptions);
 }
 
 
@@ -320,32 +304,22 @@ function googlemapinit () {
         minlat = map.getBounds().getSouthWest().lat();
         minlng = map.getBounds().getSouthWest().lng();
         geocoder.geocode({'latLng': map.getCenter()} , function (result , status){
-                sendLatitude = map.getCenter().lng();
-                sendLongitude = map.getCenter().lat();
-                if (status == google.maps.GeocoderStatus.OK){
-
+            sendLatitude = map.getCenter().lng();
+            sendLongitude = map.getCenter().lat();
+            if (status == google.maps.GeocoderStatus.OK) {
                 for (var i=0; i<result[0].address_components.length; i++) {
-                for (var b=0;b<result[0].address_components[i].types.length;b++) {
-                  //if you want the change the area ..
-                if (result[0].address_components[i].types[b] == "administrative_area_level_2") {
-                   // name of city
-                    city= result[0].address_components[i];
-                    break;
+                    for (var b=0;b<result[0].address_components[i].types.length;b++) {
+                      //if you want the change the area ..
+                        if (result[0].address_components[i].types[b] == "administrative_area_level_2") {
+                           // name of city
+                            city = result[0].address_components[i];
+                            break;
                         }
                     }
                 }
-                     // logger("drag googlemap:"+city.long_name);
-                      // showIssue(infoWindow,infoWindowContent);
-                }
-                
-
-               });
+            }
+       });
     });
-
-    // maxlat  = 52.17899981092104;
-    // maxlng  = 52.15154422875919;
-    // minlat = 4.545096343219029;
-    // minlng = 4.487203543841588;
 
     if (cityName != null) {
         geocodeAddress(geocoder, map);
@@ -1994,7 +1968,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     menuSelected($rootScope, 'home');
     //$scope.hideLogo = 1;
     
-    //google map aouto complete
+    //google map auto complete
     googleautocomplete('searchCity',map);
    
 
@@ -4249,17 +4223,17 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
                 }
                 googleMapCreateProblem(latlngChange);
                 //googlemapautocompleate
-    googleautocomplete('searchCityProblem',map3);
-            var latitude = markerLat;
-            var longitude = markerLng;
-            var jsondataCity = JSON.stringify({
-                "latitude" : latitude,
-                "longitude" : longitude
-            });
-            var getCategories = categoriesService.getCategories(jsondataCity).then(function (data) {
-                $scope.categoriesList = data.data.categories;
-                $timeout(function () {
-                    $scope.loadCategory = 0;
+                googleautocomplete('searchCityProblem',map3);
+                var latitude = markerLat;
+                var longitude = markerLng;
+                var jsondataCity = JSON.stringify({
+                    "latitude" : latitude,
+                    "longitude" : longitude
+                });
+                var getCategories = categoriesService.getCategories(jsondataCity).then(function (data) {
+                    $scope.categoriesList = data.data.categories;
+                    $timeout(function () {
+                        $scope.loadCategory = 0;
                 })
             });
 
@@ -4277,7 +4251,7 @@ vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeo
                 }
             googleMapCreateProblem(latlngChange);
             //googlemapautocompleate
-    googleautocomplete('searchCityProblem',map3);
+            googleautocomplete('searchCityProblem',map3);
             var latitude = markerLat;
             var longitude = markerLng;
             var jsondataCity = JSON.stringify({
