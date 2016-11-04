@@ -34,9 +34,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!--FONTS-->
-    <link href='https://fonts.googleapis.com/css?family=Merriweather:400,400italic,700' rel='stylesheet' type='text/css'>
-    <link href='https://fonts.googleapis.com/css?family=Lato:400,400italic,700,700italic' rel='stylesheet' type='text/css'>
-    <link href='https://fonts.googleapis.com/css?family=Raleway:400,500' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Merriweather:400,400italic,700' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Lato:400,400italic,700,700italic' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Raleway:400,500' rel='stylesheet' type='text/css'>
     <!--STYLESHEET -->
     <!--link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"-->
     <link rel="stylesheet" href="/css/app.css">
@@ -44,36 +44,36 @@
     <link rel="stylesheet" type="text/css" href="/css/vdb.css">
 
     <!--SCRIPTS-->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
     <!--Angular-->
     
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.js" ></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular-resource.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0rc1/angular-route.min.js"></script>
-    <script src="https://code.angularjs.org/1.5.0/angular-route.js" ></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-cookies.min.js" ></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.js" ></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular-resource.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0rc1/angular-route.min.js"></script>
+    <script src="//code.angularjs.org/1.5.0/angular-route.js" ></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-cookies.min.js" ></script>
     <base href="/">
     <!--Loading Animation-->
-    <script src="node_modules/spin.js/spin.js"></script>
-    <script src="node_modules/angular-spinner/angular-spinner.js"></script>
+    <script src="/node_modules/spin.js/spin.js"></script>
+    <script src="/node_modules/angular-spinner/angular-spinner.js"></script>
     <!--Paging Script -->
-    <script src="node_modules/angular-utils-pagination/dirPagination.js"></script>
+    <script src="/node_modules/angular-utils-pagination/dirPagination.js"></script>
     <!--PAGE SPECIFIC SCRIPTS -->
-    <script src="http://maps.googleapis.com/maps/api/js?libraries=places&region=nl&sensor=false"></script>
+    <script src="//maps.googleapis.com/maps/api/js?libraries=places&region=nl&sensor=false"></script>
     <!--FACEBOOK CONNECT -->
-    <script src="js/ngFacebook.js"></script>
+    <script src="/js/ngFacebook.js"></script>
     <!--base64-->
-    <script src="js/angular-base64-upload.js"></script>
+    <script src="/js/angular-base64-upload.js"></script>
     <!--slider-->
     <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/jquery.slick/1.6.0/slick.css"/>
     <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.slick/1.6.0/slick.min.js"></script>    
     
     
     <!-- analytics -->
-    <script src="js/angulartics.js"></script>
-    <script src="js/angulartics-ga.js"></script>
+    <script src="/js/angulartics.js"></script>
+    <script src="/js/angulartics-ga.js"></script>
 </head>
 <body ng-controller="mainCtrl" >
     <div id="app-container">
@@ -96,8 +96,8 @@
                         <span class="icon-bar"></span> 
                     </button>
                     
-                    <a class="navbar-brand" ng-hide="hideLogo"><img src="http://staging.verbeterdebuurt.nl/{{agreement.logo}}"  class="citylogo mcitylogo"></a>
-                    <a class="navbar-brand" href="/"><img  src="./img/Verbeterdebuurt-logo.png" class="vdblogo mvdblogo"></a>
+                    <a class="navbar-brand" ng-hide="agreement.logo != ''"><img src="{{agreement.logo}}"  class="citylogo mcitylogo"></a>
+                    <a class="navbar-brand" href="/"><img  src="/img/Verbeterdebuurt-logo.png" class="vdblogo mvdblogo"></a>
                     
                 </div>
                 <div class="collapse navbar-collapse" id="Navbar" data-toggle="collapse">
