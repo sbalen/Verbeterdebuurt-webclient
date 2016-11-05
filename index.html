@@ -28,8 +28,8 @@
     <meta name="google-play-app" content="app-id=nl.verbeterdebuurt">
     <link rel="stylesheet" href="/node_modules/smartbanner/jquery.smartbanner.css" type="text/css" media="screen">
 
-    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon"/>
-    <link rel="icon" href="./favicon.ico" type="image/x-icon"/>
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -96,7 +96,7 @@
                         <span class="icon-bar"></span> 
                     </button>
                     
-                    <a class="navbar-brand" ng-hide="agreement.logo != ''"><img src="{{agreement.logo}}"  class="citylogo mcitylogo"></a>
+                    <a class="navbar-brand" ng-hide="agreement.logo == '' || agreement.logo == undefined"><img src="{{agreement.logo}}"  class="citylogo mcitylogo"></a>
                     <a class="navbar-brand" href="/"><img  src="/img/Verbeterdebuurt-logo.png" class="vdblogo mvdblogo"></a>
                     
                 </div>
@@ -154,7 +154,7 @@
         <!-- global overlay for spinner -->
         <div id="global-overlay" class="{{globaloverlay}}">
             <div id="global-spinner">
-                <img src="./img/vdb-spin.gif">
+                <img src="/img/vdb-spin.gif">
             </div>
         </div>
         

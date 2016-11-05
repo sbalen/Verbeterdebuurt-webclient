@@ -2,60 +2,61 @@
     <div id="main-content" class="container">
 	   
       <div class="col-md-3 hidden-sm hidden-xs hidden-md">
-	     <div class="panel side-panel panel-default" id="new-problem-widget">
-            <div class="panel-heading">
-                <strong>Report</strong>
+
+        <div class="panel side-panel panel-default" id="new-problem-widget">
+          <div class="panel-heading">
+           <strong>Report</strong>
+          </div>
+          <div class="panel-body">
+            <div class="list-group  report-list-council" ng-hide="reportList.council == null || reportList.council == 'undefined' " >
+              <strong>Gemeente: {{reportList.council}}</strong></br>
+              Meldingen per maand: {{reportList.reports}} </br>
+              Oplossingen per maand: {{reportList.solutions}}
             </div>
-           <div class="panel-body">
-                            <div class="list-group  report-list-council" ng-hide="reportList.council == null || reportList.council == 'undefined' " >
-                            <strong>Gemeente: {{reportList.council}}</strong></br>
-                            Meldingen per maand: {{reportList.reports}} </br>
-                            Oplossingen per maand: {{reportList.solutions}}
-                          </div>
-                            <div class="list-group  report-list-council"  ng-show="reportList.council == null || reportList.council == 'undifined' ">
-                             geen locatieinformatie gevonden
-                           </div>
+            <div class="list-group  report-list-council"  ng-show="reportList.council == null || reportList.council == 'undifined' ">
+            geen locatieinformatie gevonden
+            </div>
+          </div>  
+        </div>
+
+        <div class="panel side-panel panel-default" id="new-problem-widget" ng-hide="results.length == 0 || newProblemList==null">
+            <div class="panel-heading">
+                <strong>Nieuwste problemen</strong>
+            </div>
+            <div class="panel-body">
+                <div class="list-group" >
+                    <a href="/melding/{{newProblem.id}}" class="list-group-item clearfix" ng-repeat="newProblem in newProblemList| filter : {type:'problem'} | filter: {status:'!closed'} | orderBy : 'created_at' : true |limitTo:3|filter:x as results" ng-click="clickIssues();alrCityCreate()">
+                        <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
+                        <strong> {{newProblem.title}}</strong> {{newProblem.location.full_address}}
+                        <span class="pull-right">
+                            <button class="btn btn-xs btn-success" >
+                                <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
+                            </button>
+                        </span>
+                    </a>
+                </div>
             </div>  
-</div>
-
-<div class="panel side-panel panel-default" id="new-problem-widget" ng-hide="results.length == 0 || newProblemList==null">
-    <div class="panel-heading">
-        <strong>Nieuwste problemen</strong>
-    </div>
-    <div class="panel-body">
-        <div class="list-group" >
-            <a href="/melding/{{newProblem.id}}" class="list-group-item clearfix" ng-repeat="newProblem in newProblemList| filter : {type:'problem'} | filter: {status:'!closed'} | orderBy : 'created_at' : true |limitTo:3|filter:x as results" ng-click="clickIssues();alrCityCreate()">
-                <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
-                <strong> {{newProblem.title}}</strong> {{newProblem.location.full_address}}
-                <span class="pull-right">
-                    <button class="btn btn-xs btn-success" >
-                        <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
-                    </button>
-                </span>
-            </a>
         </div>
-    </div>  
-</div>
 
-<div class="panel side-panel panel-default" ng-hide="results2.length == 0|| newProblemList==null">
-    <div class="panel-heading" id="active-idea-widget">
-        <strong>Actieve Idee&euml;n</strong>
-    </div>
-    <div class="panel-body">
-        <div class="list-group">
-            <a href="/melding/{{newProblem.id}}" class="list-group-item clearfix" ng-repeat="newProblem in newProblemList| filter : {type:'idea'} | filter: {status:'!closed'} | orderBy : 'created_at' : true |limitTo:3|filter:x as results2" 
-               ng-click="clickIssues()">
-                <img class="icon" src="./img/icon_idea_2_21_21.png" size="20px"/>
-                <strong>{{newProblem.title}}</strong> {{newProblem.location.full_address}}
-                <span class="pull-right">
-                    <button class="btn btn-xs btn-success">
-                        <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
-                    </button>
-                </span>
-            </a>
+        <div class="panel side-panel panel-default" ng-hide="results2.length == 0|| newProblemList==null">
+            <div class="panel-heading" id="active-idea-widget">
+                <strong>Actieve Idee&euml;n</strong>
+            </div>
+            <div class="panel-body">
+                <div class="list-group">
+                    <a href="/melding/{{newProblem.id}}" class="list-group-item clearfix" ng-repeat="newProblem in newProblemList| filter : {type:'idea'} | filter: {status:'!closed'} | orderBy : 'created_at' : true |limitTo:3|filter:x as results2" 
+                       ng-click="clickIssues()">
+                        <img class="icon" src="./img/icon_idea_2_21_21.png" size="20px"/>
+                        <strong>{{newProblem.title}}</strong> {{newProblem.location.full_address}}
+                        <span class="pull-right">
+                            <button class="btn btn-xs btn-success">
+                                <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
+                            </button>
+                        </span>
+                    </a>
+                </div>
+            </div>  
         </div>
-    </div>  
-</div>
       </div>
 	    <!-- main container -->
 	    <div class="col-lg-6 main-container marginbottom">
@@ -97,13 +98,13 @@
                                   <input type="hidden" class="gllpLatitude" value="52.158367"/>
                                   <input type="hidden" class="gllpLongitude" value="4.492999"/>
                                   <input type="hidden" class="gllpZoom" value="12"/>
-                                  <input type="text" class="gllpLocationName noborder" id="location2" readonly size=30/>
-                                  <p class=" warning-text text-primary">Deze gemeente heeft niet aangegeven dat ze je melding in behandeling nemen binnen 4 weken</p>
+                                  <input type="text" class="gllpLocationName noborder" id="location2" readonly size="30"/>
+                                  <p class=" warning-text text-primary">Deze gemeente heeft niet aangegeven dat ze je melding in behandeling nemen binnen 4 weken.</p>
                                 </fieldset> 
                               </div>
                             </div>
                             <div class="panel-body">
-                                <h4 class="fontM">2. Beschrijf de melding</h4>
+                                <h4 class="fontM">2. Beschrijf je idee</h4>
                                 <div class="form-group">
             <h5 class="fontM" style="color:green; margin-right: 6px; margin-left: 6px;">Wij delen je idee met de gemeente &amp; met buurtbewoners. De ervaring leert dat de gemeente lang niet met alle idee&euml;n kan helpen, maar een goed verhaal en veel medestanders vergroot de kans wel.</h5>
                                 </div>
@@ -120,7 +121,7 @@
                                 <div class="form-group">
                                     <div class="col-sm-12 form-col" style="margin-bottom: 10px;" ng-class="{'has-error':errorRealization}">
                                         <!-- <input type="text" class="form-control" id="description" placeholder="Realisatie" ng-model="ideaRealization"> -->
-                                        <textarea class="form-control" rows="5" id="Onderwerp" placeholder="Wat is er nodig om je idee te realizeren?" ng-model="ideaRealization"></textarea>
+                                        <textarea class="form-control" rows="5" id="Onderwerp" placeholder="Wat is er nodig om je idee te realiseren?" ng-model="ideaRealization"></textarea>
                                     </div>
                                 </div>
                                 
