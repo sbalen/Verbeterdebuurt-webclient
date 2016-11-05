@@ -5,8 +5,8 @@ var vdbApp = angular.module('vdbApp', ['ngRoute', 'angularUtils.directives.dirPa
 // var LOGGING = false; 
 var LOGGING = true; 
 
-var PROTOCOL = "https";
-// var PROTOCOL = "http";
+// var PROTOCOL = "https";
+var PROTOCOL = "http";
 
 // var ROOT = "www.verbeterdebuurt.nl/";
 var ROOT = "staging.verbeterdebuurt.nl/";
