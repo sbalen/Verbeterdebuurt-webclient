@@ -16,6 +16,9 @@ var API_VERSION = "api.php/json_1_3/";
 var APIURL = PROTOCOL + "://" + ROOT + API_VERSION;
 
 
+var ISSUE_TYPE_PROBLEM = "problem";
+var ISSUE_TYPE_IDEA = "idea";
+
 var geocoder = new google.maps.Geocoder();
 var infoWindow = new google.maps.InfoWindow();
 var infoWindowContent = [];
@@ -268,8 +271,6 @@ function initMap() {
     };
 
     var mapObject = document.getElementById('googlemaps');
-    logger("initMap for object:");
-    logger(mapObject);
 
     map = new google.maps.Map(mapObject, mapOptions);
 }
@@ -382,115 +383,66 @@ function getLatLng(map) {
     
 }
 
-function googleMapIssue(lat, lng, type) {
-    var location = {
-        lat: lat,
-        lng: lng
-    };
-    var iconImg = "";
 
-    if (type === "problem") {
-        iconImg = "/img/icon_2_42_42.png";
-    } else if (type === "idea") {
-        iconImg = "/img/icon_idea_2_42_42.png";
-    }
-
-    var mapOption2 = {
-        center: location,
-        zoom: 18,
-        mapTypeId: google.maps.MapTypeId.ROADMAP,
-        styles: [
-            {
-                featureType: "poi",
-                elementType: "labels",
-                stylers: [
-                    {
-                        visibility: "off"
-                    }
-				        		]
-				    }
-			    ]
-
-    }
-    var markerOption2 = {
-        position: location,
-        icon: iconImg
-    }
-    var map2 = new google.maps.Map(document.getElementById("googleMapIssue"), mapOption2);
-    map2.setOptions({
+function initGoogleMapForCreateIssue(location,issueType) {
+    logger("initGoogleMapForCreateIssue(" + lat + "," + lng + "," + issueType +")");
+    var location = { lat: lat, lng: lng };
+    var iconImg = ( issueType === ISSUE_TYPE_PROBLEM ? "/img/icon_2_42_42.png" : "/img/icon_idea_2_42_42.png" ) ;
+    
+    var map = new google.maps.Map(document.getElementById("googleMapIssue"), {
         draggable: false,
         zoomControl: false,
         scrollwheel: false,
         disableDoubleClickZoom: true,
         streetViewControl: false,
-        disableDefaultUI: true
+        disableDefaultUI: true,
+        center: location,
+        zoom: 18,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        styles: [ { featureType: "poi", elementType: "labels", stylers: [ { visibility: "off" } ] } ]
     });
-    var marker = new google.maps.Marker(markerOption2);
-    marker.setMap(map2);
+    
+    (new google.maps.Marker({position: location,icon: iconImg})).setMap(map);    
+
 }
 
 function googleMapCreateProblem(latlng) {
-    var mapOption3 = {
-        center: latlng,
-        zoom: 17,
-        maxZoom: 19,
-        minZoom: 15,
-        mapTypeId: google.maps.MapTypeId.ROADMAP,
-        styles: [
-            {
-                featureType: "poi",
-                elementType: "labels",
-                stylers: [
-                    {
-                        visibility: "off"
-                    }
-				        		]
-            },
-            {
-                featureType: "transit.station",
-                stylers: [
-                    {
-                        visibility: "off"
-                    }
-                ]
-            }
-			    ]
-    }
-    map3 = new google.maps.Map(document.getElementById("googleMapCreateProblem"), mapOption3);
-    // var tempurl = window.location.pathname.replace('nieuw-probleem','');;
-    // // logger(tempurl);
-    // if(tempurl.includes('gemeente')){
-    //     var citytemp = tempurl.substring(tempurl.slice(0,tempurl.length-1).lastIndexOf('/')+1);
-    //     cityName = citytemp.substring(0,citytemp.length-1);
-    //     // logger(cityName);
-    //     geocodeAddress(geocoder, map3);
-    // }
-    marker = new google.maps.Marker();
-    marker.setMap(map3);
-    marker.setPosition(map3.getCenter());
-    marker.setOptions({
-        draggable: true,
-        icon: "/img/icon_2_42_42.png"
-    });
-    map3.setOptions({
+    logger("googleMapCreateProblem");
+    var issueType = ISSUE_TYPE_PROBLEM;
+    var mapOptions = {
         draggable: true,
         zoomControl: true,
         clickable: true,
         scrollwheel: false,
         disableDoubleClickZoom: true,
         streetViewControl: false,
-        disableDefaultUI: false
-    });
+        disableDefaultUI: false,
+        center: latlng,
+        zoom: 17,
+        maxZoom: 19,
+        minZoom: 15,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        styles: [ { featureType: "poi", elementType: "labels", stylers: [ {visibility: "off" }]},
+                  { featureType: "transit.station", stylers: [ { visibility: "off" } ] }
+			    ]
+    }
+    map3 = new google.maps.Map(document.getElementById(issueType == ISSUE_TYPE_PROBLEM ? "googleMapCreateProblem" : googleMapCreateIdea), mapOptions);
+
+    marker = new google.maps.Marker();
+    marker.setMap(map3);
+    marker.setPosition(map3.getCenter());
+    marker.setOptions({ draggable: true, icon: "/img/icon_2_42_42.png" });
+
     markerLat = marker.getPosition().lat();
     markerLng = marker.getPosition().lng();
     sycGoogleMap3(map3);
     markerCenter(map3, marker, "location");
     getMarkerLocation(marker);
-    markerGetAddress(marker, "location");
-    
+    markerGetAddress(marker, "location");    
 }
 
 function googleMapCreateIdea(latlng) {
+    logger("googleMapIssue");
     var mapOption4 = {
         center: latlng,
         zoom: 17,
@@ -761,16 +713,8 @@ function geocodeAddressCreateProblem(geocoder, resultsMap, address,location) {
                                         }  
                                     }
                                     document.getElementById(location).value = street + " " + the_street_number;
-
-                                    
-                                    
                                     break;
-                                }
-                                // if (result[0].address_components[i].types[b] == "street_number") {
-                                //     // street number
-                                //     street_number = result[0].address_components[i].short_name;
-                                //     break;
-                                // }
+                                }                             
                             }
                         }
                     }
@@ -932,47 +876,47 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
 
     $routeProvider
         .when('/', {
-            templateUrl: 'map.html',
+            templateUrl: 'main.html',
             controller: 'mainCtrl'
         })
         // .when('/:cityNameClone',{
-        // 	templateUrl: 'map.html',
+        // 	templateUrl: 'main.html',
         // 	controller : 'mainCtrl'
         // })
         .when('/gemeente/:cityName/', {
-            templateUrl: 'map.html',
+            templateUrl: 'main.html',
             controller: 'mainCtrl'
         })
         .when('/gemeente/:cityName/nieuwe-melding', {
-            templateUrl: 'selectproblem.html',
+            templateUrl: 'select_problem.html',
             controller: 'selectProblemCtrl'
         })
         .when('/gemeente/:cityName/nieuw-probleem', {
-            templateUrl: 'createissues.html',
-            controller: 'createissueCtrl'
+            templateUrl: 'create_problem.html',
+            controller: 'createProblemCtrl'
         })
         .when('/gemeente/:cityName/nieuw-idee', {
-            templateUrl: 'createIdea.html',
+            templateUrl: 'create_idea.html',
             controller: 'createIdeaCtrl'
         })
         .when('/gemeente/:cityName/:action?', {
-            templateUrl: 'map.html',
+            templateUrl: 'main.html',
             controller: 'mainCtrl'
         })
         .when('/plaats/:cityNameplaats/:nextaction?', {
-            templateUrl: 'map.html',
+            templateUrl: 'main.html',
             controller: 'mainCtrl'
         })
         .when('/postcode/:postalcode', {
-            templateUrl: 'map.html',
+            templateUrl: 'main.html',
             controller: 'mainCtrl'
         })
         .when('/postcode/:postalcode/:action?', {
-            templateUrl: 'map.html',
+            templateUrl: 'main.html',
             controller: 'mainCtrl'
         })
         .when('/melding/:id', {
-            templateUrl: 'issuesView.html',
+            templateUrl: 'issue_detail.html',
             controller: 'issuesCtrl'
         })
         .when('/mention', {
@@ -980,11 +924,11 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
             controller: 'mentionCtrl'
         })
         .when('/mijn-meldingen', {
-            templateUrl: 'myissues.html',
+            templateUrl: 'my_issues.html',
             controller: 'myIssuesCtrl'
         })
         .when('/mijn-meldingen/:id', {
-            templateUrl: 'myIssueDetail.html',
+            templateUrl: 'my_issue_detail.html',
             controller: 'myIssuesDetailCtrl'
         })
         .when('/login', {
@@ -997,27 +941,27 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
             templateUrl: 'ondernemingsdossier.html'
         })
         .when('/bevestiging-registratie', {
-            templateUrl: 'regisconf.html',
+            templateUrl: 'confirmation_register.html',
             controller: 'regisconfCtrl'
         })
         .when('/wachtwoord', {
-            templateUrl: 'forgotpass.html',
+            templateUrl: 'forgot_password.html',
             controller: 'forgotCtrl'
         })
         .when('/bevestiging-wachtwoord-vergeten', {
-            templateUrl: 'forgotconf.html',
-            controller: 'forgotconfCtrl'
+            templateUrl: 'confirmation_forgot_password.html',
+            controller: 'confirmationForgotPasswordCtrl'
         })
         .when('/nieuwe-melding', {
-            templateUrl: 'selectproblem.html',
+            templateUrl: 'select_problem.html',
             controller: 'selectProblemCtrl'
         })
         .when('/nieuw-probleem', {
-            templateUrl: 'createissues.html',
-            controller: 'createissueCtrl'
+            templateUrl: 'create_problem.html',
+            controller: 'createProblemCtrl'
         })
         .when('/nieuw-idee', {
-            templateUrl: 'createIdea.html',
+            templateUrl: 'create_idea.html',
             controller: 'createIdeaCtrl'
         })
         .when('/mijn-verbeterdebuurt', {
@@ -1026,7 +970,7 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
         })
         //success create issue
         .when('/bevestiging-nieuwe-melding', {
-            templateUrl: 'confirmation-createissue.html'
+            templateUrl: 'confirmation_create_issue.html'
         })
         //success delete issue
         .when('/bevestiging-verwijderen', {
@@ -1035,8 +979,8 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
     
         //handle the hash sessions
 
-    //confirm the vote
-    .when('/stem/bevestigen/:hashkey', {
+        //confirm the vote
+        .when('/stem/bevestigen/:hashkey', {
             templateUrl: 'confirmation.html',
             controller: 'confirmVoteCtrl',
             resolve: {
@@ -1049,7 +993,7 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
         //confirm the issue
         //melding/new/34811/45a608c242f9a1e1f1f1e019909d5ac7a1317d9f
         .when('/melding/bevestigen/hash/:hashkey', {
-            templateUrl: 'map.html',
+            templateUrl: 'main.html',
             controller: 'hashCtrl',
             resolve: {
                 targetAction: function ($rootScope) {
@@ -1061,7 +1005,7 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
         //delete the issue
         //melding/verwijderen/0c0cf551ffc5ade859457961cfbd54af505300f0
         .when('/melding/verwijderen/:hashkey', {
-            templateUrl: 'map.html',
+            templateUrl: 'main.html',
             controller: 'hashCtrl',
             resolve: {
                 targetAction: function ($rootScope) {
@@ -1073,7 +1017,7 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
         //resolve issue with no comment
         //melding/is-opgelost/e9db97963ab54a5a508455d9c43e7b842e865b62/methode/afwijzen
         .when('/melding/is-opgelost/:hashkey/methode/afwijzen', {
-            templateUrl: 'map.html',
+            templateUrl: 'main.html',
             controller: 'hashCtrl',
             resolve: {
                 targetAction: function ($rootScope) {
@@ -1085,7 +1029,7 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
         //resolve issue with comment yes
         ///melding/is-opgelost/e9db97963ab54a5a508455d9c43e7b842e865b62/methode/oplossen
         .when('/melding/is-opgelost/:hashkey/methode/oplossen', {
-            templateUrl: 'map.html',
+            templateUrl: 'main.html',
             controller: 'hashCtrl',
             resolve: {
                 targetAction: function ($rootScope) {
@@ -1097,7 +1041,7 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
         //close issue
         ///melding/afsluiten/8f83b0a2992c059248f5f938baa780739ec2952a
         .when('/melding/afsluiten/:hashkey', {
-            templateUrl: 'map.html',
+            templateUrl: 'main.html',
             controller: 'hashCtrl',
             resolve: {
                 targetAction: function ($rootScope) {
@@ -1110,7 +1054,7 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
         //remind issue
         ///melding/herinneren/8f83b0a2992c059248f5f938baa780739ec2952a
         .when('/melding/herinneren/:hashkey', {
-            templateUrl: 'map.html',
+            templateUrl: 'main.html',
             controller: 'hashCtrl',
             resolve: {
                 targetAction: function ($rootScope) {
@@ -1155,7 +1099,7 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
         })
         //pretty url for issue-detail
         .when('/:location/:title/:id', {
-            templateUrl: 'issuesView.html',
+            templateUrl: 'issue_detail.html',
             controller: 'issuesCtrl'
         })
         .when('/auth/:type', {
@@ -1167,11 +1111,11 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
         })
         //redirect city / postcode
         .when('/:cityNameClone', {
-            templateUrl: 'map.html',
+            templateUrl: 'main.html',
             controller: 'mainCtrl'
         })
         .when('/:cityNameClone/:nextaction?', {
-            templateUrl: 'map.html',
+            templateUrl: 'main.html',
             controller: 'mainCtrl'
         })
 
@@ -1813,7 +1757,8 @@ vdbApp.run(['$rootScope', '$window', function ($rootScope, $window) {
     }]);
 
 vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$rootScope', '$routeParams', '$http', 'issuesService', 'reportService', '$facebook', '$cacheFactory', 'agreementSevice', '$cookies','myIssuesService', function ($scope, $timeout, $window, $location, $rootScope, $routeParams, $http, issuesService, reportService, $facebook, $cacheFactory, agreementSevice, $cookies, myIssuesService) {
-    logger("mainCtrl is running")
+    logger("mainCtrl is running");
+    logger($routeParams);
     // //validate zoom at map
     // $timeout(function(){
     //      if($location.path()=='/'){
@@ -1854,7 +1799,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     //                        //geolocation found location
     //                        //SUPPORT GEOLOCATION
     $timeout(function () {
-       
+       logger("Am i running ater 3000 ? ");
         
         if (!$routeParams.cityName && !$routeParams.id && !$routeParams.postalcode && !$routeParams.hashkey) {
             
@@ -1956,13 +1901,14 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
                 }
             }
         } else {
+            logger("we have the url already");
             //so we have the url..
             geolocationValid = 1;
 
 
         }
         checkZoomLevel($rootScope);
-    }, 3000)
+    }, 3000);
 
 
     menuSelected($rootScope, 'home');
@@ -1995,6 +1941,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     
     
     $timeout(function () {
+        logger("i am running too fast?");
         var jsondata = JSON.stringify({
             "coords_criterium": {
                 "max_lat": maxlat,
@@ -2034,27 +1981,17 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     //promise for make asyncronise data factory to be syncronis first load
     if(!$routeParams.cityName){
         $timeout(function(){
-                 var jsoncity = JSON.stringify({
-                        "council": city.long_name
-                    });
-            var getReport = reportService.getReport(jsoncity).then(function (data) {
-                var getdata = data.data;
-                $rootScope.reportList = getdata.report;
+            logger("running to get report and agreement");
+            var jsoncity = JSON.stringify({"council": city.long_name });
+            reportService.getReport(jsoncity).then(function (data) { 
+                $rootScope.reportList = data.data.report; 
             });
 
-            var getAgreement = agreementSevice.getAgreement(jsoncity).then(function (data) {
-                var getdata = data.data;
-                $rootScope.agreement = getdata; logger(getdata);
-                $timeout(function () {
-                    if (!getdata.logo) {
-                        $rootScope.hideLogo = 1;
-                    } else {
-                        $rootScope.hideLogo = 0;
-                    }
-                })
-
+            agreementSevice.getAgreement(jsoncity).then(function (data) {
+                $rootScope.agreement = data.data;
+                $timeout(function () { $rootScope.hideLogo = !data.data.logo; });
             });
-            },3000)
+        },3500);
     }
     
    
@@ -2369,28 +2306,18 @@ vdbApp.controller('issuesCtrl', ['$scope', '$rootScope', '$window', '$routeParam
         $rootScope.problemIdList = getdata.issues;
          $rootScope.dynamicTitle = ''+getdata.issues[0].title+' |';
         $timeout(function(){
-        mainLat = getdata.issues[0].location.latitude;
-        mainLng = getdata.issues[0].location.longitude;
-        map.setCenter({ lat: mainLat,
-                        lng: mainLng});
-            
-
-        },1000)
+            mainLat = getdata.issues[0].location.latitude;
+            mainLng = getdata.issues[0].location.longitude;
+            map.setCenter({ lat: mainLat, lng: mainLng});
+        },1000);
         
-        lat=getdata.issues[0].location.latitude;
-        lng=getdata.issues[0].location.longitude;
+        lat = getdata.issues[0].location.latitude;
+        lng = getdata.issues[0].location.longitude;
         $scope.sateliteimg = "//maps.googleapis.com/maps/api/staticmap?center="+lat+","+lng+"&zoom=18&size=515x300&maptype=hybrid&format=jpg&key=AIzaSyCk3yxCifnV67hIJ2iyRupfH2iHvshna3I&markers=color:red%7C"+lat+","+lng+"&sensor=false";
-
-        
 
         $scope.hide = "";
         $rootScope.globaloverlay = "";
-        //                        var jsoncity = JSON.stringify({"council":""+getdata.issues[0].council+""});
-        // 		var getReport = reportService.getReport( jsoncity ).then(function (data){
-        // 		var getdata = data.data;
-        // 		$rootScope.reportList = getdata.report;
 
-        // });
         //close issue with hashcode
         if ($rootScope.targetAction === "close_issue") {
             $('#CloseModal').modal('show');
@@ -2904,11 +2831,8 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope', '$routeParams', '$http', '$ro
                 $timeout(function(){
                     mainLat = getdata.issues[i].location.latitude;
                     mainLng = getdata.issues[i].location.longitude;
-                    map.setCenter({ lat: mainLat,
-                                    lng: mainLng});
-                    
-                    
-                },1000)
+                    map.setCenter({ lat: mainLat, lng: mainLng});
+                },1000);
                 
                 var lat = getdata.issues[i].location.latitude;
                 var lng = getdata.issues[i].location.longitude;
@@ -3726,7 +3650,7 @@ vdbApp.controller('forgotCtrl', ['$scope', '$rootScope', '$window', 'forgotServi
 
 
 
-vdbApp.controller('forgotconfCtrl', ['$scope', '$rootScope', '$window', '$location', function ($scope, $rootScope, $window, $location) {
+vdbApp.controller('confirmationForgotPasswordCtrl', ['$scope', '$rootScope', '$window', '$location', function ($scope, $rootScope, $window, $location) {
     $rootScope.dynamicTitle = "Wachtwoord |";
     $scope.home = function () {
         $location.path('/');
@@ -4140,7 +4064,7 @@ vdbApp.controller('selectProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
      }
 }])
 
-vdbApp.controller('createissueCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', 'duplicateIssuesService', '$cookies', 'serviceStandardService','reportService','issuesService','agreementSevice','$routeParams', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, duplicateIssuesService, $cookies, serviceStandardService,reportService,issuesService,agreementSevice,$routeParams) {
+vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', 'duplicateIssuesService', '$cookies', 'serviceStandardService','reportService','issuesService','agreementSevice','$routeParams', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, duplicateIssuesService, $cookies, serviceStandardService,reportService,issuesService,agreementSevice,$routeParams) {
     $scope.privateMessageHide = false;
     if($location.path().includes('nieuwe-melding')){
         $rootScope.dynamicTitle = "Nieuw melding |";
@@ -4866,43 +4790,31 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
     //first initial
     $timeout(function () {
         if (latlngChange) {
-            if($routeParams.cityName && searchCreateTemp!=1){
-                    $window.cityName = $routeParams.cityName;
-                    // geocodeAddress(geocoder, map);
-                    searchCreateTemp=1;
-
-                }
+            if($routeParams.cityName && searchCreateTemp!=1) {
+                $window.cityName = $routeParams.cityName;
+                // geocodeAddress(geocoder, map);
+                searchCreateTemp=1;
+            }
             googleMapCreateIdea(latlngChange);
-            //google map auto compleate
-    googleautocomplete('searchCityProblem',map4);
+            googleautocomplete('searchCityProblem',map4);
             var latitude = markerLat;
-            var longitude = markerLng;
-            // var jsondataCity = JSON.stringify({latitude,longitude});
-            // var getCategories = categoriesService.getCategories( jsondataCity ).then(function (data){
-            // 	$scope.categoriesList = data.data.categories;
-            // });
-
+            var longitude = markerLng;           
         } else {
             latlngChange = {
                 lat: 52.158367,
                 lng: 4.492999
             };
-            if($routeParams.cityName && searchCreateTemp!=1){
-                    $window.cityName = $routeParams.cityName;
-                    geocodeAddress(geocoder, map);
-                    searchCreateTemp=1;
-
-                }
+            if($routeParams.cityName && searchCreateTemp!=1) {
+                $window.cityName = $routeParams.cityName;
+                geocodeAddress(geocoder, map);
+                searchCreateTemp=1;
+            }
             googleMapCreateIdea(latlngChange);
             //google map auto compleate
-    googleautocomplete('searchCityProblem',map4);
+            googleautocomplete('searchCityProblem',map4);
             latlngChange = null;
             var latitude = markerLat;
             var longitude = markerLng;
-            // var jsondataCity = JSON.stringify({latitude,longitude});
-            // var getCategories = categoriesService.getCategories( jsondataCity ).then(function (data){
-            // 	$scope.categoriesList = data.data.categories;
-            // });
         }
     }, 1500);
 
