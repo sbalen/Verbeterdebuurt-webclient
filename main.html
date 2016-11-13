@@ -1,116 +1,113 @@
-    
-<!-- body -->  
-    <div id="main-content" class="container">
-	    <!--  sidebar left -->
-      
-	    <div class="col-md-3 hidden-sm hidden-xs hidden-md">
-                    <div class="panel side-panel panel-default" id="new-problem-widget">
-                        <div class="panel-heading">
-                            <strong>Report</strong>
+
+                <!-- body -->  
+                <div id="main-content" class="container">
+                    <!--  sidebar left -->
+                    <div class="col-md-3 hidden-sm hidden-xs hidden-md">
+                        <div class="panel side-panel panel-default" id="new-problem-widget">
+                            <div class="panel-heading">
+                                <strong>Report</strong>
                         </div>
-            <div class="panel-body">
-                          <div class="list-group report-list-council" ng-hide="reportList.council == null || reportList.council == 'undefined' " >
-                            <strong>Gemeente: {{reportList.council}}</strong></br>
-                            {{agreement.agreement}}</strong></br></br>
-                            Meldingen per maand: {{reportList.reports}} </br>
-                            Oplossingen per maand: {{reportList.solutions}}
-                          </div>
+                        <div class="panel-body">
+                            <div class="list-group report-list-council" ng-hide="reportList.council == null || reportList.council == 'undefined' " >
+                                <strong>Gemeente: {{reportList.council}}</strong></br>
+                                {{agreement.agreement}}</strong></br></br>
+                                Meldingen per maand: {{reportList.reports}} </br>
+                                Oplossingen per maand: {{reportList.solutions}}
+                            </div>
                             <div class="list-group report-list-council"  ng-show="reportList.council == null || reportList.council == 'undifined' ">
-                             geen locatieinformatie gevonden
-                           </div>
-            </div>  
+                                geen locatieinformatie gevonden
+                            </div>
+                        </div>  
                     </div>
                     <div class="panel side-panel panel-default" id="new-problem-widget" ng-hide="results.length == 0 || newProblemList==null">
                         <div class="panel-heading">
                             <strong>Nieuwste problemen</strong>
                         </div>
-      			<div class="panel-body">
-
-                          <div class="list-group" >
-                              <a href="/melding/{{newProblem.id}}" class="list-group-item clearfix " ng-repeat="newProblem in newProblemList| filter : {type:'problem'} | filter: {status:'!closed'} | orderBy : 'created_at' : true|limitTo:3|filter:x as results" ng-click="clickIssues()">
-                              <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
-                              <strong> {{newProblem.title}}</strong> {{newProblem.location.full_address}}
-                              <span class="pull-right">
-                                <button class="btn btn-xs btn-success" >
-                                  <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
-                                </button>
-                              </span>
-                            </a>
-                          </div>
-            </div>  
-		                </div>
+                        <div class="panel-body">
+                            <div class="list-group" >
+                                <a href="/melding/{{newProblem.id}}" class="list-group-item clearfix " ng-repeat="newProblem in newProblemList| filter : {type:'problem'} | filter: {status:'!closed'} | orderBy : 'created_at' : true|limitTo:3|filter:x as results" ng-click="clickIssues()">
+                                    <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
+                                    <strong> {{newProblem.title}}</strong> {{newProblem.location.full_address}}
+                                    <span class="pull-right">
+                                        <button class="btn btn-xs btn-success" >
+                                            <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
+                                        </button>
+                                    </span>
+                                </a>
+                            </div>
+                        </div>  
+                    </div>
                     <div class="panel side-panel panel-default" ng-hide="results2.length == 0|| newProblemList==null">
                         <div class="panel-heading" id="active-idea-widget">
                             <strong>Actieve Idee&euml;n</strong>
                         </div>
-      			<div class="panel-body">
-                          <div class="list-group">
-                              <a href="/melding/{{newProblem.id}}" class="list-group-item clearfix" ng-repeat="newProblem in newProblemList| filter : {type:'idea'} | filter: {status:'!closed'} | orderBy : 'created_at' : true |limitTo:3|filter:x as results2" ng-click="clickIssues()">
-                              <img class="icon" src="./img/icon_idea_2_21_21.png" size="20px"/>
-                              <strong>{{newProblem.title}}</strong> {{newProblem.location.full_address}}
-                              <span class="pull-right">
-                                <button class="btn btn-xs btn-success">
-                                  <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
-                                </button>
-                              </span>
-                            </a>
-                          </div>
+                        <div class="panel-body">
+                            <div class="list-group">
+                                <a href="/melding/{{newProblem.id}}" class="list-group-item clearfix" ng-repeat="newProblem in newProblemList| filter : {type:'idea'} | filter: {status:'!closed'} | orderBy : 'created_at' : true |limitTo:3|filter:x as results2" ng-click="clickIssues()">
+                                    <img class="icon" src="./img/icon_idea_2_21_21.png" size="20px"/>
+                                    <strong>{{newProblem.title}}</strong> {{newProblem.location.full_address}}
+                                    <span class="pull-right">
+                                        <button class="btn btn-xs btn-success">
+                                            <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
+                                        </button>
+                                    </span>
+                                </a>
+                            </div>
                         </div>  
-            </div>
-            </div>
-	    <!-- main container -->
-	    <div class="col-lg-6 main-container">
-                    <!-- <div class="alert alert-warning" id="message-widget">
-                    Deze gemeente heeft nog niet aangegeven dat ze meedoen. Ze is natuurlijk wel verplicht om te reageren op binnenkomende meldingen.
-                    <i class="fa fa-flag"></i> 
-                    </div> -->
+                    </div>
+                </div>
+                <!-- main container -->
+                <div class="col-lg-6 main-container">
                     <div class="alert alert1 alert-warning fontM" id="message-widget" ng-show="agreement.success && agreement.agreement && zoom >= pinsVisibleZoom">
-                    {{agreement.agreement}}
-                    <i class="fa fa-flag"></i> 
+                        {{agreement.agreement}}
+                        <i class="fa fa-flag"></i> 
                     </div>
                     <div class="alert  alert-warning fontM" id="zoomedout-widget" ng-show="zoom < pinsVisibleZoom">
-                    Zoom in op de kaart om meldingen te zien.
-                    <i class="fa fa-flag"></i> 
+                        Zoom in op de kaart om meldingen te zien.
+                        <i class="fa fa-flag"></i> 
                     </div>
 
-	    </div>
-	    <!--  sidebar right -->
-	    <div class="col-lg-3">
-                <div class="input-group searchMap" id="search-widget">
-                                     <form ng-submit="clickSearch()">
-                                     <input type="text" class="form-control" placeholder="Zoek op adres" id="searchCity" ng-model="searchCity">
-                                     </form>
-                                     <span class="input-group-btn">
-                                        <button class="btn btn-primary" type="button" id="clickSearch" ng-click="clickSearch()"><span class="glyphicon glyphicon-search"></span><span class="hidden-xs">Zoeken</span></button>
-                                     </span>
-                                     
                 </div>
-	    </div>
+                
+                <!--  sidebar right -->
+                <div class="col-lg-3">
+                    <div class="input-group searchMap" id="search-widget">
+                        <form ng-submit="clickSearch()">
+                            <input type="text" class="form-control" placeholder="Zoek op adres" id="searchCity" ng-model="searchCity">
+                        </form>
+                        <span class="input-group-btn">
+                            <button class="btn btn-primary" type="button" id="clickSearch" ng-click="clickSearch()">
+                                <span class="glyphicon glyphicon-search"></span>
+                                <span class="hidden-xs">Zoeken</span>
+                            </button>
+                        </span>
+                    </div>
+                </div>
 
-      <div class="col-lg-3 right-panel hidden-sm hidden-xs hidden-md " ng-hide="results.length == 0 || myIssuesList == null ">
-        <div class="panel side-panel panel-default">
-                  <div class="panel-heading">
-                            <strong>Mijn Meldingen</strong>
-                        </div>
-                        <div class="panel-body">
-                          <div class="list-group" >
+                <div class="col-lg-3 right-panel hidden-sm hidden-xs hidden-md " ng-hide="results.length == 0 || myIssuesList == null ">
+                    <div class="panel side-panel panel-default">
+                        <div class="panel-heading">
+                        <strong>Mijn Meldingen</strong>
+                    </div>
+                    <div class="panel-body">
+                        <div class="list-group" >
                             <a href="/mijn-meldingen/{{myIssues.id}}" class="list-group-item clearfix" ng-repeat="myIssues in myIssuesList| orderBy : 'created_at' : true |limitTo:2  | filter : x as results" ng-click="clickIssues()">
-                              <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
-                              <strong> {{myIssues.title}}</strong> {{myIssues.location.full_address}}
-                              {{myIssues.status}}
-                              <span class="pull-right">
-                                <button class="btn btn-xs btn-success" >
-                                  <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
-                                </button>
-                              </span>
+                                <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
+                                <strong> {{myIssues.title}}</strong> {{myIssues.location.full_address}}
+                                {{myIssues.status}}
+                                <span class="pull-right">
+                                    <button class="btn btn-xs btn-success" >
+                                        <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
+                                    </button>
+                                </span>
                             </a>
-                              <a href="/mijn-meldingen" style="margin-left:17px;">Meer >>></a>
-                          </div>
-                        </div>  
-        </div>
-      </div>   
-    </div>	
-</body>
+                            <a href="/mijn-meldingen" style="margin-left:17px;">Meer >>></a>
+                        </div>
+                    </div>  
+                </div>
+            </div>   
+        </div>	
+    </body>
 </html>
 <!-- Page specific js -->
 <!-- <script src="./js/vdb-start.js"></script> -->

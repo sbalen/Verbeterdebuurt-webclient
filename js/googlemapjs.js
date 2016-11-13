@@ -1,107 +1,579 @@
-var PINS_VISIBLE_ZOOM = 14; //this is also in vdbangular.js, todo: how can we only have it once
+var ZOOM_PINS_VISIBLE = 14; //this is also in vdbangular.js, todo: how can we only have it once
+var ZOOM_START = 15;
+var ZOOM_MAX = 17;
+var ZOOM_MIN = 13;
+var ZOOM_START_MINI = 17;
+var ZOOM_MAX_MINI = 19;
+var ZOOM_MIN_MINI = 15;
+
+var LOCATION_DEFAULT_LAT = 52.371828;
+var LOCATION_DEFAULT_LNG = 4.902220;
+var LOCATION_DEFAULT = {lat: LOCATION_DEFAULT_LAT,lng: LOCATION_DEFAULT_LNG}
+var ZOOM_INIT = 8; //netherlands size
+
+var geocoder = new google.maps.Geocoder();
+var infoWindow = new google.maps.InfoWindow();
+var infoWindowContent = [];
+var latlngChange;
+var marker;
+var map;
+var postalcode = null;
+cityName=null;
+postalcode=null;
+maxlat  = null;
+maxlng  = null;
+minlat = null;
+minlng = null
+markers = null;
+markers = [];
+markerid = [];
+
+function checkZoomLevel($rootScope) {
+    logger("checkZoomLevel: " + map.getZoom());
+    $rootScope.pinsVisibleZoom = ZOOM_PINS_VISIBLE;
+    $rootScope.zoom = map.getZoom();
+}
+//get address
+function getaddressshow(latlng){
+    logger('getaddressshow');
+    geocoder.geocode({
+            'latLng': latlng
+    }, function (result, status) {
+        logger("geocode result");
+        if (status == google.maps.GeocoderStatus.OK) {
+            
+            var addressHolder = window.location.pathname.includes('nieuw-probleem') ? document.getElementById("location") : document.getElementById("location2");
+            updateAddressFromGeocodeResult(result,addressHolder);
+        }
+    });
+}
+
+//google map auto complete change string to make it by id
+
+function attachAutoCompleteListener(stringid,resultmap) {
+    logger("attachAutoCompleteListener " +stringid);
+    var input = document.getElementById(stringid);
+    //if input cannot be found yet, it's probably not loaded yet, so return doing nothing
+    if (input == undefined) return;
+
+    if (maxlat) {
+        var defaultBounds = new google.maps.LatLngBounds(
+            new google.maps.LatLng(maxlat,maxlng),
+            new google.maps.LatLng(minlat,minlng)
+        );
+    }
+    var options = {
+        componentRestrictions: {
+        country: 'nl'
+        },
+        bounds:defaultBounds,
+    };
+
+    autocomplete = new google.maps.places.Autocomplete(input, options);
+    autocomplete.bindTo('bounds',map);
+    // autocomplete.bindTo('bounds',map);
+    google.maps.event.addListener(autocomplete, 'place_changed', function() {
+        logger("google place changed");
+        autocomplete.bindTo('bounds',map);
+        var place = autocomplete.getPlace();
+        if (!place.geometry) {
+            logger('place_changed without geometry');
+            var tempurl = window.location.pathname;
+            if(tempurl.includes('nieuw-probleem')){
+                geocodeAddressCreateProblem(geocoder, map3, document.getElementById('searchCityProblem').value,"location");
+            } else if(tempurl.includes('nieuw-idee')) {
+                geocodeAddressCreateProblem(geocoder, map4, document.getElementById('searchCityProblem').value,"location2");
+            } else {
+                logger("where to move to here? -----!@#!@#!@#!@#!@#!!@#")
+                moveMapToAddress(cityName);
+            }
+          
+        } else if (place.geometry.viewport) {
+            logger('place_changed with geometry & viewport');
+            resultmap.fitBounds(place.geometry.viewport);
+            resultmap.setZoom(16);
+            latlngChange = {
+                lat: place.geometry.location.lat(),
+                lng: place.geometry.location.lng()
+            };
+            getaddressshow(latlngChange);
+            var tempurl = window.location.pathname;
+            if(tempurl.includes('nieuw-probleem')||tempurl.includes('nieuw-idee')) {
+                markerLat = place.geometry.location.lat()
+                markerLng = place.geometry.location.lng()
+                maxlat = map.getBounds().getNorthEast().lat();
+                maxlng = map.getBounds().getNorthEast().lng();
+                minlat = map.getBounds().getSouthWest().lat();
+                minlng = map.getBounds().getSouthWest().lng();
+                showIssuesOnMap();
+            }
+        } else {
+            logger('place_changed with geometry, but no viewport');
+            resultmap.setCenter(place.geometry.location);
+            resultmap.setZoom(17);  // Why 17? Because it looks good.
+            latlngChange = {
+                lat: place.geometry.location.lat(),
+                lng: place.geometry.location.lng()
+            };
+            getaddressshow(latlngChange);
+            var tempurl = window.location.pathname;
+            if(tempurl.includes('nieuw-probleem')||tempurl.includes('nieuw-idee')){
+                markerLat = place.geometry.location.lat()
+                markerLng = place.geometry.location.lng()
+                maxlat = map.getBounds().getNorthEast().lat();
+                maxlng = map.getBounds().getNorthEast().lng();
+                minlat = map.getBounds().getSouthWest().lat();
+                minlng = map.getBounds().getSouthWest().lng();
+                showIssuesOnMap();
+            }
+        }
+    });
+
+}
+
+function geocodeGetLocationFound(lat, lng) {
+    geocoder.geocode({ 'location': { 'lat': lat, 'lng': lng} }, function (result, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+            for (var i = 0; i < result[0].address_components.length; i++) {
+                for (var b = 0; b < result[0].address_components[i].types.length; b++) {
+                    //if you want the change the area ..
+                    if (result[0].address_components[i].types[b] == "administrative_area_level_2") {
+                        // name of city
+                        cityFound = result[0].address_components[i];
+                        logger(cityFound);
+                        break;
+                    }
+                }
+            }
+
+        }
+    });
+}
+
+function initMap() {
+    var mapOptions = {
+        zoom: ZOOM_INIT,
+        maxZoom: ZOOM_MAX,
+        minZoom: ZOOM_INIT,
+        scrollwheel: true,
+        zoomControl: true,
+        // initialize zoom level - the max value is 21
+        disableDefaultUI: true,
+        streetViewControl: false, // hide the yellow Street View pegman
+        /*scaleControl: false, // allow users to zoom the Google Map*/
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        center: this._map_center,
+        zoomControlOptions: { position: google.maps.ControlPosition.RIGHT_BOTTOM },
+        styles: [ { featureType: "poi", elementType: "labels", stylers: [{visibility: "off"}] },
+                  { featureType: "transit.station", stylers: [ { visibility: "off" } ] } ]
+    };
+
+    var mapObject = document.getElementById('googlemaps');
+
+    map = new google.maps.Map(mapObject, mapOptions);
+}
 
 
+function isScrollingAllowedForPathname() {
+    var pathname = window.location.pathname;
+
+    if (pathname.includes('nieuw-probleem')) return false;
+    if (pathname.includes('nieuw-idee')) return false;
+    if (pathname.includes('nieuwe-melding')) return false;
+
+    if (pathname=='/') return true;
+    if (pathname.includes('gemeente')) return true;
+
+    return false;
+}
+
+function determineMapScrollingAllowed() {
+    var scrollingAllowed = 
+      
+    map.setOptions({scrollwheel: isScrollingAllowedForPathname()});
+}
+
+//google map
+function googlemapinit () {
+    this._map_center = LOCATION_DEFAULT;    
+    initMap();
+    google.maps.event.addListener(map,'mouseover',determineMapScrollingAllowed);    
+    initMapListeners(map);
+    
+    $('#duplicate-bubble').hide();
+
+}
+
+
+function initGoogleMapForCreateIssue(location,issueType) {
+    logger("initGoogleMapForCreateIssue(" + lat + "," + lng + "," + issueType +")");
+    var location = { lat: lat, lng: lng };
+    var iconImg = ( issueType === ISSUE_TYPE_PROBLEM ? "/img/icon_2_42_42.png" : "/img/icon_idea_2_42_42.png" ) ;
+    
+    var map = new google.maps.Map(document.getElementById("googleMapIssue"), {
+        draggable: false,
+        zoomControl: false,
+        scrollwheel: false,
+        disableDoubleClickZoom: true,
+        streetViewControl: false,
+        disableDefaultUI: true,
+        center: location,
+        zoom: 18,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        styles: [ { featureType: "poi", elementType: "labels", stylers: [ { visibility: "off" } ] } ]
+    });
+    
+    (new google.maps.Marker({position: location,icon: iconImg})).setMap(map);    
+
+}
+
+function googleMapCreateProblem(latlng) {
+    logger("googleMapCreateProblem");
+    var issueType = ISSUE_TYPE_PROBLEM;
+    var mapOptions = {
+        draggable: true,
+        zoomControl: true,
+        clickable: true,
+        scrollwheel: false,
+        disableDoubleClickZoom: true,
+        streetViewControl: false,
+        disableDefaultUI: false,
+        center: latlng,
+        zoom: ZOOM_START_MINI,
+        maxZoom: ZOOM_MAX_MINI,
+        minZoom: ZOOM_MIN_MINI,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        styles: [ { featureType: "poi", elementType: "labels", stylers: [ {visibility: "off" }]},
+                  { featureType: "transit.station", stylers: [ { visibility: "off" } ] }
+                ]
+    }
+    map3 = new google.maps.Map(document.getElementById(issueType == ISSUE_TYPE_PROBLEM ? "googleMapCreateProblem" : googleMapCreateIdea), mapOptions);
+
+    marker = new google.maps.Marker();
+    marker.setMap(map3);
+    marker.setPosition(map3.getCenter());
+    marker.setOptions({ draggable: true, icon: "/img/icon_2_42_42.png" });
+
+    markerLat = marker.getPosition().lat();
+    markerLng = marker.getPosition().lng();
+    initMainMapToSmallMapListener(map3);
+    markerCenter(map3, marker, "location");
+    getMarkerLocation(marker);
+    markerGetAddress(marker, "location");    
+}
+
+function googleMapCreateIdea(latlng) {
+    logger("googleMapIssue");
+    var mapOption4 = {
+        center: latlng,
+        zoom: ZOOM_START_MINI,
+        maxZoom: ZOOM_MAX_MINI,
+        minZoom: ZOOM_MIN_MINI,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        styles: [ { featureType: "poi", elementType: "labels", stylers: [ {visibility: "off" }]},
+                  { featureType: "transit.station", stylers: [ { visibility: "off" } ] }
+                ]
+    }
+    map4 = new google.maps.Map(document.getElementById("googleMapCreateIdea"), mapOption4);
+    marker = new google.maps.Marker();
+    marker.setMap(map4);
+    marker.setPosition(map4.getCenter());
+    marker.setOptions({
+        draggable: true,
+        icon: "/img/icon_idea_2_42_42.png"
+    });
+    map4.setOptions({
+        draggable: true,
+        zoomControl: true,
+        scrollwheel: false,
+        disableDoubleClickZoom: true,
+        streetViewControl: false,
+        disableDefaultUI: false,
+    });
+    markerLat = marker.getPosition().lat();
+    markerLng = marker.getPosition().lng();
+    initMainMapToSmallMapListener(map4);
+    markerCenter(map4, marker, "location2");
+    getMarkerLocation(marker);
+    markerGetAddress(marker, "location2");
+    var tempurl = window.location.pathname.replace('nieuw-idee','');
+}
+
+
+
+function initMainMapToSmallMapListener(smallMap) {
+    //mainmap = global map
+    google.maps.event.addListener(smallMap, 'bounds_changed', function (e) {
+        google.maps.event.trigger(smallMap, 'resize')
+        map.setCenter(smallMap.getCenter());
+        map.setZoom(smallMap.getZoom());
+    });
+
+}
+
+
+//marker at center
+function markerCenter(map, marker, location) {
+    var addressDelay;
+    marker.setPosition(map.getCenter());
+    markerLat = marker.getPosition().lat();
+    markerLng = marker.getPosition().lng();
+    geocoder.geocode({
+        'latLng': marker.getPosition()
+    }, function (result, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+            updateAddressFromGeocodeResult(result,location);
+        }
+    });
+
+    google.maps.event.addListener(map, 'click', function (e) {
+        clearTimeout(addressDelay);
+        marker.setPosition(e.latLng);
+        // logger(e.latLng);
+        markerLat = marker.getPosition().lat();
+        markerLng = marker.getPosition().lng();
+        geocoder.geocode({
+            'latLng': e.latLng
+        }, function (result, status) {
+            // logger(status);
+            if (status == google.maps.GeocoderStatus.OK) {
+               updateAddressFromGeocodeResult(result,location);
+            } else {
+                //prevent not show address
+                if(status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
+                    addressDelay = setTimeout(function(){
+                        // logger("timeout work");
+                        geocoder.geocode({ 'latLng': e.latLng }, function (result, status) {            
+                            if (status == google.maps.GeocoderStatus.OK) {
+                               updateAddressFromGeocodeResult(result,location);
+                            }
+                        });
+                    },2000);
+                }
+            }
+        });
+    }); 
+
+}
+//get location marker
+function getMarkerLocation(marker) {
+    google.maps.event.addListener(marker, 'dragend', function (e) {
+        markerLat = marker.getPosition().lat();
+        markerLng = marker.getPosition().lng();
+    });
+}
+// get location search at create issue
+function geocodeAddressCreateProblem(geocoder, resultsMap, address,location) {
+    var address = document.getElementById('searchCityProblem').value;
+    geocoder.geocode({
+        'address': address,componentRestrictions: {country: 'nl'}
+    }, function (results, status) {
+        if (status === google.maps.GeocoderStatus.OK) {
+            resultsMap.setCenter(results[0].geometry.location);
+            marker.setPosition(resultsMap.getCenter());
+            markerLat = resultsMap.getCenter().lat();
+            markerLng = resultsMap.getCenter().lng();
+            latlngChange = {
+                lat: results[0].geometry.location.lat(),
+                lng: results[0].geometry.location.lng()
+            };
+            maxlat = map.getBounds().getNorthEast().lat();
+            maxlng = map.getBounds().getNorthEast().lng();
+            minlat = map.getBounds().getSouthWest().lat();
+            minlng = map.getBounds().getSouthWest().lng();
+            showIssuesOnMap();
+            //get address after search
+            geocoder.geocode({'latLng': results[0].geometry.location}, function (result, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    updateAddressFromGeocodeResult(result,location);
+                }
+            });
+
+        }
+    });
+}
+
+function markerGetAddress(marker, location) {
+    logger("markerGetAdress");
+    //first time load
+    var addressDelay;
+    google.maps.event.addListener(marker, 'dragend', function (e) {
+        clearTimeout(addressDelay);
+        geocoder.geocode({
+            'latLng': marker.getPosition()
+        }, function (result, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                updateAddressFromGeocodeResult(result,location);
+            } else {
+                if(status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
+                    addressDelay = setTimeout(function() {
+                        geocoder.geocode({ 'latLng': e.latLng }, function (result, status) {
+                            if (status == google.maps.GeocoderStatus.OK) {
+                                updateAddressFromGeocodeResult(result,location);
+                            }
+                        });
+                    },2000);
+                }
+            }
+        });
+      
+        
+    });
+}
 
 function updateCityFromGeocodeResult(result) {
     logger("googlemaps.js.updateCityFromGeocodeResult");
-    if (status == google.maps.GeocoderStatus.OK){
-        for (var i=0; i<result[0].address_components.length; i++) {
-            for (var b=0;b<result[0].address_components[i].types.length;b++) {
-                //if you want the change the area ..
-                if (result[0].address_components[i].types[b] == "administrative_area_level_2") {
-                    // name of city
-                    city = result[0].address_components[i];
-                    break;
-                }
+    if (result == undefined) return;
+
+    for (var i=0; i<result[0].address_components.length; i++) {
+        for (var b=0;b<result[0].address_components[i].types.length;b++) {
+            //if you want the change the area ..
+            if (result[0].address_components[i].types[b] == "administrative_area_level_2") {
+                // name of city
+                city = result[0].address_components[i];
+                break;
             }
         }
     }
 }
 
-function handleMapChanged(e) {
+function updateAddressFromGeocodeResult(result,addressHolder) {
+    logger("googlemaps.js.updateAddressFromGeocodeResult("+result+","+addressHolder+")");
+    if (result == undefined) return;
+    var addressHolder = (typeof addressHolder === 'string' || addressHolder instanceof String) ? document.getElementById(addressHolder) : addressHolder;
+    for (var i = 0; i < result[0].address_components.length; i++) {
+        for (var b = 0; b < result[0].address_components[i].types.length; b++) {
+            //if you want the change the area ..
+            if (result[0].address_components[i].types[b] == "route") {
+                // street name
+                var street = result[0].address_components[i].short_name;
+                var the_street_number = "";
+                for(var c = 0; c < result[0].address_components.length; c++){
+                    for (var d = 0; d < result[0].address_components[c].types.length; d++) {
+                        if (result[0].address_components[c].types[d] == "street_number") {
+                            the_street_number = result[0].address_components[c].short_name;
+                        }
+                        break;
+                    }  
+                }
+                addressHolder.value = street + " " + the_street_number;
+                break;
+            }
+        }
+    }
+
+}
+
+
+// function updateLatLong(e) {
+//     latlngChange = map.getCenter();
+// }
+
+// function getLatLng(map) {
+//     google.maps.event.addListener(map, 'drag', updateLatLong);
+//     google.maps.event.addListener(map, 'click', updateLatLong);
+//     google.maps.event.addListener(map, 'mouseover', updateLatLong);
+// }
+
+
+function handleMapChanged() {
     logger("googlemaps.js.handleMapChanged");
     google.maps.event.trigger(map,'resize');
     maxlat  = map.getBounds().getNorthEast().lat();
     maxlng  = map.getBounds().getNorthEast().lng();
     minlat = map.getBounds().getSouthWest().lat();
     minlng = map.getBounds().getSouthWest().lng();
+    latlngChange = map.getCenter();
     geocoder.geocode({'latLng': map.getCenter()} , function (result , status) {
         sendLatitude = map.getCenter().lng();
         sendLongitude = map.getCenter().lat();
-        updateCityFromGeocodeResult(result);
+        if (status == google.maps.GeocoderStatus.OK) {
+            updateCityFromGeocodeResult(result);
+        }
     });
+
+
 }
 
-function getLocation(map) { 
-    logger("getLocation, which means 'initMapListeners'");
+function initMapListeners(map) { 
+    logger("initMapListeners");
     var infoWindow = new google.maps.InfoWindow();
     var infoWindowContent = []; 
 
     // get the data from center of map
-
     google.maps.event.addListener(map, 'dragend', handleMapChanged);
 
-    google.maps.event.addListener(map, 'zoom_changed', handleMapChanged);
+    //this triggers while dragging, not necessary if dragend really does it's work
+    //google.maps.event.addListener(map, 'zoom_changed', handleMapChanged);
 
     google.maps.event.addListener(map, 'click', handleMapChanged);
 
+//    google.maps.event.addListener(map,'bounds_changed', handleMapChanged);
+
 }
 
-function geocodeAddress(geocoder, resultsMap) {
-    var address = null;
-    if(cityName!=null){
-        var address = cityName;
-    }
-    else if(postalcode!=null){
-        var address = postalcode;
-    }
-    else if(document.getElementById('searchCity').value){
-        var address = document.getElementById('searchCity').value;
-    }
-    
-    geocoder.geocode({'address': address,componentRestrictions: {country: 'nl'}}, function(results, status) {
-        logger("geocodeAddress");
-        if (status === google.maps.GeocoderStatus.OK) {
-            resultsMap.setCenter(results[0].geometry.location);
-            resultsMap.fitBounds(results[0].geometry.bounds);            
-            maxlat  = resultsMap.getBounds().getNorthEast().lat();
-            maxlng  = resultsMap.getBounds().getNorthEast().lng();
-            minlat = resultsMap.getBounds().getSouthWest().lat();
-            minlng = resultsMap.getBounds().getSouthWest().lng();
-            latlngChange = { lat: results[0].geometry.location.lat(),lng: results[0].geometry.location.lng() };
-            citynamegoogle= {};
-            citynamegoogle.long_name = null;
-            for (var i=0; i<results[0].address_components.length; i++) {
-                for (var b=0;b<results[0].address_components[i].types.length;b++) {
-                    //if you want the change the area ..
-                    if (results[0].address_components[i].types[b] == "administrative_area_level_2") {
-                        // name of city
-                        citynamegoogle = results[0].address_components[i];
-                        break;
-                    }
+function moveMapToBrowserLocation(withFallBack) {
+    logger("moveMapToBrowserLocation()");
+    navigator.geolocation.getCurrentPosition(
+        //when user accept the location
+        function (position) {
+            logger("user accepted location awareness");
+            moveMapToLocation({lat: position.coords.latitude,lng:  position.coords.longitude});
+        },
+        //when user did not share location
+        function (error) {
+            logger("user did not accept location awareness");
+            if (error.PERMISSION_DENIED) {               
+                if (withFallBack) {
+                    moveMapToUserLocation(true);
                 }
-            }   
+            }
         }
-        address = null;
-        postalcode = null;
-        cityName = null;
-    });
+    )
 }
 
-function showIssue(infoWindow,infoWindowContent) {
-    var zoom = map.getZoom();
-    if(zoom >= PINS_VISIBLE_ZOOM) {
-        callMarker(markers,zoom,map);
+function moveMapToLocation(location) {
+    logger("moveMapToLocation("+location.lat+","+location.lng+")");
+    map.setCenter(location);
+    handleMapChanged();
+}
+
+function moveMapToDefaultLocation() {
+    moveMapToLocation(LOCATION_DEFAULT);
+}
+
+function moveMapToUserLocation(withFallBack) {
+    if (user && userProfile) {
+        moveMapToAddress(userProfile.postcode);
+    } else if (withFallBack) {
+        moveMapToDefaultLocation();
     }
-    google.maps.event.addListener(map, 'zoom_changed', function() {
-        var zoom = map.getZoom();
-        callMarker(markers,zoom,map);
-    });
-
 }
 
-function callMarker (markers,zoom,map) {
-    if(zoom < PINS_VISIBLE_ZOOM) {
+function moveMapToAddress(address, withFallBack) {    
+    logger("moveMapToAddress(" + address + "," + withFallBack +")");
+    geocoder.geocode({'address': address,componentRestrictions: {country: 'nl'}}, function(results, status) {
+        logger("geocodeAddress " + address);
+        if (status === google.maps.GeocoderStatus.OK) {
+            map.setCenter(results[0].geometry.location);
+            map.fitBounds(results[0].geometry.bounds);                        
+        } else if (withFallBack) {            
+
+            moveMapToBrowserLocation(true); 
+        }
+    });
+}
+
+function showIssuesOnMap() {
+    repaintMarkers();
+//    google.maps.event.addListener(map, 'zoom_changed', repaintMarkers);
+}
+
+function repaintMarkers () {
+    logger("repaintMarkers");
+    var zoom = map.getZoom();
+
+    if(zoom < ZOOM_PINS_VISIBLE) {
         for(var x=0 ; x< markerid.length ; x++) {
             markers[markerid[x]].setMap(null);
             markers[markerid[x]]=null;
