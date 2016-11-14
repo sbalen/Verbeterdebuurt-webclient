@@ -138,6 +138,7 @@ function getaddressshow(latlng){
 function attachAutoCompleteListener(stringid,resultmap) {
     logger("attachAutoCompleteListener " +stringid);
     var input = document.getElementById(stringid);
+    
     //if input cannot be found yet, it's probably not loaded yet, so return doing nothing
     if (input == undefined) return;
 
