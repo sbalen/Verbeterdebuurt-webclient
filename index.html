@@ -1,226 +1,210 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="vdbApp" >
-<head>
-    <title>{{dynamicTitle}} Verbeterdebuurt</title>
-    <!--META-->
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="title" content="Verbeterdebuurt">
-    <meta name="description" content="Op verbeterdebuurt.nl werken bewoners samen aan het verbeteren van hun buurten. Er kunnen problemen en ideeen worden geplaatst die worden doorgestuurd naar gemeente of stadsdeel. Zodat de buurt wordt verbeterd!">
-    <meta name="keywords" content="meldingen openbare ruimte, eparticipatie, idee, probleem, buurt, google maps, ideeen, problemen, wijk, stad, dorp, straat, afval, parkeren, groen, verlichting, veiligheid, bestrating, verkeer, overlast, burgerinitiatief, krachtwijken, vogelaarwijken, wijkpunt">
-    <meta name="robots" content="index, follow" />
-    <meta name="google-site-verification" content="beGZrRqprwpbGBDu-7NhQLUWr9-oi9xU0OBxcYoZXZE" />
-    
-    <meta property="og:site-name" content="Verbeterdebuurt">
-    <meta property="og:title" content="Doe mee en draag bij aan een verbeterde buurt!">
-    <meta property="og:description" content="Op verbeterdebuurt.nl werken bewoners samen aan het verbeteren van hun buurten. Er kunnen problemen en ideeen worden geplaatst die worden doorgestuurd naar gemeente of stadsdeel. Zodat de buurt wordt verbeterd!">
-    <meta property="og:url" content="http://www.verbeterdebuurt.nl/">
-    <meta property="og:image" content="http://www.verbeterdebuurt.nl/images/fb_image.png">		
-    
-   <!--  <meta property="og:site-name" content="Verbeterdebuurt">
-    <meta property="og:title" content="{{metaTitle}}">
-    <meta property="og:description" content="{{metaDescription}}">
-    <meta property="og:url" content="{{metaUrl}}">
-    <meta property="og:image" content="http://www.verbeterdebuurt.nl/images/fb_image.png">   -->
+    <head>
+        <title>{{dynamicTitle}} Verbeterdebuurt</title>
+        <!--META-->
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="title" content="Verbeterdebuurt">
+        <meta name="description" content="Op verbeterdebuurt.nl werken bewoners samen aan het verbeteren van hun buurten. Er kunnen problemen en ideeen worden geplaatst die worden doorgestuurd naar gemeente of stadsdeel. Zodat de buurt wordt verbeterd!">
+        <meta name="keywords" content="meldingen openbare ruimte, eparticipatie, idee, probleem, buurt, google maps, ideeen, problemen, wijk, stad, dorp, straat, afval, parkeren, groen, verlichting, veiligheid, bestrating, verkeer, overlast, burgerinitiatief, krachtwijken, vogelaarwijken, wijkpunt">
+        <meta name="robots" content="index, follow" />
+        <meta name="google-site-verification" content="beGZrRqprwpbGBDu-7NhQLUWr9-oi9xU0OBxcYoZXZE" />
+        
+        <meta property="og:site-name" content="Verbeterdebuurt">
+        <meta property="og:title" content="Doe mee en draag bij aan een verbeterde buurt!">
+        <meta property="og:description" content="Op verbeterdebuurt.nl werken bewoners samen aan het verbeteren van hun buurten. Er kunnen problemen en ideeen worden geplaatst die worden doorgestuurd naar gemeente of stadsdeel. Zodat de buurt wordt verbeterd!">
+        <meta property="og:url" content="http://www.verbeterdebuurt.nl/">
+        <meta property="og:image" content="http://www.verbeterdebuurt.nl/images/fb_image.png">		
+        
+       <!--  <meta property="og:site-name" content="Verbeterdebuurt">
+        <meta property="og:title" content="{{metaTitle}}">
+        <meta property="og:description" content="{{metaDescription}}">
+        <meta property="og:url" content="{{metaUrl}}">
+        <meta property="og:image" content="http://www.verbeterdebuurt.nl/images/fb_image.png">   -->
 
-    <!-- //smartbanner -->
-    <meta name="apple-itunes-app" content="app-id=398177951">
-    <!-- <meta name="apple-itunes-app" content="app-id=553834731"> -->
-    <meta name="google-play-app" content="app-id=nl.verbeterdebuurt">
-    <link rel="stylesheet" href="/node_modules/smartbanner/jquery.smartbanner.css" type="text/css" media="screen">
+        <!-- //smartbanner -->
+        <meta name="apple-itunes-app" content="app-id=398177951">
+        <!-- <meta name="apple-itunes-app" content="app-id=553834731"> -->
+        <meta name="google-play-app" content="app-id=nl.verbeterdebuurt">
+        <link rel="stylesheet" href="/node_modules/smartbanner/jquery.smartbanner.css" type="text/css" media="screen">
 
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
-    <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
+        <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
 
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!--FONTS-->
-    <link href='//fonts.googleapis.com/css?family=Merriweather:400,400italic,700' rel='stylesheet' type='text/css'>
-    <link href='//fonts.googleapis.com/css?family=Lato:400,400italic,700,700italic' rel='stylesheet' type='text/css'>
-    <link href='//fonts.googleapis.com/css?family=Raleway:400,500' rel='stylesheet' type='text/css'>
-    <!--STYLESHEET -->
-    <!--link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"-->
-    <link rel="stylesheet" href="/css/app.css">
-    <link href="/css/star-rating.css" media="all" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="/css/vdb.css">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!--FONTS-->
+        <link href='//fonts.googleapis.com/css?family=Merriweather:400,400italic,700' rel='stylesheet' type='text/css'>
+        <link href='//fonts.googleapis.com/css?family=Lato:400,400italic,700,700italic' rel='stylesheet' type='text/css'>
+        <link href='//fonts.googleapis.com/css?family=Raleway:400,500' rel='stylesheet' type='text/css'>
+        <!--STYLESHEET -->
+        <!--link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"-->
+        <link rel="stylesheet" href="/css/app.css">
+        <link href="/css/star-rating.css" media="all" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" type="text/css" href="/css/vdb.css">
 
-    <!--SCRIPTS-->
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+        <!--SCRIPTS-->
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
-    <!--Angular-->
-    
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.js" ></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular-resource.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0rc1/angular-route.min.js"></script>
-    <script src="//code.angularjs.org/1.5.0/angular-route.js" ></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-cookies.min.js" ></script>
-    <base href="/">
-    <!--Loading Animation-->
-    <script src="/node_modules/spin.js/spin.js"></script>
-    <script src="/node_modules/angular-spinner/angular-spinner.js"></script>
-    <!--Paging Script -->
-    <script src="/node_modules/angular-utils-pagination/dirPagination.js"></script>
-    <!--PAGE SPECIFIC SCRIPTS -->
-    <script src="//maps.googleapis.com/maps/api/js?libraries=places&region=nl&sensor=false"></script>
-    <!--FACEBOOK CONNECT -->
-    <script src="/js/ngFacebook.js"></script>
-    <!--base64-->
-    <script src="/js/angular-base64-upload.js"></script>
-    <!--slider-->
-    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/jquery.slick/1.6.0/slick.css"/>
-    <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.slick/1.6.0/slick.min.js"></script>    
-    
-    
-    <!-- analytics -->
-    <script src="/js/angulartics.js"></script>
-    <script src="/js/angulartics-ga.js"></script>
-</head>
-<body ng-controller="mainCtrl" >
-    <div id="app-container">
+        <!--Angular-->
+        
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.js" ></script>
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular-resource.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0rc1/angular-route.min.js"></script>
+        <script src="//code.angularjs.org/1.5.0/angular-route.js" ></script>
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-cookies.min.js" ></script>
+        <base href="/">
+        <!--Loading Animation-->
+        <script src="/node_modules/spin.js/spin.js"></script>
+        <script src="/node_modules/angular-spinner/angular-spinner.js"></script>
+        <!--Paging Script -->
+        <script src="/node_modules/angular-utils-pagination/dirPagination.js"></script>
+        <!--PAGE SPECIFIC SCRIPTS -->
+        <script src="//maps.googleapis.com/maps/api/js?libraries=places&region=nl&sensor=false"></script>
+        <!--FACEBOOK CONNECT -->
+        <script src="/js/ngFacebook.js"></script>
+        <!--base64-->
+        <script src="/js/angular-base64-upload.js"></script>
+        <!--slider-->
+        <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/jquery.slick/1.6.0/slick.css"/>
+        <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.slick/1.6.0/slick.min.js"></script>    
         
         
-        <!-- map div on the background -->
-        <div id="background">
-            <div id="googlemaps" class="city" ng-click="alrCity()" ></div>
-        </div>
-        <input type="hidden" id="city"/>
+        <!-- analytics -->
+        <script src="/js/angulartics.js"></script>
+        <script src="/js/angulartics-ga.js"></script>
+    </head>
+    <body ng-controller="mainCtrl as mainController" >
+        <div id="app-container">
+            <!-- map div on the background -->
+            <div id="background">
+                <div id="googlemaps" class="city"></div>
+            </div>
+            <input type="hidden" id="city"/>
 
-        <!-- navigation -->
-        <nav id="navtop" class="navbar navbar-default">
-            <div class="container-fluid">
+            <!-- navigation -->
+            <nav id="navtop" class="navbar navbar-default">
+                <div class="container-fluid">
 
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#Navbar">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span> 
-                    </button>
-                    
-                    <a class="navbar-brand" ng-hide="agreement.logo == '' || agreement.logo == undefined"><img src="{{agreement.logo}}"  class="citylogo mcitylogo"></a>
-                    <a class="navbar-brand" href="/"><img  src="/img/Verbeterdebuurt-logo.png" class="vdblogo mvdblogo"></a>
-                    
-                </div>
-                <div class="collapse navbar-collapse" id="Navbar" data-toggle="collapse">
-                    <ul class="nav navbar-nav hidden-lg hidden-sm hidden-md"> 
-                        <li class="divider-vertical"></li>
-                        <li class="{{homeSelected}}"><a href="/" data-toggle="collapse"
-                            data-target=".navbar-collapse">Kaart</a></li>
-                        <li class="divider-vertical"></li>
-                        <li class="{{mentionSelected}}"><a href="nieuwe-melding" 
-                            data-toggle="collapse" data-target=".navbar-collapse">Melding maken</a></li>
-                        <li class="divider-vertical"></li>
-                        <li class="{{myIssuesSelected}}"><a href="mijn-meldingen" 
-                            data-toggle="collapse" data-target=".navbar-collapse">Mijn meldingen</a></li>  
-                        <li class="divider-vertical"></li>
-                    </ul>
-                    <ul class="nav navbar-nav navbar-right" ng-if="!loginStatus()">
-                        <li><a href="registreren" data-toggle="collapse" data-target=".navbar-collapse"><span class="glyphicon glyphicon-user"></span> Registreren</a></li>
-                        <li><a href="login" data-toggle="collapse" data-target=".navbar-collapse"><span class="glyphicon glyphicon-log-in"></span> Inloggen</a></li>
-                    </ul>
-                    <div class="nav navbar-nav navbar-right">
-                        <button id="userpanelbtn" class="btn1 btn-default1 dropdown-toggle navbar-right " ng-click="showuserpanel()" ng-if="loginStatus()" type="button" data-toggle="dropdown">
-                            <span class="username-display">{{lusername}}</span>
-                            
-                            <span class="caret" ></span>
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#Navbar">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span> 
                         </button>
-                        <ul ng-show="userpanel" class="dropdown-menu  navbar-right" style="margin-right: 24px;margin-top: -5px;">
-                            <li><a href="mijn-verbeterdebuurt" style="color: white;" 
-                            data-toggle="collapse" data-target=".navbar-collapse" >Profiel</a></li>
-                            <li><a href="#" style="color: white;" ng-click="logout()"
-                            data-toggle="collapse" data-target=".navbar-collapse">Log out</a></li>    
+                        
+                        <a class="navbar-brand" ng-hide="agreement.logo == '' || agreement.logo == undefined"><img src="{{agreement.logo}}"  class="citylogo mcitylogo"></a>
+                        <a class="navbar-brand" href="/"><img  src="/img/Verbeterdebuurt-logo.png" class="vdblogo mvdblogo"></a>
+                        
+                    </div>
+                    <div class="collapse navbar-collapse" id="Navbar" data-toggle="collapse">
+                        <ul class="nav navbar-nav navbar-right" ng-if="!loginStatus()">
+                            <li><a href="registreren" data-toggle="collapse" data-target=".navbar-collapse"><span class="glyphicon glyphicon-user"></span> Registreren</a></li>
+                            <li><a href="login" data-toggle="collapse" data-target=".navbar-collapse"><span class="glyphicon glyphicon-log-in"></span> Inloggen</a></li>
                         </ul>
-                    
+                        <div class="nav navbar-nav navbar-right">
+                            <button id="userpanelbtn" class="btn1 btn-default1 dropdown-toggle navbar-right " ng-click="showuserpanel()" ng-if="loginStatus()" type="button" data-toggle="dropdown">
+                                <span class="username-display">{{lusername}}</span>
+                                
+                                <span class="caret" ></span>
+                            </button>
+                            <ul ng-show="userpanel" class="dropdown-menu  navbar-right" style="margin-right: 24px;margin-top: -5px;">
+                                <li><a href="mijn-verbeterdebuurt" style="color: white;" 
+                                data-toggle="collapse" data-target=".navbar-collapse" >Profiel</a></li>
+                                <li><a href="#" style="color: white;" ng-click="logout()"
+                                data-toggle="collapse" data-target=".navbar-collapse">Log out</a></li>    
+                            </ul>
+                        
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            
+
+            <!-- SubNavigation -->
+            <div class="navbar subnav hidden-xs" role="navigation">
+                <div class="navbar-inner">
+                    <div class="container"> 
+                        <ul class="pager subnav-pager"> 
+                            <div class="btn-group-wrap btn-group">
+                                <button type="button" id="map-button" class="{{homeSelected}} btn sub-nav-btn" ng-click="clickMenu('')">Kaart</button>
+                                <button type="button" id="new-button" class="{{mentionSelected}} btn sub-nav-btn" ng-click="clickMenu('createissue')">Melding maken</button>
+                                <button type="button" id="my-button" class="{{myIssuesSelected}} btn sub-nav-btn" ng-click="clickMenu('myissues')">Mijn meldingen</button>
+                             </div>         
+                        </ul>   
                     </div>
                 </div>
             </div>
-        </nav>
-        
 
-        <!-- SubNavigation -->
-        <div class="navbar subnav hidden-xs" role="navigation">
-            <div class="navbar-inner">
-                <div class="container"> 
-                    <ul class="pager subnav-pager"> 
-                        <div class="btn-group-wrap btn-group">
-                           <button type="button" id="map-button" class="{{homeSelected}} btn sub-nav-btn" ng-click="clickMenu('')">Kaart</button>
-                           <button type="button" id="new-button" class="{{mentionSelected}} btn sub-nav-btn" ng-click="clickMenu('createissue')">Melding maken</button>
-                            <button type="button" id="my-button" class="{{myIssuesSelected}} btn sub-nav-btn" ng-click="clickMenu('myissues')">Mijn meldingen</button>
-                         </div>         
-                    </ul>   
+            <!-- global overlay for spinner -->
+            <div id="global-overlay" class="{{globaloverlay}}">
+                <div id="global-spinner">
+                    <img src="/img/vdb-spin.gif">
+                </div>
+            </div>
+            
+            <div class="container {{globaloverlay}}" ng-view>
+            </div>
+
+            <div class="footer footer1 mfooter container">
+                <div class="footertext">
+                    <div class="footer-element"><a href="http://blog.verbeterdebuurt.nl/apps/">Apps</a></div>&middot;
+                    <div class="footer-element"><a href="http://blog.verbeterdebuurt.nl/hoe-werkt-verbeterdebuurt-2/">Hoe werkt het</a></div>&middot;
+                    <div class="footer-element"><a href="http://blog.verbeterdebuurt.nl/">Blog</a></div>&middot;
+                    <div class="footer-element"><a href="http://blog.verbeterdebuurt.nl/contact/">Contact</a></div>&middot;
+                    <div class="footer-element"><a target="_blank" href="https://www.facebook.com/verbeterdebuurt/">Facebook</a></div>&middot;
+                    <div class="footer-element"><a target="_blank" href="https://twitter.com/verbeterdebuurt">Twitter</a></div>
                 </div>
             </div>
         </div>
-
-        <!-- global overlay for spinner -->
-        <div id="global-overlay" class="{{globaloverlay}}">
-            <div id="global-spinner">
-                <img src="/img/vdb-spin.gif">
-            </div>
+        <div id="errorModal" class="modal fade" role="dialog" ng-controller="resolveIssueCommentNoCtrl">
+        <div class="modal-dialog">
+        <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header" >
+                    <h1 class="modal-title">Er is een probleem</h1>
+                </div>
+                <div class="modal-body" style="margin-bottom:15px;margin-left:15px;margin-right:15px;">
+                   Controleer uw internetverbinding en probeer het nogmaals. Blijf het probleem zich herhalen, kunt u contact opnemen via [<a>contact@verbeterdebuurt.nl</a>].
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" id="errorModalRedirect">TERUG</button>
+                </div>
+                 </div>
         </div>
-        
-        <!-- I put globaloverlay, because the position need to be present in order z-index working -->
-          <div class="container {{globaloverlay}}" ng-view>
-
-          </div>
-        <div class="footer footer1 mfooter container ">
-            <div class="footertext">
-                <div class="footer-element"><a href="http://blog.verbeterdebuurt.nl/apps/">Apps</a></div>&middot;
-                <div class="footer-element"><a href="http://blog.verbeterdebuurt.nl/hoe-werkt-verbeterdebuurt-2/">Hoe werkt het</a></div>&middot;
-                <div class="footer-element"><a href="http://blog.verbeterdebuurt.nl/">Blog</a></div>&middot;
-                <div class="footer-element"><a href="http://blog.verbeterdebuurt.nl/contact/">Contact</a></div>&middot;
-                <div class="footer-element"><a target="_blank" href="https://www.facebook.com/verbeterdebuurt/">Facebook</a></div>&middot;
-                <div class="footer-element"><a target="_blank" href="https://twitter.com/verbeterdebuurt">Twitter</a></div>
-            </div>
         </div>
-    </div>
-    <div id="errorModal" class="modal fade" role="dialog" ng-controller="resolveIssueCommentNoCtrl">
-    <div class="modal-dialog">
-    <!-- Modal content-->
-        <div class="modal-content">
-            <div class="modal-header" >
-                <h1 class="modal-title">Er is een probleem</h1>
-            </div>
-            <div class="modal-body" style="margin-bottom:15px;margin-left:15px;margin-right:15px;">
-               Controleer uw internetverbinding en probeer het nogmaals. Blijf het probleem zich herhalen, kunt u contact opnemen via [<a>contact@verbeterdebuurt.nl</a>].
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-success" id="errorModalRedirect">TERUG</button>
-            </div>
-             </div>
-    </div>
-    </div>
-    <script>
-        /*
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-                                })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-        ga('create', 'UA-1432182-5', 'auto');
-        
-        */
-    </script>
-    <!-- smart banner -->
-    <script src="/node_modules/smartbanner/jquery.smartbanner.js"></script>
-    <script type="text/javascript">
-        $.smartbanner({
-            icon:"img/icon_2_42_42.png",
-            title:"Verbeterdebuurt",
-            price: 'FREE', // Price of the app
-            appStoreLanguage: 'nl', // Language code for App Store
-            // iOSUniversalApp: true,
-            // force: 'ios' // Uncomment for platform emulation
-            daysHidden: 15,   // days to hide banner after close button is clicked (defaults to 15)03
-            daysReminder: 30, // days to hide banner after "VIEW" button is clicked (defaults to 90)
-            hideOnInstall: true, // Hide the banner after "VIEW" is clicked.
-            // appendToSelector: '#background', //Append the banner to a specific selector
-        })
-    </script>
-</body>
+        <script>
+            /*
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                                    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+            ga('create', 'UA-1432182-5', 'auto');
+            
+            */
+        </script>
+        <!-- smart banner -->
+        <script src="/node_modules/smartbanner/jquery.smartbanner.js"></script>
+        <script type="text/javascript">
+            $.smartbanner({
+                icon:"img/icon_2_42_42.png",
+                title:"Verbeterdebuurt",
+                price: 'FREE', // Price of the app
+                appStoreLanguage: 'nl', // Language code for App Store
+                // iOSUniversalApp: true,
+                // force: 'ios' // Uncomment for platform emulation
+                daysHidden: 15,   // days to hide banner after close button is clicked (defaults to 15)03
+                daysReminder: 30, // days to hide banner after "VIEW" button is clicked (defaults to 90)
+                hideOnInstall: true, // Hide the banner after "VIEW" is clicked.
+                // appendToSelector: '#background', //Append the banner to a specific selector
+            })
+        </script>
+    </body>
 </html>
 <!-- Page specific js -->
 
 <script src="/js/googlemapjs.js"></script>
-<!-- <script src="/js/vdb-start.js"></script> -->
 <script src="js/vdbangular.js?3"></script>
 
 
