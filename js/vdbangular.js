@@ -1021,18 +1021,16 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
 
         menuSelected($rootScope, 'home');
         
-        //attach autocomplete listener to main search box
-        attachAutoCompleteListener('searchCity',map);
         
         //if really the first time loading, listen to the map being done loading, find start location, and remove listener.
         if (!mainControllerInitialized) {
-            //move this to the routeProvider?       
-            //mainController.rewritePathForCouncil();
 
             var listenerForMapReady = google.maps.event.addListener(map,'idle',function() {                
+                //attach autocomplete listener to main search box
+                attachAutoCompleteListener('searchCity');
                 //determine where the map should start
-                 mainController.determineStartLocation(mainController.startLocationDetermined);
-                 listenerForMapReady.remove();
+                mainController.determineStartLocation(mainController.startLocationDetermined);
+                listenerForMapReady.remove();
             });   
             mainControllerInitialized = true;
         }
@@ -1756,7 +1754,8 @@ vdbApp.controller('issueCtrl', ['$scope', '$rootScope', '$window', '$routeParams
 
 
     issueController.updateComments = function() {
-
+        logger('updatecomments() ->' + $routeParams.id);
+        if ($routeParams.id == undefined) return;
         var commentjsondata = JSON.stringify({
             "issue_id": "" + $routeParams.id + ""
         });
@@ -3004,11 +3003,10 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
         $scope.hideLogin = false;
     }
     //first initial
-    $timeout(function () {
-         //to send to another city gemeente/Amsterdam/niew-probleem
-        googleMapCreateProblem();
-        //googlemapautocompleate
+    $timeout(function () {        
+        googleMapCreateProblem();        
         attachAutoCompleteListener('searchCityProblem',map3);
+        $scope.categoriesData();
     }, 1500);
 
     $scope.categoriesData = function () {
@@ -3154,6 +3152,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
             jsondataSubmit.user = {username:user.username,password_hash:user.password_hash}
         } else {
             jsondataSubmit.user = {email:user.email}
+            jsondataSubmit.user_profile = user_profile;
         }
        
         jsondataSubmit = JSON.stringify(jsondataSubmit);
