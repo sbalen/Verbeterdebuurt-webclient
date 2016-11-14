@@ -30,17 +30,41 @@ markers = [];
 markerid = [];
 
 
+//simple translation func
+function __t(str) {
+    switch(str) {
+        case "problem": return "probleem";
+        case "idea": return "idee";
+        case "open": return "open";
+        case "resolved": return "opgelost";
+        case "confirmed": return "bevestigd";
+        case "closed": return "gesloten";
+        case "accepted": return "aanvaard";
+        default: return str;
+    }
+}
 
 //google map
 function googlemapinit () {
     logger("googlemapinit");
 
     initMap();
-    //initMapListeners();
+    initMapListeners();
     $('#duplicate-bubble').hide();
 
 }
 
+function issueLocationToGoogleLocation(issueLocation) {
+    return {lat:issueLocation.latitude,
+            lng:issueLocation.longitude };
+}
+
+function issueLocationToGoogleBounds(issueLocation) {
+    return {north: issueLocation.latitude, 
+            south: issueLocation.latitude,
+            east: issueLocation.longitude,
+            west: issueLocation.longitude };    
+}
 
 function initMap() {
     logger("initMap");
@@ -83,8 +107,9 @@ function addMapChangedListener(listener) {
 
     // get the data from center of map
     google.maps.event.addListener(map, 'dragend', listener);
-    google.maps.event.addListener(map, 'click', listener);
     google.maps.event.addListener(map, 'zoom_changed', listener);
+
+//    google.maps.event.addListener(map, 'click', listener);
     //google.maps.event.addListener(map,'bounds_changed', handleMapChanged);
 }
 
@@ -101,8 +126,7 @@ function getaddressshow(latlng){
             'latLng': latlng
     }, function (result, status) {
         logger("geocode result");
-        if (status == google.maps.GeocoderStatus.OK) {
-            
+        if (status == google.maps.GeocoderStatus.OK) {            
             var addressHolder = window.location.pathname.includes('nieuw-probleem') ? document.getElementById("location") : document.getElementById("location2");
             updateAddressFromGeocodeResult(result,addressHolder);
         }
@@ -132,62 +156,23 @@ function attachAutoCompleteListener(stringid,resultmap) {
 
     autocomplete = new google.maps.places.Autocomplete(input, options);
     autocomplete.bindTo('bounds',map);
-    // autocomplete.bindTo('bounds',map);
     google.maps.event.addListener(autocomplete, 'place_changed', function() {
         logger("google place changed");
-        autocomplete.bindTo('bounds',map);
+
         var place = autocomplete.getPlace();
-        if (!place.geometry) {
-            logger('place_changed without geometry');
-            var tempurl = window.location.pathname;
-            if(tempurl.includes('nieuw-probleem')){
-                geocodeAddressCreateProblem(geocoder, map3, document.getElementById('searchCityProblem').value,"location");
-            } else if(tempurl.includes('nieuw-idee')) {
-                geocodeAddressCreateProblem(geocoder, map4, document.getElementById('searchCityProblem').value,"location2");
-            } else {
-                logger("where to move to here? -----!@#!@#!@#!@#!@#!!@#")
-                moveMapToAddress(cityName);
-            }
-          
-        } else if (place.geometry.viewport) {
-            logger('place_changed with geometry & viewport');
-            resultmap.fitBounds(place.geometry.viewport);
-            resultmap.setZoom(16);
-            latlngChange = {
-                lat: place.geometry.location.lat(),
-                lng: place.geometry.location.lng()
-            };
-            getaddressshow(latlngChange);
-            var tempurl = window.location.pathname;
-            if(tempurl.includes('nieuw-probleem')||tempurl.includes('nieuw-idee')) {
-                markerLat = place.geometry.location.lat()
-                markerLng = place.geometry.location.lng()
-                maxlat = map.getBounds().getNorthEast().lat();
-                maxlng = map.getBounds().getNorthEast().lng();
-                minlat = map.getBounds().getSouthWest().lat();
-                minlng = map.getBounds().getSouthWest().lng();
-                showIssuesOnMap();
-            }
-        } else {
-            logger('place_changed with geometry, but no viewport');
-            resultmap.setCenter(place.geometry.location);
-            resultmap.setZoom(17);  // Why 17? Because it looks good.
-            latlngChange = {
-                lat: place.geometry.location.lat(),
-                lng: place.geometry.location.lng()
-            };
-            getaddressshow(latlngChange);
-            var tempurl = window.location.pathname;
-            if(tempurl.includes('nieuw-probleem')||tempurl.includes('nieuw-idee')){
-                markerLat = place.geometry.location.lat()
-                markerLng = place.geometry.location.lng()
-                maxlat = map.getBounds().getNorthEast().lat();
-                maxlng = map.getBounds().getNorthEast().lng();
-                minlat = map.getBounds().getSouthWest().lat();
-                minlng = map.getBounds().getSouthWest().lng();
-                showIssuesOnMap();
-            }
+        logger(place);
+        var address = "";
+        var bounds = undefined;
+        
+        if (place.formatted_address) {
+            address = place.formatted_address;
+            bounds =  place.geometry.viewport ? place.geometry.viewport : null;
+        } else if (place.name) {
+            address = place.name;
         }
+
+        moveMapToAddress(address,bounds);
+
     });
 
 }
@@ -217,6 +202,7 @@ function isScrollingAllowedForPathname() {
     if (pathname.includes('nieuw-probleem')) return false;
     if (pathname.includes('nieuw-idee')) return false;
     if (pathname.includes('nieuwe-melding')) return false;
+    if (pathname.includes('melding')) return false;
 
     if (pathname=='/') return true;
     if (pathname.includes('gemeente')) return true;
@@ -225,8 +211,7 @@ function isScrollingAllowedForPathname() {
 }
 
 function determineMapScrollingAllowed() {
-    var scrollingAllowed = 
-      
+    logger("determineMapScrollingAllowed()");
     map.setOptions({scrollwheel: isScrollingAllowedForPathname()});
 }
 
@@ -254,8 +239,9 @@ function initGoogleMapForCreateIssue(location,issueType) {
 
 }
 
-function googleMapCreateProblem(latlng) {
+function googleMapCreateProblem() {
     logger("googleMapCreateProblem");
+    var latlng = map.getCenter();
     var issueType = ISSUE_TYPE_PROBLEM;
     var mapOptions = {
         draggable: true,
@@ -289,8 +275,9 @@ function googleMapCreateProblem(latlng) {
     markerGetAddress(marker, "location");    
 }
 
-function googleMapCreateIdea(latlng) {
+function googleMapCreateIdea() {
     logger("googleMapIssue");
+    var latlng = map.getCenter();
     var mapOption4 = {
         center: latlng,
         zoom: ZOOM_START_MINI,
@@ -326,8 +313,6 @@ function googleMapCreateIdea(latlng) {
     var tempurl = window.location.pathname.replace('nieuw-idee','');
 }
 
-
-
 function initMainMapToSmallMapListener(smallMap) {
     //mainmap = global map
     google.maps.event.addListener(smallMap, 'bounds_changed', function (e) {
@@ -336,8 +321,13 @@ function initMainMapToSmallMapListener(smallMap) {
         map.setZoom(smallMap.getZoom());
     });
 
-}
+    google.maps.event.addListener(map, 'bounds_changed', function (e) {
+        google.maps.event.trigger(map, 'resize')
+        smallMap.setCenter(map.getCenter());
+        smallMap.setZoom(map.getZoom());
+    });
 
+}
 
 //marker at center
 function markerCenter(map, marker, location) {
@@ -491,18 +481,6 @@ function updateAddressFromGeocodeResult(result,addressHolder) {
 
 }
 
-
-// function updateLatLong(e) {
-//     latlngChange = map.getCenter();
-// }
-
-// function getLatLng(map) {
-//     google.maps.event.addListener(map, 'drag', updateLatLong);
-//     google.maps.event.addListener(map, 'click', updateLatLong);
-//     google.maps.event.addListener(map, 'mouseover', updateLatLong);
-// }
-
-
 function determineCityForGeocode(callBack,boundsToFitTo) {
     logger("determineCityForGeocode() --> fit: " + boundsToFitTo);
     geocoder.geocode({'latLng': map.getCenter()} , function (results, status) {
@@ -554,7 +532,7 @@ function moveMapToDefaultLocation(callBack) {
 
 function moveMapToUserLocation(withFallBack,callBack) {
     if (user && userProfile) {
-        moveMapToAddress(userProfile.postcode,callBack);
+        moveMapToAddress(userProfile.postcode,withFallBack,callBack);
     } else if (withFallBack) {
         moveMapToDefaultLocation(callBack);
     }
@@ -572,6 +550,12 @@ function moveMapToAddress(address, withFallBack,callBack) {
     });
 }
 
+function moveMapToIssue(issue,callBack) {
+    logger("moveMapToIssue() -->" );
+    logger(issue);
+    moveMapToLocation(issueLocationToGoogleLocation(issue.location),null,issueLocationToGoogleBounds(issue.location));
+    map.setZoom(ZOOM_MAX);
+}
 function showIssuesOnMap() {
     repaintMarkers();
 }
@@ -581,10 +565,10 @@ function repaintMarkers () {
     var zoom = map.getZoom();
 
     if(zoom < ZOOM_PINS_VISIBLE) {
-        for(var x=0 ; x< markerid.length ; x++) {
-            markers[markerid[x]].setMap(null);
-            markers[markerid[x]]=null;
-            markerid.splice(x,1);
+        for(var i = markerid.length-1 ; i >= 0  ; i--) {
+            markers[markerid[i]].setMap(null);
+            markers[markerid[i]]=null;
+            markerid.pop();
         }
         return;
     }
@@ -607,62 +591,21 @@ function repaintMarkers () {
         }
     }
 
-    for(var i= 0 ; i < issuesData.count ; i++) {
-        var latLng = {lat:issuesData.issues[i].location.latitude , lng : issuesData.issues[i].location.longitude}
-        var icon = "";
-        //validate for the icon
-        if(issuesData.issues[i].status == "resolved" || issuesData.issues[i].status == "closed") {
-            icon = "/img/flag-32.png";
-        } else if (issuesData.issues[i].type == "problem") {
-            icon = "/img/pin-32.png";
-        } else if (issuesData.issues[i].type == "idea") {
-            icon = "/img/bulb-32.png"; 
-        }
+    for(var i = 0 ; i < issuesData.count ; i++) {
 
-        var markerOption = {
-            position : latLng,
-            map : map,
-            icon: icon,
-            title: issuesData.issues[i].title
-        };
-        //change to dutch laguage
-        var tempType = [];
-        var tempStatus = [];
-        //type
-        if(issuesData.issues[i].type=="problem") {
-            tempType[i] = "probleem";
-        } else if (issuesData.issues[i].type == "idea") {
-            tempType[i] = "idee";
-        }
-        //status
-        if (issuesData.issues[i].status == "open") {
-            tempStatus[i] = "open";
-        } else if (issuesData.issues[i].status == "resolved") {
-            tempStatus[i] = "opgelost";
-        } else if (issuesData.issues[i].status == "confirmed") {
-            tempStatus[i] = "bevestigd";
-        } else if (issuesData.issues[i].status == "closed") {
-            tempStatus[i] = "gesloten";
-        } else if (issuesData.issues[i].status == "accepted") {
-            tempStatus[i] = "aanvaard";
-        }
+        var marker = markerForIssue(issuesData.issues[i]);
 
-        infoWindowContent[i]= "<a href=/melding/"+issuesData.issues[i].id+"><span style=color:green;>"+issuesData.issues[i].title+"</span></a><br>"+tempType[i]+", "+tempStatus[i]+"<br>"+issuesData.issues[i].location.src_address+"";
-        var marker = new google.maps.Marker(markerOption);
-        marker.contentString = "<a href=/melding/"+issuesData.issues[i].id+"><span style=color:green;>"+issuesData.issues[i].title+"</span></a><br>"+tempType[i]+", "+tempStatus[i]+"<br>"+issuesData.issues[i].location.src_address+"";
-        marker.set('id',issuesData.issues[i].id);
-        // markers.push(marker);
+        infoWindowContent[i] = marker.contentString;
 
         if(markers[marker.id] == null) {
             markerid.push(marker.id);
             markers[marker.id] = marker;
             google.maps.event.addListener(marker , 'click' , (function (marker,i) {
                 return function() {
-                    window.history.pushState('map','map','/');
+                    //window.history.pushState('map','map','/');
                     infoWindow.setContent(marker.contentString);
                     infoWindow.open(map,marker);
-                    map.setCenter(marker.getPosition());
-                    map.setOptions({ scrollwheel: true });
+                    moveMapToIssue(marker.issue);                 
                 }
             })(marker,i));
         } else {
@@ -673,7 +616,34 @@ function repaintMarkers () {
     }
 }
 
-function deletemarker(markers){
+function markerForIssue(issue) {
+    var latLng = {lat:issue.location.latitude , lng : issue.location.longitude}
+    var icon = "";
+    //validate for the icon
+    if(issue.status == "resolved" || issue.status == "closed") {
+        icon = "/img/flag-32.png";
+    } else if (issue.type == "problem") {
+        icon = "/img/pin-32.png";
+    } else if (issue.type == "idea") {
+        icon = "/img/bulb-32.png"; 
+    }
+
+    var markerOption = {
+        position : latLng,
+        map : map,
+        icon: icon,
+        title: issue.title
+    };
+
+    var contentString = "<a href='/melding/"+issue.id+"'><span style=color:green;>"+issue.title+"</span></a><br>"+ __t(issue.type) +", "+ __t(issue.status) +"<br>"+issue.location.src_address+"";
+    var marker = new google.maps.Marker(markerOption);
+    marker.contentString = contentString;
+    marker.issue = issue;
+    marker.set('id',issue.id);
+    return marker;
+}
+
+function deleteMarkers(){
     for(var x=0 ; x< markers.length ; x++) {
         if(markers[x]!=null){
             markers[x].setMap(null);

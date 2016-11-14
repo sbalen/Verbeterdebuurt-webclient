@@ -1,62 +1,8 @@
 <!-- body -->  
-<div id="main-content" class="container">
-    <!--  sidebar left --> 
-    <div class="col-md-3 hidden-sm hidden-xs hidden-md">
-     <div class="panel side-panel panel-default" id="new-problem-widget">
-            <div class="panel-heading">
-                <strong>Report</strong>
-            </div>
-           <div class="panel-body">
-                            <div class="list-group  report-list-council" ng-hide="reportList.council == null || reportList.council == 'undefined' " >
-                            <strong>Gemeente: {{reportList.council}}</strong></br>
-                            Meldingen per maand: {{reportList.reports}} </br>
-                            Oplossingen per maand: {{reportList.solutions}}
-                          </div>
-                            <div class="list-group  report-list-council"  ng-show="reportList.council == null || reportList.council == 'undifined' ">
-                             geen locatieinformatie gevonden
-                           </div>
-            </div>  
-</div>
+                <div id="main-content" class="container">
+                    <div  ng-include="'sidebar_left.html'">
+                </div>
 
-<div class="panel side-panel panel-default" id="new-problem-widget" ng-hide="results.length == 0 || newProblemList==null">
-    <div class="panel-heading">
-        <strong>Nieuwste problemen</strong>
-    </div>
-    <div class="panel-body">
-        <div class="list-group" >
-            <a href="/melding/{{newProblem.id}}" class="list-group-item clearfix" ng-style="newProblem.id == highlightid ?{'background-color':'#E6E6FA'}:{'background-color':'white'}" ng-repeat="newProblem in newProblemList| filter : {type:'problem'} | filter: {status:'!closed'} | orderBy : 'created_at' : true |limitTo:3|filter:x as results" ng-click="clickIssues()">
-                <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
-                <strong> {{newProblem.title}}</strong> {{newProblem.location.full_address}}
-                <span class="pull-right">
-                    <button class="btn btn-xs btn-success" >
-                        <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
-                    </button>
-                </span>
-            </a>
-        </div>
-    </div>  
-</div>
-
-<div class="panel side-panel panel-default" ng-hide="results2.length == 0|| newProblemList==null">
-    <div class="panel-heading" id="active-idea-widget">
-        <strong>Actieve Idee&euml;n</strong>
-    </div>
-    <div class="panel-body">
-        <div class="list-group">
-            <a href="/melding/{{newProblem.id}}" class="list-group-item clearfix" ng-style="newProblem.id == highlightid ?{'background-color':'#E6E6FA'}:{'background-color':'white'}" ng-repeat="newProblem in newProblemList| filter : {type:'idea'} | filter: {status:'!closed'} | orderBy : 'created_at' : true |limitTo:3|filter:x as results2" 
-               ng-click="clickIssues()">
-                <img class="icon" src="./img/icon_idea_2_21_21.png" size="20px"/>
-                <strong>{{newProblem.title}}</strong> {{newProblem.location.full_address}}
-                <span class="pull-right">
-                    <button class="btn btn-xs btn-success">
-                        <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
-                    </button>
-                </span>
-            </a>
-        </div>
-    </div>  
-</div>
-</div>
 <!-- main container -->
 <div class="col-lg-6 main-container marginbottom">
 
@@ -147,14 +93,6 @@
         
             <button type="button" class="btn btn-primary mobilebtn" ng-click="voteSubmit()">
                 <span style="text-align:start">Stem </span><span class="badge" id="mobilebtn">{{newProblem.votes}}</span></button>
-        <!-- selection Box -->
-       <!--  <div class="btn btn-primary selectionBox" ng-hide="hideSelection">
-            <div class="selectionBox selfVote" ng-click="selfVote()">Stem zelf</div>
-            <div class="line"></div>
-            <div class="selectionBox otherVote" ng-click="otherVote()">Stem voor een ander</div>
-        </div> -->
-
-
 
         <div ng-hide="results==0 || commentList == null">
             <h2 class="fontM">Reacties</h2>
@@ -218,29 +156,6 @@
     </div>
 </div>
 
-<!-- CloseModal -->
-<!-- <div id="CloseModal" class="modal fade" role="dialog" >
-    <div class="modal-dialog"> -->
-        <!-- Modal content-->
-        <!-- <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h1 class="modal-title">Melding afsluiten</h1>
-            </div>
-            <div class="modal-body">
-                Waardering:
-                <input id="issue-start-rating" type="number" class="rating" min="0" max="5" step="1" style="showCaption:false;">
-                Feedback:
-                <textarea class="form-control" rows="5" id="comment"></textarea>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Annuleren</button>
-                <button type="button" class="btn btn-success" data-dismiss="modal">Afsluiten</button>
-            </div>
-        </div>
-    </div>
-</div> -->
- <!-- CloseModal -->
     <div id="CloseModal" class="modal fade" role="dialog" ng-controller="closeIssueCtrl">
         <div class="modal-dialog">
         <!-- Modal content-->
