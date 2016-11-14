@@ -25,6 +25,7 @@ var APIURL = PROTOCOL + "://" + ROOT + API_VERSION;
 var ISSUE_TYPE_PROBLEM = "problem";
 var ISSUE_TYPE_IDEA = "idea";
 
+var RECENT_ISSUES_TO_SHOW = 3;
 //define service
 var issuesService = new Object();
 var registerService = new Object();
@@ -58,7 +59,7 @@ var searchCreateTemp = 0;
 
 var user = undefined;
 var userProfile = undefined;
-
+var mainControllerInitialized = false;
 //polyfill for includes for internet explore not support js
 if (!String.prototype.includes) {
   String.prototype.includes = function(search, start) {
@@ -109,10 +110,8 @@ errorhandler = function(rootScope,errorInfo){
 
 //call google map at first 
 vdbApp.run(function(){
-    //find al map related non angular functions in googlemaps.js
+    mainControllerInitialized = false;
     googlemapinit();
-    // logger("mapchange");
-
 })
 
 //change menu selected
@@ -1002,78 +1001,98 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
         $rootScope.dynamicTitle = "";
         $scope.showuserpanel();        
         $rootScope.urlBefore = $location.path();
+        $rootScope.errorSession = "";
 
         menuSelected($rootScope, 'home');
         
         //attach autocomplete listener to main search box
-        attachAutoCompleteListener('searchCity',map);
-
+        //attachAutoCompleteListener('searchCity',map);
+        
         //move this to the routeProvider?       
-        mainController.rewritePathForCouncil();
+        //mainController.rewritePathForCouncil();
 
-        //determine where the map should start
-        $scope.determineStartLocation();
+        //if really the first time loading, listen to the map being done loading, find start location, and remove listener.
+        if (!mainControllerInitialized) {
+            var listenerForMapReady = google.maps.event.addListener(map,'idle',function() {                
+                //determine where the map should start
+                 mainController.determineStartLocation(mainController.startLocationDetermined);
+                 listenerForMapReady.remove();
+            });   
+            mainControllerInitialized = true;
+        }
 
-        $rootScope.errorSession = "";
-
-        // if(!$routeParams.cityName){
-        //     $timeout(function(){
-        //         logger("mainCtrl 3000 -> getReport / getAgreement if no cityName");
-        //         $scope.updateCouncilReport(city.long_name);
-        //         $scope.updateCouncilAgreement(city.long_name);
-        //         // $scope.updateMapIssues();
-        //     },3000);
-        // }
-
-
-        // $scope.updateLoginStatus();
-        // $scope.updateMyIssues();
-        // $scope.updateCouncilReport(city.long_name);
-        // $scope.updateCouncilAgreement(city.long_name);
-        // $scope.updateMapIssues();
     }
 
     mainController.rewritePathForCouncil = function() {
+
+        var newCouncil = "";
+        var newPath = "";
+
         /* deeplinks with only cityname or cityname with an action or or /plaats/  need to all be rewritten to /gemeente */
         var nextaction = !(typeof $routeParams.nextaction === 'undefined') ? "/" + $routeParams.nextaction : "";
 
+
         if ($location.path() == "/plaats/" + $routeParams.cityNameplaats + nextaction  && searchCreateTemp!=1) {
-            $location.path('gemeente/' + $routeParams.cityNameplaats + nextaction);            
-            moveMapToAddress($routeParams.cityNameplaats);
+            newPath = 'gemeente/' + $routeParams.cityNameplaats + nextaction
+            newCouncil = $routeParams.cityNameplaats;
             searchCreateTemp = 1;
         }
 
         if ($location.path() == "/" + $routeParams.cityNameClone + nextaction && searchCreateTemp!=1) {
             $location.path('gemeente/' + $routeParams.cityNameClone + nextaction);
-            moveMapToAddress($routeParams.cityNameClone);
+            newCouncil = $routeParams.cityNameClone;
             searchCreateTemp = 1;
         }
+
+        $scope.council = newCouncil;
+        $location.path(newPath);
+        moveMapToAddress(mainController.council);
     }
 
-    $scope.determineStartLocation = function() {
-        logger("determineStartLocation");
+    mainController.determineStartLocation = function(doneCallBack) {
+        logger("determineStartLocation ->");
+        logger($routeParams);
+
+        var result = true;
 
         if ($routeParams.id) {
             //should not be handled by maincontroller
             logger("location based on id should not be handled by main ctrl, but by issueCtrl")
+            result = false;
         } else if ($routeParams.hashkey) {
             //should not be handled by maincontroller
             logger("location based on haskey should not be handled by main ctrl, but by hashCtrl")
+            result = false;
         } else if ($routeParams.cityName) {
-            moveMapToAddress($routeParams.cityName,true);
+            moveMapToAddress($routeParams.cityName,true,doneCallBack);
         } else if ($routeParams.postalcode) {
-            moveMapToAddress($routeParams.postalcode,true);
+            moveMapToAddress($routeParams.postalcode,true,doneCallBack);
         } else if (navigator.geolocation) {
-            moveMapToBrowserLocation(true);
+            //pass on the responsibility of calling back to moveMapToBrowserLocation (boogiewoogie?)
+            moveMapToBrowserLocation(true,doneCallBack);
+            return;
         } else if ($cookies.getObject('user') != null) {
-            moveMapToUserLocation(true);
+            moveMapToUserLocation(true,doneCallBack);
         } else {
-            moveMapToDefaultLocation();
+            moveMapToDefaultLocation(doneCallBack);
             //could be that the map was already initialized on this.
-        }        
+        }
+
+        if (doneCallBack != undefined && typeof doneCallBack === 'function') {
+            doneCallBack(result);
+        }
+    }
+
+    mainController.startLocationDetermined = function(result) {
+        logger('startLocationDetermined('+result+')')
+        if (result) {
+            $scope.updateAllInfo();
+        }
+        addMapChangedListener($scope.updateAllInfo);
     }
 
     $scope.updatePathForCouncil = function(city) {
+        logger("updatePathForCouncil(" + city + ")");        
         if ($location.path().includes("/gemeente/") || $location.path().endsWith("/") || $routeParams.postalcode) {
             if ($rootScope.lastCity != null) {
                 $location.path("/gemeente/" + $rootScope.lastCity);
@@ -1083,11 +1102,11 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
             }
             $rootScope.lastUrl = $location.path();
         }
-
     }
 
     $scope.updateSearchBoxForCouncil = function(city) {
-        $scope.searchCity = city.long_name;
+        logger("updateSearchBoxForCouncil(" + city + ")");        
+        $scope.searchCity = city;
     }
 
     $scope.updateMyIssues = function() {
@@ -1109,30 +1128,75 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
 
     }    
 
+    mainController.recentIssuesOfType = function(type, count) {
+        if ($rootScope.newProblemList == undefined || $rootScope.newProblemList.length <= 0) return [];
+        if (count == undefined) count = RECENT_ISSUES_TO_SHOW;
+        var curIssue;
+        var result = [];
+        var foundIssues = 0;
+        //orderBy : 'created_at' : true
+
+        for (var i=0; i < $rootScope.newProblemList.length; i++) {
+            curIssue = $rootScope.newProblemList[i];
+            if(curIssue.type == type && curIssue.status != 'closed') {
+                result.push(curIssue);
+                if (++foundIssues >= count) { break; }
+            }
+        }
+
+        return result;
+    }
+
+    $scope.recentProblems = function() {
+        return mainController.recentIssuesOfType(ISSUE_TYPE_PROBLEM);
+    }
+
+    $scope.recentIdeas = function() {
+        return mainController.recentIssuesOfType(ISSUE_TYPE_IDEA);
+    }
+
+    $scope.showAgreement = function () {
+        if (!$rootScope.agreement) return false;
+        return $rootScope.agreement.success && $rootScope.agreement.agreement && $scope.zoomedInEnoughToShowIssues();
+    }
+
+    $scope.zoomedInEnoughToShowIssues = function() {
+        return $rootScope.zoom >= $rootScope.pinsVisibleZoom;
+    }
+
+    $scope.zoomedInEnoughToRetrieveIssues = function() {
+        return $rootScope.zoom >= $rootScope.retrieveIssuesZoom;
+    }
     $scope.updateMapIssues = function() {
         logger("updateMapIssues");
-        //these should have already been set by the listeners
-        maxlat = map.getBounds().getNorthEast().lat();
-        maxlng = map.getBounds().getNorthEast().lng();
-        minlat = map.getBounds().getSouthWest().lat();
-        minlng = map.getBounds().getSouthWest().lng();
 
-        var jsondata = JSON.stringify({
-            "coords_criterium": {
-                "max_lat": maxlat,
-                "min_lat": minlat,
-                "max_long": maxlng,
-                "min_long": minlng
-            }
-        });
-        var getIssues = issuesService.getIssues(jsondata).then(function (data) {
-            var getdata = data.data;
-            $rootScope.newProblemList = getdata.issues;
-            if (getdata.count != 0 || !getdata) {
-                $window.issuesData = getdata;
-                showIssuesOnMap();
-            }
-        });
+        checkZoomLevel($rootScope);
+
+        if ($scope.zoomedInEnoughToRetrieveIssues()) {
+            var jsondata = JSON.stringify({
+                "coords_criterium": {
+                    "max_lat": map.getBounds().getNorthEast().lat(),
+                    "min_lat": map.getBounds().getSouthWest().lat(),
+                    "max_long": map.getBounds().getNorthEast().lng(),
+                    "min_long": map.getBounds().getSouthWest().lng()
+                }
+            });
+            var getIssues = issuesService.getIssues(jsondata).then(function (data) {
+                var getdata = data.data;                        
+
+                $rootScope.newProblemList = getdata.issues;
+                //sort the issues descending for created date
+                $rootScope.newProblemList.sort(function(a, b){return b.created_at.localeCompare( a.created_at ) });
+                logger($rootScope.newProblemList);
+                if (getdata.count != 0 || !getdata) {
+                    $window.issuesData = getdata;
+                    showIssuesOnMap();
+                }
+            });
+        } else {
+            $window.issuesData = null;
+            showIssuesOnMap();
+        }
     }
     $scope.updateCouncilReport = function(city)  {
         logger("updateCouncilReport");
@@ -1152,10 +1216,18 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     //click function at map
     $scope.alrCity = function () {
         logger("mainCtrl.alrCity() -> getreport / getagreement / getIssues if city.long_name");
+        $scope.updateAllInfo();
+    }
 
+
+    $scope.updateAllInfo = function() {
+        logger("updateAllInfo() --> ");
+        logger(city);
+        //advanced could be: if city change || bounds change
+        
         if (city.long_name != null) {
-            //url change validation	            
-            $scope.updatePathForCouncil(city.long_name);
+            //url change validation
+            //$scope.updatePathForCouncil(city.long_name);
             $scope.updateSearchBoxForCouncil(city.long_name);
             $scope.updateCouncilReport(city.long_name);
             $scope.updateCouncilAgreement(city.long_name);
@@ -1177,7 +1249,6 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
             return true;
         }
     }
-
 
     //logOut
     $scope.logout = function () {
@@ -1247,7 +1318,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
         }
     }           
 
-    //mainController.init();
+    mainController.init();
 
 
 }]);

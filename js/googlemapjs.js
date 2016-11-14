@@ -1,4 +1,5 @@
 var ZOOM_PINS_VISIBLE = 14; //this is also in vdbangular.js, todo: how can we only have it once
+var ZOOM_ISSUES_RETRIEVABLE = 12;
 var ZOOM_START = 15;
 var ZOOM_MAX = 17;
 var ZOOM_MIN = 13;
@@ -9,6 +10,7 @@ var ZOOM_MIN_MINI = 15;
 var LOCATION_DEFAULT_LAT = 52.371828;
 var LOCATION_DEFAULT_LNG = 4.902220;
 var LOCATION_DEFAULT = {lat: LOCATION_DEFAULT_LAT,lng: LOCATION_DEFAULT_LNG}
+var LOCATION_DEFAULT_BOUNDS = {lat: LOCATION_DEFAULT_LAT,lng: LOCATION_DEFAULT_LNG}
 var ZOOM_INIT = 8; //netherlands size
 
 var geocoder = new google.maps.Geocoder();
@@ -19,7 +21,6 @@ var marker;
 var map;
 var postalcode = null;
 cityName=null;
-postalcode=null;
 maxlat  = null;
 maxlng  = null;
 minlat = null;
@@ -28,9 +29,69 @@ markers = null;
 markers = [];
 markerid = [];
 
+
+
+//google map
+function googlemapinit () {
+    logger("googlemapinit");
+
+    initMap();
+    //initMapListeners();
+    $('#duplicate-bubble').hide();
+
+}
+
+
+function initMap() {
+    logger("initMap");
+
+    var mapOptions = {
+        zoom: ZOOM_INIT,
+        maxZoom: ZOOM_MAX,
+        minZoom: ZOOM_INIT,
+        scrollwheel: true,
+        zoomControl: true,
+        // initialize zoom level - the max value is 21
+        disableDefaultUI: true,
+        streetViewControl: false, // hide the yellow Street View pegman
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        center: LOCATION_DEFAULT,
+        zoomControlOptions: { position: google.maps.ControlPosition.RIGHT_BOTTOM },
+        styles: [ { featureType: "poi", elementType: "labels", stylers: [{visibility: "off"}] },
+                  { featureType: "transit.station", stylers: [ { visibility: "off" } ] } ]
+    };
+
+    var mapObject = document.getElementById('googlemaps');
+
+    map = new google.maps.Map(mapObject, mapOptions);
+
+}
+
+
+function initMapListeners() { 
+    logger("initMapListeners");
+
+    //couldn't this be on page change instead of mouseover?
+    google.maps.event.addListener(map,'mouseover',determineMapScrollingAllowed);    
+
+  //  addMapChangedListener(handleMapChanged);
+
+}
+
+function addMapChangedListener(listener) {
+    logger("addMapChangedListener()");
+
+    // get the data from center of map
+    google.maps.event.addListener(map, 'dragend', listener);
+    google.maps.event.addListener(map, 'click', listener);
+    google.maps.event.addListener(map, 'zoom_changed', listener);
+    //google.maps.event.addListener(map,'bounds_changed', handleMapChanged);
+}
+
 function checkZoomLevel($rootScope) {
     logger("checkZoomLevel: " + map.getZoom());
     $rootScope.pinsVisibleZoom = ZOOM_PINS_VISIBLE;
+    $rootScope.retrieveIssuesZoom = ZOOM_ISSUES_RETRIEVABLE;
     $rootScope.zoom = map.getZoom();
 }
 //get address
@@ -150,30 +211,6 @@ function geocodeGetLocationFound(lat, lng) {
     });
 }
 
-function initMap() {
-    var mapOptions = {
-        zoom: ZOOM_INIT,
-        maxZoom: ZOOM_MAX,
-        minZoom: ZOOM_INIT,
-        scrollwheel: true,
-        zoomControl: true,
-        // initialize zoom level - the max value is 21
-        disableDefaultUI: true,
-        streetViewControl: false, // hide the yellow Street View pegman
-        /*scaleControl: false, // allow users to zoom the Google Map*/
-        mapTypeId: google.maps.MapTypeId.ROADMAP,
-        center: this._map_center,
-        zoomControlOptions: { position: google.maps.ControlPosition.RIGHT_BOTTOM },
-        styles: [ { featureType: "poi", elementType: "labels", stylers: [{visibility: "off"}] },
-                  { featureType: "transit.station", stylers: [ { visibility: "off" } ] } ]
-    };
-
-    var mapObject = document.getElementById('googlemaps');
-
-    map = new google.maps.Map(mapObject, mapOptions);
-}
-
-
 function isScrollingAllowedForPathname() {
     var pathname = window.location.pathname;
 
@@ -193,16 +230,6 @@ function determineMapScrollingAllowed() {
     map.setOptions({scrollwheel: isScrollingAllowedForPathname()});
 }
 
-//google map
-function googlemapinit () {
-    this._map_center = LOCATION_DEFAULT;    
-    initMap();
-    google.maps.event.addListener(map,'mouseover',determineMapScrollingAllowed);    
-    initMapListeners(map);
-    
-    $('#duplicate-bubble').hide();
-
-}
 
 
 function initGoogleMapForCreateIssue(location,issueType) {
@@ -476,97 +503,77 @@ function updateAddressFromGeocodeResult(result,addressHolder) {
 // }
 
 
-function handleMapChanged() {
-    logger("googlemaps.js.handleMapChanged");
-    google.maps.event.trigger(map,'resize');
-    maxlat  = map.getBounds().getNorthEast().lat();
-    maxlng  = map.getBounds().getNorthEast().lng();
-    minlat = map.getBounds().getSouthWest().lat();
-    minlng = map.getBounds().getSouthWest().lng();
-    latlngChange = map.getCenter();
-    geocoder.geocode({'latLng': map.getCenter()} , function (result , status) {
-        sendLatitude = map.getCenter().lng();
-        sendLongitude = map.getCenter().lat();
+function determineCityForGeocode(callBack,boundsToFitTo) {
+    logger("determineCityForGeocode() --> fit: " + boundsToFitTo);
+    geocoder.geocode({'latLng': map.getCenter()} , function (results, status) {
         if (status == google.maps.GeocoderStatus.OK) {
-            updateCityFromGeocodeResult(result);
+            updateCityFromGeocodeResult(results);
+
+            if (boundsToFitTo) {
+                map.fitBounds(boundsToFitTo);
+            }
+            if (callBack != undefined && typeof callBack === 'function') {
+                callBack(true);
+            }
         }
     });
-
-
 }
 
-function initMapListeners(map) { 
-    logger("initMapListeners");
-    var infoWindow = new google.maps.InfoWindow();
-    var infoWindowContent = []; 
-
-    // get the data from center of map
-    google.maps.event.addListener(map, 'dragend', handleMapChanged);
-
-    //this triggers while dragging, not necessary if dragend really does it's work
-    //google.maps.event.addListener(map, 'zoom_changed', handleMapChanged);
-
-    google.maps.event.addListener(map, 'click', handleMapChanged);
-
-//    google.maps.event.addListener(map,'bounds_changed', handleMapChanged);
-
-}
-
-function moveMapToBrowserLocation(withFallBack) {
+function moveMapToBrowserLocation(withFallBack,callBack) {
     logger("moveMapToBrowserLocation()");
     navigator.geolocation.getCurrentPosition(
         //when user accept the location
         function (position) {
             logger("user accepted location awareness");
-            moveMapToLocation({lat: position.coords.latitude,lng:  position.coords.longitude});
+            moveMapToLocation({lat: position.coords.latitude,lng:  position.coords.longitude},callBack);
         },
         //when user did not share location
         function (error) {
             logger("user did not accept location awareness");
             if (error.PERMISSION_DENIED) {               
                 if (withFallBack) {
-                    moveMapToUserLocation(true);
+                    moveMapToUserLocation(true,callBack);
                 }
             }
         }
     )
 }
 
-function moveMapToLocation(location) {
+function moveMapToLocation(location,callBack,boundsToFitTo) {
     logger("moveMapToLocation("+location.lat+","+location.lng+")");
-    map.setCenter(location);
-    handleMapChanged();
+    map.panTo(location);
+    //map.setCenter(location);
+    determineCityForGeocode(callBack,boundsToFitTo);
 }
 
-function moveMapToDefaultLocation() {
-    moveMapToLocation(LOCATION_DEFAULT);
+function moveMapToDefaultLocation(callBack) {
+    logger("moveMapToDefaultLocation");
+    moveMapToAddress("Amsterdam",false,callBack);
+    
 }
 
-function moveMapToUserLocation(withFallBack) {
+function moveMapToUserLocation(withFallBack,callBack) {
     if (user && userProfile) {
-        moveMapToAddress(userProfile.postcode);
+        moveMapToAddress(userProfile.postcode,callBack);
     } else if (withFallBack) {
-        moveMapToDefaultLocation();
+        moveMapToDefaultLocation(callBack);
     }
 }
 
-function moveMapToAddress(address, withFallBack) {    
+function moveMapToAddress(address, withFallBack,callBack) {    
     logger("moveMapToAddress(" + address + "," + withFallBack +")");
     geocoder.geocode({'address': address,componentRestrictions: {country: 'nl'}}, function(results, status) {
         logger("geocodeAddress " + address);
         if (status === google.maps.GeocoderStatus.OK) {
-            map.setCenter(results[0].geometry.location);
-            map.fitBounds(results[0].geometry.bounds);                        
-        } else if (withFallBack) {            
-
-            moveMapToBrowserLocation(true); 
+            moveMapToLocation(results[0].geometry.location,callBack,results[0].geometry.bounds);            
+        } else if (withFallBack) {
+            moveMapToBrowserLocation(true,callBack); 
         }
     });
 }
 
 function showIssuesOnMap() {
     repaintMarkers();
-//    google.maps.event.addListener(map, 'zoom_changed', repaintMarkers);
 }
 
 function repaintMarkers () {

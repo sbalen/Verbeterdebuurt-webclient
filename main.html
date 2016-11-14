@@ -19,15 +19,15 @@
                             </div>
                         </div>  
                     </div>
-                    <div class="panel side-panel panel-default" id="new-problem-widget" ng-hide="results.length == 0 || newProblemList==null">
+                    <div class="panel side-panel panel-default" id="new-problem-widget" ng-show="recentProblems().length">
                         <div class="panel-heading">
                             <strong>Nieuwste problemen</strong>
                         </div>
                         <div class="panel-body">
                             <div class="list-group" >
-                                <a href="/melding/{{newProblem.id}}" class="list-group-item clearfix " ng-repeat="newProblem in newProblemList| filter : {type:'problem'} | filter: {status:'!closed'} | orderBy : 'created_at' : true|limitTo:3|filter:x as results" ng-click="clickIssues()">
+                                <a href="/melding/{{recentProblem.id}}" class="list-group-item clearfix " ng-repeat="recentProblem in recentProblems()" ng-click="clickIssues()">
                                     <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
-                                    <strong> {{newProblem.title}}</strong> {{newProblem.location.full_address}}
+                                    <strong> {{recentProblem.title}}</strong> {{recentProblem.location.full_address}}
                                     <span class="pull-right">
                                         <button class="btn btn-xs btn-success" >
                                             <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
@@ -37,15 +37,15 @@
                             </div>
                         </div>  
                     </div>
-                    <div class="panel side-panel panel-default" ng-hide="results2.length == 0|| newProblemList==null">
+                    <div class="panel side-panel panel-default" ng-show="recentIdeas().length">
                         <div class="panel-heading" id="active-idea-widget">
                             <strong>Actieve Idee&euml;n</strong>
                         </div>
                         <div class="panel-body">
                             <div class="list-group">
-                                <a href="/melding/{{newProblem.id}}" class="list-group-item clearfix" ng-repeat="newProblem in newProblemList| filter : {type:'idea'} | filter: {status:'!closed'} | orderBy : 'created_at' : true |limitTo:3|filter:x as results2" ng-click="clickIssues()">
+                                <a href="/melding/{{recentIdea.id}}" class="list-group-item clearfix" ng-repeat="recentIdea in recentIdeas()" ng-click="clickIssues()">
                                     <img class="icon" src="./img/icon_idea_2_21_21.png" size="20px"/>
-                                    <strong>{{newProblem.title}}</strong> {{newProblem.location.full_address}}
+                                    <strong>{{recentIdea.title}}</strong> {{recentIdea.location.full_address}}
                                     <span class="pull-right">
                                         <button class="btn btn-xs btn-success">
                                             <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
@@ -57,12 +57,12 @@
                     </div>
                 </div>
                 <!-- main container -->
-                <div class="col-lg-6 main-container">
-                    <div class="alert alert1 alert-warning fontM" id="message-widget" ng-show="agreement.success && agreement.agreement && zoom >= pinsVisibleZoom">
+                <div class="col-lg-6 main-container">                    
+                    <div class="alert alert1 alert-warning fontM" id="message-widget" ng-show="showAgreement()">
                         {{agreement.agreement}}
                         <i class="fa fa-flag"></i> 
                     </div>
-                    <div class="alert  alert-warning fontM" id="zoomedout-widget" ng-show="zoom < pinsVisibleZoom">
+                    <div class="alert  alert-warning fontM" id="zoomedout-widget" ng-hide="zoomedInEnoughToShowIssues()">
                         Zoom in op de kaart om meldingen te zien.
                         <i class="fa fa-flag"></i> 
                     </div>
@@ -110,22 +110,12 @@
     </body>
 </html>
 <!-- Page specific js -->
-<!-- <script src="./js/vdb-start.js"></script> -->
 <script type='text/javascript'>
         //placing the subnav fixed on top
         $(document).ready(function() {
-        	$('.subnav').affix({
-      			offset: {
-        			top: $('#navtop').height()
-      			}
-		});	
+            $('.subnav').affix({ offset: { top: $('#navtop').height() } });	
         });
 </script>
 <style type="text/css">
-  @media (min-width: 1199px){
-  .pac-container, .pac-item {
-    width: 240px !important;
-}
-}
-
+    @media (min-width: 1199px) { .pac-container, .pac-item { width: 240px !important; } }
 </style>
