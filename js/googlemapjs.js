@@ -135,33 +135,20 @@ function getaddressshow(latlng){
 
 //google map auto complete change string to make it by id
 
-function attachAutoCompleteListener(stringid,resultmap) {
+function attachAutoCompleteListener(stringid) {
     logger("attachAutoCompleteListener " +stringid);
     var input = document.getElementById(stringid);
-    
     //if input cannot be found yet, it's probably not loaded yet, so return doing nothing
     if (input == undefined) return;
 
-    if (maxlat) {
-        var defaultBounds = new google.maps.LatLngBounds(
-            new google.maps.LatLng(maxlat,maxlng),
-            new google.maps.LatLng(minlat,minlng)
-        );
-    }
-    var options = {
-        componentRestrictions: {
-        country: 'nl'
-        },
-        bounds:defaultBounds,
-    };
+    var options = { componentRestrictions: { country: 'nl' } };
 
-    autocomplete = new google.maps.places.Autocomplete(input, options);
+    var autocomplete = new google.maps.places.Autocomplete(input, options);
     autocomplete.bindTo('bounds',map);
     google.maps.event.addListener(autocomplete, 'place_changed', function() {
         logger("google place changed");
 
         var place = autocomplete.getPlace();
-        logger(place);
         var address = "";
         var bounds = undefined;
         
@@ -171,10 +158,10 @@ function attachAutoCompleteListener(stringid,resultmap) {
         } else if (place.name) {
             address = place.name;
         }
-
         moveMapToAddress(address,bounds);
-
     });
+
+    sureThatMapIsThereListener.remove();
 
 }
 
@@ -380,7 +367,7 @@ function getMarkerLocation(marker) {
         markerLng = marker.getPosition().lng();
     });
 }
-// get location search at create issue
+// get location search at create issue // i dont think this is used anymore
 function geocodeAddressCreateProblem(geocoder, resultsMap, address,location) {
     var address = document.getElementById('searchCityProblem').value;
     geocoder.geocode({

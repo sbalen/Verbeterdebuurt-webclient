@@ -116,7 +116,7 @@ vdbApp.run(function(){
 
 vdbApp.run(['$route', '$rootScope', '$location', function ($route, $rootScope, $location) {
     var original = $location.path;
-    $location.path = function (path, keepstate) {
+    $location.path = function (path, keepstate) {        
         if (keepstate) {
             var lastRoute = $route.current;
             var un = $rootScope.$on('$locationChangeSuccess', function () {
@@ -1020,20 +1020,18 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
         $rootScope.errorSession = "";
 
         menuSelected($rootScope, 'home');
-        
-        
         //if really the first time loading, listen to the map being done loading, find start location, and remove listener.
         if (!mainControllerInitialized) {
 
             var listenerForMapReady = google.maps.event.addListener(map,'idle',function() {                
-                //attach autocomplete listener to main search box
-                attachAutoCompleteListener('searchCity');
                 //determine where the map should start
                 mainController.determineStartLocation(mainController.startLocationDetermined);
                 listenerForMapReady.remove();
             });   
             mainControllerInitialized = true;
         }
+
+         $timeout(function () { attachAutoCompleteListener('searchCity'); },10);
     }
 
     mainController.rewritePathForCouncil = function() {
@@ -1055,7 +1053,6 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
 
         $scope.council = newCouncil;
         $location.path(newPath);
-        //moveMapToAddress(mainController.council);
     }
 
     mainController.determineStartLocation = function(doneCallBack) {
@@ -1105,26 +1102,20 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
         logger("updatePathForCouncil(" + city + ")");      
 
         var currentPath = $location.path();
-        //|| $location.path().includes('/melding/') 
 
         if (currentPath.includes('gemeente') ||
             currentPath.includes('postcode') ||
             currentPath == '/' ) {
             $location.path('/gemeente/' + convertToSlug(city), true);
+    
         }
 
-        // if ($routeParams.id) return;
-        // if (currentPath.includes('mijn-meldingen')) return;
-        // if (currentPath.includes('nieuwe-melding')) return;
-        // if (currentPath.includes('nieuw-probleem')) return;
-        // if (currentPath.includes('registreren')) return;
-        // if (currentPath.includes('nieuw-idee')) return;
     }
 
     $scope.updateSearchBoxForCouncil = function(city) {
         logger("updateSearchBoxForCouncil(" + city + ")");    
         logger($scope.searchCity);    
-        $scope.searchCity = city;//{name:city};
+        $scope.searchCity = city;
     }
 
     $scope.updateMyIssues = function() {
@@ -1204,7 +1195,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
 
                 $rootScope.newProblemList = getdata.issues;
                 //sort the issues descending for created date
-                if ($rootScope.newProblemList != undefined && $rootScope.newProblemList.length > 0) {
+                if ($rootScope.newProblemList != undefined && $rootScope.newProblemList.length > 1) {
                    $rootScope.newProblemList.sort(function(a, b){return b.created_at.localeCompare( a.created_at ) });
                 }
                 if (getdata.count != 0 || !getdata) {
@@ -1239,19 +1230,20 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     }
 
 
-    $scope.updateAllInfo = function(forceUpdate) {
+    $scope.updateAllInfo = function(forceUpdate) {        
         logger("updateAllInfo("+forceUpdate+") --> ");
         logger(city);
 
+        //if force, just reload all, regardless of the city name
         if(forceUpdate && city.long_name != null) {
             $scope.updatePathForCouncil(city.long_name);
             $scope.updateSearchBoxForCouncil(city.long_name);
             $scope.updateCouncilReport(city.long_name);
             $scope.updateCouncilAgreement(city.long_name);
-        } else {
+        } else { // otherwise, get the cityname and check it it has changed, only then reload info
             var currentCity = city.long_name;
             determineCityForGeocode(function() {
-                
+                                
                 if (currentCity == undefined || city.long_name != currentCity.long_name) {
                     $scope.updatePathForCouncil(city.long_name);
                     $scope.updateSearchBoxForCouncil(city.long_name);
@@ -3005,7 +2997,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
     //first initial
     $timeout(function () {        
         googleMapCreateProblem();        
-        attachAutoCompleteListener('searchCityProblem',map3);
+        attachAutoCompleteListener('searchCityProblem');
         $scope.categoriesData();
     }, 1500);
 
@@ -3381,7 +3373,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
     //first initial
     $timeout(function () {
         googleMapCreateIdea();
-        attachAutoCompleteListener('searchCityProblem',map4);
+        attachAutoCompleteListener('searchCityProblem');
     }, 1500);
 
 
