@@ -1094,6 +1094,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
         logger('startLocationDetermined('+result+')')
         if (result) {
             $scope.updateAllInfo(true);
+            $scope.updateMyIssues();
         }
         addMapChangedListener($scope.updateAllInfo);
     }
@@ -1119,6 +1120,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     }
 
     $scope.updateMyIssues = function() {
+        logger("updateMyIssues");
         if ($cookies.getObject('user')) {
             var jsondata = JSON.stringify({
                 "user": {

@@ -161,8 +161,6 @@ function attachAutoCompleteListener(stringid) {
         moveMapToAddress(address,bounds);
     });
 
-    sureThatMapIsThereListener.remove();
-
 }
 
 function geocodeGetLocationFound(lat, lng) {
