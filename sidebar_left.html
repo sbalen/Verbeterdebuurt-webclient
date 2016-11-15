@@ -3,52 +3,53 @@
     <div class="panel side-panel panel-default" id="new-problem-widget">
         <div class="panel-heading">
             <strong>Report</strong>
+        </div>
+        <div class="panel-body">
+            <div class="list-group report-list-council" ng-hide="reportList.council == null || reportList.council == 'undefined' " >
+                <strong>Gemeente: {{reportList.council}}</strong></br>
+                {{agreement.agreement}}</strong></br></br>
+                Meldingen per maand: {{reportList.reports}} </br>
+                Oplossingen per maand: {{reportList.solutions}}
+            </div>
+            <div class="list-group report-list-council"  ng-show="reportList.council == null || reportList.council == 'undifined' ">
+                geen locatieinformatie gevonden
+            </div>
+        </div>  
     </div>
-    <div class="panel-body">
-        <div class="list-group report-list-council" ng-hide="reportList.council == null || reportList.council == 'undefined' " >
-            <strong>Gemeente: {{reportList.council}}</strong></br>
-            {{agreement.agreement}}</strong></br></br>
-            Meldingen per maand: {{reportList.reports}} </br>
-            Oplossingen per maand: {{reportList.solutions}}
+    <div class="panel side-panel panel-default" id="new-problem-widget" ng-show="recentProblems().length">
+        <div class="panel-heading">
+            <strong>Nieuwste problemen</strong>
         </div>
-        <div class="list-group report-list-council"  ng-show="reportList.council == null || reportList.council == 'undifined' ">
-            geen locatieinformatie gevonden
-        </div>
-    </div>  
-</div>
-<div class="panel side-panel panel-default" id="new-problem-widget" ng-show="recentProblems().length">
-    <div class="panel-heading">
-        <strong>Nieuwste problemen</strong>
+        <div class="panel-body">
+            <div class="list-group" >
+                <a href="/melding/{{recentProblem.id}}" class="list-group-item clearfix " ng-repeat="recentProblem in recentProblems()" ng-click="clickIssues()">
+                    <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
+                    <strong> {{recentProblem.title}}</strong> {{recentProblem.location.full_address}}
+                    <span class="pull-right">
+                        <button class="btn btn-xs btn-success" >
+                            <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
+                        </button>
+                    </span>
+                </a>
+            </div>
+        </div>  
     </div>
-    <div class="panel-body">
-        <div class="list-group" >
-            <a href="/melding/{{recentProblem.id}}" class="list-group-item clearfix " ng-repeat="recentProblem in recentProblems()" ng-click="clickIssues()">
-                <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
-                <strong> {{recentProblem.title}}</strong> {{recentProblem.location.full_address}}
-                <span class="pull-right">
-                    <button class="btn btn-xs btn-success" >
-                        <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
-                    </button>
-                </span>
-            </a>
+    <div class="panel side-panel panel-default" ng-show="recentIdeas().length">
+        <div class="panel-heading" id="active-idea-widget">
+            <strong>Actieve Idee&euml;n</strong>
         </div>
-    </div>  
-</div>
-<div class="panel side-panel panel-default" ng-show="recentIdeas().length">
-    <div class="panel-heading" id="active-idea-widget">
-        <strong>Actieve Idee&euml;n</strong>
+        <div class="panel-body">
+            <div class="list-group">
+                <a href="/melding/{{recentIdea.id}}" class="list-group-item clearfix" ng-repeat="recentIdea in recentIdeas()" ng-click="clickIssues()">
+                    <img class="icon" src="./img/icon_idea_2_21_21.png" size="20px"/>
+                    <strong>{{recentIdea.title}}</strong> {{recentIdea.location.full_address}}
+                    <span class="pull-right">
+                        <button class="btn btn-xs btn-success">
+                            <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
+                        </button>
+                    </span>
+                </a>
+            </div>
+        </div>  
     </div>
-    <div class="panel-body">
-        <div class="list-group">
-            <a href="/melding/{{recentIdea.id}}" class="list-group-item clearfix" ng-repeat="recentIdea in recentIdeas()" ng-click="clickIssues()">
-                <img class="icon" src="./img/icon_idea_2_21_21.png" size="20px"/>
-                <strong>{{recentIdea.title}}</strong> {{recentIdea.location.full_address}}
-                <span class="pull-right">
-                    <button class="btn btn-xs btn-success">
-                        <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
-                    </button>
-                </span>
-            </a>
-        </div>
-    </div>  
 </div>
