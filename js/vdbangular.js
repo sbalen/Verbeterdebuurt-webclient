@@ -1120,20 +1120,17 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
     }
 
     $scope.updateMyIssues = function() {
-        logger("updateMyIssues");
+        logger("updateMyIssues -->" + $cookies.getObject('user'));
         if ($cookies.getObject('user')) {
-            var jsondata = JSON.stringify({
-                "user": {
-                    "username": "" + $cookies.getObject('user').username + "",
-                    "password_hash": "" + $cookies.getObject('user').password_hash + ""
-
-                }
-            });
-            var getMyIssues = myIssuesService.getMyIssues(jsondata).then(function (data) {
-                var getdata = data.data;
-                var count = getdata.count;
-                $rootScope.myIssueCount = count;
-                $rootScope.myIssuesList = getdata.issues;
+            var jsondata = {}
+            jsondata.user = $cookies.getObject('user');
+            jsondata = JSON.stringify(jsondata);
+            logger(jsondata);
+            myIssuesService.getMyIssues(jsondata).then(function (data) {
+                logger("retrieving:");
+                logger(data.data);
+                $rootScope.myIssueCount = data.data.count;
+                $rootScope.myIssuesList = data.data.issues;
             })
         }
 
@@ -1371,8 +1368,6 @@ vdbApp.controller('issueCtrl', ['$scope', '$rootScope', '$window', '$routeParams
             $scope.showIssueDetail($routeParams.id);
         }
 
-        // no need for this here again, right?
-        //$scope.getMyIssues();
 
     }
 

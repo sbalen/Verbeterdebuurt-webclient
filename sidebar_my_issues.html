@@ -1,14 +1,14 @@
-<div class="col-lg-3 right-panel hidden-sm hidden-xs hidden-md " ng-hide="results.length == 0 || myIssuesList == null ">
+<div class="col-lg-3 right-panel hidden-sm hidden-xs hidden-md " ng-show="myIssuesList.length > 0 ">
     <div class="panel side-panel panel-default">
         <div class="panel-heading">
         <strong>Mijn Meldingen</strong>
     </div>
     <div class="panel-body">
         <div class="list-group" >
-            <a href="/mijn-meldingen/{{myIssues.id}}" class="list-group-item clearfix" ng-repeat="myIssues in myIssuesList| orderBy : 'created_at' : true |limitTo:2  | filter : x as results" ng-click="clickIssues()">
+            <a href="/mijn-meldingen/{{myIssues.id}}" class="list-group-item clearfix" ng-repeat="myIssue in myIssuesList| orderBy : 'created_at' : true |limitTo:2  | filter : x as results" ng-click="clickIssues()">
                 <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
-                <strong> {{myIssues.title}}</strong> {{myIssues.location.full_address}}
-                {{myIssues.status}}
+                <strong> {{myIssue.title}}</strong> {{myIssue.location.full_address}}
+                {{myIssue.status}}
                 <span class="pull-right">
                     <button class="btn btn-xs btn-success" >
                         <span class="glyphicon glyphicon glyphicon-chevron-right"></span>

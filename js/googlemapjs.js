@@ -20,6 +20,7 @@ var latlngChange;
 var marker;
 var map;
 var postalcode = null;
+var autocompleteListener;
 cityName=null;
 maxlat  = null;
 maxlng  = null;
@@ -145,7 +146,8 @@ function attachAutoCompleteListener(stringid) {
 
     var autocomplete = new google.maps.places.Autocomplete(input, options);
     autocomplete.bindTo('bounds',map);
-    google.maps.event.addListener(autocomplete, 'place_changed', function() {
+    if (autocompleteListener != undefined) { autocompleteListener.remove(); }
+    autocompleteListener = google.maps.event.addListener(autocomplete, 'place_changed', function() {
         logger("google place changed");
 
         var place = autocomplete.getPlace();
