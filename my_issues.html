@@ -13,7 +13,7 @@
                                 <input type="hidden" ng-model="page" value="{{currentPage}}">
                                <div width="100%" class="clearfix">
                                <div class="pull-left"  style="width:90px;overflow-x:hidden; margin-right:10px;">
-                                <img src="{{myIssues.image.image_url}}" ng-if="myIssues.image" height="100px" width="100px" style="padding-right:10px;width: auto;
+                                <img src="{{noProtocol(myIssues.image.thumbnal_url)}}" ng-if="myIssues.image" height="100px" width="100px" style="padding-right:10px;width: auto;
                                 text-align: center;margin-left:-50%">
                                 <img src="./img/noimage-icon.jpg" ng-if="!myIssues.image" height="100px" width="100px" style="padding-right:10px;">
                                </div>
