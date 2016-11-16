@@ -1098,7 +1098,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
             $scope.updateAllInfo(true);
             $scope.updateMyIssues();
         }
-        addMapChangedListener($scope.updateAllInfo);
+        addMapChangedListener($scope.updateAllInfo,$location);
     }
 
     $scope.updatePathForCouncil = function(city) {
@@ -1233,7 +1233,6 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
 
     $scope.updateAllInfo = function(forceUpdate) {        
         logger("updateAllInfo("+forceUpdate+") --> ");
-        logger(city);
 
         //if force, just reload all, regardless of the city name
         if(forceUpdate && city.long_name != null) {
@@ -3006,8 +3005,9 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
     }
     //first initial
     $timeout(function () {        
-        googleMapCreateProblem();        
-        attachAutoCompleteListener('searchCityProblem');
+         
+        var issueMarker = googleMapCreateProblem();
+        attachAutoCompleteListener('searchCityProblem',issueMarker,map3,"location");        
         $scope.categoriesData();
     }, 1500);
 
@@ -3380,10 +3380,12 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
     } else {
         $scope.hideLogin = false;
     }
+
+
     //first initial
     $timeout(function () {
-        googleMapCreateIdea();
-        attachAutoCompleteListener('searchCityProblem');
+        var issueMarker = googleMapCreateIdea();
+        attachAutoCompleteListener('searchCityProblem',issueMarker,map4,"location2");
     }, 1500);
 
 
