@@ -1326,6 +1326,9 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
         }
     }           
 
+    $scope.noProtocol = function(url) {
+        return url.replace('http:','').replace('https:','');
+    }
     mainController.init();
 
 
