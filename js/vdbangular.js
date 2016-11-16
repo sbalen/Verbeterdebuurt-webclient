@@ -1516,11 +1516,13 @@ vdbApp.controller('issueCtrl', ['$scope', '$rootScope', '$window', '$routeParams
         });
         var getRemindIssue = remindIssueService.getRemindIssue(jsondata).then(function (data) {
             var getRemindIssue = data.data;
-            $scope.hideError = 0;                    
+            $scope.hideError = 1;                    
             $rootScope.globaloverlay = "";
             if (!getRemindIssue.success) {
                 $scope.errorConfirmed = getRemindIssue.error;
             } else if (callBack != null && typeof callBack === "function") {
+                $scope.successClass = "successAlert";
+                $scope.successMessageNonApi = "De gemeente is herinnerd aan de melding.";
                 callBack();
             }
 
@@ -1538,10 +1540,13 @@ vdbApp.controller('issueCtrl', ['$scope', '$rootScope', '$window', '$routeParams
         var getConfirmIssue = confirmIssueService.getConfirmIssue(jsondata).then(function (data) {
             var getConfirmIssue = data.data;
             $scope.hideError = 0;
+
             $rootScope.globaloverlay = "";
             if (!getConfirmIssue.success) {
                 $scope.errorConfirmed = getConfirmIssue.error;
             } else if (callBack != null && typeof callBack === "function") {
+                $scope.successClass = "successAlert";
+                $scope.successMessageNonApi = "De melding is bevestigd.";
                 callBack();
             }
 
