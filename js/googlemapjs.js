@@ -104,15 +104,15 @@ function initMapListeners() {
 
 }
 
-function addMapChangedListener(listener) {
+function addMapChangedListener(listener,$location) {
     logger("addMapChangedListener()");
 
-    // get the data from center of map
     google.maps.event.addListener(map, 'dragend', listener);
-    google.maps.event.addListener(map, 'zoom_changed', listener);
+    google.maps.event.addListener(map, 'zoom_changed', function() {
 
-//    google.maps.event.addListener(map, 'click', listener);
-    //google.maps.event.addListener(map,'bounds_changed', handleMapChanged);
+        if ($location && ($location.path().includes('nieuw-probleem') || $location.path().includes('nieuw-idee') ) )  return;
+        listener();
+    });
 }
 
 function checkZoomLevel($rootScope) {
@@ -137,7 +137,7 @@ function getaddressshow(latlng){
 
 //google map auto complete change string to make it by id
 
-function attachAutoCompleteListener(stringid) {
+function attachAutoCompleteListener(stringid,marker,locationmap,location) {
     logger("attachAutoCompleteListener " +stringid);
     var input = document.getElementById(stringid);
     //if input cannot be found yet, it's probably not loaded yet, so return doing nothing
@@ -161,8 +161,17 @@ function attachAutoCompleteListener(stringid) {
         } else if (place.name) {
             address = place.name;
         }
-        moveMapToAddress(address,bounds);
+
+        if (marker) {
+            moveMapToAddress(address,false,function() {
+               markerCenter(locationmap,marker,location);
+            })
+        } else {
+            moveMapToAddress(address);
+        }
     });
+
+    return autocomplete;
 
 }
 
@@ -259,9 +268,12 @@ function googleMapCreateProblem() {
     markerLat = marker.getPosition().lat();
     markerLng = marker.getPosition().lng();
     initMainMapToSmallMapListener(map3);
+
     markerCenter(map3, marker, "location");
     getMarkerLocation(marker);
     markerGetAddress(marker, "location");    
+
+    return marker;
 }
 
 function googleMapCreateIdea() {
@@ -305,21 +317,23 @@ function googleMapCreateIdea() {
 function initMainMapToSmallMapListener(smallMap) {
     //mainmap = global map
     google.maps.event.addListener(smallMap, 'bounds_changed', function (e) {
-        google.maps.event.trigger(smallMap, 'resize')
+        //google.maps.event.trigger(smallMap, 'resize')
         map.setCenter(smallMap.getCenter());
         map.setZoom(smallMap.getZoom());
     });
 
     google.maps.event.addListener(map, 'bounds_changed', function (e) {
-        google.maps.event.trigger(map, 'resize')
+        //google.maps.event.trigger(map, 'resize')
         smallMap.setCenter(map.getCenter());
         smallMap.setZoom(map.getZoom());
     });
 
 }
 
+var setMarkerToMapCenterListener;
 //marker at center
 function markerCenter(map, marker, location) {
+    logger("markerCenter()")
     var addressDelay;
     marker.setPosition(map.getCenter());
     markerLat = marker.getPosition().lat();
@@ -334,11 +348,11 @@ function markerCenter(map, marker, location) {
         }
     });
 
-    google.maps.event.addListener(map, 'click', function (e) {
+    if (setMarkerToMapCenterListener) setMarkerToMapCenterListener.remove();
+    setMarkerToMapCenterListener = google.maps.event.addListener(map, 'click', function (e) {
         updateAddressToPending(location)
         clearTimeout(addressDelay);
         marker.setPosition(e.latLng);
-        // logger(e.latLng);
         markerLat = marker.getPosition().lat();
         markerLng = marker.getPosition().lng();
         geocoder.geocode({
@@ -555,24 +569,6 @@ function moveMapToBrowserLocation($rootScope,$q,withFallBack,callBack) {
         deferredResponse.reject('timed out waiting too long for user');
     }, resolveBy+100);
 
-
-
-    // navigator.geolocation.getCurrentPosition(
-    //     //when user accept the location
-    //     function (position) {
-    //         logger("user accepted location awareness");
-    //         moveMapToLocation({lat: position.coords.latitude,lng:  position.coords.longitude},callBack);
-    //     },
-    //     //when user did not share location
-    //     function (error) {
-    //         logger("user did not accept location awareness");
-    //         if (error.PERMISSION_DENIED) {               
-    //             if (withFallBack) {
-    //                 moveMapToUserLocation(true,callBack);
-    //             }
-    //         }
-    //     }
-    // )
 }
 
 function moveMapToLocation(location,callBack,boundsToFitTo) {
