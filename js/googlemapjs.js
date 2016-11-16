@@ -1,4 +1,4 @@
-var ZOOM_PINS_VISIBLE = 14; //this is also in vdbangular.js, todo: how can we only have it once
+var ZOOM_PINS_VISIBLE = 14; 
 var ZOOM_ISSUES_RETRIEVABLE = 12;
 var ZOOM_START = 15;
 var ZOOM_MAX = 17;

@@ -6,9 +6,9 @@
     <div class="panel-body">
         <div class="list-group" >
             <a href="/mijn-meldingen/{{myIssues.id}}" class="list-group-item clearfix" ng-repeat="myIssue in myIssuesList| orderBy : 'created_at' : true |limitTo:2  | filter : x as results" ng-click="clickIssues()">
-                <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
+                <img class="icon" src="./img/{{myIssue.type == 'idea' ? 'icon_idea_2_21_21.png' : 'icon_2_21_21.png'}}" size="20px"/>
                 <strong> {{myIssue.title}}</strong> {{myIssue.location.full_address}}
-                {{myIssue.status}}
+                {{myIssue.status}} <<
                 <span class="pull-right">
                     <button class="btn btn-xs btn-success" >
                         <span class="glyphicon glyphicon glyphicon-chevron-right"></span>

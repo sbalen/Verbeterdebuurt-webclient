@@ -451,7 +451,6 @@ vdbApp.factory('issuesService', ['$http','$rootScope', function ($http,$rootScop
                     logger("issueService.getIssues.error:")
                     errorhandler($rootScope,{url:config.url,'data':config.data,'status':status,'message':data})
                 });
-            return issuesService.data;
         }
 
     }
@@ -819,6 +818,7 @@ vdbApp.factory('agreementSevice', ['$http','$rootScope', function ($http,$rootSc
                 })
                 .error(function(data, status, headers, config){
                     logger("agreementSevice.getAgreement.error:")
+                    logger(headers);
                     errorhandler($rootScope,{url:config.url,'data':config.data,'status':status,'message':data})
                 });
         }
