@@ -334,9 +334,11 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
         })
         //success delete issue
         .when('/bevestiging-verwijderen', {
-            templateUrl: 'confirmation-deleteissue.html'
+            templateUrl: 'confirmation_delete_issue.html'
         })
-    
+        .when('/onbekende-melding', {
+            templateUrl: ' confirmation_unknown_issue.html'
+        })
         //handle the hash sessions
         //confirm the vote
         .when('/stem/bevestigen/:hashkey', {
@@ -1256,19 +1258,20 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
         $scope.updateMapIssues();
     }
 
+    $scope.isUserLoggedIn = function() {
+        return ($cookies.getObject('user') != undefined);
+    }
+
+
     $scope.updateLoginStatus = function() {
         //isn't this double, zee below?
         $scope.hideLogin = $cookies.getObject('user')
     }
 
+
     //login session
     $scope.loginStatus = function () {
-        if ($cookies.getObject('user') == null) {
-            return false;
-        } else {
-            $rootScope.lusername = $cookies.getObject('user').username;
-            return true;
-        }
+        return $scope.isUserLoggedIn() && ($rootScope.lusername = $cookies.getObject('user').username);
     }
 
     //logOut
@@ -1362,6 +1365,9 @@ vdbApp.controller('issueCtrl', ['$scope', '$rootScope', '$window', '$routeParams
                             $location.path('/melding/'+convertToSlug(issue.title)+'/'+issue.id,true);
                         });
                     });
+                } else {
+                    $rootScope.globaloverlay = "";
+                    $location.path('/onbekende-melding');
                 }
             });
         } else {
@@ -1459,7 +1465,7 @@ vdbApp.controller('issueCtrl', ['$scope', '$rootScope', '$window', '$routeParams
 
          //close issue with hashcode
         
-        var hashToDelete = hashkey;
+        $rootScope.hashToDelete = hashkey;
         //this is where delete issue with hash was
 
         $rootScope.getStatusId = issueId;
@@ -1532,21 +1538,17 @@ vdbApp.controller('issueCtrl', ['$scope', '$rootScope', '$window', '$routeParams
     }
 
     $scope.deleteIssueWithHash = function () {
-        logger("issueCtrl.deleteIssueWithHash() (defined in getIssuesResult)");
+        logger("issueCtrl.deleteIssueWithHash() --> " + $rootScope.hashToDelete);
         $rootScope.globaloverlay = "active";
         
-        var user = {};
         
-        user.authorisation_hash = hashToDelete;
-        var issue_id = $rootScope.getStatusId;
-        var status = "deleted";
-        var jsondata = JSON.stringify({
-            "user" : {
-                "authorisation_hash" : hashToDelete
-            },
-            "issue_id" : issue_id,
-            "status" : status        
-        });
+        var jsondata = {};
+        jsondata.user = {};
+        jsondata.user.authorisation_hash = $rootScope.hashToDelete;
+        jsondata.status = "deleted";
+        jsondata.issue_id = $rootScope.getStatusId;
+
+        jsondata = JSON.stringify(jsondata);
 
         
         var getStatusChange = statusChangeService.getStatusChange(jsondata).then(function (data) {
@@ -1554,16 +1556,15 @@ vdbApp.controller('issueCtrl', ['$scope', '$rootScope', '$window', '$routeParams
             
             //validate error or not
             if (getStatusChange.success) {
-                var getMyIssues = myIssuesService.getMyIssues(jsondata).then(function (data) {
-                    
-                    $('#DeleteModal').modal('hide');
-                    $('.modal-backdrop').hide();
-                    $rootScope.globaloverlay = "";
-                    $scope.error = "";
-                    $scope.hideError = "ng-hide";
-                    $location.path("/bevestiging-verwijderen");
+                $('#DeleteModal').modal('hide');
+                $('.modal-backdrop').hide();
+                $rootScope.globaloverlay = "";
+                $scope.error = "";
+                $scope.hideError = "ng-hide";
+                $location.path("/bevestiging-verwijderen");
 
-                });
+                $scope.updateMyIssues();
+
             } else {
                 $scope.errorVote = getStatusChange.error;
                 $scope.hideError = "";
@@ -1776,10 +1777,10 @@ vdbApp.controller('mentionCtrl', ['$scope', '$rootScope', '$window', '$location'
 vdbApp.controller('myIssuesCtrl', ['$scope', '$rootScope', '$window', '$location', 'myIssuesService', '$cookies', function ($scope, $rootScope, $window, $location, myIssuesService, $cookies) {
     
 
-    var myissueController = this;
+    var myIssuesController = this;
 
 
-    myissueController.init = function() {
+    myIssuesController.init = function() {
 
 
         $rootScope.dynamicTitle = "Mijn meldingen |";
@@ -1804,7 +1805,7 @@ vdbApp.controller('myIssuesCtrl', ['$scope', '$rootScope', '$window', '$location
         $rootScope.getStatusId = id;
     }
 
-    myissueController.init();
+    myIssuesController.init();
 
 }]);
 
@@ -1836,6 +1837,8 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope', '$routeParams', '$http', '$ro
         $scope.successClass = "successAlert";
         $scope.successMessageNonApi = "Bevestiging probleem bij uw e-mail";
     }
+
+    //what is happening here? getting all issues for a user, if found yours, set the sateliteimg??????
     var jsondata = JSON.stringify({
         "user": {
             "username": "" + $cookies.getObject('user').username + "",
@@ -1927,12 +1930,6 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope', '$routeParams', '$http', '$ro
             $location.path("/login");
             $rootScope.errorSession = "Voor deze actie moet je ingelogd zijn."
         } else {
-        // if($scope.hideSelection){
-        //         $scope.hideSelection = false;
-        //     }else{
-        //         $scope.hideSelection = true;
-        //     }
-
             $rootScope.globaloverlay = "active";
             var jsonVoteSubmit = JSON.stringify({
                 "user": {
@@ -3690,7 +3687,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
 }]);
 
 
-vdbApp.controller('deleteIssueCtrl', ['$scope', '$rootScope', '$routeParams', '$window', 'statusChangeService', 'myIssuesService', '$cookies', function ($scope, $rootScope, $routeParams, $window, statusChangeService, myIssuesService, $cookies) {
+vdbApp.controller('deleteIssueCtrl', ['$scope', '$rootScope', '$location','$routeParams', '$window', 'statusChangeService', 'myIssuesService', '$cookies', function ($scope, $rootScope, $location, $routeParams, $window, statusChangeService, myIssuesService, $cookies) {
     $scope.hideError = "ng-hide";
     $scope.error = "";
     $scope.deleteIssue = function () {
@@ -3712,23 +3709,14 @@ vdbApp.controller('deleteIssueCtrl', ['$scope', '$rootScope', '$routeParams', '$
             var getStatusChange = data.data;
             //validate error or not
             if (getStatusChange.success) {
-                var jsondata = JSON.stringify({
-                    "user": {
-                        "username": "" + $cookies.getObject('user').username + "",
-                        "password_hash": "" + $cookies.getObject('user').password_hash + ""
-                    }
-                });
-                var getMyIssues = myIssuesService.getMyIssues(jsondata).then(function (data) {
-                    var getdata = data.data;
-                    var count = getdata.count;
-                    $rootScope.myIssueCount = count;
-                    $rootScope.myIssuesList = getdata.issues;
-                    $('#DeleteModal').modal('hide');
-                    $('.modal-backdrop').hide();
-                    $rootScope.globaloverlay = "";
-                    $scope.error = "";
-                    $scope.hideError = "ng-hide";
-                })
+                $scope.updateMyIssues();
+                $('#DeleteModal').modal('hide');
+                $('.modal-backdrop').hide();
+                $rootScope.globaloverlay = "";
+                $scope.error = "";
+                $scope.hideError = "ng-hide";
+                $location.path('/bevestiging-verwijderen')
+
             } else {
                 $scope.error = getStatusChange.error;
                 $scope.hideError = "";
