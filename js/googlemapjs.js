@@ -1,4 +1,4 @@
-var ZOOM_PINS_VISIBLE = 14; //this is also in vdbangular.js, todo: how can we only have it once
+var ZOOM_PINS_VISIBLE = 14; 
 var ZOOM_ISSUES_RETRIEVABLE = 12;
 var ZOOM_START = 15;
 var ZOOM_MAX = 17;
@@ -11,6 +11,7 @@ var LOCATION_DEFAULT_LAT = 52.371828;
 var LOCATION_DEFAULT_LNG = 4.902220;
 var LOCATION_DEFAULT = {lat: LOCATION_DEFAULT_LAT,lng: LOCATION_DEFAULT_LNG}
 var LOCATION_DEFAULT_BOUNDS = {lat: LOCATION_DEFAULT_LAT,lng: LOCATION_DEFAULT_LNG}
+var LOCATION_RESOLVE_BY = 7 * 1000;
 var ZOOM_INIT = 8; //netherlands size
 
 var geocoder = new google.maps.Geocoder();
@@ -485,24 +486,68 @@ function determineCityForGeocode(callBack,boundsToFitTo) {
     });
 }
 
-function moveMapToBrowserLocation(withFallBack,callBack) {
+function moveMapToBrowserLocation($rootScope,$q,withFallBack,callBack) {
     logger("moveMapToBrowserLocation()");
-    navigator.geolocation.getCurrentPosition(
-        //when user accept the location
-        function (position) {
+
+
+    /*
+        If the use takes too long to decide to allow browser location, or if the user has firefox and clicks 'not now' when asked
+        we do not get a position or error. 
+        Also in the case that it just takes too long to get a location fixed (for whatever reason), we don't want to wait
+        indefinitely. 
+        To catch all of these cases, we handle the geolocation positioning with a promise.
+        And if that promise takes too long to recover, we continue.
+    */
+
+    var resolveBy = LOCATION_RESOLVE_BY;
+    var deferredResponse = $q.defer();
+
+    deferredResponse.promise.then(
+        function(position) {
             logger("user accepted location awareness");
             moveMapToLocation({lat: position.coords.latitude,lng:  position.coords.longitude},callBack);
-        },
-        //when user did not share location
+        }, 
         function (error) {
-            logger("user did not accept location awareness");
-            if (error.PERMISSION_DENIED) {               
-                if (withFallBack) {
-                    moveMapToUserLocation(true,callBack);
-                }
+           logger("user did not accept location awareness");
+            if (withFallBack) {
+                moveMapToUserLocation(true,callBack);
             }
         }
-    )
+    );
+
+    //actually check
+    navigator.geolocation.getCurrentPosition(function (position) {
+        deferredResponse.resolve(position);
+    }, function (error) {
+        deferredResponse.reject(error);
+    }, {        
+        timeout: resolveBy        
+    });
+
+    //if user is just waiting to long, reject all together
+    setTimeout(function() {
+       logger("user did not accept?");
+        deferredResponse.reject('timed out waiting too long for user');
+    }, resolveBy+100);
+
+
+
+    // navigator.geolocation.getCurrentPosition(
+    //     //when user accept the location
+    //     function (position) {
+    //         logger("user accepted location awareness");
+    //         moveMapToLocation({lat: position.coords.latitude,lng:  position.coords.longitude},callBack);
+    //     },
+    //     //when user did not share location
+    //     function (error) {
+    //         logger("user did not accept location awareness");
+    //         if (error.PERMISSION_DENIED) {               
+    //             if (withFallBack) {
+    //                 moveMapToUserLocation(true,callBack);
+    //             }
+    //         }
+    //     }
+    // )
 }
 
 function moveMapToLocation(location,callBack,boundsToFitTo) {

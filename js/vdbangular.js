@@ -334,9 +334,11 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
         })
         //success delete issue
         .when('/bevestiging-verwijderen', {
-            templateUrl: 'confirmation-deleteissue.html'
+            templateUrl: 'confirmation_delete_issue.html'
         })
-    
+        .when('/onbekende-melding', {
+            templateUrl: ' confirmation_unknown_issue.html'
+        })
         //handle the hash sessions
         //confirm the vote
         .when('/stem/bevestigen/:hashkey', {
@@ -451,7 +453,6 @@ vdbApp.factory('issuesService', ['$http','$rootScope', function ($http,$rootScop
                     logger("issueService.getIssues.error:")
                     errorhandler($rootScope,{url:config.url,'data':config.data,'status':status,'message':data})
                 });
-            return issuesService.data;
         }
 
     }
@@ -819,6 +820,7 @@ vdbApp.factory('agreementSevice', ['$http','$rootScope', function ($http,$rootSc
                 })
                 .error(function(data, status, headers, config){
                     logger("agreementSevice.getAgreement.error:")
+                    logger(headers);
                     errorhandler($rootScope,{url:config.url,'data':config.data,'status':status,'message':data})
                 });
         }
@@ -1002,7 +1004,7 @@ vdbApp.run(['$rootScope', '$window', function ($rootScope, $window) {
 
     }]);
 
-vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$rootScope', '$routeParams', '$http', 'issuesService', 'reportService', '$facebook', '$cacheFactory', 'agreementSevice', '$cookies','myIssuesService', function ($scope, $timeout, $window, $location, $rootScope, $routeParams, $http, issuesService, reportService, $facebook, $cacheFactory, agreementSevice, $cookies, myIssuesService) {
+vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location', '$rootScope', '$routeParams', '$http', 'issuesService', 'reportService', '$facebook', '$cacheFactory', 'agreementSevice', '$cookies','myIssuesService', function ($scope, $q,$timeout, $window, $location, $rootScope, $routeParams, $http, issuesService, reportService, $facebook, $cacheFactory, agreementSevice, $cookies, myIssuesService) {
     
     var mainController = this;
 
@@ -1075,7 +1077,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
             moveMapToAddress($routeParams.postalcode,true,doneCallBack);
         } else if (navigator.geolocation) {
             //pass on the responsibility of calling back to moveMapToBrowserLocation (boogiewoogie?)
-            moveMapToBrowserLocation(true,doneCallBack);
+            moveMapToBrowserLocation($rootScope,$q,true,doneCallBack);
         } else if ($cookies.getObject('user') != null) {
             moveMapToUserLocation(true,doneCallBack);
         } else {
@@ -1256,19 +1258,20 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
         $scope.updateMapIssues();
     }
 
+    $scope.isUserLoggedIn = function() {
+        return ($cookies.getObject('user') != undefined);
+    }
+
+
     $scope.updateLoginStatus = function() {
         //isn't this double, zee below?
         $scope.hideLogin = $cookies.getObject('user')
     }
 
+
     //login session
     $scope.loginStatus = function () {
-        if ($cookies.getObject('user') == null) {
-            return false;
-        } else {
-            $rootScope.lusername = $cookies.getObject('user').username;
-            return true;
-        }
+        return $scope.isUserLoggedIn() && ($rootScope.lusername = $cookies.getObject('user').username);
     }
 
     //logOut
@@ -1362,6 +1365,9 @@ vdbApp.controller('issueCtrl', ['$scope', '$rootScope', '$window', '$routeParams
                             $location.path('/melding/'+convertToSlug(issue.title)+'/'+issue.id,true);
                         });
                     });
+                } else {
+                    $rootScope.globaloverlay = "";
+                    $location.path('/onbekende-melding');
                 }
             });
         } else {
@@ -1431,19 +1437,27 @@ vdbApp.controller('issueCtrl', ['$scope', '$rootScope', '$window', '$routeParams
         });
         issuesService.getIssues(jsondata).then(function (data) {
             logger("issueCtrl getIssuesResult ")
-            var getdata = data.data;
-            var currentIssue = getdata.issues[0];
-            $rootScope.problemIdList = getdata.issues;
-            $rootScope.dynamicTitle = ''+getdata.issues[0].title+' |';
-            
-            $scope.sateliteimg = $scope.getSateliteImage(currentIssue.location);
-
-            issueController.hideLogStatus();
-            issueController.updateComments();
-            moveMapToIssue(currentIssue);
 
             $scope.hide = "";
             $rootScope.globaloverlay = "";
+            var issues = undefined;
+            var currentIssue = undefined;
+            if (data.data.count >= 1) {
+
+                issues = data.data.issues;
+                currentIssue = data.data.issues[0];
+                $rootScope.problemIdList = issues;
+                $rootScope.dynamicTitle = ''+currentIssue.title+' |';
+                
+                $scope.sateliteimg = $scope.getSateliteImage(currentIssue.location);
+
+                issueController.hideLogStatus();
+                issueController.updateComments();
+                moveMapToIssue(currentIssue);
+
+            } else {
+                $location.path('/onbekende-melding');
+            }
 
             if (callBackWithIssue != undefined && typeof callBackWithIssue === "function" ) {
                 callBackWithIssue(currentIssue);
@@ -1459,7 +1473,7 @@ vdbApp.controller('issueCtrl', ['$scope', '$rootScope', '$window', '$routeParams
 
          //close issue with hashcode
         
-        var hashToDelete = hashkey;
+        $rootScope.hashToDelete = hashkey;
         //this is where delete issue with hash was
 
         $rootScope.getStatusId = issueId;
@@ -1532,21 +1546,17 @@ vdbApp.controller('issueCtrl', ['$scope', '$rootScope', '$window', '$routeParams
     }
 
     $scope.deleteIssueWithHash = function () {
-        logger("issueCtrl.deleteIssueWithHash() (defined in getIssuesResult)");
+        logger("issueCtrl.deleteIssueWithHash() --> " + $rootScope.hashToDelete);
         $rootScope.globaloverlay = "active";
         
-        var user = {};
         
-        user.authorisation_hash = hashToDelete;
-        var issue_id = $rootScope.getStatusId;
-        var status = "deleted";
-        var jsondata = JSON.stringify({
-            "user" : {
-                "authorisation_hash" : hashToDelete
-            },
-            "issue_id" : issue_id,
-            "status" : status        
-        });
+        var jsondata = {};
+        jsondata.user = {};
+        jsondata.user.authorisation_hash = $rootScope.hashToDelete;
+        jsondata.status = "deleted";
+        jsondata.issue_id = $rootScope.getStatusId;
+
+        jsondata = JSON.stringify(jsondata);
 
         
         var getStatusChange = statusChangeService.getStatusChange(jsondata).then(function (data) {
@@ -1554,16 +1564,15 @@ vdbApp.controller('issueCtrl', ['$scope', '$rootScope', '$window', '$routeParams
             
             //validate error or not
             if (getStatusChange.success) {
-                var getMyIssues = myIssuesService.getMyIssues(jsondata).then(function (data) {
-                    
-                    $('#DeleteModal').modal('hide');
-                    $('.modal-backdrop').hide();
-                    $rootScope.globaloverlay = "";
-                    $scope.error = "";
-                    $scope.hideError = "ng-hide";
-                    $location.path("/bevestiging-verwijderen");
+                $('#DeleteModal').modal('hide');
+                $('.modal-backdrop').hide();
+                $rootScope.globaloverlay = "";
+                $scope.error = "";
+                $scope.hideError = "ng-hide";
+                $location.path("/bevestiging-verwijderen");
 
-                });
+                $scope.updateMyIssues();
+
             } else {
                 $scope.errorVote = getStatusChange.error;
                 $scope.hideError = "";
@@ -1603,10 +1612,10 @@ vdbApp.controller('issueCtrl', ['$scope', '$rootScope', '$window', '$routeParams
 
     //validation for submit vote
     $scope.voteSubmit = function () {
-        if (!$cookies.getObject('user')) {
-            // $rootScope.errorSession = "Voor deze actie moet je ingelogd zijn.";
-             $('#voteModal').modal('show');
+        logger("issueController.voteSubmit()");
 
+        if (!$cookies.getObject('user')) {
+             $('#voteModal').modal('show');
         } else {
             $rootScope.globaloverlay = "active";
 
@@ -1617,7 +1626,7 @@ vdbApp.controller('issueCtrl', ['$scope', '$rootScope', '$window', '$routeParams
                 },
                 "issue_id": $routeParams.id
             });
-            var getvoteSummit = voteSubmitService.getvoteSummit(jsonVoteSubmit).then(function (data) {
+            voteSubmitService.getvoteSummit(jsonVoteSubmit).then(function (data) {
                 var getvoteSummit = data.data;
                 if (!getvoteSummit.success) {
                     $scope.hideError = 0;
@@ -1776,10 +1785,10 @@ vdbApp.controller('mentionCtrl', ['$scope', '$rootScope', '$window', '$location'
 vdbApp.controller('myIssuesCtrl', ['$scope', '$rootScope', '$window', '$location', 'myIssuesService', '$cookies', function ($scope, $rootScope, $window, $location, myIssuesService, $cookies) {
     
 
-    var myissueController = this;
+    var myIssuesController = this;
 
 
-    myissueController.init = function() {
+    myIssuesController.init = function() {
 
 
         $rootScope.dynamicTitle = "Mijn meldingen |";
@@ -1804,7 +1813,7 @@ vdbApp.controller('myIssuesCtrl', ['$scope', '$rootScope', '$window', '$location
         $rootScope.getStatusId = id;
     }
 
-    myissueController.init();
+    myIssuesController.init();
 
 }]);
 
@@ -1836,6 +1845,8 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope', '$routeParams', '$http', '$ro
         $scope.successClass = "successAlert";
         $scope.successMessageNonApi = "Bevestiging probleem bij uw e-mail";
     }
+
+    //what is happening here? getting all issues for a user, if found yours, set the sateliteimg??????
     var jsondata = JSON.stringify({
         "user": {
             "username": "" + $cookies.getObject('user').username + "",
@@ -1927,12 +1938,6 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope', '$routeParams', '$http', '$ro
             $location.path("/login");
             $rootScope.errorSession = "Voor deze actie moet je ingelogd zijn."
         } else {
-        // if($scope.hideSelection){
-        //         $scope.hideSelection = false;
-        //     }else{
-        //         $scope.hideSelection = true;
-        //     }
-
             $rootScope.globaloverlay = "active";
             var jsonVoteSubmit = JSON.stringify({
                 "user": {
@@ -3690,7 +3695,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
 }]);
 
 
-vdbApp.controller('deleteIssueCtrl', ['$scope', '$rootScope', '$routeParams', '$window', 'statusChangeService', 'myIssuesService', '$cookies', function ($scope, $rootScope, $routeParams, $window, statusChangeService, myIssuesService, $cookies) {
+vdbApp.controller('deleteIssueCtrl', ['$scope', '$rootScope', '$location','$routeParams', '$window', 'statusChangeService', 'myIssuesService', '$cookies', function ($scope, $rootScope, $location, $routeParams, $window, statusChangeService, myIssuesService, $cookies) {
     $scope.hideError = "ng-hide";
     $scope.error = "";
     $scope.deleteIssue = function () {
@@ -3712,23 +3717,14 @@ vdbApp.controller('deleteIssueCtrl', ['$scope', '$rootScope', '$routeParams', '$
             var getStatusChange = data.data;
             //validate error or not
             if (getStatusChange.success) {
-                var jsondata = JSON.stringify({
-                    "user": {
-                        "username": "" + $cookies.getObject('user').username + "",
-                        "password_hash": "" + $cookies.getObject('user').password_hash + ""
-                    }
-                });
-                var getMyIssues = myIssuesService.getMyIssues(jsondata).then(function (data) {
-                    var getdata = data.data;
-                    var count = getdata.count;
-                    $rootScope.myIssueCount = count;
-                    $rootScope.myIssuesList = getdata.issues;
-                    $('#DeleteModal').modal('hide');
-                    $('.modal-backdrop').hide();
-                    $rootScope.globaloverlay = "";
-                    $scope.error = "";
-                    $scope.hideError = "ng-hide";
-                })
+                $scope.updateMyIssues();
+                $('#DeleteModal').modal('hide');
+                $('.modal-backdrop').hide();
+                $rootScope.globaloverlay = "";
+                $scope.error = "";
+                $scope.hideError = "ng-hide";
+                $location.path('/bevestiging-verwijderen')
+
             } else {
                 $scope.error = getStatusChange.error;
                 $scope.hideError = "";
@@ -3936,36 +3932,29 @@ vdbApp.controller('registrationHashCtrl', ['$scope', '$rootScope', '$routeParams
 
 vdbApp.controller('voteCtrl', ['$scope','$rootScope','$routeParams','voteSubmitService', function ($scope,$rootScope,$routeParams,voteSubmitService) {
     $scope.hide = 1;
+
     $scope.submit = function(){
+        logger("voteController.submit()")
         $rootScope.globaloverlay = "active";
-        var user = {};
-        user.email = $scope.email;
-        
-
-        user.name = $scope.name;
-        var issue_id = $routeParams.id;
-
-        var jsondata = JSON.stringify({
-            "user" : {
-                "name" : user.name,
-                "email" : user.email,
-            },
-            issue_id : issue_id
-        });
-        var getvoteSummit = voteSubmitService.getvoteSummit(jsondata).then(function (data) {
-            var getvoteSubmit = data.data;
-            if(!getvoteSubmit.success){
-                $rootScope.globaloverlay = "";
-                $scope.hide = 0;
-                $scope.error = "" + getvoteSubmit.error + ""
-                
-            }
-            else{
+        var jsondata = {};
+        jsondata.user = {};
+        jsondata.user.name = $scope.name;
+        jsondata.user.email = $scope.email;
+        jsondata.issue_id = $routeParams.id;
+        jsondata = JSON.stringify(jsondata);
+        voteSubmitService.getvoteSummit(jsondata).then(function (data) {
+            if(data.data.success){
                 $rootScope.globaloverlay = "";
                 $scope.name="";
                 $scope.email="";
                 $('#voteModal').modal('hide');
                 $('.modal-backdrop').hide();
+                $rootScope.voteMessage = "Klik op de link in de email die gestuurd is naar " + $scope.email + " om de stem te bevestigen";
+                $rootScope.successVote = 1;
+            } else {
+                $rootScope.globaloverlay = "";
+                $scope.hide = 0;
+                $scope.error = "" + data.data.error + ""
             }
         }); 
     }

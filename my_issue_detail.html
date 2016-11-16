@@ -89,14 +89,6 @@
         
             <button type="button" class="btn btn-primary mobilebtn" ng-click="voteSubmit()">
                 <span style="text-align:start">Stem </span><span class="badge" id="mobilebtn">{{myIssues.votes}}</span></button>
-        <!-- selection Box -->
-        <!-- <div class="btn btn-primary selectionBox" ng-hide="hideSelection">
-            <div class="selectionBox selfVote" ng-click="selfVote()">Stem zelf</div>
-            <div class="line"></div>
-            <div class="selectionBox otherVote" ng-click="otherVote()">Stem voor een ander</div>
-        </div> -->
-
-
               <div ng-hide="results== 0 || commentList == null">
               <h2 class="fontM">Reacties</h2>
               <ul class="commentList" >
@@ -111,28 +103,8 @@
 
 	    </div>
 	    <!--  sidebar right -->
-	   <div class="col-lg-3 hidden-xs " ng-hide="results.length == 0 || myIssuesList == null">
-            <div class="panel side-panel panel-default">
-                <div class="panel-heading">
-                    <strong>Mijn Meldingen</strong>
-                </div>
-                <div class="panel-body">
-                    <div class="list-group" >
-                        <a href="/mijn-meldingen/{{myIssues.id}}" class="list-group-item clearfix" ng-repeat="myIssues in myIssuesList| orderBy : 'created_at' : true |limitTo:2  | filter : x as results" ng-click="clickIssues()">
-                            <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
-                            <strong> {{myIssues.title}}</strong> {{myIssues.location.full_address}}
-                            {{myIssues.status_description}}
-                            <span class="pull-right">
-                                <button class="btn btn-xs btn-success" >
-                                    <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
-                                </button>
-                            </span>
-                        </a>
-                        <a href="/mijn-meldingen" style="margin-left:17px;">Meer >>></a>
-                    </div>
-                </div>  
-            </div>
-        </div>   
+
+        <div ng-include="'sidebar_my_issues.html'"></div>
     </div>	
 
     <!--MyIssueCOmmentModal-->
