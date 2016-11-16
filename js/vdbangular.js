@@ -1004,7 +1004,7 @@ vdbApp.run(['$rootScope', '$window', function ($rootScope, $window) {
 
     }]);
 
-vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$rootScope', '$routeParams', '$http', 'issuesService', 'reportService', '$facebook', '$cacheFactory', 'agreementSevice', '$cookies','myIssuesService', function ($scope, $timeout, $window, $location, $rootScope, $routeParams, $http, issuesService, reportService, $facebook, $cacheFactory, agreementSevice, $cookies, myIssuesService) {
+vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location', '$rootScope', '$routeParams', '$http', 'issuesService', 'reportService', '$facebook', '$cacheFactory', 'agreementSevice', '$cookies','myIssuesService', function ($scope, $q,$timeout, $window, $location, $rootScope, $routeParams, $http, issuesService, reportService, $facebook, $cacheFactory, agreementSevice, $cookies, myIssuesService) {
     
     var mainController = this;
 
@@ -1077,7 +1077,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$timeout', '$window', '$location', '$r
             moveMapToAddress($routeParams.postalcode,true,doneCallBack);
         } else if (navigator.geolocation) {
             //pass on the responsibility of calling back to moveMapToBrowserLocation (boogiewoogie?)
-            moveMapToBrowserLocation(true,doneCallBack);
+            moveMapToBrowserLocation($rootScope,$q,true,doneCallBack);
         } else if ($cookies.getObject('user') != null) {
             moveMapToUserLocation(true,doneCallBack);
         } else {
@@ -1612,10 +1612,10 @@ vdbApp.controller('issueCtrl', ['$scope', '$rootScope', '$window', '$routeParams
 
     //validation for submit vote
     $scope.voteSubmit = function () {
-        if (!$cookies.getObject('user')) {
-            // $rootScope.errorSession = "Voor deze actie moet je ingelogd zijn.";
-             $('#voteModal').modal('show');
+        logger("issueController.voteSubmit()");
 
+        if (!$cookies.getObject('user')) {
+             $('#voteModal').modal('show');
         } else {
             $rootScope.globaloverlay = "active";
 
@@ -1626,7 +1626,7 @@ vdbApp.controller('issueCtrl', ['$scope', '$rootScope', '$window', '$routeParams
                 },
                 "issue_id": $routeParams.id
             });
-            var getvoteSummit = voteSubmitService.getvoteSummit(jsonVoteSubmit).then(function (data) {
+            voteSubmitService.getvoteSummit(jsonVoteSubmit).then(function (data) {
                 var getvoteSummit = data.data;
                 if (!getvoteSummit.success) {
                     $scope.hideError = 0;
@@ -3932,36 +3932,29 @@ vdbApp.controller('registrationHashCtrl', ['$scope', '$rootScope', '$routeParams
 
 vdbApp.controller('voteCtrl', ['$scope','$rootScope','$routeParams','voteSubmitService', function ($scope,$rootScope,$routeParams,voteSubmitService) {
     $scope.hide = 1;
+
     $scope.submit = function(){
+        logger("voteController.submit()")
         $rootScope.globaloverlay = "active";
-        var user = {};
-        user.email = $scope.email;
-        
-
-        user.name = $scope.name;
-        var issue_id = $routeParams.id;
-
-        var jsondata = JSON.stringify({
-            "user" : {
-                "name" : user.name,
-                "email" : user.email,
-            },
-            issue_id : issue_id
-        });
-        var getvoteSummit = voteSubmitService.getvoteSummit(jsondata).then(function (data) {
-            var getvoteSubmit = data.data;
-            if(!getvoteSubmit.success){
-                $rootScope.globaloverlay = "";
-                $scope.hide = 0;
-                $scope.error = "" + getvoteSubmit.error + ""
-                
-            }
-            else{
+        var jsondata = {};
+        jsondata.user = {};
+        jsondata.user.name = $scope.name;
+        jsondata.user.email = $scope.email;
+        jsondata.issue_id = $routeParams.id;
+        jsondata = JSON.stringify(jsondata);
+        voteSubmitService.getvoteSummit(jsondata).then(function (data) {
+            if(data.data.success){
                 $rootScope.globaloverlay = "";
                 $scope.name="";
                 $scope.email="";
                 $('#voteModal').modal('hide');
                 $('.modal-backdrop').hide();
+                $rootScope.voteMessage = "Klik op de link in de email die gestuurd is naar " + $scope.email + " om de stem te bevestigen";
+                $rootScope.successVote = 1;
+            } else {
+                $rootScope.globaloverlay = "";
+                $scope.hide = 0;
+                $scope.error = "" + data.data.error + ""
             }
         }); 
     }

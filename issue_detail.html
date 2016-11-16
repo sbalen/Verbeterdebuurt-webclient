@@ -1,7 +1,7 @@
 <!-- body -->  
-                <div id="main-content" class="container">
-                    <div  ng-include="'sidebar_left.html'">
-                </div>
+<div id="main-content" class="container">
+    <div  ng-include="'sidebar_left.html'">
+</div>
 
 <!-- main container -->
 <div class="col-lg-6 main-container marginbottom">
@@ -24,7 +24,6 @@
         <div class="thumbnail right-caption span4">
             <img class="img-responsive" src="{{newProblem.image.image_url}}" alt="Plaatje van de situatie" ng-if="newProblem.image">
             <img class="img-responsive" src="{{sateliteimg}}" alt="Plaatje van de situatie" ng-if="!newProblem.image">
-<!--            <div  class = "img-resposive" ng-if="!newProblem.image" id = "googleMapIssue" ng-init="googleMapIssue(newProblem.location.latitude,newProblem.location.longitude,newProblem.type)"></div>-->
             <div class="detail-table hidden-xs fontM">
                 <table width="100%">
                     <tbody> 
@@ -48,10 +47,6 @@
                             <td>Categorie:</td>
                             <td>{{newProblem.category}}</td>
                         </tr>
-<!--                         <tr ng-if="newProblem.type=='idea'">
-                            <td>Reactie:</td>
-                            <td>{{newProblem.realization}}</td>
-                        </tr> -->
                         <tr>
                             <td>Status:</td>
                             <td>{{newProblem.status_description}} <a class="{{hideLogStatus}}  issueLog" ng-click="logStatus()"> {{showDataText}} </a></td>
@@ -68,27 +63,27 @@
             </div>
         </div>
          <div class="issueDetailTable">
-                    <table>
-                        <tr>
-                            <td ng-show="newProblem.type=='problem'"><h2 class="fontM">Beschrijving</h2></td>
-                            <td ng-show="newProblem.type=='idea'"><h2 class="fontM">Idee</h2></td>
-                        </tr>
-                        <tr>
-                            <td class="issueDetailTableContent fontM"><p>{{newProblem.description}}</p></td>
-                        </tr>
-                        
-                    </table>
-              </div>
-              <div class="issueDetaiTable fontM" ng-if="newProblem.type=='idea'">
-                    <table>
-                        <tr>
-                            <td><h2 class="fontM">Realisatie</h2></td>
-                        </tr>
-                        <tr>
-                            <td class="issueDetailTableContent fontM"><p>{{newProblem.realization}}</p></td>
-                        </tr>
-                    </table>
-              </div>
+            <table>
+                <tr>
+                    <td ng-show="newProblem.type=='problem'"><h2 class="fontM">Beschrijving</h2></td>
+                    <td ng-show="newProblem.type=='idea'"><h2 class="fontM">Idee</h2></td>
+                </tr>
+                <tr>
+                    <td class="issueDetailTableContent fontM"><p>{{newProblem.description}}</p></td>
+                </tr>
+                
+            </table>
+          </div>
+          <div class="issueDetaiTable fontM" ng-if="newProblem.type=='idea'">
+                <table>
+                    <tr>
+                        <td><h2 class="fontM">Realisatie</h2></td>
+                    </tr>
+                    <tr>
+                        <td class="issueDetailTableContent fontM"><p>{{newProblem.realization}}</p></td>
+                    </tr>
+                </table>
+          </div>
         <button type="button" class="btn btn-primary mobilebtn" data-toggle="modal" data-target="{{stemModal}}" ng-click="sessionValid()">Reageer <span class="badge"id="mobilebtn">{{newProblem.comments}}</span></button>
         
             <button type="button" class="btn btn-primary mobilebtn" ng-click="voteSubmit()">
@@ -108,29 +103,8 @@
 
 </div>
 <!--  sidebar right -->
-<div class="col-lg-3 hidden-xs" ng-hide="results.length == 0 || myIssuesList == null">
-            <div class="panel side-panel panel-default">
-                    <div class="panel-heading">
-                            <strong>Mijn Meldingen</strong>
-                        </div>
-                            <div class="panel-body">
-                          <div class="list-group" >
-                            <a href="/mijn-meldingen/{{myIssues.id}}" class="list-group-item clearfix" ng-repeat="myIssues in myIssuesList| orderBy : 'created_at' : true |limitTo:2  | filter : x as results" ng-click="clickIssues()">
-                              <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
-                              <strong> {{myIssues.title}}</strong> {{myIssues.location.full_address}}
-                              {{myIssues.status}}
-                              <span class="pull-right">
-                                <button class="btn btn-xs btn-success" >
-                                  <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
-                                </button>
-                              </span>
-                            </a>
-                              <a href="/mijn-meldingen" style="margin-left:17px;">Meer >>></a>
-                          </div>
-                        </div>  
-            </div>
-        </div>  
-</div>	
+<div ng-include="'sidebar_my_issues.html'"></div>
+
 
 <!-- StemModal -->
 <div id="StemModal" class="modal fade" role="dialog" ng-controller="commentSubmitCtrl" ng-repeat="newProblem in newProblemList |filter : {id : id()}">
