@@ -1437,19 +1437,27 @@ vdbApp.controller('issueCtrl', ['$scope', '$rootScope', '$window', '$routeParams
         });
         issuesService.getIssues(jsondata).then(function (data) {
             logger("issueCtrl getIssuesResult ")
-            var getdata = data.data;
-            var currentIssue = getdata.issues[0];
-            $rootScope.problemIdList = getdata.issues;
-            $rootScope.dynamicTitle = ''+getdata.issues[0].title+' |';
-            
-            $scope.sateliteimg = $scope.getSateliteImage(currentIssue.location);
-
-            issueController.hideLogStatus();
-            issueController.updateComments();
-            moveMapToIssue(currentIssue);
 
             $scope.hide = "";
             $rootScope.globaloverlay = "";
+            var issues = undefined;
+            var currentIssue = undefined;
+            if (data.data.count >= 1) {
+
+                issues = data.data.issues;
+                currentIssue = data.data.issues[0];
+                $rootScope.problemIdList = issues;
+                $rootScope.dynamicTitle = ''+currentIssue.title+' |';
+                
+                $scope.sateliteimg = $scope.getSateliteImage(currentIssue.location);
+
+                issueController.hideLogStatus();
+                issueController.updateComments();
+                moveMapToIssue(currentIssue);
+
+            } else {
+                $location.path('/onbekende-melding');
+            }
 
             if (callBackWithIssue != undefined && typeof callBackWithIssue === "function" ) {
                 callBackWithIssue(currentIssue);
