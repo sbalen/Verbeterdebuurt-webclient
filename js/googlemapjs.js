@@ -324,6 +324,8 @@ function markerCenter(map, marker, location) {
     marker.setPosition(map.getCenter());
     markerLat = marker.getPosition().lat();
     markerLng = marker.getPosition().lng();
+    
+    updateAddressToPending(location);
     geocoder.geocode({
         'latLng': marker.getPosition()
     }, function (result, status) {
@@ -333,6 +335,7 @@ function markerCenter(map, marker, location) {
     });
 
     google.maps.event.addListener(map, 'click', function (e) {
+        updateAddressToPending(location)
         clearTimeout(addressDelay);
         marker.setPosition(e.latLng);
         // logger(e.latLng);
@@ -354,7 +357,7 @@ function markerCenter(map, marker, location) {
                                updateAddressFromGeocodeResult(result,location);
                             }
                         });
-                    },2000);
+                    },1000);
                 }
             }
         });
@@ -399,11 +402,17 @@ function geocodeAddressCreateProblem(geocoder, resultsMap, address,location) {
     });
 }
 
+
 function markerGetAddress(marker, location) {
     logger("markerGetAdress");
     //first time load
+    
+
     var addressDelay;
     google.maps.event.addListener(marker, 'dragend', function (e) {
+        
+        updateAddressToPending(location);
+
         clearTimeout(addressDelay);
         geocoder.geocode({
             'latLng': marker.getPosition()
@@ -412,6 +421,7 @@ function markerGetAddress(marker, location) {
                 updateAddressFromGeocodeResult(result,location);
             } else {
                 if(status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
+                    updateAddressToPending(location);
                     addressDelay = setTimeout(function() {
                         geocoder.geocode({ 'latLng': e.latLng }, function (result, status) {
                             if (status == google.maps.GeocoderStatus.OK) {
@@ -443,8 +453,23 @@ function updateCityFromGeocodeResult(result) {
     }
 }
 
+var addressHolderPendingInterval;
+function updateAddressToPending(addressHolder,alternativeMessage) {
+    var addressHolder = (typeof addressHolder === 'string' || addressHolder instanceof String) ? document.getElementById(addressHolder) : addressHolder;
+    addressHolder.value = alternativeMessage ? alternativeMessage : ".";
+    clearInterval(addressHolderPendingInterval);
+    addressHolderPendingInterval = setInterval(function( ) {
+        if (addressHolder.value.length  > 3) {
+            addressHolder.value = "";
+        } else {
+            addressHolder.value += ".";
+        }
+    },100);
+}
+
 function updateAddressFromGeocodeResult(result,addressHolder) {
-    logger("googlemaps.js.updateAddressFromGeocodeResult("+result+","+addressHolder+")");
+    logger("googlemaps.js.updateAddressFromGeocodeResult("+result+","+addressHolder+") --> " + addressHolderPendingInterval);
+    clearInterval(addressHolderPendingInterval);
     if (result == undefined) return;
     var addressHolder = (typeof addressHolder === 'string' || addressHolder instanceof String) ? document.getElementById(addressHolder) : addressHolder;
     for (var i = 0; i < result[0].address_components.length; i++) {
