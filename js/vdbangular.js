@@ -1507,7 +1507,7 @@ vdbApp.controller('issueCtrl', ['$scope', '$rootScope', '$window', '$routeParams
     }
 
     $scope.remindIssue = function(authorisation_hash,callBack) {
-        logger("remindIssue("+hash+")")
+        logger("remindIssue("+authorisation_hash+")")
         $rootScope.globaloverlay = "active";
         
         var jsondata = JSON.stringify({
@@ -1515,7 +1515,7 @@ vdbApp.controller('issueCtrl', ['$scope', '$rootScope', '$window', '$routeParams
         });
         var getRemindIssue = remindIssueService.getRemindIssue(jsondata).then(function (data) {
             var getRemindIssue = data.data;
-            $scope.hideError = 1;                    
+            $scope.hideError = 0;                    
             $rootScope.globaloverlay = "";
             if (!getRemindIssue.success) {
                 $scope.errorConfirmed = getRemindIssue.error;
