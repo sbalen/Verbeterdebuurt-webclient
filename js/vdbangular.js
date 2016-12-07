@@ -1033,7 +1033,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
             mainControllerInitialized = true;
         }
 
-         $timeout(function () { attachAutoCompleteListener('searchCity'); },10);
+        $timeout(function () { attachAutoCompleteListener('searchCity'); },10);
     }
 
     mainController.rewritePathForCouncil = function() {
@@ -1102,17 +1102,23 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
     }
 
     $scope.updatePathForCouncil = function(city) {
-        logger("updatePathForCouncil(" + city + ")");      
+        logger("updatePathForCouncil(" + city + ") -> " + $location.path() + " ::: " + $routeParams.nextaction);      
 
         var currentPath = $location.path();
 
+        var newPath = "";
         if (currentPath.includes('gemeente') ||
             currentPath.includes('postcode') ||
             currentPath == '/' ) {
-            $location.path('/gemeente/' + convertToSlug(city), true);
-    
+            newPath = '/gemeente/' + convertToSlug(city);
+            if (currentPath.endsWith('nieuw-probleem')) newPath += "/nieuw-probleem";
+            if (currentPath.endsWith('nieuw-idee')) newPath += "/nieuw-idee";
+            if (currentPath.endsWith('nieuwe-melding')) newPath += "/nieuwe-melding";
         }
 
+        if (newPath != "" && currentPath != newPath) {
+            $location.path('/gemeente/' + convertToSlug(city), true);
+        }
     }
 
     $scope.updateSearchBoxForCouncil = function(city) {
@@ -1243,7 +1249,6 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
         } else { // otherwise, get the cityname and check it it has changed, only then reload info
             var currentCity = city.long_name;
             determineCityForGeocode(function() {
-                                
                 if (currentCity == undefined || city.long_name != currentCity.long_name) {
                     $scope.updatePathForCouncil(city.long_name);
                     $scope.updateSearchBoxForCouncil(city.long_name);
@@ -2939,6 +2944,7 @@ vdbApp.controller('selectProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
 }])
 
 vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', 'duplicateIssuesService', '$cookies', 'serviceStandardService','reportService','issuesService','agreementSevice','$routeParams', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, duplicateIssuesService, $cookies, serviceStandardService,reportService,issuesService,agreementSevice,$routeParams) {
+    logger('createProblemCtrl');
     $scope.privateMessageHide = false;
     if($location.path().includes('nieuwe-melding')){
         $rootScope.dynamicTitle = "Nieuwe melding |";
