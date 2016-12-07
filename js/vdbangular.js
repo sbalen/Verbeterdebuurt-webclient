@@ -1116,7 +1116,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
             if (currentPath.endsWith('nieuwe-melding')) newPath += "/nieuwe-melding";
         }
 
-        if (newPath != "" && currentPath != newPath) {
+        if (newPath != "" && currentPath.toLowerCase() != newPath.toLowerCase()) {
             $location.path('/gemeente/' + convertToSlug(city), true);
         }
     }
