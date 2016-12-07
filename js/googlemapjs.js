@@ -155,6 +155,8 @@ function attachAutoCompleteListener(stringid,marker,locationmap,location) {
         var address = "";
         var bounds = undefined;
         
+        logger(place);
+
         if (place.formatted_address) {
             address = place.formatted_address;
             bounds =  place.geometry.viewport ? place.geometry.viewport : null;
@@ -482,7 +484,8 @@ function updateAddressToPending(addressHolder,alternativeMessage) {
 }
 
 function updateAddressFromGeocodeResult(result,addressHolder) {
-    logger("googlemaps.js.updateAddressFromGeocodeResult("+result+","+addressHolder+") --> " + addressHolderPendingInterval);
+    logger("googlemaps.js.updateAddressFromGeocodeResult() --> ");
+    logger(result);
     clearInterval(addressHolderPendingInterval);
     if (result == undefined) return;
     var addressHolder = (typeof addressHolder === 'string' || addressHolder instanceof String) ? document.getElementById(addressHolder) : addressHolder;
