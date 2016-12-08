@@ -3015,6 +3015,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
         var issueMarker = googleMapCreateProblem();
         attachAutoCompleteListener('searchCityProblem',issueMarker,map3,"location");        
         $scope.categoriesData();
+        $scope.getServiceStandard(city.long_name);
     }, 1500);
 
     $scope.categoriesData = function () {
@@ -3272,10 +3273,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
         var category_id = $scope.categoryId;
         $rootScope.currentPage = 1;
         $scope.totalPage = 5;
-        var jsondataServiceStandard = JSON.stringify({
-            "council" : council,
-            "category_id" : category_id
-        });
+        
         var jsondataDuplicate = JSON.stringify({
             "user" : {
                 "username" : user.username,
@@ -3294,16 +3292,28 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
             logger(getDuplicateIssue);
 
         });
-        var getServiceStandard = serviceStandardService.getServiceStandard(jsondataServiceStandard).then(function (data) {
-            var getServiceStandard = data.data;
-            $scope.standardMessage = getServiceStandard.standard;
-            $rootScope.standardTemp = getServiceStandard.standard;
-        })
 
+        $scope.getServiceStandard(council,category_id);
 
         $scope.blockstyle = "margin-left:0%";
         $scope.duplicateposition = 0;
 
+    }
+
+    $scope.getServiceStandard = function(council,category_id) {
+        logger("createProblemController.getServiceStandard("+coucil+")")
+        if (council.toLowerCase().replace(' ','-') == 'utrechtse-heuvelrug') {
+            $scope.standardMessage = "U kunt uw ideeën aandragen tot 2 januari 2017";
+        } else {
+
+            var jsondata = {};
+            jsondata.council = council;
+            jsondata.category_id = category_id;
+            jsondata = JSON.stringify(jsondata);
+            serviceStandardService.getServiceStandard(jsondata).then(function (data) {
+                $scope.standardMessage = $rootScope.standardTemp = data.data.standard;
+            })
+        }
     }
 
 
@@ -3325,7 +3335,15 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
 
 }])
 
-vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', '$cookies','reportService','issuesService','agreementSevice','$routeParams', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, $cookies,reportService,issuesService,agreementSevice,$routeParams) {
+vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', 'serviceStandardService','$location', 'issuesService', 'issueSubmitServiceWithImage', '$cookies','reportService','issuesService','agreementSevice','$routeParams', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, serviceStandardService, $location, issuesService, issueSubmitServiceWithImage, $cookies,reportService,issuesService,agreementSevice,$routeParams) {
+    logger("createIdeaCtrl");
+
+    if ($location.path().includes('utrechtse-heuvelrug')) {
+        $rootScope.ideaExplanation = "Wij delen je idee met de gemeente & met buurtbewoners. Niet alle ideeën kunnen worden uitgevoerd, maar een goed verhaal en veel medestanders vergroot de kans wel.";
+    } else {
+        $rootScope.ideaExplanation = "Wij delen je idee met de gemeente & met buurtbewoners. De ervaring leert dat de gemeente lang niet met alle ideeën kan helpen, maar een goed verhaal en veel medestanders vergroot de kans wel.";
+    }
+
     $rootScope.dynamicTitle = "Nieuw idee |";
     $scope.hide = "ng-hide";
     $scope.issueName = "Probleem"
@@ -3392,12 +3410,33 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
     $timeout(function () {
         var issueMarker = googleMapCreateIdea();
         attachAutoCompleteListener('searchCityProblem',issueMarker,map4,"location2");
+        $scope.getServiceStandard(city.long_name);
     }, 1500);
 
 
     if ($cookies.getObject('user')) {
         $scope.hideNonLogin = "ng-hide"
     }
+
+    //this is really bad, it should be combined with problem
+    $scope.getServiceStandard = function(council,category_id) {
+        logger("createIdeaController.getServiceStandard("+council+")")
+        if (council.toLowerCase().replace(' ','-') == 'utrechtse-heuvelrug') {
+            $scope.standardMessage = "U kunt uw ideeën aandragen tot 2 januari 2017";
+        } else {
+
+            var jsondata = {};
+            jsondata.council = council;
+            jsondata.category_id = category_id;
+            jsondata = JSON.stringify(jsondata);
+            serviceStandardService.getServiceStandard(jsondata).then(function (data) {
+                $scope.standardMessage = $rootScope.standardTemp = data.data.standard;
+            })
+        }
+    }
+    
+
+
     $scope.clickSearchCreateIssue = function () {
         if(document.getElementById('searchCityProblem').value){
            var citytemp = document.getElementById('searchCityProblem').value ;         
