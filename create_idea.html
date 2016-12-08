@@ -99,14 +99,14 @@
                                   <input type="hidden" class="gllpLongitude" value="4.492999"/>
                                   <input type="hidden" class="gllpZoom" value="12"/>
                                   <input type="text" class="gllpLocationName noborder" id="location2" readonly size="30"/>
-                                  <p class=" warning-text text-primary">Deze gemeente heeft niet aangegeven dat ze je melding in behandeling nemen binnen 4 weken.</p>
+                                  <p class=" warning-text text-primary">{{ standardMessage }}</p>
                                 </fieldset> 
                               </div>
                             </div>
                             <div class="panel-body">
                                 <h4 class="fontM">2. Beschrijf je idee</h4>
                                 <div class="form-group">
-            <h5 class="fontM" style="color:green; margin-right: 6px; margin-left: 6px;">Wij delen je idee met de gemeente &amp; met buurtbewoners. De ervaring leert dat de gemeente lang niet met alle idee&euml;n kan helpen, maar een goed verhaal en veel medestanders vergroot de kans wel.</h5>
+                                  <h5 class="fontM" style="color:green; margin-right: 6px; margin-left: 6px;">{{ ideaExplanation }}</h5>
                                 </div>
                                <div class="form-group">
                                     <div class="col-sm-12 form-col" style="margin-bottom: 10px;" ng-class="{'has-error':errorTitle}">
