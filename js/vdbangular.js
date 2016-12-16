@@ -1033,7 +1033,15 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
             mainControllerInitialized = true;
         }
 
-        $timeout(function () { attachAutoCompleteListener('searchCity'); },10);
+        $timeout(function () { 
+            var listener = attachAutoCompleteListener('searchCity'); 
+            var input = $('#searchCity');
+            $('#clickSearch').mousedown(function() {input.focus();});
+            $('#clickSearch').mouseup(function() {
+                logger("clickSearch" +  input.val());
+                moveMapToAddress(input.val());
+            });
+        },10);
     }
 
     mainController.rewritePathForCouncil = function() {
@@ -3301,7 +3309,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
     }
 
     $scope.getServiceStandard = function(council,category_id) {
-        logger("createProblemController.getServiceStandard("+coucil+")")
+        logger("createProblemController.getServiceStandard("+council+")")
         if (council.toLowerCase().replace(' ','-') == 'utrechtse-heuvelrug') {
             $scope.standardMessage = "U kunt uw ideeën aandragen tot 2 januari 2017";
         } else {
