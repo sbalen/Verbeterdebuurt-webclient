@@ -1,0 +1,61 @@
+
+                <!-- body -->  
+                <div id="main-content" class="container">
+                  <!--
+                    <div  ng-include="'sidebar_left.html'"></div>
+                    -->
+<div class="col-md-3 hidden-sm hidden-xs hidden-md">
+    <div class="panel side-panel panel-default" id="new-problem-widget">
+        <div class="panel-heading">
+            <strong>Report: Fietsersbond</strong>
+        </div>
+        <div class="panel-body">
+            <div class="list-group report-list-council" ng-hide="reportList.council == null || reportList.council == 'undefined' " >
+                <strong>Je kijkt nu bij Gemeente: {{reportList.council}}</strong></br>
+                {{agreement.agreement}}</br></br>
+                Deze gemeente valt in fietsersbond gebied "Groot Utrecht"</br></br>
+                
+                Meldingen per maand: {{reportList.reports}} </br>
+                Oplossingen per maand: {{reportList.solutions}}
+            </div>
+            <div class="list-group report-list-council"  ng-show="reportList.council == null || reportList.council == 'undifined' ">
+                geen locatieinformatie gevonden
+            </div>
+        </div>  
+    </div>
+</div>
+
+
+                <!-- main container -->
+                <div class="col-lg-6 main-container">                    
+                    <div class="alert alert1 alert-warning fontM" id="message-widget" ng-show="showAgreement()">
+                        {{agreement.agreement}}
+                        <i class="fa fa-flag"></i> 
+                    </div>
+                    <div class="alert  alert-warning fontM" id="zoomedout-widget" ng-hide="zoomedInEnoughToShowIssues()">
+                        Fietsersbond heeft geen kaart op main.
+                        <i class="fa fa-flag"></i> 
+                    </div>
+
+                </div>
+                
+                <!--  sidebar right -->
+                <!--
+                <div ng-include="'sidebar_search_bar.html'"></div>
+
+                <div ng-include="'sidebar_my_issues.html'"></div>
+                -->
+            </div>   
+        </div>	
+    </body>
+</html>
+<!-- Page specific js -->
+<script type='text/javascript'>
+        //placing the subnav fixed on top
+        $(document).ready(function() {
+            $('.subnav').affix({ offset: { top: $('#navtop').height() } });	
+        });
+</script>
+<style type="text/css">
+    @media (min-width: 1199px) { .pac-container, .pac-item { width: 240px !important; } }
+</style>

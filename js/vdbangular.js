@@ -9,6 +9,20 @@ var vdbApp = angular.module('vdbApp',
      'angulartics', 
      'angulartics.google.analytics']);
 
+// TODO FB: We will be retrieving customer specific settings from the backend at
+// some point. Until then, collect the required settings here. These settings
+// will be read throughout the application to determine custom display options.
+var CUSTOMISATION_SETTINGS = {
+  normal: {
+    show_map_main: true,
+    background_image_url: undefined,
+  },
+  fietsersbond: {
+    show_map_main: false,
+    background_image_url: 'https://s3-eu-west-1.amazonaws.com/fietsersbond/app/uploads/sites/4/2017/05/03100216/hoe-leer-ik-fietsen-videoplayback-345x183.jpg',
+  },
+};
+
 // var LOGGING = false; 
 var LOGGING = true; 
 
@@ -109,6 +123,8 @@ errorhandler = function(rootScope,errorInfo){
 };
 
 //call google map at first 
+// TODO FB: Initialise the google map, even if it is not shown? Probably yes,
+//          because some views might stil want to watch it.
 vdbApp.run(function(){
     mainControllerInitialized = false;
     googlemapinit();
@@ -385,6 +401,14 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
                     return true;
                 }
             }
+        })
+        // TODO FB: Fietsersbond routes.
+        // * N.B. make sure they are before the catchall /:cityNameClone
+        // * N.B. if the template does not exist, main init will recurse
+        //   indefinitely.
+        .when('/fietsersbond', {
+            templateUrl: 'main_fietsersbond.html',
+            controller: 'mainCtrl'
         })
         //redirect city / postcode
         .when('/:cityNameClone', {
@@ -1007,12 +1031,18 @@ vdbApp.run(['$rootScope', '$window', function ($rootScope, $window) {
 vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location', '$rootScope', '$routeParams', '$http', 'issuesService', 'reportService', '$facebook', '$cacheFactory', 'agreementSevice', '$cookies','myIssuesService', function ($scope, $q,$timeout, $window, $location, $rootScope, $routeParams, $http, issuesService, reportService, $facebook, $cacheFactory, agreementSevice, $cookies, myIssuesService) {
     
     var mainController = this;
+    // TODO FB: keep track of customisation settings.
+    // TODO FB: consider putting the customisation selection in a/the .run()
+    // before the controllers.
+    var customisation = CUSTOMISATION_SETTINGS.normal;
 
     //very hacky, should be removed when making the google maps a service with the proper dependencies
     user = $cookies.getObject('user');
     userProfile = $cookies.getObject('user_profile');
 
     mainController.init = function() {
+        // TODO FB: mainController.init appears to be called twice, why is this?
+        //          because the index.html contains <body ng-controller="mainCtrl as mainController" >?
         logger("mainController.init");
 
         //some vars that are needed?
@@ -1020,6 +1050,14 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
         $scope.showuserpanel();        
         $rootScope.urlBefore = $location.path();
         $rootScope.errorSession = "";
+
+        // TODO FB: Setup custom organisation settings.
+        // TODO FB: default to class="overlay" in the html, and remove
+        //          here, to prevent flickering.
+        if ($location.path().substring(0,14) == "/fietsersbond") {
+          customisation = CUSTOMISATION_SETTINGS.fietsersbond;
+          $('#background-customisation-image').css('background-image', 'url('+customisation.background_image_url+')').addClass('overlay');
+        }
 
         menuSelected($rootScope, 'home');
         //if really the first time loading, listen to the map being done loading, find start location, and remove listener.
