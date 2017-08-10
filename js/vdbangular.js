@@ -440,12 +440,8 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
                 }
             }
         })
-        // TODO FB: Fietsersbond routes.
-        // * N.B. make sure they are before the catchall /:cityNameClone
-        // * N.B. if the template does not exist, main init will recurse
-        //   indefinitely.
-        .when('/fietsersbond', {
-            templateUrl: 'main_fietsersbond.html',
+        .when('/rapportage', {
+            templateUrl: 'rapportage.html',
             controller: 'mainCtrl'
         })
         //redirect city / postcode
