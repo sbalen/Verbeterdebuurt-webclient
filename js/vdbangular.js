@@ -148,12 +148,16 @@ vdbApp.run(['$route', '$rootScope', '$location', function ($route, $rootScope, $
 //change menu selected
 function menuSelected($scope, selected) {
     $scope.homeSelected = "";
+    $scope.rapportageSelected = "";
     $scope.mentionSelected = "";
     $scope.myIssuesSelected = "";
 
     switch (selected) {
     case 'home':
         $scope.homeSelected = "active"
+        break;
+    case 'rapportage':
+        $scope.rapportageSelected = "active"
         break;
     case 'createissue':
         $scope.mentionSelected = "active"

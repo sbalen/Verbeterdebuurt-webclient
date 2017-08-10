@@ -15,3 +15,17 @@
 #background-customisation-image.overlay {
   display: block;
 }
+/* Hide the rapportage button by default.
+ * For the Fietsersbond, show the rapportage and hide the map button. */
+#rapportage-button,
+#responsive-rapportage-button {
+  display: none;
+}
+.customisation-fietsersbond #rapportage-button,
+.customisation-fietsersbond #responsive-rapportage-button {
+  display: block;
+}
+.customisation-fietsersbond #map-button,
+.customisation-fietsersbond #responsive-map-button {
+  display: none;
+}
