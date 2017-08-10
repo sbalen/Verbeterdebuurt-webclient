@@ -15,13 +15,15 @@ var vdbApp = angular.module('vdbApp',
 var CUSTOMISATION_SETTINGS = {
   normal: {
     class: '', // Added to <body>
-    show_map_main: true,     // Unused?
+    logo_src: '/img/Verbeterdebuurt-logo.png', // Top left main logo.
     background_image_url: undefined, // Background for the main page.
+    show_map_main: true,     // TODO: use to hide "Kaart" buttons?
   },
   fietsersbond: {
     class: 'customisation fietsersbond',
-    show_map_main: false,
+    logo_src: 'http://meldpunt.fietsersbond.nl/images/logo.png',
     background_image_url: 'https://s3-eu-west-1.amazonaws.com/fietsersbond/app/uploads/sites/4/2017/05/03100216/hoe-leer-ik-fietsen-videoplayback-345x183.jpg',
+    show_map_main: false,
   },
 };
 
