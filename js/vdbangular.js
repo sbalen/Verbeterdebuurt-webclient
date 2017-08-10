@@ -16,14 +16,10 @@ var CUSTOMISATION_SETTINGS = {
   normal: {
     class: '', // Added to <body>
     logo_src: '/img/Verbeterdebuurt-logo.png', // Top left main logo.
-    background_image_url: undefined, // Background for the main page.
-    show_map_main: true,     // TODO: use to hide "Kaart" buttons?
   },
   fietsersbond: {
     class: 'customisation fietsersbond',
     logo_src: 'http://meldpunt.fietsersbond.nl/images/logo.png',
-    background_image_url: 'https://s3-eu-west-1.amazonaws.com/fietsersbond/app/uploads/sites/4/2017/05/03100216/hoe-leer-ik-fietsen-videoplayback-345x183.jpg',
-    show_map_main: false,
   },
 };
 
@@ -134,9 +130,6 @@ vdbApp.run(['$location', '$rootScope', function($location, $rootScope) {
   // Customisation: Fietsersbond.
   if ($location.path().substring(0,14) == "/fietsersbond") {
     $rootScope.customisation = CUSTOMISATION_SETTINGS.fietsersbond;
-    // TODO FB: default to class="overlay" in the html, and remove
-    //          here, to prevent flickering.
-    $('#background-customisation-image').css('background-image', 'url('+$rootScope.customisation.background_image_url+')').addClass('overlay');
     logger('customisation','fietsersbond');
 
   // By default, set the normal (i.e. no) customisation.

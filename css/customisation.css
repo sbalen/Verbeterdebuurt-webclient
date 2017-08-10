@@ -2,18 +2,19 @@
  * Add style for custom background images overlaying the googlemaps.
  * N.B this /css/vdb.css is loaded, not /vdb.css.
  */
+body {
+  background-color: #fff;
+}
 #background-customisation-image {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   display: none;
-  background-color: #f69;
+  background-image: none;
+  background-color: none;
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-position: center;
   background-size: cover;
-}
-#background-customisation-image.overlay {
-  display: block;
 }
 /* Hide the rapportage button by default.
  * For the Fietsersbond, show the rapportage and hide the map button. */
@@ -48,4 +49,8 @@
   background-color: #ffd503;
   color: #231f20;
   border-bottom: none;
+}
+.customisation.fietsersbond #background-customisation-image {
+  background-image: url('https://s3-eu-west-1.amazonaws.com/fietsersbond/app/uploads/sites/4/2017/05/03100216/hoe-leer-ik-fietsen-videoplayback-345x183.jpg');
+  display: block;
 }
