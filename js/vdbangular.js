@@ -128,8 +128,24 @@ errorhandler = function(rootScope,errorInfo){
 vdbApp.run(['$location', '$rootScope', function($location, $rootScope) {
 
   // Customisation: Fietsersbond.
-  if ($location.path().substring(0,14) == "/fietsersbond") {
+  // 
+  /* TODO FB: switch based on subdomain or path?
+   * if based on path, use the route defined above;
+   * if based on host, redirect in the main controller (similar to
+   * normal gemeente/X redirect).
+  if ($location.path().substring(0,13) == "/fietsersbond") {
     $rootScope.customisation = CUSTOMISATION_SETTINGS.fietsersbond;
+    logger('customisation','fietsersbond');
+  */
+  if ($location.host().substring(0,12) == "fietsersbond") {
+    $rootScope.customisation = CUSTOMISATION_SETTINGS.fietsersbond;
+    // Redirect to the default page for the Fietsersbond.
+    // TODO FB: N.B. this causes a short red flickr on screen. This
+    // is also visible with this page on the live app. Fix it in
+    // general. (Probably to do with an ununitialised "council".)
+    $rootScope.urlBefore = "/nieuw-probleem";
+    menuSelected($rootScope, 'createissue');
+    $location.path('/nieuw-probleem');
     logger('customisation','fietsersbond');
 
   // By default, set the normal (i.e. no) customisation.
