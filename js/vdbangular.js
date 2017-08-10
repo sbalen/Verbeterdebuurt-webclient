@@ -139,13 +139,16 @@ vdbApp.run(['$location', '$rootScope', function($location, $rootScope) {
   */
   if ($location.host().substring(0,12) == "fietsersbond") {
     $rootScope.customisation = CUSTOMISATION_SETTINGS.fietsersbond;
-    // Redirect to the default page for the Fietsersbond.
+    // Redirect to the default page for the Fietsersbond, if the
+    // current path is /.
     // TODO FB: N.B. this causes a short red flickr on screen. This
     // is also visible with this page on the live app. Fix it in
     // general. (Probably to do with an ununitialised "council".)
-    $rootScope.urlBefore = "/nieuw-probleem";
-    menuSelected($rootScope, 'createissue');
-    $location.path('/nieuw-probleem');
+    if ($location.path() === '/') {
+      $rootScope.urlBefore = "/nieuw-probleem";
+      menuSelected($rootScope, 'createissue');
+      $location.path('/nieuw-probleem');
+    }
     logger('customisation','fietsersbond');
 
   // By default, set the normal (i.e. no) customisation.
