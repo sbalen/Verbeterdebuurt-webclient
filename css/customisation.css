@@ -1,0 +1,17 @@
+/* TODO FB: find out if/which build tools were used for the css etc.
+ * Add style for custom background images overlaying the googlemaps.
+ * N.B this /css/vdb.css is loaded, not /vdb.css.
+ */
+#background-customisation-image {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: none;
+  background-color: #f69;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
+}
+#background-customisation-image.overlay {
+  display: block;
+}
