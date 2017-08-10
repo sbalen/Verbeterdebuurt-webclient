@@ -21,11 +21,11 @@
 #responsive-rapportage-button {
   display: none;
 }
-.customisation-fietsersbond #rapportage-button,
-.customisation-fietsersbond #responsive-rapportage-button {
+.customisation.fietsersbond #rapportage-button,
+.customisation.fietsersbond #responsive-rapportage-button {
   display: block;
 }
-.customisation-fietsersbond #map-button,
-.customisation-fietsersbond #responsive-map-button {
+.customisation.fietsersbond #map-button,
+.customisation.fietsersbond #responsive-map-button {
   display: none;
 }

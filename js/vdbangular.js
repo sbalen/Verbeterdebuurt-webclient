@@ -14,10 +14,12 @@ var vdbApp = angular.module('vdbApp',
 // will be read throughout the application to determine custom display options.
 var CUSTOMISATION_SETTINGS = {
   normal: {
-    show_map_main: true,
-    background_image_url: undefined,
+    class: '', // Added to <body>
+    show_map_main: true,     // Unused?
+    background_image_url: undefined, // Background for the main page.
   },
   fietsersbond: {
+    class: 'customisation fietsersbond',
     show_map_main: false,
     background_image_url: 'https://s3-eu-west-1.amazonaws.com/fietsersbond/app/uploads/sites/4/2017/05/03100216/hoe-leer-ik-fietsen-videoplayback-345x183.jpg',
   },
@@ -121,6 +123,27 @@ errorhandler = function(rootScope,errorInfo){
     });
     
 };
+
+
+// TODO FB: Set the current (if any) customisation.
+// Run this first, to prevent unnecessary page updates.
+vdbApp.run(['$location', '$rootScope', function($location, $rootScope) {
+
+  // Customisation: Fietsersbond.
+  if ($location.path().substring(0,14) == "/fietsersbond") {
+    $rootScope.customisation = CUSTOMISATION_SETTINGS.fietsersbond;
+    // TODO FB: default to class="overlay" in the html, and remove
+    //          here, to prevent flickering.
+    $('#background-customisation-image').css('background-image', 'url('+$rootScope.customisation.background_image_url+')').addClass('overlay');
+    logger('customisation','fietsersbond');
+
+  // By default, set the normal (i.e. no) customisation.
+  } else {
+    $rootScope.customisation = CUSTOMISATION_SETTINGS.normal;
+    logger('customisation','normal');
+  }
+}]);
+
 
 //call google map at first 
 // TODO FB: Initialise the google map, even if it is not shown? Probably yes,
@@ -1035,10 +1058,6 @@ vdbApp.run(['$rootScope', '$window', function ($rootScope, $window) {
 vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location', '$rootScope', '$routeParams', '$http', 'issuesService', 'reportService', '$facebook', '$cacheFactory', 'agreementSevice', '$cookies','myIssuesService', function ($scope, $q,$timeout, $window, $location, $rootScope, $routeParams, $http, issuesService, reportService, $facebook, $cacheFactory, agreementSevice, $cookies, myIssuesService) {
     
     var mainController = this;
-    // TODO FB: keep track of customisation settings.
-    // TODO FB: consider putting the customisation selection in a/the .run()
-    // before the controllers.
-    var customisation = CUSTOMISATION_SETTINGS.normal;
 
     //very hacky, should be removed when making the google maps a service with the proper dependencies
     user = $cookies.getObject('user');
@@ -1054,14 +1073,6 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
         $scope.showuserpanel();        
         $rootScope.urlBefore = $location.path();
         $rootScope.errorSession = "";
-
-        // TODO FB: Setup custom organisation settings.
-        // TODO FB: default to class="overlay" in the html, and remove
-        //          here, to prevent flickering.
-        if ($location.path().substring(0,14) == "/fietsersbond") {
-          customisation = CUSTOMISATION_SETTINGS.fietsersbond;
-          $('#background-customisation-image').css('background-image', 'url('+customisation.background_image_url+')').addClass('overlay');
-        }
 
         menuSelected($rootScope, 'home');
         //if really the first time loading, listen to the map being done loading, find start location, and remove listener.
