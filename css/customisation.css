@@ -50,7 +50,25 @@ body {
   color: #231f20;
   border-bottom: none;
 }
+.customisation.fietsersbond .subnav .sub-nav-btn.active {
+  color: #231f20 !important; /* Override already defiend !important.. */
+}
 .customisation.fietsersbond #background-customisation-image {
   background-image: url('https://s3-eu-west-1.amazonaws.com/fietsersbond/app/uploads/sites/4/2017/05/03100216/hoe-leer-ik-fietsen-videoplayback-345x183.jpg');
   display: block;
+}
+/* Customise the logo, e.g. positioning or size. */
+.customisation.fietsersbond .vdblogo {
+  margin-top: -20px;
+}
+/* Responsive menu. */
+.customisation.fietsersbond .navbar-default .navbar-toggle .icon-bar {
+  background-color: #ffd503;
+}
+.customisation.fietsersbond .navbar-default .navbar-nav > li > a {
+  background-color: #fff;
+  color: #231f20;
+}
+.customisation.fietsersbond .navbar-default .navbar-nav > li.active > a {
+  background-color: #ffd503;
 }
