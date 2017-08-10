@@ -29,3 +29,23 @@
 .customisation.fietsersbond #responsive-map-button {
   display: none;
 }
+/* Fietsersbond colour scheme. */
+.customisation.fietsersbond .subnav,
+.customisation.fietsersbond .side-panel .panel-heading {
+  background-color: #ffd503;
+  color: #231f20;
+  border-color: #fff;
+}
+.customisation.fietsersbond .navbar-default .navbar-nav > li > a {
+  color: #ffd503;
+}
+.customisation.fietsersbond .main-panel,
+.customisation.fietsersbond .side-panel {
+  border-color: #ffd503;
+}
+.customisation.fietsersbond .subnav .sub-nav-btn {
+  border-color: #fff;
+  background-color: #ffd503;
+  color: #231f20;
+  border-bottom: none;
+}
