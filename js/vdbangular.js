@@ -443,6 +443,8 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
                 }
             }
         })
+        // TODO FB: because rapportage still uses the mainCtrl, things like
+        // the menu-highlight do not work (the 'home' gets highlighted).
         .when('/rapportage', {
             templateUrl: 'rapportage.html',
             controller: 'mainCtrl'
