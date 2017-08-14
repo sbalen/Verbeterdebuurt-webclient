@@ -3375,6 +3375,10 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
 
     $scope.getServiceStandard = function(council,category_id) {
         logger("createProblemController.getServiceStandard("+council+")")
+        // TODO FB: this council is a hardcoded hack, maybe it can be removed
+        // entirely? See also at createIdeaController.
+        console.warn('council cPC',council);
+        if ( ! council ) { council = ''; }
         if (council.toLowerCase().replace(' ','-') == 'utrechtse-heuvelrug') {
             $scope.standardMessage = "U kunt uw ideeën aandragen tot 2 januari 2017";
         } else {
@@ -3494,6 +3498,10 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
     //this is really bad, it should be combined with problem
     $scope.getServiceStandard = function(council,category_id) {
         logger("createIdeaController.getServiceStandard("+council+")")
+        // TODO FB: this council is a hardcoded hack, maybe it can be removed
+        // entirely? See also at createProblemController.
+        console.warn('council cIC',council);
+        if ( ! council ) { council = ''; }
         if (council.toLowerCase().replace(' ','-') == 'utrechtse-heuvelrug') {
             $scope.standardMessage = "U kunt uw ideeën aandragen tot 2 januari 2017";
         } else {
