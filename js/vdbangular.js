@@ -4240,12 +4240,12 @@ vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$loc
         logger("rapportageController.init");
 
         //some vars that are needed?
-        $rootScope.dynamicTitle = "";
-        $scope.showuserpanel();
+        $rootScope.dynamicTitle = "Rapportage";
+        //$scope.showuserpanel();
         $rootScope.urlBefore = $location.path();
         $rootScope.errorSession = "";
 
-        menuSelected($rootScope, 'home');
+        menuSelected($rootScope, 'rapportage');
         //if really the first time loading, listen to the map being done loading, find start location, and remove listener.
         /* TODO FB: this depends on a global mainControllerInitialized variabel
          * and can't be just copied/replaced.
@@ -4271,12 +4271,13 @@ vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$loc
         },10);
     }
 
+    /* TODO FB: nor council rewrite on rapportage
+     * N.B. is the mainCtrl version actually used somewhere?
     rapportageController.rewritePathForCouncil = function() {
         logger("rewritePathForCouncil()");
         var newCouncil = "";
         var newPath = "";
 
-        /* deeplinks with only cityname or cityname with an action or or /plaats/  need to all be rewritten to /gemeente */
         var nextaction = !(typeof $routeParams.nextaction === 'undefined') ? "/" + $routeParams.nextaction : "";
 
 
@@ -4290,7 +4291,7 @@ vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$loc
 
         $scope.council = newCouncil;
         $location.path(newPath);
-    }
+    }*/
 
     rapportageController.determineStartLocation = function(doneCallBack) {
         logger("determineStartLocation ->");
@@ -4336,6 +4337,7 @@ vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$loc
         addMapChangedListener($scope.updateAllInfo,$location);
     }
 
+    /*
     $scope.updatePathForCouncil = function(city) {
         logger("updatePathForCouncil(" + city + ") -> " + $location.path() + " ::: " + $routeParams.nextaction);
 
@@ -4355,6 +4357,7 @@ vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$loc
             $location.path('/gemeente/' + convertToSlug(city), true);
         }
     }
+    */
 
     $scope.updateSearchBoxForCouncil = function(city) {
         logger("updateSearchBoxForCouncil(" + city + ")");
@@ -4477,7 +4480,7 @@ vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$loc
 
         //if force, just reload all, regardless of the city name
         if(forceUpdate && city.long_name != null) {
-            $scope.updatePathForCouncil(city.long_name);
+            //$scope.updatePathForCouncil(city.long_name);
             $scope.updateSearchBoxForCouncil(city.long_name);
             $scope.updateCouncilReport(city.long_name);
             $scope.updateCouncilAgreement(city.long_name);
@@ -4485,7 +4488,7 @@ vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$loc
             var currentCity = city.long_name;
             determineCityForGeocode(function() {
                 if (currentCity == undefined || city.long_name != currentCity.long_name) {
-                    $scope.updatePathForCouncil(city.long_name);
+                    //$scope.updatePathForCouncil(city.long_name);
                     $scope.updateSearchBoxForCouncil(city.long_name);
                     $scope.updateCouncilReport(city.long_name);
                     $scope.updateCouncilAgreement(city.long_name);
@@ -4497,6 +4500,7 @@ vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$loc
         $scope.updateMapIssues();
     }
 
+    /* TODO FB: check if login functions are required on rapportage.
     $scope.isUserLoggedIn = function() {
         return ($cookies.getObject('user') != undefined);
     }
@@ -4530,10 +4534,13 @@ vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$loc
 
         $location.path('/');
     }
+    */
 
+    /*
     $scope.showuserpanel = function () {
         $scope.userpanel = 1;
     }
+    */
 
     //move page
     $scope.clickMenu = function (selected) {

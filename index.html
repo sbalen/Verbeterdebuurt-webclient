@@ -83,8 +83,9 @@
                 <!-- TODO FB: image background placeholder
                      * mimick googlemaps div layout
                      * overlay googlemaps to hide the map/show a background image
+                     * do not show the background on the rapportage page.
                  -->
-                <div id="background-customisation-image"></div>
+                <div id="background-customisation-image" ng-hide="rapportageSelected === 'active'"></div>
                 <div id="googlemaps" class="city"></div>
             </div>
             <input type="hidden" id="city"/>
