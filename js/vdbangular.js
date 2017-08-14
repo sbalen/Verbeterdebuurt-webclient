@@ -447,7 +447,7 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
         // the menu-highlight do not work (the 'home' gets highlighted).
         .when('/rapportage', {
             templateUrl: 'rapportage.html',
-            controller: 'mainCtrl'
+            controller: 'rapportageCtrl'
         })
         //redirect city / postcode
         .when('/:cityNameClone', {
@@ -4225,3 +4225,348 @@ vdbApp.controller('resolveIssueCommentYesCtrl', ['$scope','$rootScope','$routePa
         $scope.comment="";
     }
 }])
+
+vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$location', '$rootScope', '$routeParams', '$http', 'issuesService', 'reportService', '$facebook', '$cacheFactory', 'agreementSevice', '$cookies','myIssuesService', function ($scope, $q,$timeout, $window, $location, $rootScope, $routeParams, $http, issuesService, reportService, $facebook, $cacheFactory, agreementSevice, $cookies, myIssuesService) {
+
+    var rapportageController = this;
+
+    //very hacky, should be removed when making the google maps a service with the proper dependencies
+    user = $cookies.getObject('user');
+    userProfile = $cookies.getObject('user_profile');
+
+    rapportageController.init = function() {
+        // TODO FB: rapportageController.init appears to be called twice, why is this?
+        //          because the index.html contains <body ng-controller="rapportageCtrl as rapportageController" >?
+        logger("rapportageController.init");
+
+        //some vars that are needed?
+        $rootScope.dynamicTitle = "";
+        $scope.showuserpanel();
+        $rootScope.urlBefore = $location.path();
+        $rootScope.errorSession = "";
+
+        menuSelected($rootScope, 'home');
+        //if really the first time loading, listen to the map being done loading, find start location, and remove listener.
+        /* TODO FB: this depends on a global mainControllerInitialized variabel
+         * and can't be just copied/replaced.
+        if (!rapportageControllerInitialized) {
+
+            var listenerForMapReady = google.maps.event.addListener(map,'idle',function() {
+                //determine where the map should start
+                rapportageController.determineStartLocation(rapportageController.startLocationDetermined);
+                listenerForMapReady.remove();
+            });
+            rapportageControllerInitialized = true;
+        }
+        */
+
+        $timeout(function () {
+            var listener = attachAutoCompleteListener('searchCity');
+            var input = $('#searchCity');
+            $('#clickSearch').mousedown(function() {input.focus();});
+            $('#clickSearch').mouseup(function() {
+                logger("clickSearch" +  input.val());
+                moveMapToAddress(input.val());
+            });
+        },10);
+    }
+
+    rapportageController.rewritePathForCouncil = function() {
+        logger("rewritePathForCouncil()");
+        var newCouncil = "";
+        var newPath = "";
+
+        /* deeplinks with only cityname or cityname with an action or or /plaats/  need to all be rewritten to /gemeente */
+        var nextaction = !(typeof $routeParams.nextaction === 'undefined') ? "/" + $routeParams.nextaction : "";
+
+
+        if ($location.path() == "/plaats/" + $routeParams.cityNameplaats + nextaction) {
+            newPath = 'gemeente/' + $routeParams.cityNameplaats + nextaction
+            newCouncil = $routeParams.cityNameplaats;
+        } else if ($location.path() == "/" + $routeParams.cityNameClone + nextaction) {
+            $location.path('gemeente/' + $routeParams.cityNameClone + nextaction);
+            newCouncil = $routeParams.cityNameClone;
+        }
+
+        $scope.council = newCouncil;
+        $location.path(newPath);
+    }
+
+    rapportageController.determineStartLocation = function(doneCallBack) {
+        logger("determineStartLocation ->");
+        logger($routeParams);
+
+        var result = true;
+
+        if ($routeParams.id) {
+            //should not be handled by rapportagecontroller
+            logger("location based on id should not be handled by rapportage ctrl, but by issueCtrl")
+            result = false;
+        } else if ($routeParams.hashkey) {
+            //should not be handled by rapportagecontroller
+            logger("location based on haskey should not be handled by rapportage ctrl, but by hashCtrl")
+            result = false;
+        } else if ($routeParams.cityName) {
+            moveMapToAddress($routeParams.cityName,true,doneCallBack);
+        } else if ($routeParams.postalcode) {
+            moveMapToAddress($routeParams.postalcode,true,doneCallBack);
+        } else if (navigator.geolocation) {
+            //pass on the responsibility of calling back to moveMapToBrowserLocation (boogiewoogie?)
+            moveMapToBrowserLocation($rootScope,$q,true,doneCallBack);
+        } else if ($cookies.getObject('user') != null) {
+            moveMapToUserLocation(true,doneCallBack);
+        } else {
+            moveMapToDefaultLocation(doneCallBack);
+            //could be that the map was already initialized on this.
+        }
+
+        if (!result) {
+            if (doneCallBack != undefined && typeof doneCallBack === 'function') {
+                doneCallBack(result);
+            }
+        }
+    }
+
+    rapportageController.startLocationDetermined = function(result) {
+        logger('startLocationDetermined('+result+')')
+        if (result) {
+            $scope.updateAllInfo(true);
+            $scope.updateMyIssues();
+        }
+        addMapChangedListener($scope.updateAllInfo,$location);
+    }
+
+    $scope.updatePathForCouncil = function(city) {
+        logger("updatePathForCouncil(" + city + ") -> " + $location.path() + " ::: " + $routeParams.nextaction);
+
+        var currentPath = $location.path();
+
+        var newPath = "";
+        if (currentPath.includes('gemeente') ||
+            currentPath.includes('postcode') ||
+            currentPath == '/' ) {
+            newPath = '/gemeente/' + convertToSlug(city);
+            if (currentPath.endsWith('nieuw-probleem')) newPath += "/nieuw-probleem";
+            if (currentPath.endsWith('nieuw-idee')) newPath += "/nieuw-idee";
+            if (currentPath.endsWith('nieuwe-melding')) newPath += "/nieuwe-melding";
+        }
+
+        if (newPath != "" && currentPath.toLowerCase() != newPath.toLowerCase()) {
+            $location.path('/gemeente/' + convertToSlug(city), true);
+        }
+    }
+
+    $scope.updateSearchBoxForCouncil = function(city) {
+        logger("updateSearchBoxForCouncil(" + city + ")");
+        logger($scope.searchCity);
+        $scope.searchCity = city;
+    }
+
+    $scope.updateMyIssues = function() {
+        logger("updateMyIssues -->" + $cookies.getObject('user'));
+        if ($cookies.getObject('user')) {
+            var jsondata = {}
+            jsondata.user = $cookies.getObject('user');
+            jsondata = JSON.stringify(jsondata);
+            logger(jsondata);
+            myIssuesService.getMyIssues(jsondata).then(function (data) {
+                logger("retrieving:");
+                logger(data.data);
+                $rootScope.myIssueCount = data.data.count;
+                $rootScope.myIssuesList = data.data.issues;
+            })
+        }
+
+    }
+
+    rapportageController.recentIssuesOfType = function(type, count) {
+        if (!$scope.zoomedInEnoughToRetrieveIssues() || $rootScope.newProblemList == undefined || $rootScope.newProblemList.length <= 0) return [];
+        if (count == undefined) count = RECENT_ISSUES_TO_SHOW;
+        var curIssue;
+        var result = [];
+        var foundIssues = 0;
+        //orderBy : 'created_at' : true
+
+        for (var i=0; i < $rootScope.newProblemList.length; i++) {
+            curIssue = $rootScope.newProblemList[i];
+            if(curIssue.type == type && curIssue.status != 'closed') {
+                result.push(curIssue);
+                if (++foundIssues >= count) { break; }
+            }
+        }
+
+        return result;
+    }
+
+    $scope.recentProblems = function() {
+        return rapportageController.recentIssuesOfType(ISSUE_TYPE_PROBLEM);
+    }
+
+    $scope.recentIdeas = function() {
+        return rapportageController.recentIssuesOfType(ISSUE_TYPE_IDEA);
+    }
+
+    $scope.showAgreement = function () {
+        if (!$rootScope.agreement) return false;
+        return $rootScope.agreement.success && $rootScope.agreement.agreement && $scope.zoomedInEnoughToShowIssues();
+    }
+
+    $scope.zoomedInEnoughToShowIssues = function() {
+        return $rootScope.zoom >= $rootScope.pinsVisibleZoom;
+    }
+
+    $scope.zoomedInEnoughToRetrieveIssues = function() {
+        return $rootScope.zoom >= $rootScope.retrieveIssuesZoom;
+    }
+    $scope.updateMapIssues = function() {
+        logger("updateMapIssues");
+
+        checkZoomLevel($rootScope);
+
+        if ($scope.zoomedInEnoughToRetrieveIssues()) {
+            var jsondata = JSON.stringify({
+                "coords_criterium": {
+                    "max_lat": map.getBounds().getNorthEast().lat(),
+                    "min_lat": map.getBounds().getSouthWest().lat(),
+                    "max_long": map.getBounds().getNorthEast().lng(),
+                    "min_long": map.getBounds().getSouthWest().lng()
+                }
+            });
+            var getIssues = issuesService.getIssues(jsondata).then(function (data) {
+                var getdata = data.data;
+
+                $rootScope.newProblemList = getdata.issues;
+                //sort the issues descending for created date
+                if ($rootScope.newProblemList != undefined && $rootScope.newProblemList.length > 1) {
+                   $rootScope.newProblemList.sort(function(a, b){return b.created_at.localeCompare( a.created_at ) });
+                }
+                if (getdata.count != 0 || !getdata) {
+                    $window.issuesData = getdata;
+                    showIssuesOnMap();
+                }
+            });
+        } else {
+            $window.issuesData = null;
+            showIssuesOnMap();
+        }
+    }
+    $scope.updateCouncilReport = function(city)  {
+        logger("updateCouncilReport");
+        reportService.getReport(JSON.stringify({"council": "" + city + ""})).then(function (data) {
+            $rootScope.reportList = data.data.report;
+        });
+    }
+
+    $scope.updateCouncilAgreement = function(city) {
+        logger("updateCouncilAgreement");
+        agreementSevice.getAgreement(JSON.stringify({"council": "" + city + ""})).then(function (data) {
+            $rootScope.agreement = data.data;
+            $timeout(function () { $rootScope.hideLogo = !data.data.logo; });
+        });
+    }
+
+    //click function at map
+    $scope.alrCity = function () {
+        logger("rapportageCtrl.alrCity() -> getreport / getagreement / getIssues if city.long_name");
+        $scope.updateAllInfo();
+    }
+
+
+    $scope.updateAllInfo = function(forceUpdate) {
+        logger("updateAllInfo("+forceUpdate+") --> ");
+
+        //if force, just reload all, regardless of the city name
+        if(forceUpdate && city.long_name != null) {
+            $scope.updatePathForCouncil(city.long_name);
+            $scope.updateSearchBoxForCouncil(city.long_name);
+            $scope.updateCouncilReport(city.long_name);
+            $scope.updateCouncilAgreement(city.long_name);
+        } else { // otherwise, get the cityname and check it it has changed, only then reload info
+            var currentCity = city.long_name;
+            determineCityForGeocode(function() {
+                if (currentCity == undefined || city.long_name != currentCity.long_name) {
+                    $scope.updatePathForCouncil(city.long_name);
+                    $scope.updateSearchBoxForCouncil(city.long_name);
+                    $scope.updateCouncilReport(city.long_name);
+                    $scope.updateCouncilAgreement(city.long_name);
+                }
+            });
+        }
+
+        // $scope.updateMyIssues();
+        $scope.updateMapIssues();
+    }
+
+    $scope.isUserLoggedIn = function() {
+        return ($cookies.getObject('user') != undefined);
+    }
+
+
+    $scope.updateLoginStatus = function() {
+        //isn't this double, zee below?
+        $scope.hideLogin = $cookies.getObject('user')
+    }
+
+
+    //login session
+    $scope.loginStatus = function () {
+        return $scope.isUserLoggedIn() && ($rootScope.lusername = $cookies.getObject('user').username);
+    }
+
+    //logOut
+    $scope.logout = function () {
+        logger("rapportageCtrl.logout()");
+
+        $cookies.remove('user');
+        $cookies.remove('user_profile');
+        // $('.dropdown-menu').hide();
+        $scope.userpanel = 0;
+        $rootScope.myIssuesList = null;
+
+        $scope.fbstatus = $facebook.isConnected();
+        if ($scope.fbstatus) {
+            $facebook.logout();
+        }
+
+        $location.path('/');
+    }
+
+    $scope.showuserpanel = function () {
+        $scope.userpanel = 1;
+    }
+
+    //move page
+    $scope.clickMenu = function (selected) {
+        logger("rapportageCtrl.clickMenu()");
+
+        if (selected == "myissues" || selected == "createissue") {
+            if (!$cookies.getObject('user')) {
+                if (selected == 'myissues') {
+                    $rootScope.urlBefore = "/mijn-meldingen";
+                    menuSelected($rootScope, 'myIssues');
+                    $location.path('/' + "login");
+                }
+                if (selected == 'createissue') {
+                    $rootScope.urlBefore = "/nieuwe-melding";
+                    menuSelected($rootScope, 'createissue');
+                    $location.path('/nieuwe-melding');
+                }
+            } else {
+                if (selected == "createissue") {
+                    $location.path('/nieuwe-melding');
+                } else if (selected == "myissues") {
+                    $location.path('/mijn-meldingen');
+                } else {
+                    $location.path('/' + selected);
+                }
+            }
+        } else {
+            $location.path('/' + selected);
+        }
+    }
+
+    $scope.noProtocol = function(url) {
+        return url.replace('http:','').replace('https:','');
+    }
+    rapportageController.init();
+}]);
