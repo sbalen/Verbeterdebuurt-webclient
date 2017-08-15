@@ -1,101 +1,96 @@
-
-                <!-- body -->  
-                <div id="main-content" class="container">
-                  <!--
-                    <div  ng-include="'sidebar_left.html'"></div>
-                    -->
-<div class="col-md-3 hidden-sm hidden-xs hidden-md">
+<!-- body -->
+<div id="main-content" class="container">
+  <!-- left side panel -->
+  <div class="col-md-3 hidden-sm hidden-xs hidden-md">
     <div class="panel side-panel panel-default" id="new-problem-widget">
-        <div class="panel-heading">
-            <strong>Fietsersbond afdeling</strong>
+      <div class="panel-heading">
+        <strong>Fietsersbond afdeling</strong>
+      </div>
+      <div class="panel-body">
+        <div class="list-group report-list-council" ng-hide="reportList.council == null || reportList.council == 'undefined' " >
+          <strong>Je kijkt nu bij Gemeente: {{reportList.council}}</strong></br>
+          {{agreement.agreement}}</br></br>
+          Deze gemeente valt in fietsersbond gebied [Groot {{reportList.council}}]</br></br>
+
+          Meldingen per maand: {{reportList.reports}} </br>
+          Oplossingen per maand: {{reportList.solutions}}
         </div>
-        <div class="panel-body">
-            <div class="list-group report-list-council" ng-hide="reportList.council == null || reportList.council == 'undefined' " >
-                <strong>Je kijkt nu bij Gemeente: {{reportList.council}}</strong></br>
-                {{agreement.agreement}}</br></br>
-                Deze gemeente valt in fietsersbond gebied [Groot {{reportList.council}}]</br></br>
-                
-                Meldingen per maand: {{reportList.reports}} </br>
-                Oplossingen per maand: {{reportList.solutions}}
-            </div>
-            <div class="list-group report-list-council"  ng-show="reportList.council == null || reportList.council == 'undifined' ">
-                geen locatieinformatie gevonden
-            </div>
-        </div>  
+        <div class="list-group report-list-council"  ng-show="reportList.council == null || reportList.council == 'undifined' ">
+          geen locatieinformatie gevonden
+        </div>
+      </div>
     </div>
 
     <div class="panel side-panel panel-default" id="new-problem-widget">
-        <div class="panel-heading">
-            <strong>Rapportage: Aantal meldingen</strong>
-        </div>
-        <div class="panel-body">
-          <ul>
-            <li><a onclick="rapportage_chart_one()">Meldingen over tijd</a></li>
-          </ul>
-        </div>  
+      <div class="panel-heading">
+        <strong>Rapportage: Aantal meldingen</strong>
+      </div>
+      <div class="panel-body">
+        <ul>
+          <li><a onclick="rapportage_chart_one()">Meldingen over tijd</a></li>
+        </ul>
+      </div>
     </div>
 
     <div class="panel side-panel panel-default" id="new-problem-widget">
-        <div class="panel-heading">
-            <strong>Rapportage: Afhandeling</strong>
-        </div>
-        <div class="panel-body">
-          <ul>
-            <li><a onclick="rapportage_chart_two()">Opgeloste problemen en uitgevoerde ideeën</a></li>
-          </ul>
-        </div>  
+      <div class="panel-heading">
+        <strong>Rapportage: Afhandeling</strong>
+      </div>
+      <div class="panel-body">
+        <ul>
+          <li><a onclick="rapportage_chart_two()">Opgeloste problemen en uitgevoerde ideeën</a></li>
+        </ul>
+      </div>
     </div>
 
     <div class="panel side-panel panel-default" id="new-problem-widget">
-        <div class="panel-heading">
-            <strong>Rapportage: Tevredenheid</strong>
-        </div>
-        <div class="panel-body">
-          <ul>
-            <li><a onclick="rapportage_chart_three()">Tevredenheid over de afdeling</a></li>
-          </ul>
-        </div>  
+      <div class="panel-heading">
+        <strong>Rapportage: Tevredenheid</strong>
+      </div>
+      <div class="panel-body">
+        <ul>
+          <li><a onclick="rapportage_chart_three()">Tevredenheid over de afdeling</a></li>
+        </ul>
+      </div>
     </div>
+  </div>
+
+  <!-- main container -->
+  <div class="col-lg-6 main-container">
+    <div class="alert alert1 alert-warning fontM" id="message-widget" ng-show="showAgreement()">
+      Kies een specifieke melding om de details te bekijken.
+      Deze meldingen zijn uit de afdeling: [Groot {{reportList.council}}]
+      {{agreement.agreement}}
+      <i class="fa fa-flag"></i>
+    </div>
+    <div class="alert  alert-warning fontM" id="zoomedout-widget" ng-hide="zoomedInEnoughToShowIssues()">
+      Zoom in om Fietsersbond meldingen op de kaart te zien.
+      <br>Of kies een rapportage uit het menu links.
+      <i class="fa fa-flag"></i>
+    </div>
+    <div class="panel panel-default main-panel margintop">
+      <h1 class="fontM meldingheader"></h1>
+      <div id="chart-fietsersbond"></div>
+    </div>
+  </div>
+
+  <!-- right side panel -->
+  <div ng-include="'sidebar_search_bar.html'"></div>
+  <div ng-include="'sidebar_my_issues.html'"></div>
 </div>
 
-
-
-                <!-- main container -->
-                <div class="col-lg-6 main-container">                    
-                    <div class="alert alert1 alert-warning fontM" id="message-widget" ng-show="showAgreement()">
-                        Kies een specifieke melding om de details te bekijken.
-                        Deze meldingen zijn uit de afdeling: [...]
-                        {{agreement.agreement}}
-                        <i class="fa fa-flag"></i> 
-                    </div>
-                    <div class="alert  alert-warning fontM" id="zoomedout-widget" ng-hide="zoomedInEnoughToShowIssues()">
-                        Zoom in om Fietsersbond meldingen op de kaart te zien.
-                        <br>Of kies een rapportage uit het menu links.
-                        <i class="fa fa-flag"></i> 
-                    </div>
-
-            <div class="panel panel-default main-panel margintop">
-              <h1 class="fontM meldingheader"></h1>
-              <div id="chart-fietsersbond"></div>
-            </div>
-
-                </div>
-                
-                <!--  sidebar right -->
-                <div ng-include="'sidebar_search_bar.html'"></div>
-
-                <div ng-include="'sidebar_my_issues.html'"></div>
-            </div>   
-        </div>	
-    </body>
+<!-- TODO FB: check if the html is properly finished. -->
+</div>	
+</body>
 </html>
+<!-- TODO FB: check if below is required for the rapportage. -->
 <!-- Page specific js -->
 <script type='text/javascript'>
-        //placing the subnav fixed on top
-        $(document).ready(function() {
-            $('.subnav').affix({ offset: { top: $('#navtop').height() } });	
-        });
+  //placing the subnav fixed on top
+  $(document).ready(function() {
+    $('.subnav').affix({ offset: { top: $('#navtop').height() } });	
+  });
 </script>
 <style type="text/css">
-    @media (min-width: 1199px) { .pac-container, .pac-item { width: 240px !important; } }
+  @media (min-width: 1199px) { .pac-container, .pac-item { width: 240px !important; } }
 </style>
