@@ -13,7 +13,7 @@
             <div class="list-group report-list-council" ng-hide="reportList.council == null || reportList.council == 'undefined' " >
                 <strong>Je kijkt nu bij Gemeente: {{reportList.council}}</strong></br>
                 {{agreement.agreement}}</br></br>
-                Deze gemeente valt in fietsersbond gebied "Groot Utrecht"</br></br>
+                Deze gemeente valt in fietsersbond gebied [Groot {{reportList.council}}]</br></br>
                 
                 Meldingen per maand: {{reportList.reports}} </br>
                 Oplossingen per maand: {{reportList.solutions}}
@@ -26,28 +26,34 @@
 
     <div class="panel side-panel panel-default" id="new-problem-widget">
         <div class="panel-heading">
-            <strong>Rapportage: variant 1</strong>
+            <strong>Rapportage: mockup 1</strong>
         </div>
         <div class="panel-body">
-          Grafiek: 1
+          <a onclick="rapportage_chart_one()">
+            Meldingen: opgeloste problemen en uitgevoerde ideeën.
+          </a>
         </div>  
     </div>
 
     <div class="panel side-panel panel-default" id="new-problem-widget">
         <div class="panel-heading">
-            <strong>Rapportage: variant 2</strong>
+            <strong>Rapportage: mockup 2</strong>
         </div>
         <div class="panel-body">
-          Grafiek: 2
+          <a onclick="rapportage_chart_two()">
+            Historie
+          </a>
         </div>  
     </div>
 
     <div class="panel side-panel panel-default" id="new-problem-widget">
         <div class="panel-heading">
-            <strong>Rapportage: variant 3</strong>
+            <strong>Rapportage: mockup 3</strong>
         </div>
         <div class="panel-body">
-          Grafiek: 3
+          <a onclick="rapportage_chart_three()">
+            Vergelijking
+          </a>
         </div>  
     </div>
 </div>
@@ -57,23 +63,28 @@
                 <!-- main container -->
                 <div class="col-lg-6 main-container">                    
                     <div class="alert alert1 alert-warning fontM" id="message-widget" ng-show="showAgreement()">
-                        TODO: Hier komen rapportage grafieken voor specifiek de fietsersbond.
+                        Kies een specifieke melding om de details te bekijken.
+                        Deze meldingen zijn uit de afdeling: [...]
                         {{agreement.agreement}}
                         <i class="fa fa-flag"></i> 
                     </div>
                     <div class="alert  alert-warning fontM" id="zoomedout-widget" ng-hide="zoomedInEnoughToShowIssues()">
-                        Fietsersbond rapportage moet wel een kaart krijgen.
+                        Zoom in om Fietsersbond meldingen op de kaart te zien.
+                        <br>Of kies een rapportage uit het menu links.
                         <i class="fa fa-flag"></i> 
                     </div>
+
+            <div class="panel panel-default main-panel margintop">
+              <h1 class="fontM meldingheader"></h1>
+              <div id="chart-fietsersbond"></div>
+            </div>
 
                 </div>
                 
                 <!--  sidebar right -->
-                <!--
                 <div ng-include="'sidebar_search_bar.html'"></div>
 
                 <div ng-include="'sidebar_my_issues.html'"></div>
-                -->
             </div>   
         </div>	
     </body>
