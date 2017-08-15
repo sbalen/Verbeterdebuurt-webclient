@@ -16,10 +16,20 @@ var CUSTOMISATION_SETTINGS = {
   normal: {
     class: '', // Added to <body>
     logo_src: '/img/Verbeterdebuurt-logo.png', // Top left main logo.
+    issue_client: 'vdb', // Send this with the issues.
+    campaign: { // TODO: Set an active campain cusomisation?
+      active: false,
+      title: '',
+    },
   },
   fietsersbond: {
     class: 'customisation fietsersbond',
     logo_src: 'http://meldpunt.fietsersbond.nl/images/logo.png',
+    issue_client: 'fietsersbond',
+    campaign: {
+      active: true,
+      title: 'De Fietsersbond voert campagne!',
+    },
   },
 };
 
@@ -3222,7 +3232,9 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
                 description :  issue.description,
                 type :  issue.type,
                 category_id :  issue.category_id,
-                private_message : issue.privateMessage
+                private_message : issue.privateMessage,
+                // TODO FB: add the client
+                opdrachtgever: customisation.issue_client,
             }, 
             location : {
                 latitude : location.latitude,
@@ -3237,6 +3249,8 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
             jsondataSubmit.user_profile = user_profile;
         }
        
+        // TODO FB: is this data sent?
+        console.log('submit new problem with customisation', jsondataSubmit);
         jsondataSubmit = JSON.stringify(jsondataSubmit);
 
         if (file) {
