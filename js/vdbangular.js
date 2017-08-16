@@ -19,7 +19,11 @@ var CUSTOMISATION_SETTINGS = {
     issue_client: 'vdb', // Send this with the issues.
     campaign: { // TODO: Set an active campain cusomisation?
       active: false,
+      start: null,
+      end: null,
       title: '',
+      description: '',
+      background_image: ''
     },
   },
   fietsersbond: {
@@ -28,7 +32,11 @@ var CUSTOMISATION_SETTINGS = {
     issue_client: 'fietsersbond',
     campaign: {
       active: true,
+      start: '2017-08-15',
+      end: '2017-09-12',
       title: 'De Fietsersbond voert campagne!',
+      description: 'Dit kan zo niet langer! We gaan campagne voeren!\nWat kunnen we volgens jou het beste doen om iedereen prettige te laten fietsen?\nHeb je een goed idee om dit op te lossen, geef het hier aan',
+      background_image: 'https://upload.wikimedia.org/wikipedia/commons/4/44/Bicycling-ca1887-bigwheelers.jpg'
     },
   },
 };
@@ -458,6 +466,10 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
         .when('/rapportage', {
             templateUrl: 'rapportage.html',
             controller: 'rapportageCtrl'
+        })
+        .when('/campagne', {
+            templateUrl: 'campaign.html',
+            controller: 'campaignCtrl'
         })
         //redirect city / postcode
         .when('/:cityNameClone', {
@@ -4240,6 +4252,7 @@ vdbApp.controller('resolveIssueCommentYesCtrl', ['$scope','$rootScope','$routePa
     }
 }])
 
+// TODO FB: mainCtrl used as basis.
 vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$location', '$rootScope', '$routeParams', '$http', 'issuesService', 'reportService', '$facebook', '$cacheFactory', 'agreementSevice', '$cookies','myIssuesService', function ($scope, $q,$timeout, $window, $location, $rootScope, $routeParams, $http, issuesService, reportService, $facebook, $cacheFactory, agreementSevice, $cookies, myIssuesService) {
 
     var rapportageController = this;
@@ -4591,3 +4604,409 @@ vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$loc
     }
     rapportageController.init();
 }]);
+
+// TODO FB: createProblemCtrl used as basis.
+vdbApp.controller('campaignCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', 'duplicateIssuesService', '$cookies', 'serviceStandardService','reportService','issuesService','agreementSevice','$routeParams', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, duplicateIssuesService, $cookies, serviceStandardService,reportService,issuesService,agreementSevice,$routeParams) {
+    logger('campaignCtrl');
+    // TODO: check if the campagin is active and within the duration,
+    // otherwise redirect to somewhere? Or show the results of the past
+    // campaign?
+
+    // TODO: this is too strong, make sure it resets when leaving the
+    // campaign page.
+    $('#background-customisation-image').css('background-image', "url('"+$rootScope.customisation.campaign.background_image+"')");
+    // Set the campaign background.
+    $scope.privateMessageHide = false;
+    $rootScope.dynamicTitle = "Campagne |";
+    $rootScope.lastUrl = $location.path();
+
+    $scope.hide = "ng-hide";
+    $scope.issueName = "Probleem"
+    $scope.hideIssue = 1;
+    $scope.myIssueCount = 0;
+    $scope.slide = "";
+    $scope.initslide = "toggle-button";
+    $scope.loadCategory = 1;
+    $scope.count = 0;
+    $scope.standardMessage = "";
+    $rootScope.urlBefore = $location.path();
+   
+    $scope.email = "";
+    $scope.username = "";
+    $scope.password = "";
+    $scope.initials = "";
+    $scope.tussenvoegsel = "";
+    $scope.surname = "";
+    $scope.sex = "";
+    $scope.address = "";
+    $scope.address_number = "";
+    $scope.address_suffix = "";
+    $scope.postcode = "";
+    $scope.city = "";
+    $scope.phone = "";
+    $scope.sexoption = [{'name': 'Dhr.', 'value': 'm'},
+                        {'name': 'Mw.','value': 'f'}];
+
+    $scope.sex = $scope.sexoption[0].value;
+
+    $timeout(function () {
+        $scope.slide = "toggle-button-selected-left";
+    }, 0)
+
+    // A campaign menu item doesn't actually exist, but it might.
+    menuSelected($rootScope, 'campaign');
+    //show my issue
+
+    $scope.updateMyIssues();
+
+    if ($cookies.getObject('user')) {
+        $scope.hideLogin = true
+        var jsondata = JSON.stringify({
+            "user": {
+                "username": "" + $cookies.getObject('user').username + "",
+                "password_hash": "" + $cookies.getObject('user').password_hash + ""
+            }
+        });
+        var getMyIssues = myIssuesService.getMyIssues(jsondata).then(function (data) {
+            var getdata = data.data;
+            var count = getdata.count;
+            $rootScope.myIssueCount = count;
+            $rootScope.myIssuesList = getdata.issues;
+        })
+        $scope.hideLogin = true
+    } else {
+        $scope.hideLogin = false;
+    }
+    //first initial
+    $timeout(function () {        
+         
+        var issueMarker = googleMapCreateProblem();
+        attachAutoCompleteListener('searchCityProblem',issueMarker,map3,"location");        
+        $scope.categoriesData();
+        $scope.getServiceStandard(city.long_name);
+    }, 1500);
+
+    $scope.categoriesData = function () {
+        $scope.loadCategory = 1;
+        $scope.count = 0;
+        $scope.duplicateDataList = null;
+        var latitude = markerLat;
+        var longitude = markerLng;
+        var jsondataCity = JSON.stringify({
+            "latitude" : latitude,
+            "longitude" : longitude
+        });
+        $timeout(function () {
+            $scope.categoriesList = null;
+            var getCategories = categoriesService.getCategories(jsondataCity).then(function (data) {
+                $scope.categoriesList = data.data.categories;
+                $timeout(function () {
+                    $scope.loadCategory = 0;
+                })
+            });
+
+
+        }, 3000)
+    }
+
+
+    $scope.clickSearchCreateIssue = function () {
+        $scope.loadCategory = 1;
+        if(document.getElementById('searchCityProblem').value){
+           var citytemp = document.getElementById('searchCityProblem').value ;         
+           city.long_name =  citytemp.substring(citytemp.lastIndexOf(',')+1).replace(" ","");
+           $location.path('/gemeente/'+city.long_name+'/nieuw-probleem',false);      
+        }
+        $rootScope.lastCity = city.long_name;
+        $timeout(function(){
+            marker.setPosition(map3.getCenter());
+        },1000)
+        $timeout(function () {
+            var latitude = marker.getPosition().lat();
+            var longitude = marker.getPosition().lng();
+            var jsondataCity = JSON.stringify({
+                "latitude" : latitude,
+                "longitude" : longitude
+            });
+            var getCategories = categoriesService.getCategories(jsondataCity).then(function (data) {
+                $scope.categoriesList = data.data.categories;
+                $scope.loadCategory = 0;
+            });
+            $scope.updateCouncilReport(city.long_name);
+            $scope.updateCouncilAgreement(city.long_name);
+            $scope.updateMapIssues();
+
+            marker.setPosition(map3.getCenter());
+        },2000)
+
+    }
+
+    $scope.createIssue = function () {
+        $rootScope.globaloverlay = "active";
+        $scope.errorTitle = "";
+        $scope.errorDescription = "";
+        $scope.errorId = "";
+        $scope.errorIdStyle = "";
+        $scope.errorLocation = "";
+        $scope.errorInitials = "";
+        $scope.errorCity = "";
+        $scope.errorSurname = "";
+        $scope.errorEmail = "";
+        $scope.errorPostcode = "";
+        $scope.errorStreet = "";
+        $scope.errorStreetNumber = "";
+
+        //initial data for request
+        var user = {};
+        var user_profile = {};
+        var issue = {};
+        var location = {};
+        var file = $scope.imgData;
+        //login
+        if ($cookies.getObject('user')) {
+            user.username = $cookies.getObject('user').username;
+            user.password_hash = $cookies.getObject('user').password_hash;
+        }
+        //not login
+        else {
+            user.email = $scope.email;
+            user_profile.initials = $scope.initials;
+            user_profile.sex = $scope.sex;
+            user_profile.tussenvoegsel = $scope.tussenvoegsel;
+            user_profile.surname = $scope.surname;
+            user_profile.address = $scope.address;
+            user_profile.address_number = $scope.address_number;
+            user_profile.address_suffix = $scope.address_suffix;
+            user_profile.postcode = $scope.postcode;
+            user_profile.city = $scope.city;
+            user_profile.phone = $scope.phone;
+        }
+
+        //description
+        issue.type = "problem";
+        if ($scope.categoryId) {
+            issue.category_id = $scope.categoryId;
+        } else {
+            issue.category_id = -1;
+        }
+
+        if ($scope.title) {
+            issue.title = $scope.title;
+        } else {
+            issue.title = "";
+        }
+        if ($scope.description) {
+            issue.description = $scope.description;
+        } else {
+            issue.description = "";
+        }
+        if ($scope.privateMessage) {
+            issue.privateMessage = $scope.privateMessage;
+        } else {
+            issue.privateMessage = "";
+        }
+        //location
+        location.latitude = markerLat;
+        location.longitude = markerLng;
+        logger("createlat:"+location.latitude);
+        logger("createlong:"+location.longitude);
+        
+        var jsondataSubmit = {
+            issue : {
+                title : issue.title,
+                description :  issue.description,
+                type :  issue.type,
+                category_id :  issue.category_id,
+                private_message : issue.privateMessage,
+                // TODO FB: add the client
+                opdrachtgever: customisation.issue_client,
+            }, 
+            location : {
+                latitude : location.latitude,
+                longitude : location.longitude
+            }
+        }
+
+        if ($cookies.getObject('user')) { //login
+            jsondataSubmit.user = {username:user.username,password_hash:user.password_hash}
+        } else {
+            jsondataSubmit.user = {email:user.email}
+            jsondataSubmit.user_profile = user_profile;
+        }
+       
+        // TODO FB: is this data sent?
+        console.log('submit new problem with customisation', jsondataSubmit);
+        jsondataSubmit = JSON.stringify(jsondataSubmit);
+
+        if (file) {
+            issueSubmitServiceWithImage.getIssueSubmit(jsondataSubmit, file).then($scope.handleSubmit);
+        } else {
+            issueSubmitService.getIssueSubmit(jsondataSubmit).then($scope.handleSubmit);
+        }
+    }
+
+    $scope.handleSubmit = function(data) {
+
+        var issueData = data.data;
+        if (!issueData.success) {
+            $scope.hide = "";
+            if (issueData.errors.title) {
+                $scope.errorTitle = "Onderwerp " + issueData.errors.title;
+            }
+            if (issueData.errors.description) {
+                $scope.errorDescription = "Beschrijving " + issueData.errors.description;
+            }
+            if (issueData.errors.category_id) {
+                $scope.errorId = issueData.errors.category_id;
+                $scope.errorIdStyle = 'border-color: #a94442';
+            }
+            if (issueData.errors.location) {
+                $scope.errorLocation = issueData.errors.location;
+            }
+            if (issueData.errors.initials) {
+                $scope.errorInitials = "Voorsletters " + issueData.errors.initials;
+            }
+            if (issueData.errors.owner_city) {
+                $scope.errorCity = "Plaats " + issueData.errors.owner_city;
+            }
+            if (issueData.errors.surname) {
+                $scope.errorSurname = "Acternaam " + issueData.errors.surname;
+            }
+            if (issueData.errors.owner_email) {
+                $scope.errorEmail = issueData.errors.owner_email;
+            }
+            if (issueData.errors.owner_postcode) {
+                $scope.errorPostcode = "Postcode " + issueData.errors.owner_postcode;
+            }
+            if (issueData.errors.street) {
+                $scope.errorStreet = "Straat " + issueData.errors.street;
+            }
+            if (issueData.errors.street_number) {
+                $scope.errorStreetNumber = "Huisnummer " + issueData.errors.street_number;
+            }
+            $rootScope.globaloverlay = "";
+            $(window).scrollTop(0);
+        } else if (issueData.success == "false") {
+            $scope.hide = "";
+            $scope.errorEmail = issueData.error;
+            $rootScope.globaloverlay = "";
+            $(window).scrollTop(0);
+        } else {
+            //success
+            $rootScope.successCreate = 1;
+            var issueId = issueData.issue_id;
+            if ($cookies.getObject('user')) {
+                $location.path(/mijn-meldingen/ + issueId);
+                $rootScope.successCreateLogin = 1;
+            } else {
+                // $location.path(/melding/ + issueId);
+                 $location.path("/bevestiging-nieuwe-melding");
+            }
+            $rootScope.globaloverlay = "";
+            $scope.updateMapIssues();
+        }        
+    }
+
+    $scope.alrCityCreate = function () {
+        logger('alrCityCreate');
+        //Get city problem when click/drag
+        $scope.updateCouncilReport(city.long_name);
+        $scope.updateCouncilAgreement(city.long_name);
+        $scope.updateMapIssues();
+    }
+
+    $scope.close = function () {
+        $scope.hide = "ng-hide";
+    }
+
+    $scope.reset = function () {
+        $scope.title = "";
+        $scope.description = "";
+    }
+
+    //switch bar change
+    $scope.switchButton = function () {
+        $location.path('/nieuw-idee');
+        markerLat = marker.getPosition().lat();
+        markerLng = marker.getPosition().lng();
+    }
+     //dulicate data
+    $scope.duplicateData = function () {
+        
+        $('#duplicate-bubble').hide();
+        var user = {};
+        if ($cookies.getObject('user')) {
+            user.username = $cookies.getObject('user').username;
+            user.password_hash = $cookies.getObject('user').password_hash;
+        }
+        var lat = markerLat;
+        var long = markerLng;
+        var council = city.long_name;
+        var category_id = $scope.categoryId;
+        $rootScope.currentPage = 1;
+        $scope.totalPage = 5;
+        
+        var jsondataDuplicate = JSON.stringify({
+            "user" : {
+                "username" : user.username,
+                "password_hash" : user.password_hash
+            }
+            ,
+            "lat" : lat,
+            "long" : long,
+            "category_id" : category_id
+        });
+        logger(jsondataDuplicate);
+        var getDuplicateIssue = duplicateIssuesService.getDuplicateIssue(jsondataDuplicate).then(function (data) {
+            var getDuplicateIssue = data.data;
+            $scope.count = data.data.count;
+            $scope.duplicateDataList = getDuplicateIssue.issues;
+            logger(getDuplicateIssue);
+
+        });
+
+        $scope.getServiceStandard(council,category_id);
+
+        $scope.blockstyle = "margin-left:0%";
+        $scope.duplicateposition = 0;
+
+    }
+
+    $scope.getServiceStandard = function(council,category_id) {
+        logger("createProblemController.getServiceStandard("+council+")")
+        // TODO FB: this council is a hardcoded hack, maybe it can be removed
+        // entirely? See also at createIdeaController.
+        console.warn('council cPC',council);
+        if ( ! council ) { council = ''; }
+        if (council.toLowerCase().replace(' ','-') == 'utrechtse-heuvelrug') {
+            $scope.standardMessage = "U kunt uw ideeën aandragen tot 2 januari 2017";
+        } else {
+
+            var jsondata = {};
+            jsondata.council = council;
+            jsondata.category_id = category_id;
+            jsondata = JSON.stringify(jsondata);
+            serviceStandardService.getServiceStandard(jsondata).then(function (data) {
+                $scope.standardMessage = $rootScope.standardTemp = data.data.standard;
+            })
+        }
+    }
+
+
+
+    $scope.moveDuplicate = function (move) {
+
+        var limit = $scope.count - 3;
+        $scope.duplicateposition = $scope.duplicateposition + move;
+
+        if ($scope.duplicateposition < 0) $scope.duplicateposition = 0;
+
+        if ($scope.duplicateposition > limit) $scope.duplicateposition = limit;
+
+        var move = $scope.duplicateposition * -33.333;
+        $scope.blockstyle = "margin-left:" + move + "%";
+
+    }
+
+
+}])

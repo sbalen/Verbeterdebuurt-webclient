@@ -1,0 +1,320 @@
+<div id="duplicate-bubble">
+    
+</div>    
+
+<!-- body -->  
+    <div id="main-content" class="container">
+	   
+      <div class="col-md-3 hidden-sm hidden-xs hidden-md">
+	     <div class="panel side-panel panel-default" id="new-problem-widget">
+            <div class="panel-heading">
+                <strong>Campagne resultaten</strong>
+            </div>
+           <div class="panel-body">
+                            <div class="list-group  report-list-council" ng-hide="reportList.council == null || reportList.council == 'undefined' " >
+                            <strong>Gemeente: {{reportList.council}}</strong></br>
+                            Meldingen per maand: {{reportList.reports}} </br>
+                            Oplossingen per maand: {{reportList.solutions}}
+                          </div>
+                            <div class="list-group  report-list-council"  ng-show="reportList.council == null || reportList.council == 'undifined' ">
+                             geen locatieinformatie gevonden
+                           </div>
+            </div>  
+</div>
+
+<div class="panel side-panel panel-default" id="new-problem-widget" ng-hide="results.length == 0 || newProblemList==null">
+    <div class="panel-heading">
+        <strong>Nieuwste inbreng</strong>
+    </div>
+    <div class="panel-body">
+        <div class="list-group" >
+            <a href="/melding/{{newProblem.id}}" class="list-group-item clearfix" ng-repeat="newProblem in newProblemList| filter : {type:'problem'} | filter: {status:'!closed'} | orderBy : 'created_at' : true |limitTo:3|filter:x as results" ng-click="clickIssues()">
+                <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
+                <strong> {{newProblem.title}}</strong> {{newProblem.location.full_address}}
+                <span class="pull-right">
+                    <button class="btn btn-xs btn-success" >
+                        <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
+                    </button>
+                </span>
+            </a>
+        </div>
+    </div>  
+</div>
+
+<div class="panel side-panel panel-default" ng-hide="results2.length == 0|| newProblemList==null">
+    <div class="panel-heading" id="active-idea-widget">
+        <strong>Actieve Idee&euml;n</strong>
+    </div>
+    <div class="panel-body">
+        <div class="list-group">
+            <a href="/melding/{{newProblem.id}}" class="list-group-item clearfix" ng-repeat="newProblem in newProblemList| filter : {type:'idea'} | filter: {status:'!closed'} | orderBy : 'created_at' : true |limitTo:3|filter:x as results2" 
+               ng-click="clickIssues()">
+                <img class="icon" src="./img/icon_idea_2_21_21.png" size="20px"/>
+                <strong>{{newProblem.title}}</strong> {{newProblem.location.full_address}}
+                <span class="pull-right">
+                    <button class="btn btn-xs btn-success">
+                        <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
+                    </button>
+                </span>
+            </a>
+        </div>
+    </div>  
+</div>
+      </div>
+	    <!-- main container -->
+	    <div class="col-lg-6 main-container marginbottom">
+	        <div class="panel panel-default main-panel margintop">
+             <div class="alert alert-danger {{hide}}" >
+              <!-- TODO FB: ng-hide is to slow, it will flash an empty red
+                            box. Switch to a hide-first method (ng-show?)
+             <div class="alert alert-danger ng-hide {{hide}}" >
+              -->
+                                  <a class="close {{hide}}" aria-label="close" ng-click="close()" >&times;</a>
+                                  <p>{{errorTitle}}</p>
+                                  <p>{{errorDescription}}</p>
+                                  <p>{{errorId}}</p>
+                                  <p>{{errorLocation}}</p>
+                                  <p>{{errorRealization}}<p>
+                                  <p>{{errorInitials}}</p>
+                                  <p>{{errorCity}}</p>
+                                  <p>{{errorSurname}}</p>
+                                  <p>{{errorEmail}}</p>
+                                  <p>{{errorPostcode}}</p>
+                                  <p>{{errorStreet}}</p>
+                                  <p>{{errorStreetNumber}}</p>
+              </div>
+              <h1 class="marginheader meldingheader fontM">{{customisation.campaign.title}}</h1>
+              <p style="color: grey; font-size: 80%;">Deze campagne loopt van {{customisation.campaign.start}} tot {{customisation.campaign.end}}.</p>
+              <p>{{customisation.campaign.description}}</p>
+            <div class="problem">
+		        <form class="form-horizontal" role="form">
+                              <div class="panel-body">
+                                <h4 class="fontM">1. Bepaal de locatie</h4>
+                                <div class="well well-sm locationpicker-well">
+                                  <fieldset class="gllpLatlonPicker">
+                                  <div class="input-group" style="width:100%; margin-left:0; ">
+                                     <form>
+                                         <input type="text" class="form-control gllpSearchField" placeholder="Vul hier het adres in, of sleep de marker..." ng-model="searchCityCreate" ng-submit="expression" ng-keyup="$event.keyCode == 13 && clickSearchCreateIssue()" id="searchCityProblem">
+                                     </form>
+                                     <span class="input-group-btn">
+                                        <button class="btn btn-primary gllpSearchButton" type="button" ng-click="clickSearchCreateIssue()"><span class="glyphicon glyphicon-search"></span><span class="hidden-xs">Zoeken</span></button>
+                                     </span>
+                                  </div>
+                                  <div class="gllpMap" id="googleMapCreateProblem" ng-click="categoriesData();alrCityCreate()"></div>
+                                  <input type="hidden" class="gllpLatitude" value="52.158367"/>
+                                  <input type="hidden" class="gllpLongitude" value="4.492999"/>
+                                  <input type="hidden" class="gllpZoom" value="12"/>
+                                  <input type="text" class="gllpLocationName noborder" id="location" readonly size=30/>
+                                  <p class=" warning-text text-primary">{{standardMessage}}</p>
+                                </fieldset> 
+                              </div>
+                            </div>
+                            <div class="panel-body">
+                                <h4 class="fontM">2. Beschrijf de melding</h4>
+	                             <div class="form-group">
+                                    <div class="col-sm-12 form-col" style="margin-bottom: 10px;" ng-class="{'has-error':errorTitle}">
+                                        <input type="text" class="form-control" id="Onderwerp" placeholder="Onderwerp" ng-model="title">
+                                    </div>
+                                </div>
+                                <div class="form-group" ng-show="loadCategory">
+                                    <div class="col-sm-12 form-col" style="margin-bottom: 10px;">
+                                       categorieën worden opgehaald...
+                                    </div>
+                                </div>
+                               <div class="form-group" ng-hide="loadCategory">
+                                    <div class="col-sm-12 form-col" style="margin-bottom: 10px;" ng-class="{'has-error':errorId}">
+                                        <select class="combobox" id="category" ng-model="categoryId" ng-options="categories.id as categories.title for categories in categoriesList" style="{{errorIdStyle}}" ng-click="duplicateData(categories.id)">
+                                            <option value=""  disabled selected>Categorie</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group" ng-hide="count==0||count==null" style="z-index:50;">
+                                    <p style="color:green;">Mogelijke dubbele meldingen. Bekijk of bij deze meldingen misschien jouw probleem al gemeld is. Klik er dan op om deze melding te steunen</p>
+                                    
+                                    <div class="duplicate-wrapper">
+                                        <div class="duplicate-left" ng-hide="count<=3" ng-click="moveDuplicate(-1)">&lang;</div>
+                                        <div class="duplicate-container">
+                                            
+                                            <div class="duplicate-hidden-block" style="{{blockstyle}}"> 
+                                            </div>
+                                            
+<!--                                            <a href="melding/{{duplicateData.id}}" ng-repeat="duplicateData in duplicateDataList">-->
+                                            <div class="duplicate-item" ng-repeat="duplicateData in duplicateDataList" >
+                                                    
+                                                    <div class="bubble-description ">
+                                    
+                                                        {{duplicateData.description}}
+                                                        <br/>
+                                                        <br/>
+                                                        <a  href="melding/{{duplicateData.id}}">bekijken</a>
+                                                        
+                                                    </div>
+                                                <div style="text-align:left;">
+                                                <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
+                                                <strong >{{duplicateData.title}}</strong>
+                                                <br/>
+                                                {{duplicateData.location.src_address}}
+                                                <span class="pull-right">
+                                                                <button style ="margin-left:15px"class="btn btn-xs btn-success" >
+                                                                <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
+                                                                </button>
+                                                            </span>
+                                                </div>
+                                                </div>
+<!--                                            </a>-->
+                                        </div>
+                                        <div class="duplicate-right" ng-hide="count<=3" ng-click="moveDuplicate(1)">&rang;</div>
+                                    </div>
+                                        
+                                        
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-12 form-col" ng-class="{'has-error':errorDescription}" style="margin-bottom: 10px;">  
+                                        <textarea class="form-control" rows="5" id="description" placeholder="Beschrijving" ng-model="description"></textarea>
+                                    </div>
+                                </div >
+                                <!-- <div class="form-group">
+                                    <div class="col-sm-12 form-col">  
+                                        <table cellspacing="2px" style="border-spacing:4px; border-collapse: separate;">
+                                          <tr> 
+                                            <td><input type="checkbox" class="privatecheckbox" id="checkPrivate" name="checkbox" ng-model="privateMessageHide"></td>
+                                            <td class="privateTable" ng-click="expression"><label for="checkPrivate" class="checkPrivate">Voeg priv&eacute; bericht toe</label></td>
+                                          </tr>
+                                        </table>
+                                       
+                                    </div>
+                                </div> -->
+                               <!--  <div class="form-group" ng-show="privateMessageHide">
+                                    <div class="col-sm-12 form-col" ng-class="{'has-error':errorDescription}" style="margin-bottom: 10px;">  
+                                        <h5 class="fontM" style="color:green; margin-right: 26px; margin-top: 0px;">Een priv&eacute; bericht wordt enkel naar de gemeente/afhandelaar gestuurd. Het priv&eacute; bericht zal niet openbaar op verbeterdebuurt getoond worden.</h5>
+                                        <textarea class="form-control" rows="5" id="description" placeholder="Priv&eacute; bericht …. " ng-model="privateMessage"></textarea>
+                                    </div>
+                                </div> -->
+                                <!--<label class="control-label">Select File</label>-->
+                                <p>Foto uploaden (optioneel)</p>
+                                <input id="file-input-problem" type="file" style="width: 94%;margin-left: 3%;" data-show-upload="false" img-upload='imgData'>
+                            </div>
+                            <div class="panel-body" ng-hide="hideLogin">
+                                <h4 class="fontM">3. Contactgegevens</h4>
+                                Of <a href="login">log in</a> om dit over te slaan
+                                <div class="form-group">
+                                    <div class="col-sm-12 form-col" ng-class="{'has-error': errorEmail}">
+                                        <input type="text" class="form-control" id="email" placeholder="E-mailadres" ng-model="email" style="margin-bottom: 15px">
+                                    </div>
+                                </div>
+                                <div class="form-group" >
+                                        <div class="col-sm-2 form-col marginwidth "   ng-class="{'has-error': errorSex }">
+                                            <select class="combobox" id="category"  ng-model="sex" ng-options="template.value as template.name for template in sexoption" >
+                                                
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-3 form-col margin1 marginwidth" ng-class="{'has-error': errorInitials }">
+                                            <input type="text" class="form-control margin2 margin2m" id="initials" placeholder="voorletters" ng-model="initials"  >
+                                        </div>
+                                        <div class="col-sm-3 form-col margin1 marginwidth" ng-class="{'has-error': errorMiddle }">
+                                            <input type="text" class="form-control margin4 margin4m" id="tussenvoegsel" placeholder="tussenvoegsel" ng-model="tussenvoegsel" >
+                                        </div>
+                                        <div class="col-sm-3 form-col margin1 marginwidth1" ng-class="{'has-error': errorSurname }">
+                                            <input type="text" class="form-control margin3 margin3m" id="name" placeholder="Achternaam" ng-model ="surname" style="margin-bottom: 15px">
+                                        </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-8  form-col " ng-class="{'has-error':errorStreet}">
+                                        <input type="text"   class="form-control field marginwidth " id="street" placeholder="Straat" ng-model ="address" >
+                                    </div>
+                                    <div class="col-sm-4 form-col " ng-class="{'has-error':errorStreetNumber}">
+                                        <input type="text" class="form-control"   id="number" placeholder="Huisnummer" ng-model ="address_number" style="margin-bottom: 15px">
+                                    </div>
+                                    </div>
+                                <div class="form-group">
+                                    <div class="col-sm-4 form-col " ng-class="{'has-error': errorPostcode}">
+                                        <input type="text" class="form-control field1 marginwidth "  id="postcode" placeholder="Postcode" ng-model="postcode" >
+                                    </div>
+                                    <div class="col-sm-8 form-col" ng-class="{'has-error':errorCity}">
+                                        <input type="text" class="form-control " id="city" placeholder="Plaats" ng-model="city" style="margin-bottom: 15px">
+                                    </div>
+                                    <div class="col-sm-12 form-col">
+                                        <input type="text" class="form-control" id="telephonenumber" placeholder="Telefoonnummer" ng-model="phone">
+                                    </div>
+                                </div>
+                            </div>
+                            </form>
+
+                          <div class="modal-footer">
+                                <button type="button" class="btn btn-success" data-dismiss="modal" ng-click="createIssue()">Verzenden</button>
+                        </div>            
+                    </div>   
+                    </div>  
+                     
+	    </div>
+	    
+	    <!--  sidebar right -->
+	    <div class="col-lg-3 hidden-xs " ng-hide="results.length == 0 || myIssuesList == null">
+		    <div class="panel side-panel panel-default">
+	                <div class="panel-heading">
+                            <strong>Mijn Meldingen</strong>
+                        </div>
+      			            <div class="panel-body">
+                          <div class="list-group" >
+                            <a href="/mijn-meldingen/{{myIssues.id}}" class="list-group-item clearfix" ng-repeat="myIssues in myIssuesList| orderBy : 'created_at' : true |limitTo:2  | filter : x as results" ng-click="clickIssues()">
+                              <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
+                              <strong> {{myIssues.title}}</strong> {{myIssues.location.full_address}}
+                              {{myIssues.status}}
+                              <span class="pull-right">
+                                <button class="btn btn-xs btn-success" >
+                                  <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
+                                </button>
+                              </span>
+                            </a>
+                              <a href="/mijn-meldingen" style="margin-left:17px;">Meer >>></a>
+                          </div>
+                        </div>  
+		    </div>
+	    </div>    
+    </div>
+
+<!-- Page specific js -->
+<!--script src="path/to/js/fileinput_locale_en.js"></script-->
+<script src="/js/bootstrap-fileinput/plugins/canvas-to-blob.min.js" type="text/javascript"></script>
+<script src="/js/bootstrap-fileinput/fileinput.min.js" type="text/javascript"></script>
+<link href="/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css" />
+<script type='text/javascript'>
+        $(document).ready(function() {
+        	$('.subnav').affix({
+      			offset: {
+        			top: $('#navtop').height()
+      			}
+		});	
+            
+            $('#duplicate-bubble').hide();
+        });
+        $("#file-input-problem").fileinput();
+        $("#file-input-problem").fileinput({'showUpload':false});
+        $("#file-input-idea").fileinput();
+        $("#file-input-idea").fileinput({'showUpload':false});
+//        
+//    $('.duplicate-item').on('click', function(e) {
+//        e.preventDefault();
+//        $('#duplicate-bubble').css( 'top', e.pageY );
+//        $('#duplicate-bubble').css( 'left', e.pageX );
+//        $('#duplicate-bubble').show();
+//    });
+    
+    $(document).on("click", ".duplicate-item", function(e) {
+        e.preventDefault();
+        $('#duplicate-bubble').html($(this).find(".bubble-description").html());
+      
+        $('#duplicate-bubble').css( 'top', e.pageY );
+        $('#duplicate-bubble').css( 'left', e.pageX );
+        $('#duplicate-bubble').show();
+        //your code here...
+    });
+    
+    $('#duplicate-bubble').on('click', function() {
+
+                $('#duplicate-bubble').hide();
+                $('#duplicate-bubble').empty();
+    });
+    
+   
+</script>
