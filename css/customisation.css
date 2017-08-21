@@ -73,3 +73,15 @@ body {
 .customisation.fietsersbond .navbar-default .navbar-nav > li.active > a {
   background-color: #ffd503;
 }
+.customisation.fietsersbond .btn-default1 {
+  border-color: #ffd503;
+  color: #231f20;
+}
+.customisation.fietsersbond ul.dropdown-menu {
+  background-color: #ffd503;
+  color: #231f20;
+}
+.customisation.fietsersbond ul.dropdown-menu > li > a:hover,
+.customisation.fietsersbond .dropdown-menu > li > a:focus {
+  color: #231f20 !important;
+}
