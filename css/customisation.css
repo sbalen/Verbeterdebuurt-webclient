@@ -85,3 +85,8 @@ body {
 .customisation.fietsersbond .dropdown-menu > li > a:focus {
   color: #231f20 !important;
 }
+.customisation.fietsersbond .btn-xs.btn-success {
+  border-color: #ffd503;
+  background-color: #ffd503;
+  color: #231f20;
+}
