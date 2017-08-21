@@ -1,5 +1,91 @@
 // Definitions of rapportage charts.
 // TODO FB: these are mockups, create actual charts.
+// TODO FB: if the proposed layout is accepted, replace add/removeClass
+// logic with proper angular watched variables.
+function rapportage_show_details() {
+  $('#rapportage-main-panel').addClass('enabled');
+  Highcharts.chart('chart-fietsersbond', {
+    chart: { type: 'line' },
+    title: { text: 'Nieuwe/behandelde meldingen' },
+    subtitle: { text: 'Gemiddelde doorlooptijd 22 dagen, gemiddelde feedback 4*' },
+    xAxis: { type: 'datetime', title: { text: 'Datum' } },
+    yAxis: { title: { text: 'Aantal' }, min: 0 },
+    tooltip: { shared: true, },
+    series: [{
+      name: 'Nieuw',
+      data: [
+        [Date.UTC(2017, 1, 1), 12],
+        [Date.UTC(2017, 2, 1), 25],
+        [Date.UTC(2017, 3, 1), 35],
+        [Date.UTC(2017, 4, 1), 27],
+        [Date.UTC(2017, 5, 1), 84],
+        [Date.UTC(2017, 6, 1), 43],
+        [Date.UTC(2017, 7, 1), 32],
+        [Date.UTC(2017, 8, 1), 46],
+      ]
+    }, {
+      name: 'Behandeld',
+      data: [
+        [Date.UTC(2017, 1, 1), 22],
+        [Date.UTC(2017, 2, 1), 15],
+        [Date.UTC(2017, 3, 1), 25],
+        [Date.UTC(2017, 4, 1), 21],
+        [Date.UTC(2017, 5, 1), 54],
+        [Date.UTC(2017, 6, 1), 49],
+        [Date.UTC(2017, 7, 1), 12],
+        [Date.UTC(2017, 8, 1), 33],
+      ]
+    }]
+  });
+  Highcharts.chart('chart-fietsersbond-secondary', {
+    chart: {
+      plotBackgroundColor: null,
+      plotBorderWidth: null,
+      plotShadow: false,
+      type: 'pie'
+    },
+    title: { text: 'Soort melding', },
+    tooltip: { pointFormat: '{series.name}: <b>{point.y}</b>' },
+    plotOptions: {
+      pie: {
+        allowPointSelect: true,
+        cursor: 'pointer',
+        dataLabels: {
+          enabled: true,
+          format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+          style: {
+            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+          }
+        }
+      }
+    },
+    series: [{
+      name: 'Soort',
+      colorByPoint: true,
+      data: [{
+        name: 'Probleem',
+        y: 87,
+      }, {
+        name: 'Idee',
+        y: 45,
+        sliced: true,
+        selected: true
+      }, {
+        name: 'Campagne X',
+        y: 17 
+      }, {
+        name: 'Campagne Y',
+        y: 38 
+      }, {
+        name: 'Anders',
+        y: 5
+      }]
+    }]
+  });
+}
+function rapportage_hide_details() {
+  $('#rapportage-main-panel').removeClass('enabled');
+}
 function rapportage_chart_one() {
   Highcharts.chart('chart-fietsersbond', {
     chart: {
@@ -18,7 +104,7 @@ function rapportage_chart_one() {
         year: '%b'
       },
       title: {
-        text: 'Datum'
+        text: 'Tijd'
       }
     },
     yAxis: {

@@ -4273,6 +4273,14 @@ vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$loc
         $rootScope.errorSession = "";
 
         menuSelected($rootScope, 'rapportage');
+
+        // TODO FB: implement a date picker for selecting rapportage data; for
+        // now, just show the current dates.
+        var date_from = new Date(Date.UTC(2017,0,01,0,0,0));
+        var date_to = new Date();
+        $('#rapportage-from-date').text(date_from.toLocaleDateString('nl-NL'));
+        $('#rapportage-to-date').text(date_to.toLocaleDateString('nl-NL'));
+
         //if really the first time loading, listen to the map being done loading, find start location, and remove listener.
         /* TODO FB: this depends on a global mainControllerInitialized variabel
          * and can't be just copied/replaced.
