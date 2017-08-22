@@ -19,24 +19,36 @@ var CUSTOMISATION_SETTINGS = {
     issue_client: 'vdb', // Send this with the issues.
     campaign: { // TODO: Set an active campain cusomisation?
       active: false,
-      start: null,
-      end: null,
+      start_date: null,
+      end_date: null,
       title: '',
       description: '',
-      background_image: ''
+      question: '',
+      background_image: '',
     },
   },
   fietsersbond: {
     class: 'customisation fietsersbond',
     logo_src: 'http://meldpunt.fietsersbond.nl/images/logo.png',
     issue_client: 'fietsersbond',
-    campaign: {
+    campaign_old_harcoded: {
       active: true,
-      start: '2017-08-15',
-      end: '2017-09-12',
+      start_date: '2017-08-15',
+      end_date: '2017-09-12',
       title: 'De Fietsersbond voert campagne!',
       description: 'Dit kan zo niet langer! We gaan campagne voeren!\nWat kunnen we volgens jou het beste doen om iedereen prettige te laten fietsen?\nHeb je een goed idee om dit op te lossen, geef het hier aan',
-      background_image: 'https://upload.wikimedia.org/wikipedia/commons/4/44/Bicycling-ca1887-bigwheelers.jpg'
+      question: 'De vraag',
+      background_image: 'https://upload.wikimedia.org/wikipedia/commons/4/44/Bicycling-ca1887-bigwheelers.jpg',
+    },
+    // TODO FB: read campain info from the temporary endpoint.
+    campaign: {
+      active: false,
+      start_date: '',
+      end_date: '',
+      title: '',
+      description: '',
+      question: '',
+      background_image: '',
     },
   },
 };
@@ -4620,9 +4632,26 @@ vdbApp.controller('campaignCtrl', ['$scope', '$rootScope', '$window', '$timeout'
     // otherwise redirect to somewhere? Or show the results of the past
     // campaign?
 
-    // TODO: this is too strong, make sure it resets when leaving the
     // campaign page.
-    $('#background-customisation-image').css('background-image', "url('"+$rootScope.customisation.campaign.background_image+"')");
+    // TODO FB: load the first version campaings api.
+    $.post('https://staging.verbeterdebuurt.nl/api.php/json_1_3/campaigns', '{}', function(data, status) {
+      try {
+        var campaigns_data = JSON.parse(data);
+        console.log('campaigns', campaigns_data);
+        // TODO FB: n.b. campaings [sic] in the server response, have fixed.
+        $rootScope.customisation.campaign = campaigns_data.campaings[0];
+        $rootScope.customisation.campaign.background_image = 'https://upload.wikimedia.org/wikipedia/commons/4/44/Bicycling-ca1887-bigwheelers.jpg'
+        // TODO: this is too strong, make sure it resets when leaving the
+        $('#background-customisation-image').css('background-image', "url('"+$rootScope.customisation.campaign.background_image+"')");
+      } catch (e) {
+        console.log('campaigns, no json:', data);
+      }
+    });
+    // Hardcode immediate knwn image loading, remove when we start the page
+    // with a blank background, to prevent flashing the other image.
+    $('#background-customisation-image').css('background-image', "url('https://upload.wikimedia.org/wikipedia/commons/4/44/Bicycling-ca1887-bigwheelers.jpg')");
+
+
     // Set the campaign background.
     $scope.privateMessageHide = false;
     $rootScope.dynamicTitle = "Campagne |";
