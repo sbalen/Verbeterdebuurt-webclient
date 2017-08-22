@@ -3258,7 +3258,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
                 category_id :  issue.category_id,
                 private_message : issue.privateMessage,
                 // TODO FB: add the client
-                opdrachtgever: customisation.issue_client,
+                //opdrachtgever: customisation.issue_client,
             }, 
             location : {
                 latitude : location.latitude,
