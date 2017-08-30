@@ -68,24 +68,23 @@
       <i class="fa fa-flag"></i>
     </div>
     <div id="rapportage-main-panel" class="panel panel-default main-panel margintop">
+      <a style="float:right;padding:0;" class="list-group-item clearfix" onclick="rapportage_hide_details()">
+        <span class="pull-right">
+          <button class="btn btn-xs btn-success" >
+            <span class="glyphicon glyphicon-remove"></span>
+          </button>
+        </span>
+      </a>
       <h4 style="margin-top:0;margin-left:0;" class="fontM meldingheader">Rapportage Fietsersbond [Groot {{reportList.council}}]</h4>
       <p style="color:grey;">Selectie van <span id="rapportage-from-date">...</span> tot <span id="rapportage-to-date">...</span></p>
       <div id="chart-fietsersbond"></div>
       <hr>
       <div id="chart-fietsersbond-secondary"></div>
-      <a style="width:200px;" class="list-group-item clearfix">
+      <a style="width:246px;height:42px;" class="list-group-item clearfix">
         <strong>CSV downloaden</strong>
         <span class="pull-right">
           <button class="btn btn-xs btn-success" >
-            <span class="glyphicon glyphicon glyphicon-chevron-down"></span>
-          </button>
-        </span>
-      </a>
-      <a style="width:200px;" class="list-group-item clearfix" onclick="rapportage_hide_details()">
-        <strong>Verbergen</strong>
-        <span class="pull-right">
-          <button class="btn btn-xs btn-success" >
-            <span class="glyphicon glyphicon glyphicon-chevron-left"></span>
+            <span class="glyphicon glyphicon-save"></span>
           </button>
         </span>
       </a>
