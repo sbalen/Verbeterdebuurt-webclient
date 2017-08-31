@@ -179,6 +179,9 @@ vdbApp.run(['$location', '$rootScope', function($location, $rootScope) {
       menuSelected($rootScope, 'createissue');
       $location.path('/nieuw-probleem');
     }
+    if ($location.path().substring(0,9) === '/campagne') {
+      $rootScope.customisation.class += ' campaign';
+    }
     logger('customisation','fietsersbond');
 
   // By default, set the normal (i.e. no) customisation.

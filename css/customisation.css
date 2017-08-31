@@ -16,6 +16,11 @@ body {
   background-position: center;
   background-size: cover;
 }
+/* Set fixed subnav height, to allow for all buttons to be hidden,
+ * e.g. at the campaigns on fietsersbond. */
+#subnav-items {
+  height: 44px;
+}
 /* Hide the rapportage button by default.
  * For the Fietsersbond, show the rapportage and hide the map button. */
 #rapportage-button,
@@ -38,6 +43,10 @@ body {
 }
 #rapportage-main-panel.enabled {
   display: block;
+}
+/* Hide all buttons on the campaign page. */
+.customisation.fietsersbond.campaign #subnav-items button {
+  display: none;
 }
 /* Fietsersbond specific styling rules. */
 .customisation.fietsersbond #rapportage-button,
