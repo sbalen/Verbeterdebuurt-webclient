@@ -479,6 +479,10 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
             templateUrl: 'campaign.html',
             controller: 'campaignCtrl'
         })
+        .when('/campagne/:slug', {
+            templateUrl: 'campaign.html',
+            controller: 'campaignCtrl'
+        })
         //redirect city / postcode
         .when('/:cityNameClone', {
             templateUrl: 'main.html',
@@ -4630,6 +4634,10 @@ vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$loc
 // TODO FB: createProblemCtrl used as basis.
 vdbApp.controller('campaignCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', 'duplicateIssuesService', '$cookies', 'serviceStandardService','reportService','issuesService','agreementSevice','$routeParams', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, duplicateIssuesService, $cookies, serviceStandardService,reportService,issuesService,agreementSevice,$routeParams) {
     logger('campaignCtrl');
+
+    // TODO FB: wait for the backend to supply campaigns by slug, and request
+    // one based on the url.
+    logger('campagne slug',$routeParams.slug);
     // TODO: check if the campagin is active and within the duration,
     // otherwise redirect to somewhere? Or show the results of the past
     // campaign?
