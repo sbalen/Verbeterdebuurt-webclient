@@ -44,6 +44,28 @@ body {
 #rapportage-main-panel.enabled {
   display: block;
 }
+
+/* Default plain view, to be set with VdB/FB specific colouring.
+ * This prevents VdB colours flashing in custom client portals. */
+.subnav,
+.side-panel .panel-heading {
+  background-color: #fff;
+}
+.subnav .sub-nav-btn {
+  border-color: #fff;
+  background-color: #fff;
+}
+
+/* Set the default verbeterdebuurt colours. */
+.customisation.verbeterdebuurt .subnav,
+.customisation.verbeterdebuurt .side-panel .panel-heading {
+  background-color: #3AB53A;
+}
+.customisation.verbeterdebuurt .subnav .sub-nav-btn {
+  border-color: #2e8e2e;
+  background-color: #3AB53A;;
+}
+
 /* Hide all buttons on the campaign page. */
 .customisation.fietsersbond.campaign #subnav-items button {
   display: none;

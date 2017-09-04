@@ -13,19 +13,12 @@ var vdbApp = angular.module('vdbApp',
 // some point. Until then, collect the required settings here. These settings
 // will be read throughout the application to determine custom display options.
 var CUSTOMISATION_SETTINGS = {
-  normal: {
-    class: '', // Added to <body>
+  // TODO FB: make verbeterdebuurt a styling, as with other customers.
+  verbeterdebuurt: {
+    class: 'customisation verbeterdebuurt', // Added to <body>
     logo_src: '/img/Verbeterdebuurt-logo.png', // Top left main logo.
     issue_client: 'vdb', // Send this with the issues.
-    campaign: { // TODO: Set an active campain cusomisation?
-      active: false,
-      start_date: null,
-      end_date: null,
-      title: '',
-      description: '',
-      question: '',
-      background_image: '',
-    },
+    campaign: { },
   },
   fietsersbond: {
     class: 'customisation fietsersbond',
@@ -186,8 +179,8 @@ vdbApp.run(['$location', '$rootScope', function($location, $rootScope) {
 
   // By default, set the normal (i.e. no) customisation.
   } else {
-    $rootScope.customisation = CUSTOMISATION_SETTINGS.normal;
-    logger('customisation','normal');
+    $rootScope.customisation = CUSTOMISATION_SETTINGS.verbeterdebuurt;
+    logger('customisation','verbeterdebuurt');
   }
 }]);
 
