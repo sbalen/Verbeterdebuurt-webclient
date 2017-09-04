@@ -1749,6 +1749,12 @@ vdbApp.controller('issueCtrl', ['$scope', '$rootScope', '$window', '$routeParams
                 "issue_id": $routeParams.id
             });
             voteSubmitService.getvoteSummit(jsonVoteSubmit).then(function (data) {
+                // TODO FB: Voting for an idea the first time returns an
+                // empty array (an object with success: true/false is expected).
+                // The second time, an error message is shown (correctly) that
+                // a vote was already cast. (This is not presented in the idea
+                // description, and thus does not show in the stats below.)
+                logger('vote result', data);
                 var getvoteSummit = data.data;
                 if (!getvoteSummit.success) {
                     $scope.hideError = 0;
