@@ -15,34 +15,29 @@ var vdbApp = angular.module('vdbApp',
 var CUSTOMISATION_SETTINGS = {
   // TODO FB: make verbeterdebuurt a styling, as with other customers.
   verbeterdebuurt: {
+    organisation_id: 0, // Sent with new issues etc. as organisation_id.
+    name: 'verbeterdebuurt',
     class: 'customisation verbeterdebuurt', // Added to <body>
     logo_src: '/img/Verbeterdebuurt-logo.png', // Top left main logo.
-    issue_client: 'vdb', // Send this with the issues.
     campaign: { },
   },
   fietsersbond: {
+    organisation_id: 1,
+    name: 'fietsersbond',
     class: 'customisation fietsersbond',
     logo_src: 'http://meldpunt.fietsersbond.nl/images/logo.png',
-    issue_client: 'fietsersbond',
-    campaign_old_harcoded: {
-      active: true,
-      start_date: '2017-08-15',
-      end_date: '2017-09-12',
-      title: 'De Fietsersbond voert campagne!',
-      description: 'Dit kan zo niet langer! We gaan campagne voeren!\nWat kunnen we volgens jou het beste doen om iedereen prettige te laten fietsen?\nHeb je een goed idee om dit op te lossen, geef het hier aan',
-      question: 'De vraag',
-      background_image: 'https://upload.wikimedia.org/wikipedia/commons/4/44/Bicycling-ca1887-bigwheelers.jpg',
-    },
-    // TODO FB: read campain info from the temporary endpoint.
-    campaign: {
-      active: false,
-      start_date: '',
-      end_date: '',
+    campaign: { },
+    // TODO FB: a campaign should typically contain:
+/*
+      id: 0,
       title: '',
       description: '',
       question: '',
       background_image: '',
-    },
+      start_date: '',
+      end_date: '',
+      active: false,
+*/
   },
 };
 
@@ -4864,8 +4859,9 @@ vdbApp.controller('campaignCtrl', ['$scope', '$rootScope', '$window', '$timeout'
                 type :  issue.type,
                 category_id :  issue.category_id,
                 private_message : issue.privateMessage,
-                // TODO FB: add the client
-                opdrachtgever: customisation.issue_client,
+                // TODO FB: add the client and campagin: DONE
+                organisation_id: $rootScope.customisation.organisation_id,
+                campaign_id: $rootScope.customisation.campaign.id,
             }, 
             location : {
                 latitude : location.latitude,
