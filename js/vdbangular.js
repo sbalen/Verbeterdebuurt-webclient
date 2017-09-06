@@ -1230,7 +1230,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
     }
 
     $scope.updateMyIssues = function() {
-        logger("updateMyIssues -->" + $cookies.getObject('user'));
+        logger("updateMyIssues mainCtrl -->" + $cookies.getObject('user'));
         if ($cookies.getObject('user')) {
             var jsondata = {}
             jsondata.user = $cookies.getObject('user');
@@ -1285,11 +1285,22 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
     $scope.zoomedInEnoughToRetrieveIssues = function() {
         return $rootScope.zoom >= $rootScope.retrieveIssuesZoom;
     }
+    // N.B. The updateMapIssues is called many times on many occasions.
+    // It serves more or less as the go to place to fill the left-column
+    // issue list.
     $scope.updateMapIssues = function() {
         logger("updateMapIssues");
+        // If this is a campaign page, ignore update by map triggers.
+        // Instead, get the issues after retrieving the campaing data.
+        if ( $rootScope.is_campaign ) {
+          logger("updateMapIssues", 'ignore because is_campaign');
+          return;
+        }
 
         checkZoomLevel($rootScope);
 
+        // TODO FB: if the page loaded is from fietsersbond, only
+        // get those items.
         if ($scope.zoomedInEnoughToRetrieveIssues()) {
             var jsondata = JSON.stringify({
                 "coords_criterium": {
@@ -4414,7 +4425,7 @@ vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$loc
     }
 
     $scope.updateMyIssues = function() {
-        logger("updateMyIssues -->" + $cookies.getObject('user'));
+        logger("updateMyIssues rapportageCtrl -->" + $cookies.getObject('user'));
         if ($cookies.getObject('user')) {
             var jsondata = {}
             jsondata.user = $cookies.getObject('user');
@@ -4468,38 +4479,6 @@ vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$loc
 
     $scope.zoomedInEnoughToRetrieveIssues = function() {
         return $rootScope.zoom >= $rootScope.retrieveIssuesZoom;
-    }
-    $scope.updateMapIssues = function() {
-        logger("updateMapIssues");
-
-        checkZoomLevel($rootScope);
-
-        if ($scope.zoomedInEnoughToRetrieveIssues()) {
-            var jsondata = JSON.stringify({
-                "coords_criterium": {
-                    "max_lat": map.getBounds().getNorthEast().lat(),
-                    "min_lat": map.getBounds().getSouthWest().lat(),
-                    "max_long": map.getBounds().getNorthEast().lng(),
-                    "min_long": map.getBounds().getSouthWest().lng()
-                }
-            });
-            var getIssues = issuesService.getIssues(jsondata).then(function (data) {
-                var getdata = data.data;
-
-                $rootScope.newProblemList = getdata.issues;
-                //sort the issues descending for created date
-                if ($rootScope.newProblemList != undefined && $rootScope.newProblemList.length > 1) {
-                   $rootScope.newProblemList.sort(function(a, b){return b.created_at.localeCompare( a.created_at ) });
-                }
-                if (getdata.count != 0 || !getdata) {
-                    $window.issuesData = getdata;
-                    showIssuesOnMap();
-                }
-            });
-        } else {
-            $window.issuesData = null;
-            showIssuesOnMap();
-        }
     }
     $scope.updateCouncilReport = function(city)  {
         logger("updateCouncilReport");
@@ -4630,9 +4609,32 @@ vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$loc
 vdbApp.controller('campaignCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', 'duplicateIssuesService', '$cookies', 'serviceStandardService','reportService','issuesService','agreementSevice','$routeParams', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, duplicateIssuesService, $cookies, serviceStandardService,reportService,issuesService,agreementSevice,$routeParams) {
     logger('campaignCtrl');
 
-    // TODO FB: wait for the backend to supply campaigns by slug, and request
-    // one based on the url.
-    logger('campagne slug',$routeParams.slug);
+    $rootScope.is_campaign = true;
+
+    // Load issues for the current active campaign.
+    function get_campaign_issues() {
+      var campaign_id = $rootScope.customisation.campaign.id;
+      if ( ! campaign_id ) {
+        logger('no campaign id found:', campaign_id);
+        return;
+      }
+      var jsondata = JSON.stringify({
+          "campaign_id": campaign_id
+      });
+      return issuesService.getIssues(jsondata).then(function (data) {
+          var getdata = data.data;
+          $rootScope.newProblemList = getdata.issues;
+          //sort the issues descending for created date
+          if ($rootScope.newProblemList != undefined && $rootScope.newProblemList.length > 1) {
+             $rootScope.newProblemList.sort(function(a, b){return b.created_at.localeCompare( a.created_at ) });
+          }
+          if (getdata.count != 0 || !getdata) {
+              $window.issuesData = getdata;
+          }
+      });
+    };
+
+
     // TODO: check if the campagin is active and within the duration,
     // otherwise redirect to somewhere? Or show the results of the past
     // campaign?
@@ -4643,20 +4645,25 @@ vdbApp.controller('campaignCtrl', ['$scope', '$rootScope', '$window', '$timeout'
       try {
         var campaigns_data = JSON.parse(data);
         console.log('campaigns', campaigns_data);
+        // TODO FB: wait for the backend to supply campaigns by slug,
+        // and request one based on the url, instead of the first [0].
+        logger('campagne slug',$routeParams.slug);
         $rootScope.customisation.campaign = campaigns_data.campaigns[0];
         $rootScope.customisation.campaign.background_image = 'https://upload.wikimedia.org/wikipedia/commons/4/44/Bicycling-ca1887-bigwheelers.jpg'
+        // Set the campaign background.
         // TODO: this is too strong, make sure it resets when leaving the
         $('#background-customisation-image').css('background-image', "url('"+$rootScope.customisation.campaign.background_image+"')");
+        // TODO: set the campaign logo, when provided by the backend.
+
       } catch (e) {
         console.log('campaigns, no json:', data);
       }
-    });
+    }).then(get_campaign_issues);
     // Hardcode immediate knwn image loading, remove when we start the page
     // with a blank background, to prevent flashing the other image.
     $('#background-customisation-image').css('background-image', "url('https://upload.wikimedia.org/wikipedia/commons/4/44/Bicycling-ca1887-bigwheelers.jpg')");
 
 
-    // Set the campaign background.
     $scope.privateMessageHide = false;
     $rootScope.dynamicTitle = "Campagne |";
     $rootScope.lastUrl = $location.path();
@@ -4694,30 +4701,12 @@ vdbApp.controller('campaignCtrl', ['$scope', '$rootScope', '$window', '$timeout'
         $scope.slide = "toggle-button-selected-left";
     }, 0)
 
-    // A campaign menu item doesn't actually exist, but it might.
-    menuSelected($rootScope, 'campaign');
-    //show my issue
-
-    $scope.updateMyIssues();
-
     if ($cookies.getObject('user')) {
-        $scope.hideLogin = true
-        var jsondata = JSON.stringify({
-            "user": {
-                "username": "" + $cookies.getObject('user').username + "",
-                "password_hash": "" + $cookies.getObject('user').password_hash + ""
-            }
-        });
-        var getMyIssues = myIssuesService.getMyIssues(jsondata).then(function (data) {
-            var getdata = data.data;
-            var count = getdata.count;
-            $rootScope.myIssueCount = count;
-            $rootScope.myIssuesList = getdata.issues;
-        })
         $scope.hideLogin = true
     } else {
         $scope.hideLogin = false;
     }
+
     //first initial
     $timeout(function () {        
          
