@@ -4648,8 +4648,7 @@ vdbApp.controller('campaignCtrl', ['$scope', '$rootScope', '$window', '$timeout'
       try {
         var campaigns_data = JSON.parse(data);
         console.log('campaigns', campaigns_data);
-        // TODO FB: n.b. campaings [sic] in the server response, have fixed.
-        $rootScope.customisation.campaign = campaigns_data.campaings[0];
+        $rootScope.customisation.campaign = campaigns_data.campaigns[0];
         $rootScope.customisation.campaign.background_image = 'https://upload.wikimedia.org/wikipedia/commons/4/44/Bicycling-ca1887-bigwheelers.jpg'
         // TODO: this is too strong, make sure it resets when leaving the
         $('#background-customisation-image').css('background-image', "url('"+$rootScope.customisation.campaign.background_image+"')");
