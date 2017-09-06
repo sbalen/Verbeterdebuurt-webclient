@@ -398,6 +398,11 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
             templateUrl: 'create_problem.html',
             controller: 'createProblemCtrl'
         })
+        // Special route for problem at a specific location.
+        .when('/nieuw-probleem/:latitude/:longitude', {
+            templateUrl: 'create_problem.html',
+            controller: 'createProblemCtrl'
+        })
         .when('/nieuw-idee', {
             templateUrl: 'create_idea.html',
             controller: 'createIdeaCtrl'
@@ -1173,6 +1178,12 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
             //should not be handled by maincontroller
             logger("location based on haskey should not be handled by main ctrl, but by hashCtrl")
             result = false;
+        // Lat/lng given with nieuw-probleem in the url.
+        } else if ($routeParams.latitude && $routeParams.longitude) {
+            moveMapToLocation({
+              lat: parseFloat($routeParams.latitude),
+              lng: parseFloat($routeParams.longitude)
+            });
         } else if ($routeParams.cityName) {    
             moveMapToAddress($routeParams.cityName,true,doneCallBack);
         } else if ($routeParams.postalcode) {
