@@ -3280,8 +3280,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
                 type :  issue.type,
                 category_id :  issue.category_id,
                 private_message : issue.privateMessage,
-                // TODO FB: add the client
-                //opdrachtgever: customisation.issue_client,
+                organisation_id: $rootScope.customisation.organisation_id,
             }, 
             location : {
                 latitude : location.latitude,
@@ -3296,8 +3295,6 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
             jsondataSubmit.user_profile = user_profile;
         }
        
-        // TODO FB: is this data sent?
-        console.log('submit new problem with customisation', jsondataSubmit);
         jsondataSubmit = JSON.stringify(jsondataSubmit);
 
         if (file) {
@@ -3699,7 +3696,8 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
                     "description" :  issue.description,
                     "type" : issue.type,
                     "realization" : issue.realization,
-                    "private_message" : issue.privateMessage
+                    "private_message" : issue.privateMessage,
+                    "organisation_id" : $rootScope.customisation.organisation_id
                     
                 }, 
                 "location" : {
@@ -3731,7 +3729,8 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
                     "description" :  issue.description,
                     "type" : issue.type,
                     "realization" : issue.realization,
-                    "private_message" : issue.privateMessage
+                    "private_message" : issue.privateMessage,
+                    "organisation_id" : $rootScope.customisation.organisation_id
                     
                 }, 
                 "location" : {
@@ -4870,7 +4869,6 @@ vdbApp.controller('campaignCtrl', ['$scope', '$rootScope', '$window', '$timeout'
                 type :  issue.type,
                 category_id :  issue.category_id,
                 private_message : issue.privateMessage,
-                // TODO FB: add the client and campagin: DONE
                 organisation_id: $rootScope.customisation.organisation_id,
                 campaign_id: $rootScope.customisation.campaign.id,
             }, 
@@ -4887,8 +4885,6 @@ vdbApp.controller('campaignCtrl', ['$scope', '$rootScope', '$window', '$timeout'
             jsondataSubmit.user_profile = user_profile;
         }
        
-        // TODO FB: is this data sent?
-        console.log('submit new problem with customisation', jsondataSubmit);
         jsondataSubmit = JSON.stringify(jsondataSubmit);
 
         if (file) {
