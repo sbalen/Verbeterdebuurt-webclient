@@ -198,7 +198,7 @@
                             </div>
                             <div class="panel-body" ng-hide="hideLogin">
                                 <h4 class="fontM">3. Contactgegevens</h4>
-                                Of <a href="login">log in</a> om dit over te slaan
+                                Of <a href="login" ng-click="rememberFormBeforeLogin($event)">log in</a> om dit over te slaan
                                 <div class="form-group">
                                     <div class="col-sm-12 form-col" ng-class="{'has-error': errorEmail}">
                                         <input type="text" class="form-control" id="email" placeholder="E-mailadres" ng-model="email" style="margin-bottom: 15px">

@@ -4679,6 +4679,12 @@ vdbApp.controller('campaignCtrl', ['$scope', '$rootScope', '$window', '$timeout'
     $rootScope.dynamicTitle = "Campagne |";
     $rootScope.lastUrl = $location.path();
 
+    if ( $rootScope.formDataBeforeLogin ) {
+      $scope.categoryId = $rootScope.formDataBeforeLogin.categoryId;
+      $scope.title = $rootScope.formDataBeforeLogin.title;
+      $scope.description = $rootScope.formDataBeforeLogin.description;
+    }
+
     $scope.hide = "ng-hide";
     $scope.issueName = "Probleem"
     $scope.hideIssue = 1;
@@ -4726,6 +4732,17 @@ vdbApp.controller('campaignCtrl', ['$scope', '$rootScope', '$window', '$timeout'
         $scope.categoriesData();
         $scope.getServiceStandard(city.long_name);
     }, 1500);
+
+    // TODO FB: see if it possible to also store an uploaded image..
+    // Remember fields filled in before moving away from the login page.
+    $scope.rememberFormBeforeLogin = function($event) {
+      $rootScope.formDataBeforeLogin = {
+        title: $scope.title,
+        categoryId: $scope.categoryId,
+        description: $scope.description,
+      };
+      logger('formDataBeforeLogin',$rootScope.formDataBeforeLogin);
+    }
 
     $scope.categoriesData = function () {
         $scope.loadCategory = 1;
