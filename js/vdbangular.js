@@ -4491,12 +4491,6 @@ vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$loc
     $scope.zoomedInEnoughToRetrieveIssues = function() {
         return $rootScope.zoom >= $rootScope.retrieveIssuesZoom;
     }
-    $scope.updateCouncilReport = function(city)  {
-        logger("updateCouncilReport");
-        reportService.getReport(JSON.stringify({"council": "" + city + ""})).then(function (data) {
-            $rootScope.reportList = data.data.report;
-        });
-    }
 
     $scope.updateCouncilAgreement = function(city) {
         logger("updateCouncilAgreement");
