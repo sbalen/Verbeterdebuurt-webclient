@@ -51,6 +51,14 @@
                             <td>Status:</td>
                             <td>{{newProblem.status_description}} <a class="{{hideLogStatus}}  issueLog" ng-click="logStatus()"> {{showDataText}} </a></td>
                         </tr>
+                        <tr ng-show="newProblem.organisation_id !== undefined">
+                            <td>Organisatie:</td>
+                            <td>{{newProblem.organisation_id}}</td>
+                        </tr>
+                        <tr ng-show="newProblem.organisation_id !== undefined">
+                            <td>Campagne:</td>
+                            <td>{{newProblem.campaign_id}}</td>
+                        </tr>
                         <tr class="{{hideStatus}}">
                             <td colspan="3">
                                 <ul class="status-log">
