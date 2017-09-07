@@ -90,9 +90,32 @@ function initMap() {
     var mapObject = document.getElementById('googlemaps');
 
     map = new google.maps.Map(mapObject, mapOptions);
-
+    add_fietsersbond_maptype(map);
 }
 
+// TODO FB: add Fietsersbond map overlay. N.B. now always, make a switch
+// based on the current customisation.
+function add_fietsersbond_maptype(to_map) {
+  var fietsersbondMapType = new google.maps.ImageMapType({
+    getTileUrl: function(coord, zoom) {
+      // Overlay paths only:
+      //return "https://planner2.fietsersbond.nl/tile/NederlandTopRoadsWM/" + 
+      // Full fietsersbond map:
+      return "https://planner2.fietsersbond.nl/tile/NederlandBackWM_NederlandTopRoadsWM/" + 
+             zoom + "/" + coord.x + "/" + coord.y;
+    },
+    tileSize: new google.maps.Size(256, 256),
+    maxZoom: ZOOM_MAX,
+    minZoom: ZOOM_INIT,
+    name: 'fietsersbondmaptype'
+  });
+
+  // Above the current mapType:
+  //to_map.overlayMapTypes.insertAt(0, fietsersbondMapType);
+  // As the mapType:
+  to_map.mapTypes.set('fietsersbondmaptype', fietsersbondMapType);
+  to_map.setMapTypeId('fietsersbondmaptype');
+}
 
 function initMapListeners() { 
     logger("initMapListeners");
@@ -234,6 +257,7 @@ function initGoogleMapForCreateIssue(location,issueType) {
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         styles: [ { featureType: "poi", elementType: "labels", stylers: [ { visibility: "off" } ] } ]
     });
+    add_fietsersbond_maptype(map);
     
     (new google.maps.Marker({position: location,icon: iconImg})).setMap(map);    
 
@@ -261,6 +285,7 @@ function googleMapCreateProblem() {
                 ]
     }
     map3 = new google.maps.Map(document.getElementById(issueType == ISSUE_TYPE_PROBLEM ? "googleMapCreateProblem" : googleMapCreateIdea), mapOptions);
+    add_fietsersbond_maptype(map3);
 
     marker = new google.maps.Marker();
     marker.setMap(map3);
@@ -292,6 +317,7 @@ function googleMapCreateIdea() {
                 ]
     }
     map4 = new google.maps.Map(document.getElementById("googleMapCreateIdea"), mapOption4);
+    add_fietsersbond_maptype(map4);
     marker = new google.maps.Marker();
     marker.setMap(map4);
     marker.setPosition(map4.getCenter());
