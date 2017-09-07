@@ -4434,23 +4434,6 @@ vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$loc
         $scope.searchCity = city;
     }
 
-    $scope.updateMyIssues = function() {
-        logger("updateMyIssues rapportageCtrl -->" + $cookies.getObject('user'));
-        if ($cookies.getObject('user')) {
-            var jsondata = {}
-            jsondata.user = $cookies.getObject('user');
-            jsondata = JSON.stringify(jsondata);
-            logger(jsondata);
-            myIssuesService.getMyIssues(jsondata).then(function (data) {
-                logger("retrieving:");
-                logger(data.data);
-                $rootScope.myIssueCount = data.data.count;
-                $rootScope.myIssuesList = data.data.issues;
-            })
-        }
-
-    }
-
     rapportageController.recentIssuesOfType = function(type, count) {
         if (!$scope.zoomedInEnoughToRetrieveIssues() || $rootScope.newProblemList == undefined || $rootScope.newProblemList.length <= 0) return [];
         if (count == undefined) count = RECENT_ISSUES_TO_SHOW;
