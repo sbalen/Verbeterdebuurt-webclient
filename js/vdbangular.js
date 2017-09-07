@@ -1248,8 +1248,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
             jsondata = JSON.stringify(jsondata);
             logger(jsondata);
             myIssuesService.getMyIssues(jsondata).then(function (data) {
-                logger("retrieving:");
-                logger(data.data);
+                logger("myissues", data.data);
                 $rootScope.myIssueCount = data.data.count;
                 $rootScope.myIssuesList = data.data.issues;
             })
@@ -1310,19 +1309,26 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
 
         checkZoomLevel($rootScope);
 
-        // TODO FB: if the page loaded is from fietsersbond, only
-        // get those items.
         if ($scope.zoomedInEnoughToRetrieveIssues()) {
-            var jsondata = JSON.stringify({
+            var data_request = {
                 "coords_criterium": {
                     "max_lat": map.getBounds().getNorthEast().lat(),
                     "min_lat": map.getBounds().getSouthWest().lat(),
                     "max_long": map.getBounds().getNorthEast().lng(),
                     "min_long": map.getBounds().getSouthWest().lng()
                 }
-            });
+            };
+            // TODO FB: if the page loaded is from fietsersbond, only
+            // get those items. If on verbeterdebuurt, show all issues.
+            if ( $rootScope.customisation.organisation_id === 1 ) {
+              data_request.organisation_id = 1;
+            }
+
+            logger('issues data request', data_request);
+            var jsondata = JSON.stringify(data_request);
             var getIssues = issuesService.getIssues(jsondata).then(function (data) {
                 var getdata = data.data;                        
+                logger('issues data result', getdata);
 
                 $rootScope.newProblemList = getdata.issues;
                 //sort the issues descending for created date
