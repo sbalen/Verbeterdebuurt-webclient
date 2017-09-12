@@ -1433,6 +1433,10 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
 
         // $scope.updateMyIssues();
         $scope.updateMapIssues();
+        // TODO FB: update active department on geo here?
+        if ($rootScope.is_rapportage) {
+          console.log('Update rapportage department');
+        }
     }
 
     $scope.isUserLoggedIn = function() {
