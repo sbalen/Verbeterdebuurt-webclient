@@ -87,6 +87,7 @@ var remindIssueService = new Object();
 var unfollowIssueService = new Object();
 var serviceStandardService = new Object();
 var confirmVoteService = new Object();
+var departmentsService = new Object();
 var searchCreateTemp = 0;
 
 var user = undefined;
@@ -1085,6 +1086,27 @@ vdbApp.factory('confirmVoteService', ["$http",'$rootScope',function ($http,$root
 
     };
 }])
+
+
+vdbApp.factory('departmentsService', ['$http','$rootScope', function ($http,$rootScope) {
+  return {
+    getDepartments: function (jsondata) {
+      logger('departmentsService.getDepartments('+jsondata+')');
+      return $http.post(APIURL + 'departments', jsondata)
+        .success(function (data) {
+          if (angular.isObject(data)) {
+            departmentsService.data = data;
+            return departmentsService.data;
+          }
+        })
+        .error(function(data, status, headers, config){
+          logger("departmentsService.getDepartments.error:")
+          errorhandler($rootScope,{url:config.url,'data':config.data,'status':status,'message':data})
+        });
+    }
+  }
+}]);
+
 
 vdbApp.run(['$rootScope', '$window', function ($rootScope, $window) {
     (function (d, s, id) {
@@ -4293,13 +4315,21 @@ vdbApp.controller('resolveIssueCommentYesCtrl', ['$scope','$rootScope','$routePa
 }])
 
 // TODO FB: mainCtrl used as basis.
-vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$location', '$rootScope', '$routeParams', '$http', 'issuesService', 'reportService', '$facebook', '$cacheFactory', 'agreementSevice', '$cookies','myIssuesService', function ($scope, $q,$timeout, $window, $location, $rootScope, $routeParams, $http, issuesService, reportService, $facebook, $cacheFactory, agreementSevice, $cookies, myIssuesService) {
+vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$location', '$rootScope', '$routeParams', '$http', 'issuesService', 'reportService', '$facebook', '$cacheFactory', 'agreementSevice', '$cookies','myIssuesService', 'departmentsService', function ($scope, $q,$timeout, $window, $location, $rootScope, $routeParams, $http, issuesService, reportService, $facebook, $cacheFactory, agreementSevice, $cookies, myIssuesService, departmentsService) {
 
     var rapportageController = this;
+    $rootScope.is_rapportage = true;
 
     //very hacky, should be removed when making the google maps a service with the proper dependencies
     user = $cookies.getObject('user');
     userProfile = $cookies.getObject('user_profile');
+    $scope.departmentIdSelected = 0;
+    $scope.departmentSelected = {
+      id: 0,
+      name: '[Afdeling]'
+    }
+    $scope.departmentsList = [];
+    $scope.departmentsDict = {};
 
     rapportageController.init = function() {
         // TODO FB: rapportageController.init appears to be called twice, why is this?
@@ -4344,7 +4374,24 @@ vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$loc
                 moveMapToAddress(input.val());
             });
         },10);
+
+
+        var jsondata = '{}';
+        var getDepartments = departmentsService.getDepartments(jsondata).then(function (data) {
+          console.log('departments',data.data);
+          $scope.departmentsList = data.data.departments;
+          for(var i=0; i<$scope.departmentsList.length; i++) {
+            $scope.departmentsDict[$scope.departmentsList[i].id] = $scope.departmentsList[i];
+          }
+        });
     }
+
+    $scope.departmentSelectionClick = function () {
+      if ( $scope.departmentIdSelected ) {
+        $scope.departmentSelected = $scope.departmentsDict[$scope.departmentIdSelected];
+        console.log('department selected',$scope.departmentSelected );
+      }
+    };
 
     /* TODO FB: nor council rewrite on rapportage
      * N.B. is the mainCtrl version actually used somewhere?

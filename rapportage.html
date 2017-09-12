@@ -9,7 +9,7 @@
       <div class="panel-body">
         <div class="list-group report-list-council" ng-hide="reportList.council == null || reportList.council == 'undefined' " >
           <p>
-            <strong>Afdeling [Groot {{reportList.council}}]</strong>
+            <strong>Afdeling: {{departmentSelected.name}}</strong>
             <br>Gemeente: {{reportList.council}}
             <br>{{agreement.agreement}}
           </p>
@@ -58,13 +58,11 @@
   <div class="col-lg-6 main-container">
     <div class="alert alert1 alert-warning fontM" id="message-widget" ng-show="showAgreement()">
       Kies een specifieke melding om de inhoud te bekijken.
-      Deze meldingen zijn uit de afdeling: [Groot {{reportList.council}}]
-      {{agreement.agreement}}
+      Deze meldingen zijn uit de afdeling: {{departmentSelected.name}}
       <i class="fa fa-flag"></i>
     </div>
     <div class="alert  alert-warning fontM" id="zoomedout-widget" ng-hide="zoomedInEnoughToShowIssues()">
       Zoom in om Fietsersbond meldingen op de kaart te zien.
-      <br>Of kies een rapportage uit het menu links.
       <i class="fa fa-flag"></i>
     </div>
     <div id="rapportage-main-panel" class="panel panel-default main-panel margintop">
@@ -75,7 +73,7 @@
           </button>
         </span>
       </a>
-      <h4 style="margin-top:0;margin-left:0;" class="fontM meldingheader">Rapportage Fietsersbond [Groot {{reportList.council}}]</h4>
+      <h4 style="margin-top:0;margin-left:0;" class="fontM meldingheader">Rapportage Fietsersbond {{departmentSelected.name}}]</h4>
       <p style="color:grey;">Selectie van <span id="rapportage-from-date">...</span> tot <span id="rapportage-to-date">...</span></p>
       <div id="chart-fietsersbond"></div>
       <hr>
@@ -111,11 +109,11 @@
         </div>
         <div class="input-group searchMap">
           <p style="margin-top:1em;"><strong>Kies een afdeling</strong></p>
+          <!--
           <select class="ng-pristine ng-valid ng-empty ng-touched">
-            <option value="">---</option>
-            <option value="">[Groot Amsterdam]</option>
-            <option value="">[Groot Utrecht]</option>
-            <option value="">[Sudwest fryslan]</option>
+          -->
+          <select class="combobox" id="department-select" ng-model="departmentIdSelected" ng-options="department.id as department.name for department in departmentsList" ng-click="departmentSelectionClick()">
+            <option value=""  disabled selected>Afdeling</option>
           </select>
         </div>
       </div>
