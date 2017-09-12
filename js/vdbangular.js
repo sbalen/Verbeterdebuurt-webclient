@@ -4635,14 +4635,12 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
     // is requested, show the first found active campaign. If no valid 
     // campaign can be found, show a message.
     var campaign_slug = $routeParams.slug;
-    logger('campagne slug', campaign_slug);
     var campaign_query = {
       organisation_id: $rootScope.customisation.organisation_id
     };
     if ( ! campaign_slug ) {
       campaign_query.active_only = true;
     }
-    logger('campagne query', campaign_query);
     campaign_query = JSON.stringify(campaign_query);
     // Default campaign with "not found" settings. Updated if a matching
     // campagin is found;
@@ -4707,17 +4705,13 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
         $rootScope.customisation.logo_src = campaign.logo;
         // Set the page background.
         $('#background-customisation-image').css('background-image', "url('"+$rootScope.customisation.campaign.background_image+"')");
-
+        // Retrieve issues for this campaign.
+        get_campaign_issues();
       })
       .error(function(data, status, headers, config){
         logger("campaigns.http.post.error:")
         errorhandler($rootScope,{url:config.url,'data':config.data,'status':status,'message':data})
       });
-
-
-    // TODO: check if the campagin is active and within the duration,
-    // otherwise redirect to somewhere? Or show the results of the past
-    // campaign?
 
     $scope.privateMessageHide = false;
     $rootScope.dynamicTitle = "Campagne |";
