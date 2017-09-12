@@ -4453,6 +4453,7 @@ vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$loc
         $location.path(newPath);
     }*/
 
+    /*
     rapportageController.determineStartLocation = function(doneCallBack) {
         logger("determineStartLocation ->");
         logger($routeParams);
@@ -4496,6 +4497,7 @@ vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$loc
         }
         addMapChangedListener($scope.updateAllInfo,$location);
     }
+    */
 
     /*
     $scope.updatePathForCouncil = function(city) {
