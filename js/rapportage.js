@@ -2,39 +2,36 @@
 // TODO FB: these are mockups, create actual charts.
 // TODO FB: if the proposed layout is accepted, replace add/removeClass
 // logic with proper angular watched variables.
-function rapportage_show_details() {
+
+// Parse overviewByDay date to Date().
+function oBD_Date(s) {
+  var s = s.split(/[^0-9]/);
+  return Date.UTC(s[0],s[1]-1,s[2]);
+}
+function rapportage_show_details(data) {
   $('#rapportage-main-panel').addClass('enabled');
+  var created_data = [];
+  var solved_data = [];
+  for(var i=0; i<data.overviewByDay.length; i++) {
+    var d = data.overviewByDay[i];
+    created_data.push( [oBD_Date(d.date), d.created] );
+    solved_data.push( [oBD_Date(d.date), d.solved] );
+  }
+  console.log('chart created', created_data);
+  console.log('chart solved', solved_data);
   Highcharts.chart('chart-fietsersbond', {
     chart: { type: 'line' },
     title: { text: 'Nieuwe/behandelde meldingen' },
-    subtitle: { text: 'Gemiddelde doorlooptijd 22 dagen, gemiddelde feedback 4*' },
+    subtitle: { text: 'Gemiddelde doorlooptijd '+data.average_running_time+' dagen, gemiddelde feedback '+data.average_feedback },
     xAxis: { type: 'datetime', title: { text: 'Datum' } },
     yAxis: { title: { text: 'Aantal' }, min: 0 },
     tooltip: { shared: true, },
     series: [{
       name: 'Nieuw',
-      data: [
-        [Date.UTC(2017, 1, 1), 12],
-        [Date.UTC(2017, 2, 1), 25],
-        [Date.UTC(2017, 3, 1), 35],
-        [Date.UTC(2017, 4, 1), 27],
-        [Date.UTC(2017, 5, 1), 84],
-        [Date.UTC(2017, 6, 1), 43],
-        [Date.UTC(2017, 7, 1), 32],
-        [Date.UTC(2017, 8, 1), 46],
-      ]
+      data: created_data,
     }, {
       name: 'Behandeld',
-      data: [
-        [Date.UTC(2017, 1, 1), 22],
-        [Date.UTC(2017, 2, 1), 15],
-        [Date.UTC(2017, 3, 1), 25],
-        [Date.UTC(2017, 4, 1), 21],
-        [Date.UTC(2017, 5, 1), 54],
-        [Date.UTC(2017, 6, 1), 49],
-        [Date.UTC(2017, 7, 1), 12],
-        [Date.UTC(2017, 8, 1), 33],
-      ]
+      data: solved_data,
     }]
   });
   Highcharts.chart('chart-fietsersbond-secondary', {

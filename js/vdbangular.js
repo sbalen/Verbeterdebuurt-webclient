@@ -4357,11 +4357,14 @@ vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$loc
     $scope.to_date = new Date();
     $scope.from_date = new Date($scope.to_date.getFullYear(), $scope.to_date.getMonth(), 1);
     $scope.reportData = {
-      reports: '',
-      solutions: '',
-      average_running_time: '',
-      average_feedback: '',
+      reports: '-',
+      solutions: '-',
+      average_running_time: '-',
+      average_feedback: '-',
+      totals: [],
+      overviewByDay: [],
     };
+    $scope.showCharts = false;
     $scope.departmentsList = [];
     $scope.departmentsDict = {};
 
@@ -4433,18 +4436,23 @@ vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$loc
         var getReportData = departmentReportsService.getDepartmentReports(report_query).then(function (data) {
           $scope.reportData = data.data;
           logger('department report data',data.data);
+          if ( $scope.showCharts ) {
+            $scope.showRapportageCharts();
+          }
         });
       }
     };
 
     $scope.showRapportageCharts = function() {
       logger('chart showing', $scope.reportData);
+      $scope.showCharts = true;
       // Call externally defined chart creation method.
-      rapportage_show_details();
+      rapportage_show_details($scope.reportData);
     }
 
     $scope.hideRapportageCharts = function() {
-      logger('chart hiding', $scope.reportData);
+      logger('chart hiding');
+      $scope.showCharts = false;
       // Call externally defined chart creation method.
       rapportage_hide_details()
     }
