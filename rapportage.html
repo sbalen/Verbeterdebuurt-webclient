@@ -29,7 +29,7 @@
           {{reportData.reports}} nieuwe meldingen<br>
           {{reportData.solutions}} behandelingen<br>
         </p>
-        <a class="list-group-item clearfix" onclick="rapportage_show_details()">
+        <a class="list-group-item clearfix" ng-click="showRapportageCharts()">
           <strong>Details</strong>
           <span class="pull-right">
             <button class="btn btn-xs btn-success" >
@@ -66,7 +66,7 @@
       <i class="fa fa-flag"></i>
     </div>
     <div id="rapportage-main-panel" class="panel panel-default main-panel margintop">
-      <a style="float:right;padding:0;" class="list-group-item clearfix" onclick="rapportage_hide_details()">
+      <a style="float:right;padding:0;" class="list-group-item clearfix" ng-click="hideRapportageCharts()">
         <span class="pull-right">
           <button class="btn btn-xs btn-success" >
             <span class="glyphicon glyphicon-remove"></span>

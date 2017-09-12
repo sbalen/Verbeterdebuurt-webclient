@@ -4417,6 +4417,8 @@ vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$loc
         });
     }
 
+    // TODO FB: apart from manual selection, also react to geolocation
+    // and update below again.
     $scope.departmentSelectionClick = function () {
       if ( $scope.departmentIdSelected ) {
         $scope.departmentSelected = $scope.departmentsDict[$scope.departmentIdSelected];
@@ -4426,14 +4428,26 @@ vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$loc
           to_date: $scope.to_date.toISOString().substr(0,10),
           output: "JSON"
         }
-        console.log('department report query', report_query);
+        logger('department report query', report_query);
         report_query = JSON.stringify(report_query);
         var getReportData = departmentReportsService.getDepartmentReports(report_query).then(function (data) {
           $scope.reportData = data.data;
-          console.log('department report data',data.data);
+          logger('department report data',data.data);
         });
       }
     };
+
+    $scope.showRapportageCharts = function() {
+      logger('chart showing', $scope.reportData);
+      // Call externally defined chart creation method.
+      rapportage_show_details();
+    }
+
+    $scope.hideRapportageCharts = function() {
+      logger('chart hiding', $scope.reportData);
+      // Call externally defined chart creation method.
+      rapportage_hide_details()
+    }
 
     /* TODO FB: nor council rewrite on rapportage
      * N.B. is the mainCtrl version actually used somewhere?
