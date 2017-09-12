@@ -88,6 +88,7 @@ var unfollowIssueService = new Object();
 var serviceStandardService = new Object();
 var confirmVoteService = new Object();
 var departmentsService = new Object();
+var departmentReportsService = new Object();
 var searchCreateTemp = 0;
 
 var user = undefined;
@@ -1101,6 +1102,26 @@ vdbApp.factory('departmentsService', ['$http','$rootScope', function ($http,$roo
         })
         .error(function(data, status, headers, config){
           logger("departmentsService.getDepartments.error:")
+          errorhandler($rootScope,{url:config.url,'data':config.data,'status':status,'message':data})
+        });
+    }
+  }
+}]);
+
+
+vdbApp.factory('departmentReportsService', ['$http','$rootScope', function ($http,$rootScope) {
+  return {
+    getDepartmentReports: function (jsondata) {
+      logger('departmentReportsService.getDepartmentReports('+jsondata+')');
+      return $http.post(APIURL + 'departmentReports', jsondata)
+        .success(function (data) {
+          if (angular.isObject(data)) {
+            departmentReportsService.data = data;
+            return departmentReportsService.data;
+          }
+        })
+        .error(function(data, status, headers, config){
+          logger("departmentReportsService.getDepartmentReports.error:")
           errorhandler($rootScope,{url:config.url,'data':config.data,'status':status,'message':data})
         });
     }
@@ -4315,7 +4336,7 @@ vdbApp.controller('resolveIssueCommentYesCtrl', ['$scope','$rootScope','$routePa
 }])
 
 // TODO FB: mainCtrl used as basis.
-vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$location', '$rootScope', '$routeParams', '$http', 'issuesService', 'reportService', '$facebook', '$cacheFactory', 'agreementSevice', '$cookies','myIssuesService', 'departmentsService', function ($scope, $q,$timeout, $window, $location, $rootScope, $routeParams, $http, issuesService, reportService, $facebook, $cacheFactory, agreementSevice, $cookies, myIssuesService, departmentsService) {
+vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$location', '$rootScope', '$routeParams', '$http', 'issuesService', 'reportService', '$facebook', '$cacheFactory', 'agreementSevice', '$cookies','myIssuesService', 'departmentsService', 'departmentReportsService', function ($scope, $q,$timeout, $window, $location, $rootScope, $routeParams, $http, issuesService, reportService, $facebook, $cacheFactory, agreementSevice, $cookies, myIssuesService, departmentsService, departmentReportsService) {
 
     var rapportageController = this;
     $rootScope.is_rapportage = true;
@@ -4328,6 +4349,15 @@ vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$loc
       id: 0,
       name: '[Afdeling]'
     }
+    // Default from and to date, the first of the current month until today.
+    $scope.to_date = new Date();
+    $scope.from_date = new Date($scope.to_date.getFullYear(), $scope.to_date.getMonth(), 1);
+    $scope.reportData = {
+      reports: '',
+      solutions: '',
+      average_running_time: '',
+      average_feedback: '',
+    };
     $scope.departmentsList = [];
     $scope.departmentsDict = {};
 
@@ -4346,10 +4376,8 @@ vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$loc
 
         // TODO FB: implement a date picker for selecting rapportage data; for
         // now, just show the current dates.
-        var date_from = new Date(Date.UTC(2017,0,01,0,0,0));
-        var date_to = new Date();
-        $('#rapportage-from-date').text(date_from.toLocaleDateString('nl-NL'));
-        $('#rapportage-to-date').text(date_to.toLocaleDateString('nl-NL'));
+        $('#rapportage-from-date').text($scope.from_date.toLocaleDateString('nl-NL'));
+        $('#rapportage-to-date').text($scope.to_date.toLocaleDateString('nl-NL'));
 
         //if really the first time loading, listen to the map being done loading, find start location, and remove listener.
         /* TODO FB: this depends on a global mainControllerInitialized variabel
@@ -4378,7 +4406,6 @@ vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$loc
 
         var jsondata = '{}';
         var getDepartments = departmentsService.getDepartments(jsondata).then(function (data) {
-          console.log('departments',data.data);
           $scope.departmentsList = data.data.departments;
           for(var i=0; i<$scope.departmentsList.length; i++) {
             $scope.departmentsDict[$scope.departmentsList[i].id] = $scope.departmentsList[i];
@@ -4389,7 +4416,18 @@ vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$loc
     $scope.departmentSelectionClick = function () {
       if ( $scope.departmentIdSelected ) {
         $scope.departmentSelected = $scope.departmentsDict[$scope.departmentIdSelected];
-        console.log('department selected',$scope.departmentSelected );
+        var report_query = {
+          department_id: $scope.departmentIdSelected,
+          from_date: $scope.from_date.toISOString().substr(0,10),
+          to_date: $scope.to_date.toISOString().substr(0,10),
+          output: "JSON"
+        }
+        console.log('department report query', report_query);
+        report_query = JSON.stringify(report_query);
+        var getReportData = departmentReportsService.getDepartmentReports(report_query).then(function (data) {
+          $scope.reportData = data.data;
+          console.log('department report data',data.data);
+        });
       }
     };
 
