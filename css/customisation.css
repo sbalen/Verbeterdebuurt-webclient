@@ -16,6 +16,11 @@ body {
   background-position: center;
   background-size: cover;
 }
+/* Limit the height of customised logo images to the height of the menu,
+ * taking the margin-top: -20px into account.*/
+.vdblogo {
+  max-height: 99px;
+}
 /* Set fixed subnav height, to allow for all buttons to be hidden,
  * e.g. at the campaigns on fietsersbond. */
 #subnav-items {

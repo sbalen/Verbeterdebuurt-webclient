@@ -4598,8 +4598,8 @@ vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$loc
     rapportageController.init();
 }]);
 
-// TODO FB: createProblemCtrl used as basis.
-vdbApp.controller('campaignCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', 'duplicateIssuesService', '$cookies', 'serviceStandardService','reportService','issuesService','agreementSevice','$routeParams', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, duplicateIssuesService, $cookies, serviceStandardService,reportService,issuesService,agreementSevice,$routeParams) {
+// TODO FB: createProblemCtrl used as basis. Added $http, remove if building a service.
+vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', 'duplicateIssuesService', '$cookies', 'serviceStandardService','reportService','issuesService','agreementSevice','$routeParams', function ($http, $scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, duplicateIssuesService, $cookies, serviceStandardService,reportService,issuesService,agreementSevice,$routeParams) {
     logger('campaignCtrl');
 
     $rootScope.is_campaign = true;
@@ -4627,35 +4627,66 @@ vdbApp.controller('campaignCtrl', ['$scope', '$rootScope', '$window', '$timeout'
       });
     };
 
+    // Retrieve a specific campaign based on the url. If not specific campaign
+    // is requested, show the first found active campaign. If no valid 
+    // campaign can be found, show a message.
+    var campaign_slug = $routeParams.slug;
+    logger('campagne slug', campaign_slug);
+    var campaign_query = {
+      organisation_id: $rootScope.customisation.organisation_id
+    };
+    if ( ! campaign_slug ) {
+      campaign_query.active_only = true;
+    }
+    logger('campagne query', campaign_query);
+    campaign_query = JSON.stringify(campaign_query);
+    // Default campaign with "not found" settings. Updated if a matching
+    // campagin is found;
+    var campaign = {
+      id: 0,
+      title: 'Geen campagne gevonden',
+      description: 'De campagne is niet gevonden',
+      question: '',
+      logo: 'http://meldpunt.fietsersbond.nl/images/logo.png',
+      background_image: '../img/background_fietsersbond.jpg',
+      active: false,
+    };
+   
+
+    // TODO FB: to conform to the existing setup, build a campaignsService
+    // factory and use that.
+    $http
+      .post(APIURL + 'campaigns', campaign_query)
+      .success(function (data) {
+        if (angular.isObject(data) && data.success) {
+          // No slug, take the first active:
+          if ( ! campaign_slug && data.campaigns.length ) {
+            campaign = data.campaigns[0];
+          // With slug, find matching campaign.
+          } else {
+            for(var i=0; i<data.campaigns.length; i++) {
+              if ( data.campaigns[i].url_title === campaign_slug ) {
+                campaign = data.campaigns[i];
+              }
+            }
+          }
+        }
+        // Set the campaign data.
+        $rootScope.customisation.campaign = campaign;
+        // Set the left-top site logo.
+        $rootScope.customisation.logo_src = campaign.logo;
+        // Set the page background.
+        $('#background-customisation-image').css('background-image', "url('"+$rootScope.customisation.campaign.background_image+"')");
+      })
+      .error(function(data, status, headers, config){
+        logger("campaigns.http.post.error:")
+        errorhandler($rootScope,{url:config.url,'data':config.data,'status':status,'message':data})
+      });
+
 
     // TODO: check if the campagin is active and within the duration,
     // otherwise redirect to somewhere? Or show the results of the past
     // campaign?
-
-    // campaign page.
-    // TODO FB: load the first version campaings api.
-    $.post('https://staging.verbeterdebuurt.nl/api.php/json_1_3/campaigns', '{}', function(data, status) {
-      try {
-        var campaigns_data = JSON.parse(data);
-        console.log('campaigns', campaigns_data);
-        // TODO FB: wait for the backend to supply campaigns by slug,
-        // and request one based on the url, instead of the first [0].
-        logger('campagne slug',$routeParams.slug);
-        $rootScope.customisation.campaign = campaigns_data.campaigns[0];
-        $rootScope.customisation.campaign.background_image = 'https://upload.wikimedia.org/wikipedia/commons/4/44/Bicycling-ca1887-bigwheelers.jpg'
-        // Set the campaign background.
-        // TODO: this is too strong, make sure it resets when leaving the
-        $('#background-customisation-image').css('background-image', "url('"+$rootScope.customisation.campaign.background_image+"')");
-        // TODO: set the campaign logo, when provided by the backend.
-
-      } catch (e) {
-        console.log('campaigns, no json:', data);
-      }
-    }).then(get_campaign_issues);
-    // Hardcode immediate knwn image loading, remove when we start the page
-    // with a blank background, to prevent flashing the other image.
-    $('#background-customisation-image').css('background-image', "url('https://upload.wikimedia.org/wikipedia/commons/4/44/Bicycling-ca1887-bigwheelers.jpg')");
-
 
     $scope.privateMessageHide = false;
     $rootScope.dynamicTitle = "Campagne |";
