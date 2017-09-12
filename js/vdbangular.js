@@ -4603,6 +4603,10 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
     logger('campaignCtrl');
 
     $rootScope.is_campaign = true;
+    // Assume the campaign is not active by default, update when the
+    // actual campaign is loaded.
+    $scope.active_campaign = false;
+    $scope.inactive_campaign_message = '';
 
     // Load issues for the current active campaign.
     function get_campaign_issues() {
@@ -4645,19 +4649,25 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
     var campaign = {
       id: 0,
       title: 'Geen campagne gevonden',
-      description: 'De campagne is niet gevonden',
+      description: '',
       question: '',
       logo: 'http://meldpunt.fietsersbond.nl/images/logo.png',
       background_image: '../img/background_fietsersbond.jpg',
       active: false,
     };
    
+    // Something something Safari..
+    function Date_parse(s) {
+      var s = s.split(/[^0-9]/);
+      return new Date(s[0],s[1]-1,s[2],s[3],s[4],s[5]);
+    }
 
     // TODO FB: to conform to the existing setup, build a campaignsService
     // factory and use that.
     $http
       .post(APIURL + 'campaigns', campaign_query)
       .success(function (data) {
+
         if (angular.isObject(data) && data.success) {
           // No slug, take the first active:
           if ( ! campaign_slug && data.campaigns.length ) {
@@ -4671,12 +4681,33 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
             }
           }
         }
+
+        // Parse the campaign dates/activity.
+        if ( campaign.start_date && campaign.end_date ) {
+          var start_date = Date_parse(campaign.start_date);
+          var end_date = Date_parse(campaign.end_date);
+          var date_options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+          campaign.start_date = start_date.toLocaleDateString('nl-NL', date_options);
+          campaign.end_date = end_date.toLocaleDateString('nl-NL', date_options);
+          var today = new Date();
+          if ( today > end_date ) {
+            $scope.inactive_campaign_message = 'De uiterste termijn van deze campagne is verlopen.';
+          } else if ( ! campaign.active ) {
+            $scope.inactive_campaign_message = 'Deze campagne is nu niet actief.';
+          } else {
+            $scope.active_campaign = true;
+          }
+        } else {
+          $scope.inactive_campaign_message = 'De campagne is niet gevonden.';
+        }
+
         // Set the campaign data.
         $rootScope.customisation.campaign = campaign;
         // Set the left-top site logo.
         $rootScope.customisation.logo_src = campaign.logo;
         // Set the page background.
         $('#background-customisation-image').css('background-image', "url('"+$rootScope.customisation.campaign.background_image+"')");
+
       })
       .error(function(data, status, headers, config){
         logger("campaigns.http.post.error:")

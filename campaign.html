@@ -84,11 +84,12 @@
                                   <p>{{errorStreetNumber}}</p>
               </div>
               <h1 class="marginheader meldingheader fontM">{{customisation.campaign.title}}</h1>
-              <p style="color: grey; font-size: 80%;">Deze campagne loopt van {{customisation.campaign.start_date}} tot {{customisation.campaign.end_date}}.</p>
+              <p class="campaign-date">Deze campagne loopt van {{customisation.campaign.start_date}} t/m {{customisation.campaign.end_date}}.</p>
+              <p class="campaign-inactive" ng-show="! active_campaign">{{ inactive_campaign_message }}</p>
               <p>{{customisation.campaign.description}}</p>
               <h3>Vraag:</h3>
               <p>{{customisation.campaign.question}}</p>
-            <div class="problem">
+            <div class="problem" ng-show="active_campaign">
 		        <form class="form-horizontal" role="form">
                               <div class="panel-body">
                                 <h4 class="fontM">1. Bepaal de locatie</h4>

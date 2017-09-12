@@ -21,6 +21,14 @@ body {
 .vdblogo {
   max-height: 99px;
 }
+/* Campaign status messages. */
+.campaign-date {
+  color: grey;
+  font-size: 80%;
+}
+.campaign-inactive {
+  color: #a00;
+}
 /* Set fixed subnav height, to allow for all buttons to be hidden,
  * e.g. at the campaigns on fietsersbond. */
 #subnav-items {
