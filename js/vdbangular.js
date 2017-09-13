@@ -1398,7 +1398,13 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
     }
     $scope.updateCouncilReport = function(city)  {
         logger("updateCouncilReport");
-        reportService.getReport(JSON.stringify({"council": "" + city + ""})).then(function (data) {                
+        report_query = {"council": "" + city + ""};
+        // TODO FB: request specific organisation
+        if ( $rootScope.customisation.organisation_id > 0 ) {
+          report_query.organisation_id = $rootScope.customisation.organisation_id;
+        }
+        logger("updateCouncilReport query", report_query);
+        reportService.getReport(JSON.stringify(report_query)).then(function (data) {                
             $rootScope.reportList = data.data.report;
         });
     }
