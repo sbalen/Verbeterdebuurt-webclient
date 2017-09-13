@@ -485,6 +485,14 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
             templateUrl: 'campaign.html',
             controller: 'campaignCtrl'
         })
+        .when('/campagne-bedankt', {
+            templateUrl: 'campaign_thanks.html',
+            controller: 'campaignCtrl'
+        })
+        .when('/campagne-bedankt/:slug', {
+            templateUrl: 'campaign_thanks.html',
+            controller: 'campaignCtrl'
+        })
         //redirect city / postcode
         .when('/:cityNameClone', {
             templateUrl: 'main.html',
@@ -5103,7 +5111,10 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
             $rootScope.successCreate = 1;
             var issueId = issueData.issue_id;
             if ($cookies.getObject('user')) {
-                $location.path(/mijn-meldingen/ + issueId);
+                //$location.path(/mijn-meldingen/ + issueId);
+                var to = campaign_slug ? campaign_slug: '';
+                console.log('/campagne-bedankt/'+to);
+                $location.path('/campagne-bedankt/'+to);
                 $rootScope.successCreateLogin = 1;
             } else {
                 // $location.path(/melding/ + issueId);
