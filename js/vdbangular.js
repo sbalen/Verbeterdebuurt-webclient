@@ -4892,6 +4892,9 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
     //first initial
     $timeout(function () {        
          
+        // TODO FB: on the campaign_thanks page, there is no searchCityProblem,
+        // the code below probably gives a small error. Check here, and test
+        // if the normal campaigns stil work properly.
         var issueMarker = googleMapCreateProblem();
         attachAutoCompleteListener('searchCityProblem',issueMarker,map3,"location");        
         $scope.categoriesData();
