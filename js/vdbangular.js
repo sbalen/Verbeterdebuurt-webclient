@@ -4785,7 +4785,7 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
     // Something something Safari..
     function Date_parse(s) {
       var s = s.split(/[^0-9]/);
-      return new Date(s[0],s[1]-1,s[2],s[3],s[4],s[5]);
+      return new Date(s[0],s[1]-1,s[2]);
     }
 
     // TODO FB: to conform to the existing setup, build a campaignsService
