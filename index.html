@@ -107,10 +107,7 @@
                         </button>
                         
                         <a class="navbar-brand" ng-hide="agreement.logo == '' || agreement.logo == undefined"><img src="{{agreement.logo}}"  class="citylogo mcitylogo"></a>
-                        <!-- TODO FB: replace logo image with js defined one?
-                        <a class="navbar-brand" href="/"><img  src="/img/Verbeterdebuurt-logo.png" class="vdblogo mvdblogo"></a>
-                        -->
-                        <a class="navbar-brand" href="/"><img src="{{customisation.logo_src}}" class="vdblogo mvdblogo"></a>
+                        <a class="navbar-brand" href="/"><img src="{{customisation.logo_src}}" id="logo-image" class="vdblogo mvdblogo"><div id="logo-text"><span id="logo-text-up">{{customisation.logo_text_up}}</span><span id="logo-text-down">{{customisation.logo_text_down}}</span></div></a>
                         
                     </div>
                     <div class="collapse navbar-collapse" id="Navbar" data-toggle="collapse">

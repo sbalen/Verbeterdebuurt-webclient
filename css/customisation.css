@@ -17,9 +17,27 @@ body {
   background-size: cover;
 }
 /* Limit the height of customised logo images to the height of the menu,
- * taking the margin-top: -20px into account.*/
-.vdblogo {
+ * taking the margin-top: -15px into account.*/
+#logo-image {
   max-height: 99px;
+  float:left;
+}
+#logo-text {
+  float:left;
+  margin-left: 5px;
+}
+#logo-text span {
+  display: block;
+  color: #000;
+}
+#logo-text-up {
+  margin-top: 12px;
+  font-size: 20px;
+}
+#logo-text-down {
+  margin-top: 14px;
+  font-size: 28px;
+  font-weight: bold;
 }
 /* Campaign status messages. */
 .campaign-date {
@@ -121,8 +139,8 @@ body {
   display: block;
 }
 /* Customise the logo, e.g. positioning or size. */
-.customisation.fietsersbond .vdblogo {
-  margin-top: -20px;
+.customisation.fietsersbond #logo-image {
+  margin-top: -15px;
 }
 /* Responsive menu. */
 .customisation.fietsersbond .navbar-default .navbar-toggle .icon-bar {

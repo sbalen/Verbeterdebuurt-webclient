@@ -19,25 +19,18 @@ var CUSTOMISATION_SETTINGS = {
     name: 'verbeterdebuurt',
     class: 'customisation verbeterdebuurt', // Added to <body>
     logo_src: '/img/Verbeterdebuurt-logo.png', // Top left main logo.
+    logo_text_up: '',
+    logo_text_down: '',
     campaign: { },
   },
   fietsersbond: {
     organisation_id: 1,
     name: 'fietsersbond',
     class: 'customisation fietsersbond',
-    logo_src: 'http://meldpunt.fietsersbond.nl/images/logo.png',
+    logo_src: '/img/fietsersbond-logo.png',
+    logo_text_up: 'Fietsersbond',
+    logo_text_down: 'Meldpunt',
     campaign: { },
-    // TODO FB: a campaign should typically contain:
-/*
-      id: 0,
-      title: '',
-      description: '',
-      question: '',
-      background_image: '',
-      start_date: '',
-      end_date: '',
-      active: false,
-*/
   },
 };
 
@@ -4774,10 +4767,18 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
     var campaign = {
       id: 0,
       title: 'Geen campagne gevonden',
+      url_title: '',
       description: '',
       question: '',
-      logo: 'http://meldpunt.fietsersbond.nl/images/logo.png',
       background_image: '../img/background_fietsersbond.jpg',
+      //logo: 'http://meldpunt.fietsersbond.nl/images/logo.png',
+      logo_text_up: 'Geen campagne',
+      logo_text_down: 'Gevonden',
+      has_answer: false,
+      answer_title: '',
+      has_photo: false,
+      start_date: undefined,
+      end_date: undefined,
       active: false,
     };
    
@@ -4828,8 +4829,9 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
 
         // Set the campaign data.
         $rootScope.customisation.campaign = campaign;
-        // Set the left-top site logo.
-        $rootScope.customisation.logo_src = campaign.logo;
+        // Set the left-top site logo text.
+        $rootScope.customisation.logo_text_up = campaign.logo_text_up;
+        $rootScope.customisation.logo_text_down = campaign.logo_text_down;
         // Set the page background.
         $('#background-customisation-image').css('background-image', "url('"+$rootScope.customisation.campaign.background_image+"')");
         // Retrieve issues for this campaign.
