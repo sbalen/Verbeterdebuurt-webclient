@@ -133,39 +133,9 @@
                                     </div>
                                 </div>
                                 <div class="form-group" >
-                                        <div class="col-sm-2 form-col marginwidth "   ng-class="{'has-error': errorSex }">
-                                            <select class="combobox" id="category"  ng-model="sex" ng-options="template.value as template.name for template in sexoption" >
-                                                
-                                            </select>
+                                        <div class="col-sm-12 form-col" ng-class="{'has-error': errorSurname }">
+                                            <input type="text" class="form-control" id="name" placeholder="Naam" ng-model ="surname" style="margin-bottom: 15px">
                                         </div>
-                                        <div class="col-sm-3 form-col margin1 marginwidth" ng-class="{'has-error': errorInitials }">
-                                            <input type="text" class="form-control margin2 margin2m" id="initials" placeholder="voorletters" ng-model="initials"  >
-                                        </div>
-                                        <div class="col-sm-3 form-col margin1 marginwidth" ng-class="{'has-error': errorMiddle }">
-                                            <input type="text" class="form-control margin4 margin4m" id="tussenvoegsel" placeholder="tussenvoegsel" ng-model="tussenvoegsel" >
-                                        </div>
-                                        <div class="col-sm-3 form-col margin1 marginwidth1" ng-class="{'has-error': errorSurname }">
-                                            <input type="text" class="form-control margin3 margin3m" id="name" placeholder="Achternaam" ng-model ="surname" style="margin-bottom: 15px">
-                                        </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="col-sm-8  form-col " ng-class="{'has-error':errorStreet}">
-                                        <input type="text"   class="form-control field marginwidth " id="street" placeholder="Straat" ng-model ="address" >
-                                    </div>
-                                    <div class="col-sm-4 form-col " ng-class="{'has-error':errorStreetNumber}">
-                                        <input type="text" class="form-control"   id="number" placeholder="Huisnummer" ng-model ="address_number" style="margin-bottom: 15px">
-                                    </div>
-                                    </div>
-                                <div class="form-group">
-                                    <div class="col-sm-4 form-col " ng-class="{'has-error': errorPostcode}">
-                                        <input type="text" class="form-control field1 marginwidth "  id="postcode" placeholder="Postcode" ng-model="postcode" >
-                                    </div>
-                                    <div class="col-sm-8 form-col" ng-class="{'has-error':errorCity}">
-                                        <input type="text" class="form-control " id="city" placeholder="Plaats" ng-model="city" style="margin-bottom: 15px">
-                                    </div>
-                                    <div class="col-sm-12 form-col">
-                                        <input type="text" class="form-control" id="telephonenumber" placeholder="Telefoonnummer" ng-model="phone">
-                                    </div>
                                 </div>
                             </div>
                             </form>
