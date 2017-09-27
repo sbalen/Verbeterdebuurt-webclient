@@ -94,7 +94,7 @@
             <div class="problem" ng-show="active_campaign">
 		        <form class="form-horizontal" role="form">
                               <div class="panel-body">
-                                <h4 class="fontM">1. Bepaal de locatie</h4>
+                                <h4 class="fontM">Bepaal de locatie</h4>
                                 <div class="well well-sm locationpicker-well">
                                   <fieldset class="gllpLatlonPicker">
                                   <div class="input-group" style="width:100%; margin-left:0; ">
@@ -105,7 +105,7 @@
                                         <button class="btn btn-primary gllpSearchButton" type="button" ng-click="clickSearchCreateIssue()"><span class="glyphicon glyphicon-search"></span><span class="hidden-xs">Zoeken</span></button>
                                      </span>
                                   </div>
-                                  <div class="gllpMap" id="googleMapCreateProblem" ng-click="categoriesData();alrCityCreate()"></div>
+                                  <div class="gllpMap" id="googleMapCreateProblem" ng-click="alrCityCreate()"></div>
                                   <input type="hidden" class="gllpLatitude" value="52.158367"/>
                                   <input type="hidden" class="gllpLongitude" value="4.492999"/>
                                   <input type="hidden" class="gllpZoom" value="12"/>
@@ -115,92 +115,17 @@
                               </div>
                             </div>
                             <div class="panel-body">
-                                <h4 class="fontM">2. Beschrijf de melding</h4>
-	                             <div class="form-group">
-                                    <div class="col-sm-12 form-col" style="margin-bottom: 10px;" ng-class="{'has-error':errorTitle}">
-                                        <input type="text" class="form-control" id="Onderwerp" placeholder="Onderwerp" ng-model="title">
-                                    </div>
-                                </div>
-                                <div class="form-group" ng-show="loadCategory">
-                                    <div class="col-sm-12 form-col" style="margin-bottom: 10px;">
-                                       categorieën worden opgehaald...
-                                    </div>
-                                </div>
-                               <div class="form-group" ng-hide="loadCategory">
-                                    <div class="col-sm-12 form-col" style="margin-bottom: 10px;" ng-class="{'has-error':errorId}">
-                                        <select class="combobox" id="category" ng-model="categoryId" ng-options="categories.id as categories.title for categories in categoriesList" style="{{errorIdStyle}}" ng-click="duplicateData(categories.id)">
-                                            <option value=""  disabled selected>Categorie</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group" ng-hide="count==0||count==null" style="z-index:50;">
-                                    <p style="color:green;">Mogelijke dubbele meldingen. Bekijk of bij deze meldingen misschien jouw probleem al gemeld is. Klik er dan op om deze melding te steunen</p>
-                                    
-                                    <div class="duplicate-wrapper">
-                                        <div class="duplicate-left" ng-hide="count<=3" ng-click="moveDuplicate(-1)">&lang;</div>
-                                        <div class="duplicate-container">
-                                            
-                                            <div class="duplicate-hidden-block" style="{{blockstyle}}"> 
-                                            </div>
-                                            
-<!--                                            <a href="melding/{{duplicateData.id}}" ng-repeat="duplicateData in duplicateDataList">-->
-                                            <div class="duplicate-item" ng-repeat="duplicateData in duplicateDataList" >
-                                                    
-                                                    <div class="bubble-description ">
-                                    
-                                                        {{duplicateData.description}}
-                                                        <br/>
-                                                        <br/>
-                                                        <a  href="melding/{{duplicateData.id}}">bekijken</a>
-                                                        
-                                                    </div>
-                                                <div style="text-align:left;">
-                                                <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
-                                                <strong >{{duplicateData.title}}</strong>
-                                                <br/>
-                                                {{duplicateData.location.src_address}}
-                                                <span class="pull-right">
-                                                                <button style ="margin-left:15px"class="btn btn-xs btn-success" >
-                                                                <span class="glyphicon glyphicon glyphicon-chevron-right"></span>
-                                                                </button>
-                                                            </span>
-                                                </div>
-                                                </div>
-<!--                                            </a>-->
-                                        </div>
-                                        <div class="duplicate-right" ng-hide="count<=3" ng-click="moveDuplicate(1)">&rang;</div>
-                                    </div>
-                                        
-                                        
-                                </div>
+                              <h4 class="fontM">{{customisation.campaign.answer_title}}</h4>
                                 <div class="form-group">
                                     <div class="col-sm-12 form-col" ng-class="{'has-error':errorDescription}" style="margin-bottom: 10px;">  
                                         <textarea class="form-control" rows="5" id="description" placeholder="Beschrijving" ng-model="description"></textarea>
                                     </div>
                                 </div >
-                                <!-- <div class="form-group">
-                                    <div class="col-sm-12 form-col">  
-                                        <table cellspacing="2px" style="border-spacing:4px; border-collapse: separate;">
-                                          <tr> 
-                                            <td><input type="checkbox" class="privatecheckbox" id="checkPrivate" name="checkbox" ng-model="privateMessageHide"></td>
-                                            <td class="privateTable" ng-click="expression"><label for="checkPrivate" class="checkPrivate">Voeg priv&eacute; bericht toe</label></td>
-                                          </tr>
-                                        </table>
-                                       
-                                    </div>
-                                </div> -->
-                               <!--  <div class="form-group" ng-show="privateMessageHide">
-                                    <div class="col-sm-12 form-col" ng-class="{'has-error':errorDescription}" style="margin-bottom: 10px;">  
-                                        <h5 class="fontM" style="color:green; margin-right: 26px; margin-top: 0px;">Een priv&eacute; bericht wordt enkel naar de gemeente/afhandelaar gestuurd. Het priv&eacute; bericht zal niet openbaar op verbeterdebuurt getoond worden.</h5>
-                                        <textarea class="form-control" rows="5" id="description" placeholder="Priv&eacute; bericht …. " ng-model="privateMessage"></textarea>
-                                    </div>
-                                </div> -->
-                                <!--<label class="control-label">Select File</label>-->
                                 <p>Foto uploaden (optioneel)</p>
                                 <input id="file-input-problem" type="file" style="width: 94%;margin-left: 3%;" data-show-upload="false" img-upload='imgData'>
                             </div>
                             <div class="panel-body" ng-hide="hideLogin">
-                                <h4 class="fontM">3. Contactgegevens</h4>
+                                <h4 class="fontM">Contactgegevens</h4>
                                 Of <a href="login" ng-click="rememberFormBeforeLogin($event)">log in</a> om dit over te slaan
                                 <div class="form-group">
                                     <div class="col-sm-12 form-col" ng-class="{'has-error': errorEmail}">

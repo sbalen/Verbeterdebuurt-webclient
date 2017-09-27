@@ -4899,8 +4899,6 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
         // if the normal campaigns stil work properly.
         var issueMarker = googleMapCreateProblem();
         attachAutoCompleteListener('searchCityProblem',issueMarker,map3,"location");        
-        $scope.categoriesData();
-        $scope.getServiceStandard(city.long_name);
     }, 1500);
 
     // TODO FB: see if it possible to also store an uploaded image..
@@ -4914,32 +4912,8 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
       logger('formDataBeforeLogin',$rootScope.formDataBeforeLogin);
     }
 
-    $scope.categoriesData = function () {
-        $scope.loadCategory = 1;
-        $scope.count = 0;
-        $scope.duplicateDataList = null;
-        var latitude = markerLat;
-        var longitude = markerLng;
-        var jsondataCity = JSON.stringify({
-            "latitude" : latitude,
-            "longitude" : longitude
-        });
-        $timeout(function () {
-            $scope.categoriesList = null;
-            var getCategories = categoriesService.getCategories(jsondataCity).then(function (data) {
-                $scope.categoriesList = data.data.categories;
-                $timeout(function () {
-                    $scope.loadCategory = 0;
-                })
-            });
-
-
-        }, 3000)
-    }
-
-
     $scope.clickSearchCreateIssue = function () {
-        $scope.loadCategory = 1;
+        //$scope.loadCategory = 1;
         if(document.getElementById('searchCityProblem').value){
            var citytemp = document.getElementById('searchCityProblem').value ;         
            city.long_name =  citytemp.substring(citytemp.lastIndexOf(',')+1).replace(" ","");
@@ -4949,6 +4923,7 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
         $timeout(function(){
             marker.setPosition(map3.getCenter());
         },1000)
+        /*
         $timeout(function () {
             var latitude = marker.getPosition().lat();
             var longitude = marker.getPosition().lng();
@@ -4963,10 +4938,9 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
             $scope.updateCouncilReport(city.long_name);
             $scope.updateCouncilAgreement(city.long_name);
             $scope.updateMapIssues();
-
             marker.setPosition(map3.getCenter());
         },2000)
-
+        */
     }
 
     $scope.createIssue = function () {
@@ -4993,6 +4967,7 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
         //login
         if ($cookies.getObject('user')) {
             user.username = $cookies.getObject('user').username;
+            // TODO FB: do not send pw hash, but email
             user.password_hash = $cookies.getObject('user').password_hash;
         }
         //not login
@@ -5076,31 +5051,38 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
         var issueData = data.data;
         if (!issueData.success) {
             $scope.hide = "";
+            /*
             if (issueData.errors.title) {
                 $scope.errorTitle = "Onderwerp " + issueData.errors.title;
             }
+            */
             if (issueData.errors.description) {
                 $scope.errorDescription = "Beschrijving " + issueData.errors.description;
             }
+            /*
             if (issueData.errors.category_id) {
                 $scope.errorId = issueData.errors.category_id;
                 $scope.errorIdStyle = 'border-color: #a94442';
             }
+            */
             if (issueData.errors.location) {
                 $scope.errorLocation = issueData.errors.location;
             }
+            /*
             if (issueData.errors.initials) {
                 $scope.errorInitials = "Voorsletters " + issueData.errors.initials;
             }
             if (issueData.errors.owner_city) {
                 $scope.errorCity = "Plaats " + issueData.errors.owner_city;
             }
+            */
             if (issueData.errors.surname) {
                 $scope.errorSurname = "Acternaam " + issueData.errors.surname;
             }
             if (issueData.errors.owner_email) {
                 $scope.errorEmail = issueData.errors.owner_email;
             }
+            /*
             if (issueData.errors.owner_postcode) {
                 $scope.errorPostcode = "Postcode " + issueData.errors.owner_postcode;
             }
@@ -5110,6 +5092,7 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
             if (issueData.errors.street_number) {
                 $scope.errorStreetNumber = "Huisnummer " + issueData.errors.street_number;
             }
+            */
             $rootScope.globaloverlay = "";
             $(window).scrollTop(0);
         } else if (issueData.success == "false") {
@@ -5152,90 +5135,4 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
         $scope.title = "";
         $scope.description = "";
     }
-
-    //switch bar change
-    $scope.switchButton = function () {
-        $location.path('/nieuw-idee');
-        markerLat = marker.getPosition().lat();
-        markerLng = marker.getPosition().lng();
-    }
-     //dulicate data
-    $scope.duplicateData = function () {
-        
-        $('#duplicate-bubble').hide();
-        var user = {};
-        if ($cookies.getObject('user')) {
-            user.username = $cookies.getObject('user').username;
-            user.password_hash = $cookies.getObject('user').password_hash;
-        }
-        var lat = markerLat;
-        var long = markerLng;
-        var council = city.long_name;
-        var category_id = $scope.categoryId;
-        $rootScope.currentPage = 1;
-        $scope.totalPage = 5;
-        
-        var jsondataDuplicate = JSON.stringify({
-            "user" : {
-                "username" : user.username,
-                "password_hash" : user.password_hash
-            }
-            ,
-            "lat" : lat,
-            "long" : long,
-            "category_id" : category_id
-        });
-        logger(jsondataDuplicate);
-        var getDuplicateIssue = duplicateIssuesService.getDuplicateIssue(jsondataDuplicate).then(function (data) {
-            var getDuplicateIssue = data.data;
-            $scope.count = data.data.count;
-            $scope.duplicateDataList = getDuplicateIssue.issues;
-            logger(getDuplicateIssue);
-
-        });
-
-        $scope.getServiceStandard(council,category_id);
-
-        $scope.blockstyle = "margin-left:0%";
-        $scope.duplicateposition = 0;
-
-    }
-
-    $scope.getServiceStandard = function(council,category_id) {
-        logger("createProblemController.getServiceStandard("+council+")")
-        // TODO FB: this council is a hardcoded hack, maybe it can be removed
-        // entirely? See also at createIdeaController.
-        console.warn('council cPC',council);
-        if ( ! council ) { council = ''; }
-        if (council.toLowerCase().replace(' ','-') == 'utrechtse-heuvelrug') {
-            $scope.standardMessage = "U kunt uw ideeën aandragen tot 2 januari 2017";
-        } else {
-
-            var jsondata = {};
-            jsondata.council = council;
-            jsondata.category_id = category_id;
-            jsondata = JSON.stringify(jsondata);
-            serviceStandardService.getServiceStandard(jsondata).then(function (data) {
-                $scope.standardMessage = $rootScope.standardTemp = data.data.standard;
-            })
-        }
-    }
-
-
-
-    $scope.moveDuplicate = function (move) {
-
-        var limit = $scope.count - 3;
-        $scope.duplicateposition = $scope.duplicateposition + move;
-
-        if ($scope.duplicateposition < 0) $scope.duplicateposition = 0;
-
-        if ($scope.duplicateposition > limit) $scope.duplicateposition = limit;
-
-        var move = $scope.duplicateposition * -33.333;
-        $scope.blockstyle = "margin-left:" + move + "%";
-
-    }
-
-
 }])
