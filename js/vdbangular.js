@@ -83,6 +83,7 @@ var confirmVoteService = new Object();
 var departmentsService = new Object();
 var departmentReportsService = new Object();
 var campaignIssueSubmitService = new Object();
+var campaignSubmissionsService = new Object();
 var searchCreateTemp = 0;
 
 var user = undefined;
@@ -558,6 +559,26 @@ vdbApp.factory('issuesService', ['$http','$rootScope', function ($http,$rootScop
 
     }
 
+}]);
+
+vdbApp.factory('campaignSubmissionsService', ['$http','$rootScope', function ($http,$rootScope) {
+    return {
+        getCampaignSubmissions: function (jsondata) {
+            logger('campaignSubmissionsService.getCampaignSubmissions('+jsondata+')');
+            return $http.post(APIURL + 'getCampaignSubmissions', jsondata)
+                .success(function (data) {
+                    if (angular.isObject(data)) {
+                        campaignSubmissionsService.data = data;
+                        return campaignSubmissionsService.data;
+                    }
+
+                })
+                .error(function(data, status, headers, config){
+                    logger("campaignSubmissionsService.getCampaignSubmissions.error:")
+                    errorhandler($rootScope,{url:config.url,'data':config.data,'status':status,'message':data})
+                });
+        }
+    }
 }]);
 
 vdbApp.factory('reportService', ['$http','$rootScope', function ($http,$rootScope) {
@@ -4760,7 +4781,7 @@ vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$loc
 }]);
 
 // TODO FB: createProblemCtrl used as basis. Added $http, remove if building a service.
-vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'campaignIssueSubmitService', 'myIssuesService', '$location', 'issuesService', 'campaignIssueSubmitServiceWithImage', 'duplicateIssuesService', '$cookies', 'serviceStandardService','reportService','issuesService','agreementSevice','$routeParams', function ($http, $scope, $rootScope, $window, $timeout, categoriesService, campaignIssueSubmitService, myIssuesService, $location, issuesService, campaignIssueSubmitServiceWithImage, duplicateIssuesService, $cookies, serviceStandardService,reportService,issuesService,agreementSevice,$routeParams) {
+vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'campaignIssueSubmitService', 'myIssuesService', '$location', 'issuesService', 'campaignIssueSubmitServiceWithImage', 'duplicateIssuesService', '$cookies', 'serviceStandardService','reportService','issuesService','agreementSevice','campaignSubmissionsService','$routeParams', function ($http, $scope, $rootScope, $window, $timeout, categoriesService, campaignIssueSubmitService, myIssuesService, $location, issuesService, campaignIssueSubmitServiceWithImage, duplicateIssuesService, $cookies, serviceStandardService,reportService,issuesService,agreementSevice,campaignSubmissionsService,$routeParams) {
     logger('campaignCtrl');
 
     $rootScope.is_campaign = true;
@@ -4768,6 +4789,7 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
     // actual campaign is loaded.
     $scope.active_campaign = false;
     $scope.inactive_campaign_message = '';
+    $scope.campaignSubmissionList = null;
 
     // Load issues for the current active campaign.
     function get_campaign_issues() {
@@ -4779,15 +4801,12 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
       var jsondata = JSON.stringify({
           "campaign_id": campaign_id
       });
-      return issuesService.getIssues(jsondata).then(function (data) {
+
+      $scope.campaignSubmissionList = [];
+      return campaignSubmissionsService.getCampaignSubmissions(jsondata).then(function (data) {
           var getdata = data.data;
-          $rootScope.newProblemList = getdata.issues;
-          //sort the issues descending for created date
-          if ($rootScope.newProblemList != undefined && $rootScope.newProblemList.length > 1) {
-             $rootScope.newProblemList.sort(function(a, b){return b.created_at.localeCompare( a.created_at ) });
-          }
-          if (getdata.count != 0 || !getdata) {
-              $window.issuesData = getdata;
+          if ( getdata && getdata.success ) {
+            $scope.campaignSubmissionList = getdata.campaign_submissions;
           }
       });
     };
