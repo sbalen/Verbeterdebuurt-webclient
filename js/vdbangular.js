@@ -5051,48 +5051,18 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
         var issueData = data.data;
         if (!issueData.success) {
             $scope.hide = "";
-            /*
-            if (issueData.errors.title) {
-                $scope.errorTitle = "Onderwerp " + issueData.errors.title;
-            }
-            */
             if (issueData.errors.description) {
                 $scope.errorDescription = "Beschrijving " + issueData.errors.description;
             }
-            /*
-            if (issueData.errors.category_id) {
-                $scope.errorId = issueData.errors.category_id;
-                $scope.errorIdStyle = 'border-color: #a94442';
-            }
-            */
             if (issueData.errors.location) {
                 $scope.errorLocation = issueData.errors.location;
             }
-            /*
-            if (issueData.errors.initials) {
-                $scope.errorInitials = "Voorsletters " + issueData.errors.initials;
-            }
-            if (issueData.errors.owner_city) {
-                $scope.errorCity = "Plaats " + issueData.errors.owner_city;
-            }
-            */
             if (issueData.errors.surname) {
-                $scope.errorSurname = "Acternaam " + issueData.errors.surname;
+                $scope.errorSurname = "Naam " + issueData.errors.surname;
             }
             if (issueData.errors.owner_email) {
                 $scope.errorEmail = issueData.errors.owner_email;
             }
-            /*
-            if (issueData.errors.owner_postcode) {
-                $scope.errorPostcode = "Postcode " + issueData.errors.owner_postcode;
-            }
-            if (issueData.errors.street) {
-                $scope.errorStreet = "Straat " + issueData.errors.street;
-            }
-            if (issueData.errors.street_number) {
-                $scope.errorStreetNumber = "Huisnummer " + issueData.errors.street_number;
-            }
-            */
             $rootScope.globaloverlay = "";
             $(window).scrollTop(0);
         } else if (issueData.success == "false") {
