@@ -4978,7 +4978,7 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
         if ($scope.description) {
           submission.answer = $scope.description;
         }
-        submission.campain_id = $rootScope.customisation.campaign.id;
+        submission.campaign_id = $rootScope.customisation.campaign.id;
         submission.organisation_id = $rootScope.customisation.organisation_id;
         submission.notify = $scope.notify;
 
