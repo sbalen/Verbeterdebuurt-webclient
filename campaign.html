@@ -137,6 +137,11 @@
                                             <input type="text" class="form-control" id="name" placeholder="Naam" ng-model ="surname" style="margin-bottom: 15px">
                                         </div>
                                 </div>
+                                  <div class="checkbox">
+                                    <label style="margin-left: 5px;">
+                                        <input type="checkbox" ng-model="notify"> Ik wil graag op de hoogte gehouden worden over de campagne 
+                                    </label>
+                                </div>
                             </div>
                             </form>
 
@@ -148,8 +153,8 @@
                      
 	    </div>
 	    
-	    <!--  sidebar right -->
-      <!-- None, currently? TODO FB: we have room here on the right. -->
+	    <!--  sidebar right, if any, here -->
+
     </div>
 
 <!-- Page specific js -->
@@ -165,35 +170,10 @@
       			}
 		});	
             
-            $('#duplicate-bubble').hide();
+//            $('#duplicate-bubble').hide();
         });
         $("#file-input-problem").fileinput();
         $("#file-input-problem").fileinput({'showUpload':false});
         $("#file-input-idea").fileinput();
         $("#file-input-idea").fileinput({'showUpload':false});
-//        
-//    $('.duplicate-item').on('click', function(e) {
-//        e.preventDefault();
-//        $('#duplicate-bubble').css( 'top', e.pageY );
-//        $('#duplicate-bubble').css( 'left', e.pageX );
-//        $('#duplicate-bubble').show();
-//    });
-    
-    $(document).on("click", ".duplicate-item", function(e) {
-        e.preventDefault();
-        $('#duplicate-bubble').html($(this).find(".bubble-description").html());
-      
-        $('#duplicate-bubble').css( 'top', e.pageY );
-        $('#duplicate-bubble').css( 'left', e.pageX );
-        $('#duplicate-bubble').show();
-        //your code here...
-    });
-    
-    $('#duplicate-bubble').on('click', function() {
-
-                $('#duplicate-bubble').hide();
-                $('#duplicate-bubble').empty();
-    });
-    
-   
 </script>

@@ -82,6 +82,7 @@ var serviceStandardService = new Object();
 var confirmVoteService = new Object();
 var departmentsService = new Object();
 var departmentReportsService = new Object();
+var campaignIssueSubmitService = new Object();
 var searchCreateTemp = 0;
 
 var user = undefined;
@@ -850,6 +851,46 @@ vdbApp.factory('issueSubmitServiceWithImage', ['$http','$rootScope', function ($
                 })
                 .error(function(data, status, headers, config){
                     logger("issueSubmitServiceWithImage.getIssueSubmit.error:")
+                    errorhandler($rootScope,{url:config.url,'data':config.data,'status':status,'message':data})
+                });
+        }
+
+    }
+}]);
+vdbApp.factory('campaignIssueSubmitService', ['$http','$rootScope', function ($http,$rootScope) {
+    return {
+        getIssueSubmit: function (jsondata) {
+            logger('campaignIssueSubmitService.getIssueSubmit('+jsondata+')');
+            return $http.post(APIURL + 'campaignSubmission', jsondata)
+                .success(function (data) {
+                    campaignIssueSubmitService.data = data;
+                    return campaignIssueSubmitService.data;
+                })
+                .error(function(data, status, headers, config){
+                    logger("campaignIssueSubmitService.getIssueSubmit.error:")
+                    errorhandler($rootScope,{url:config.url,'data':config.data,'status':status,'message':data})
+                });
+        }
+    };
+}])
+
+vdbApp.factory('campaignIssueSubmitServiceWithImage', ['$http','$rootScope', function ($http,$rootScope) {
+    return {
+        getIssueSubmit: function (jsondata, img) {
+            logger('campaignIssueSubmitServiceWithImage.getIssueSubmit('+jsondata+')');
+            var dataForm = new FormData();
+            dataForm.append('json', jsondata);
+            dataForm.append('image', img);
+            return $http.post(APIURL + 'campaignSubmission', dataForm, {
+                    transformRequest: angular.identity,
+                    headers : { 'Content-Type' : undefined }
+                })
+                .success(function (data, headers) {
+                    logger(data);
+                    logger(headers);
+                })
+                .error(function(data, status, headers, config){
+                    logger("campaignIssueSubmitServiceWithImage.getIssueSubmit.error:")
                     errorhandler($rootScope,{url:config.url,'data':config.data,'status':status,'message':data})
                 });
         }
@@ -4719,7 +4760,7 @@ vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$loc
 }]);
 
 // TODO FB: createProblemCtrl used as basis. Added $http, remove if building a service.
-vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', 'duplicateIssuesService', '$cookies', 'serviceStandardService','reportService','issuesService','agreementSevice','$routeParams', function ($http, $scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, duplicateIssuesService, $cookies, serviceStandardService,reportService,issuesService,agreementSevice,$routeParams) {
+vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'campaignIssueSubmitService', 'myIssuesService', '$location', 'issuesService', 'campaignIssueSubmitServiceWithImage', 'duplicateIssuesService', '$cookies', 'serviceStandardService','reportService','issuesService','agreementSevice','$routeParams', function ($http, $scope, $rootScope, $window, $timeout, categoriesService, campaignIssueSubmitService, myIssuesService, $location, issuesService, campaignIssueSubmitServiceWithImage, duplicateIssuesService, $cookies, serviceStandardService,reportService,issuesService,agreementSevice,$routeParams) {
     logger('campaignCtrl');
 
     $rootScope.is_campaign = true;
@@ -4863,23 +4904,24 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
     $scope.standardMessage = "";
     $rootScope.urlBefore = $location.path();
    
+    $scope.notify = false;
     $scope.email = "";
     $scope.username = "";
     $scope.password = "";
-    $scope.initials = "";
-    $scope.tussenvoegsel = "";
-    $scope.surname = "";
-    $scope.sex = "";
-    $scope.address = "";
-    $scope.address_number = "";
-    $scope.address_suffix = "";
-    $scope.postcode = "";
-    $scope.city = "";
-    $scope.phone = "";
-    $scope.sexoption = [{'name': 'Dhr.', 'value': 'm'},
-                        {'name': 'Mw.','value': 'f'}];
+    //$scope.initials = "";
+    //$scope.tussenvoegsel = "";
+    //$scope.surname = "";
+    //$scope.sex = "";
+    //$scope.address = "";
+    //$scope.address_number = "";
+    //$scope.address_suffix = "";
+    //$scope.postcode = "";
+    //$scope.city = "";
+    //$scope.phone = "";
+    //$scope.sexoption = [{'name': 'Dhr.', 'value': 'm'},
+    //                    {'name': 'Mw.','value': 'f'}];
 
-    $scope.sex = $scope.sexoption[0].value;
+    //$scope.sex = $scope.sexoption[0].value;
 
     $timeout(function () {
         $scope.slide = "toggle-button-selected-left";
@@ -4959,55 +5001,28 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
         $scope.errorStreetNumber = "";
 
         //initial data for request
-        var user = {};
-        var user_profile = {};
-        var issue = {};
+        var submission = {};
         var location = {};
         var file = $scope.imgData;
+
         //login
         if ($cookies.getObject('user')) {
-            user.username = $cookies.getObject('user').username;
-            // TODO FB: do not send pw hash, but email
-            user.password_hash = $cookies.getObject('user').password_hash;
+          submission.name = $cookies.getObject('user').username;
+          submission.email = $cookies.getObject('user').email;
         }
         //not login
         else {
-            user.email = $scope.email;
-            user_profile.initials = $scope.initials;
-            user_profile.sex = $scope.sex;
-            user_profile.tussenvoegsel = $scope.tussenvoegsel;
-            user_profile.surname = $scope.surname;
-            user_profile.address = $scope.address;
-            user_profile.address_number = $scope.address_number;
-            user_profile.address_suffix = $scope.address_suffix;
-            user_profile.postcode = $scope.postcode;
-            user_profile.city = $scope.city;
-            user_profile.phone = $scope.phone;
+          submission.name = $scope.surname;
+          submission.email = $scope.email;
         }
 
-        //description
-        issue.type = "problem";
-        if ($scope.categoryId) {
-            issue.category_id = $scope.categoryId;
-        } else {
-            issue.category_id = -1;
-        }
-
-        if ($scope.title) {
-            issue.title = $scope.title;
-        } else {
-            issue.title = "";
-        }
         if ($scope.description) {
-            issue.description = $scope.description;
-        } else {
-            issue.description = "";
+          submission.answer = $scope.description;
         }
-        if ($scope.privateMessage) {
-            issue.privateMessage = $scope.privateMessage;
-        } else {
-            issue.privateMessage = "";
-        }
+        submission.campain_id = $rootScope.customisation.campaign.id;
+        submission.organisation_id = $rootScope.customisation.organisation_id;
+        submission.notify = $scope.notify;
+
         //location
         location.latitude = markerLat;
         location.longitude = markerLng;
@@ -5015,34 +5030,28 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
         logger("createlong:"+location.longitude);
         
         var jsondataSubmit = {
-            issue : {
-                title : issue.title,
-                description :  issue.description,
-                type :  issue.type,
-                category_id :  issue.category_id,
-                private_message : issue.privateMessage,
-                organisation_id: $rootScope.customisation.organisation_id,
-                campaign_id: $rootScope.customisation.campaign.id,
-            }, 
+            campaign_submission : submission,
             location : {
                 latitude : location.latitude,
                 longitude : location.longitude
             }
         }
 
+        /*
         if ($cookies.getObject('user')) { //login
             jsondataSubmit.user = {username:user.username,password_hash:user.password_hash}
         } else {
             jsondataSubmit.user = {email:user.email}
             jsondataSubmit.user_profile = user_profile;
         }
+        */
        
         jsondataSubmit = JSON.stringify(jsondataSubmit);
 
         if (file) {
-            issueSubmitServiceWithImage.getIssueSubmit(jsondataSubmit, file).then($scope.handleSubmit);
+            campaignIssueSubmitServiceWithImage.getIssueSubmit(jsondataSubmit, file).then($scope.handleSubmit);
         } else {
-            issueSubmitService.getIssueSubmit(jsondataSubmit).then($scope.handleSubmit);
+            campaignIssueSubmitService.getIssueSubmit(jsondataSubmit).then($scope.handleSubmit);
         }
     }
 
