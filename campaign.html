@@ -65,13 +65,15 @@
                             </div>
                             <div class="panel-body">
                               <h4 class="fontM">{{customisation.campaign.answer_title}}</h4>
-                                <div class="form-group">
+                                <div class="form-group" ng-show="customisation.campaign.has_answer">
                                     <div class="col-sm-12 form-col" ng-class="{'has-error':errorDescription}" style="margin-bottom: 10px;">  
                                         <textarea class="form-control" rows="5" id="description" placeholder="Beschrijving" ng-model="description"></textarea>
                                     </div>
                                 </div >
+                                <div ng-show="customisation.campaign.has_photo">
                                 <p>Foto uploaden (optioneel)</p>
                                 <input id="file-input-problem" type="file" style="width: 94%;margin-left: 3%;" data-show-upload="false" img-upload='imgData'>
+                                </div>
                             </div>
                             <div class="panel-body" ng-hide="hideLogin">
                                 <h4 class="fontM">Contactgegevens</h4>
