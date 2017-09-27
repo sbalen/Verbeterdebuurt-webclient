@@ -170,3 +170,8 @@ body {
   background-color: #ffd503;
   color: #231f20;
 }
+/* Hide colofon on fietsersbond.
+ * TODO FB: only hide, or really remove? */
+.customisation.fietsersbond .footer {
+  display: none;
+}
