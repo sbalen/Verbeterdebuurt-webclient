@@ -2700,7 +2700,8 @@ vdbApp.controller('registerCtrl', ['$scope', '$rootScope', '$window', 'registerS
                 "city": "" + $scope.city + "",
                 "phone": "" + $scope.phone + "",
                 "facebookID": "" + $scope.facebookID + "",
-                "ondernemingsdossierID": "" + ondernemingsdossierID
+                "ondernemingsdossierID": "" + ondernemingsdossierID,
+                "organisation_id": $rootScope.customisation.organisation_id,
             }
         });
 
