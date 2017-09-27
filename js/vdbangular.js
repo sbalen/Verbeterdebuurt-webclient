@@ -4908,20 +4908,6 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
     $scope.email = "";
     $scope.username = "";
     $scope.password = "";
-    //$scope.initials = "";
-    //$scope.tussenvoegsel = "";
-    //$scope.surname = "";
-    //$scope.sex = "";
-    //$scope.address = "";
-    //$scope.address_number = "";
-    //$scope.address_suffix = "";
-    //$scope.postcode = "";
-    //$scope.city = "";
-    //$scope.phone = "";
-    //$scope.sexoption = [{'name': 'Dhr.', 'value': 'm'},
-    //                    {'name': 'Mw.','value': 'f'}];
-
-    //$scope.sex = $scope.sexoption[0].value;
 
     $timeout(function () {
         $scope.slide = "toggle-button-selected-left";
@@ -4955,7 +4941,6 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
     }
 
     $scope.clickSearchCreateIssue = function () {
-        //$scope.loadCategory = 1;
         if(document.getElementById('searchCityProblem').value){
            var citytemp = document.getElementById('searchCityProblem').value ;         
            city.long_name =  citytemp.substring(citytemp.lastIndexOf(',')+1).replace(" ","");
@@ -4965,40 +4950,14 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
         $timeout(function(){
             marker.setPosition(map3.getCenter());
         },1000)
-        /*
-        $timeout(function () {
-            var latitude = marker.getPosition().lat();
-            var longitude = marker.getPosition().lng();
-            var jsondataCity = JSON.stringify({
-                "latitude" : latitude,
-                "longitude" : longitude
-            });
-            var getCategories = categoriesService.getCategories(jsondataCity).then(function (data) {
-                $scope.categoriesList = data.data.categories;
-                $scope.loadCategory = 0;
-            });
-            $scope.updateCouncilReport(city.long_name);
-            $scope.updateCouncilAgreement(city.long_name);
-            $scope.updateMapIssues();
-            marker.setPosition(map3.getCenter());
-        },2000)
-        */
     }
 
     $scope.createIssue = function () {
         $rootScope.globaloverlay = "active";
-        $scope.errorTitle = "";
         $scope.errorDescription = "";
-        $scope.errorId = "";
-        $scope.errorIdStyle = "";
         $scope.errorLocation = "";
-        $scope.errorInitials = "";
-        $scope.errorCity = "";
         $scope.errorSurname = "";
         $scope.errorEmail = "";
-        $scope.errorPostcode = "";
-        $scope.errorStreet = "";
-        $scope.errorStreetNumber = "";
 
         //initial data for request
         var submission = {};
@@ -5037,15 +4996,6 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
             }
         }
 
-        /*
-        if ($cookies.getObject('user')) { //login
-            jsondataSubmit.user = {username:user.username,password_hash:user.password_hash}
-        } else {
-            jsondataSubmit.user = {email:user.email}
-            jsondataSubmit.user_profile = user_profile;
-        }
-        */
-       
         jsondataSubmit = JSON.stringify(jsondataSubmit);
 
         if (file) {
@@ -5060,17 +5010,17 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
         var issueData = data.data;
         if (!issueData.success) {
             $scope.hide = "";
-            if (issueData.errors.description) {
-                $scope.errorDescription = "Beschrijving " + issueData.errors.description;
+            if (issueData.errors.answer) {
+                $scope.errorDescription = "Beschrijving " + issueData.errors.answer;
             }
             if (issueData.errors.location) {
                 $scope.errorLocation = issueData.errors.location;
             }
-            if (issueData.errors.surname) {
-                $scope.errorSurname = "Naam " + issueData.errors.surname;
+            if (issueData.errors.name) {
+                $scope.errorSurname = "Naam " + issueData.errors.name;
             }
-            if (issueData.errors.owner_email) {
-                $scope.errorEmail = issueData.errors.owner_email;
+            if (issueData.errors.email) {
+                $scope.errorEmail = issueData.errors.email;
             }
             $rootScope.globaloverlay = "";
             $(window).scrollTop(0);
@@ -5084,17 +5034,12 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
             $rootScope.successCreate = 1;
             var issueId = issueData.issue_id;
             if ($cookies.getObject('user')) {
-                //$location.path(/mijn-meldingen/ + issueId);
-                var to = campaign_slug ? campaign_slug: '';
-                console.log('/campagne-bedankt/'+to);
-                $location.path('/campagne-bedankt/'+to);
                 $rootScope.successCreateLogin = 1;
-            } else {
-                // $location.path(/melding/ + issueId);
-                 $location.path("/bevestiging-nieuwe-melding");
             }
+            var to = campaign_slug ? campaign_slug: '';
+            $location.path('/campagne-bedankt/'+to);
             $rootScope.globaloverlay = "";
-            $scope.updateMapIssues();
+            //$scope.updateMapIssues();
         }        
     }
 
