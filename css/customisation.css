@@ -102,6 +102,8 @@ body {
   display: none;
 }
 /* Fietsersbond specific styling rules. */
+/* Update: undo Kaart/Rapportage button changes for now.
+ * Rapportage will be added later, but maybe not in the menu.
 .customisation.fietsersbond #rapportage-button,
 .customisation.fietsersbond #responsive-rapportage-button {
   display: block;
@@ -110,6 +112,7 @@ body {
 .customisation.fietsersbond #responsive-map-button {
   display: none;
 }
+*/
 /* Fietsersbond colour scheme. */
 .customisation.fietsersbond .subnav,
 .customisation.fietsersbond .side-panel .panel-heading {
