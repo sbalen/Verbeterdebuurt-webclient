@@ -9,11 +9,9 @@ var vdbApp = angular.module('vdbApp',
      'angulartics', 
      'angulartics.google.analytics']);
 
-// TODO FB: We will be retrieving customer specific settings from the backend at
-// some point. Until then, collect the required settings here. These settings
+// Customer specific settings, hardcoded for now. These settings
 // will be read throughout the application to determine custom display options.
 var CUSTOMISATION_SETTINGS = {
-  // TODO FB: make verbeterdebuurt a styling, as with other customers.
   verbeterdebuurt: {
     organisation_id: 0, // Sent with new issues etc. as organisation_id.
     name: 'verbeterdebuurt',
@@ -138,32 +136,23 @@ errorhandler = function(rootScope,errorInfo){
 };
 
 
-// TODO FB: Set the current (if any) customisation.
+// Set the current (if any) customisation.
 // Run this first, to prevent unnecessary page updates.
 vdbApp.run(['$location', '$rootScope', function($location, $rootScope) {
 
   // Customisation: Fietsersbond.
-  // 
-  /* TODO FB: switch based on subdomain or path?
-   * if based on path, use the route defined above;
-   * if based on host, redirect in the main controller (similar to
-   * normal gemeente/X redirect).
-  if ($location.path().substring(0,13) == "/fietsersbond") {
-    $rootScope.customisation = CUSTOMISATION_SETTINGS.fietsersbond;
-    logger('customisation','fietsersbond');
-  */
   if ($location.host().substring(0,12) == "fietsersbond") {
     $rootScope.customisation = CUSTOMISATION_SETTINGS.fietsersbond;
     // Redirect to the default page for the Fietsersbond, if the
-    // current path is /.
-    // TODO FB: N.B. this causes a short red flickr on screen. This
-    // is also visible with this page on the live app. Fix it in
-    // general. (Probably to do with an ununitialised "council".)
+    // current path is /, and if wanted. Was: to /nieuw-probleem,
+    // currently: just home (so no further redirect here).
+    /*
     if ($location.path() === '/') {
       $rootScope.urlBefore = "/nieuw-probleem";
       menuSelected($rootScope, 'createissue');
       $location.path('/nieuw-probleem');
     }
+    */
     if ($location.path().substring(0,9) === '/campagne') {
       $rootScope.customisation.class += ' campaign';
     }
@@ -178,8 +167,6 @@ vdbApp.run(['$location', '$rootScope', function($location, $rootScope) {
 
 
 //call google map at first 
-// TODO FB: Initialise the google map, even if it is not shown? Probably yes,
-//          because some views might stil want to watch it.
 vdbApp.run(function(){
     mainControllerInitialized = false;
     googlemapinit();
@@ -221,7 +208,25 @@ function menuSelected($scope, selected) {
         $scope.myIssuesSelected = "active"
         break;
     }
+    hideBackgroundImage($scope, selected);
 };
+
+// When the 'selected' menu changes, check if the background should be shown.
+// 'scope' parameter should typically be the $rootScope.
+// TODO: is the menuSelected called often enough?
+function hideBackgroundImage(scope, selected) {
+  switch (selected) {
+    case 'home':
+      scope.backgroundImageHidden = true;
+      break;
+    case 'rapportage':
+      scope.backgroundImageHidden = true;
+      break;
+    default:
+      scope.backgroundImageHidden = false;
+      break;
+  }
+}
 
 
 //convert to slug
@@ -466,8 +471,6 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
                 }
             }
         })
-        // TODO FB: because rapportage still uses the mainCtrl, things like
-        // the menu-highlight do not work (the 'home' gets highlighted).
         .when('/rapportage', {
             templateUrl: 'rapportage.html',
             controller: 'rapportageCtrl'
