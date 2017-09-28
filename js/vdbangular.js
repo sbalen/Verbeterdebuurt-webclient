@@ -662,7 +662,7 @@ vdbApp.factory('registerService', ['$http','$rootScope', function ($http,$rootSc
 vdbApp.factory('newsletterService', ['$http','$rootScope', function ($http,$rootScope) {
     return {
         getNewsletter: function (jsonnewsletter) {
-            logger('newsletterService.getNewsletter('+jsondata+')');
+            logger('newsletterService.getNewsletter('+jsonnewsletter+')');
             return $http.post(APIURL + 'subscribeNewsletter', jsonnewsletter)
                 .success(function (data) {
                     if (angular.isObject(data)) {
@@ -2746,6 +2746,9 @@ vdbApp.controller('registerCtrl', ['$scope', '$rootScope', '$window', 'registerS
                         "user": {
                             "username": "" + $scope.username + "",
                             "password": "" + $scope.password + ""
+                        },
+                        "user_profile": {
+                            "organisation_id": $rootScope.customisation.organisation_id,
                         }
                     })
 
