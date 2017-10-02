@@ -4415,6 +4415,7 @@ vdbApp.controller('resolveIssueCommentYesCtrl', ['$scope','$rootScope','$routePa
     }
 }])
 
+
 // TODO FB: mainCtrl used as basis.
 vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$location', '$rootScope', '$routeParams', '$http', 'issuesService', 'reportService', '$facebook', '$cacheFactory', 'agreementSevice', '$cookies','myIssuesService', 'departmentsService', 'departmentReportsService', function ($scope, $q,$timeout, $window, $location, $rootScope, $routeParams, $http, issuesService, reportService, $facebook, $cacheFactory, agreementSevice, $cookies, myIssuesService, departmentsService, departmentReportsService) {
 
@@ -4461,20 +4462,6 @@ vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$loc
         // now, just show the current dates.
         $('#rapportage-from-date').text($scope.from_date.toLocaleDateString('nl-NL'));
         $('#rapportage-to-date').text($scope.to_date.toLocaleDateString('nl-NL'));
-
-        //if really the first time loading, listen to the map being done loading, find start location, and remove listener.
-        /* TODO FB: this depends on a global mainControllerInitialized variabel
-         * and can't be just copied/replaced.
-        if (!rapportageControllerInitialized) {
-
-            var listenerForMapReady = google.maps.event.addListener(map,'idle',function() {
-                //determine where the map should start
-                rapportageController.determineStartLocation(rapportageController.startLocationDetermined);
-                listenerForMapReady.remove();
-            });
-            rapportageControllerInitialized = true;
-        }
-        */
 
         $timeout(function () {
             var listener = attachAutoCompleteListener('searchCity');
@@ -4533,140 +4520,10 @@ vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$loc
       rapportage_hide_details()
     }
 
-    /* TODO FB: nor council rewrite on rapportage
-     * N.B. is the mainCtrl version actually used somewhere?
-    rapportageController.rewritePathForCouncil = function() {
-        logger("rewritePathForCouncil()");
-        var newCouncil = "";
-        var newPath = "";
-
-        var nextaction = !(typeof $routeParams.nextaction === 'undefined') ? "/" + $routeParams.nextaction : "";
-
-
-        if ($location.path() == "/plaats/" + $routeParams.cityNameplaats + nextaction) {
-            newPath = 'gemeente/' + $routeParams.cityNameplaats + nextaction
-            newCouncil = $routeParams.cityNameplaats;
-        } else if ($location.path() == "/" + $routeParams.cityNameClone + nextaction) {
-            $location.path('gemeente/' + $routeParams.cityNameClone + nextaction);
-            newCouncil = $routeParams.cityNameClone;
-        }
-
-        $scope.council = newCouncil;
-        $location.path(newPath);
-    }*/
-
-    /*
-    rapportageController.determineStartLocation = function(doneCallBack) {
-        logger("determineStartLocation ->");
-        logger($routeParams);
-
-        var result = true;
-
-        if ($routeParams.id) {
-            //should not be handled by rapportagecontroller
-            logger("location based on id should not be handled by rapportage ctrl, but by issueCtrl")
-            result = false;
-        } else if ($routeParams.hashkey) {
-            //should not be handled by rapportagecontroller
-            logger("location based on haskey should not be handled by rapportage ctrl, but by hashCtrl")
-            result = false;
-        } else if ($routeParams.cityName) {
-            moveMapToAddress($routeParams.cityName,true,doneCallBack);
-        } else if ($routeParams.postalcode) {
-            moveMapToAddress($routeParams.postalcode,true,doneCallBack);
-        } else if (navigator.geolocation) {
-            //pass on the responsibility of calling back to moveMapToBrowserLocation (boogiewoogie?)
-            moveMapToBrowserLocation($rootScope,$q,true,doneCallBack);
-        } else if ($cookies.getObject('user') != null) {
-            moveMapToUserLocation(true,doneCallBack);
-        } else {
-            moveMapToDefaultLocation(doneCallBack);
-            //could be that the map was already initialized on this.
-        }
-
-        if (!result) {
-            if (doneCallBack != undefined && typeof doneCallBack === 'function') {
-                doneCallBack(result);
-            }
-        }
-    }
-
-    rapportageController.startLocationDetermined = function(result) {
-        logger('startLocationDetermined('+result+')')
-        if (result) {
-            $scope.updateAllInfo(true);
-            $scope.updateMyIssues();
-        }
-        addMapChangedListener($scope.updateAllInfo,$location);
-    }
-    */
-
-    /*
-    $scope.updatePathForCouncil = function(city) {
-        logger("updatePathForCouncil(" + city + ") -> " + $location.path() + " ::: " + $routeParams.nextaction);
-
-        var currentPath = $location.path();
-
-        var newPath = "";
-        if (currentPath.includes('gemeente') ||
-            currentPath.includes('postcode') ||
-            currentPath == '/' ) {
-            newPath = '/gemeente/' + convertToSlug(city);
-            if (currentPath.endsWith('nieuw-probleem')) newPath += "/nieuw-probleem";
-            if (currentPath.endsWith('nieuw-idee')) newPath += "/nieuw-idee";
-            if (currentPath.endsWith('nieuwe-melding')) newPath += "/nieuwe-melding";
-        }
-
-        if (newPath != "" && currentPath.toLowerCase() != newPath.toLowerCase()) {
-            $location.path('/gemeente/' + convertToSlug(city), true);
-        }
-    }
-    */
-
     $scope.updateSearchBoxForCouncil = function(city) {
         logger("updateSearchBoxForCouncil(" + city + ")");
         logger($scope.searchCity);
         $scope.searchCity = city;
-    }
-
-    rapportageController.recentIssuesOfType = function(type, count) {
-        if (!$scope.zoomedInEnoughToRetrieveIssues() || $rootScope.newProblemList == undefined || $rootScope.newProblemList.length <= 0) return [];
-        if (count == undefined) count = RECENT_ISSUES_TO_SHOW;
-        var curIssue;
-        var result = [];
-        var foundIssues = 0;
-        //orderBy : 'created_at' : true
-
-        for (var i=0; i < $rootScope.newProblemList.length; i++) {
-            curIssue = $rootScope.newProblemList[i];
-            if(curIssue.type == type && curIssue.status != 'closed') {
-                result.push(curIssue);
-                if (++foundIssues >= count) { break; }
-            }
-        }
-
-        return result;
-    }
-
-    $scope.recentProblems = function() {
-        return rapportageController.recentIssuesOfType(ISSUE_TYPE_PROBLEM);
-    }
-
-    $scope.recentIdeas = function() {
-        return rapportageController.recentIssuesOfType(ISSUE_TYPE_IDEA);
-    }
-
-    $scope.showAgreement = function () {
-        if (!$rootScope.agreement) return false;
-        return $rootScope.agreement.success && $rootScope.agreement.agreement && $scope.zoomedInEnoughToShowIssues();
-    }
-
-    $scope.zoomedInEnoughToShowIssues = function() {
-        return $rootScope.zoom >= $rootScope.pinsVisibleZoom;
-    }
-
-    $scope.zoomedInEnoughToRetrieveIssues = function() {
-        return $rootScope.zoom >= $rootScope.retrieveIssuesZoom;
     }
 
     $scope.updateCouncilAgreement = function(city) {
@@ -4709,48 +4566,6 @@ vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$loc
         $scope.updateMapIssues();
     }
 
-    /* TODO FB: check if login functions are required on rapportage.
-    $scope.isUserLoggedIn = function() {
-        return ($cookies.getObject('user') != undefined);
-    }
-
-
-    $scope.updateLoginStatus = function() {
-        //isn't this double, zee below?
-        $scope.hideLogin = $cookies.getObject('user')
-    }
-
-
-    //login session
-    $scope.loginStatus = function () {
-        return $scope.isUserLoggedIn() && ($rootScope.lusername = $cookies.getObject('user').username);
-    }
-
-    //logOut
-    $scope.logout = function () {
-        logger("rapportageCtrl.logout()");
-
-        $cookies.remove('user');
-        $cookies.remove('user_profile');
-        // $('.dropdown-menu').hide();
-        $scope.userpanel = 0;
-        $rootScope.myIssuesList = null;
-
-        $scope.fbstatus = $facebook.isConnected();
-        if ($scope.fbstatus) {
-            $facebook.logout();
-        }
-
-        $location.path('/');
-    }
-    */
-
-    /*
-    $scope.showuserpanel = function () {
-        $scope.userpanel = 1;
-    }
-    */
-
     //move page
     $scope.clickMenu = function (selected) {
         logger("rapportageCtrl.clickMenu()");
@@ -4787,7 +4602,7 @@ vdbApp.controller('rapportageCtrl', ['$scope', '$q','$timeout', '$window', '$loc
     rapportageController.init();
 }]);
 
-// TODO FB: createProblemCtrl used as basis. Added $http, remove if building a service.
+// createProblemCtrl used as basis for campaignCtrl
 vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'campaignIssueSubmitService', 'myIssuesService', '$location', 'issuesService', 'campaignIssueSubmitServiceWithImage', 'duplicateIssuesService', '$cookies', 'serviceStandardService','reportService','issuesService','agreementSevice','campaignSubmissionsService','$routeParams', function ($http, $scope, $rootScope, $window, $timeout, categoriesService, campaignIssueSubmitService, myIssuesService, $location, issuesService, campaignIssueSubmitServiceWithImage, duplicateIssuesService, $cookies, serviceStandardService,reportService,issuesService,agreementSevice,campaignSubmissionsService,$routeParams) {
     logger('campaignCtrl');
 
