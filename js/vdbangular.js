@@ -1155,13 +1155,27 @@ vdbApp.factory('confirmVoteService', ["$http",'$rootScope',function ($http,$root
 }])
 
 
-vdbApp.factory('departmentsService', ['$http','$rootScope', function ($http,$rootScope) {
+vdbApp.factory('departmentsService', ['$http','$rootScope','$q', function ($http,$rootScope,$q) {
+  var departmentsCache = {};
   return {
     getDepartments: function (jsondata) {
       logger('departmentsService.getDepartments('+jsondata+')');
+      // Return cached data if available.
+      if ( departmentsCache[jsondata] ) {
+        var deferred = $q.defer();
+        var cachedData = { // mimick http response
+          success: true, status: 200,
+          data: departmentsCache[jsondata],
+        };
+        deferred.resolve(cachedData);
+        return deferred.promise;
+      }
       return $http.post(APIURL + 'departments', jsondata)
         .success(function (data) {
           if (angular.isObject(data)) {
+            // Store retrieved departments for future calls, e.g. on every
+            // map move.
+            departmentsCache[jsondata] = data;
             departmentsService.data = data;
             return departmentsService.data;
           }
