@@ -1344,7 +1344,6 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
     }
 
     $scope.departmentSelectionClick = function () {
-      console.log('department', $scope.departmentState.selectedId);
       if ( $scope.departmentState.selectedId ) {
         $scope.departmentState.selectedName = $scope.departmentState.dict[$scope.departmentState.selectedId].name;
         // TODO FB: on changed selectedId, update the council for de department.
@@ -1455,7 +1454,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
                     "min_long": map.getBounds().getSouthWest().lng()
                 }
             };
-            // TODO FB: if the page loaded is from fietsersbond, only
+            // If the page loaded is from fietsersbond, only
             // get those items. If on verbeterdebuurt, show all issues.
             if ( $rootScope.customisation.organisation_id === 1 ) {
               data_request.organisation_id = 1;
@@ -1485,7 +1484,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
     $scope.updateCouncilReport = function(city)  {
         logger("updateCouncilReport");
         report_query = {"council": "" + city + ""};
-        // TODO FB: request specific organisation
+        // Request specific organisation report.
         if ( $rootScope.customisation.organisation_id > 0 ) {
           report_query.organisation_id = $rootScope.customisation.organisation_id;
         }
@@ -1533,9 +1532,26 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
 
         // $scope.updateMyIssues();
         $scope.updateMapIssues();
+
+        // If there are departments shown, update the department based
+        // on the current (new) council. Relevant only for Fietsersbond.
+        if ( $scope.departmentState.show ) {
+          var query = { "council": city.long_name };
+          query = JSON.stringify(query);
+          departmentsService.getDepartments(query).then(function (data) {
+            if ( data.data.success && data.data.counts > 0 ) {
+              var new_department = data.data.departments[0];
+              console.log('update department new', new_department);
+              // TODO FB: state not propagated to the view, fix.
+              $scope.departmentState.selectedId = new_department.id;
+              $scope.departmentState.selectedName = new_department.name;
+            }
+          });
+        }
+
         // TODO FB: update active department on geo here?
         if ($rootScope.is_rapportage) {
-          console.log('Update rapportage department');
+          logger('Update rapportage department');
         }
     }
 
