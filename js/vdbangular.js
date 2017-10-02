@@ -1210,7 +1210,7 @@ vdbApp.run(['$rootScope', '$window', function ($rootScope, $window) {
 
     }]);
 
-vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location', '$rootScope', '$routeParams', '$http', 'issuesService', 'reportService', '$facebook', '$cacheFactory', 'agreementSevice', '$cookies','myIssuesService', function ($scope, $q,$timeout, $window, $location, $rootScope, $routeParams, $http, issuesService, reportService, $facebook, $cacheFactory, agreementSevice, $cookies, myIssuesService) {
+vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location', '$rootScope', '$routeParams', '$http', 'issuesService', 'reportService', '$facebook', '$cacheFactory', 'agreementSevice', '$cookies','myIssuesService', 'departmentsService', 'departmentReportsService', function ($scope, $q,$timeout, $window, $location, $rootScope, $routeParams, $http, issuesService, reportService, $facebook, $cacheFactory, agreementSevice, $cookies, myIssuesService, departmentsService, departmentReportsService) {
     
     var mainController = this;
 
@@ -1228,6 +1228,16 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
         $scope.showuserpanel();        
         $rootScope.urlBefore = $location.path();
         $rootScope.errorSession = "";
+
+        // Track the active department, use by the Fietsersbond.
+        $scope.departmentState = {
+          // Only active on fietsersbond.
+          show: $rootScope.customisation.organisation_id === 1,
+          selectedId: 0,
+          selectedName: '',
+          list: [],
+          dict: {},
+        }
 
         menuSelected($rootScope, 'home');
         //if really the first time loading, listen to the map being done loading, find start location, and remove listener.
@@ -1250,6 +1260,16 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
                 moveMapToAddress(input.val());
             });
         },10);
+
+        // Load departments, if relevant, and create a dict for easy lookup.
+        if ( $scope.departmentState.show ) {
+          var getDepartments = departmentsService.getDepartments('{}').then(function (data) {
+            $scope.departmentState.list = data.data.departments;
+            for(var i=0; i<$scope.departmentState.list.length; i++) {
+              $scope.departmentState.dict[$scope.departmentState.list[i].id] = $scope.departmentState.list[i];
+            }
+          });
+        }
     }
 
     mainController.rewritePathForCouncil = function() {
@@ -1322,6 +1342,14 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
         }
         addMapChangedListener($scope.updateAllInfo,$location);
     }
+
+    $scope.departmentSelectionClick = function () {
+      console.log('department', $scope.departmentState.selectedId);
+      if ( $scope.departmentState.selectedId ) {
+        $scope.departmentState.selectedName = $scope.departmentState.dict[$scope.departmentState.selectedId].name;
+        // TODO FB: on changed selectedId, update the council for de department.
+      }
+    };
 
     $scope.updatePathForCouncil = function(city) {
         logger("updatePathForCouncil(" + city + ") -> " + $location.path() + " ::: " + $routeParams.nextaction);      
