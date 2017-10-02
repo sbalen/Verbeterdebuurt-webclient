@@ -1218,9 +1218,36 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
     user = $cookies.getObject('user');
     userProfile = $cookies.getObject('user_profile');
 
+    function setup_departments() {
+      // Track the active department, use by the Fietsersbond.
+      $scope.departmentState = {
+        // Only active on fietsersbond.
+        show: $rootScope.customisation.organisation_id === 1,
+        selectedId: 0,
+        selectedName: '',
+        list: [],
+        dict: {},
+      }
+
+      // Load departments, if relevant, and create a dict for easy lookup.
+      if ( $scope.departmentState.show ) {
+        var getDepartments = departmentsService.getDepartments('{}').then(function (data) {
+          $scope.departmentState.list = data.data.departments;
+          for(var i=0; i<$scope.departmentState.list.length; i++) {
+            $scope.departmentState.dict[$scope.departmentState.list[i].id] = $scope.departmentState.list[i];
+          }
+          // TODO: - where is this city set as an actual object?
+          //       - why is this function called three times, once with proper
+          //       city?
+          //       - keep a fetched copy of the departments in the service
+          if ( city.long_name ) {
+            $scope.updateDepartmentForCouncil(city);
+          }
+        });
+      }
+    }
+
     mainController.init = function() {
-        // TODO FB: mainController.init appears to be called twice, why is this?
-        //          because the index.html contains <body ng-controller="mainCtrl as mainController" >?
         logger("mainController.init");
 
         //some vars that are needed?
@@ -1228,16 +1255,6 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
         $scope.showuserpanel();        
         $rootScope.urlBefore = $location.path();
         $rootScope.errorSession = "";
-
-        // Track the active department, use by the Fietsersbond.
-        $scope.departmentState = {
-          // Only active on fietsersbond.
-          show: $rootScope.customisation.organisation_id === 1,
-          selectedId: 0,
-          selectedName: '',
-          list: [],
-          dict: {},
-        }
 
         menuSelected($rootScope, 'home');
         //if really the first time loading, listen to the map being done loading, find start location, and remove listener.
@@ -1261,15 +1278,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
             });
         },10);
 
-        // Load departments, if relevant, and create a dict for easy lookup.
-        if ( $scope.departmentState.show ) {
-          var getDepartments = departmentsService.getDepartments('{}').then(function (data) {
-            $scope.departmentState.list = data.data.departments;
-            for(var i=0; i<$scope.departmentState.list.length; i++) {
-              $scope.departmentState.dict[$scope.departmentState.list[i].id] = $scope.departmentState.list[i];
-            }
-          });
-        }
+        setup_departments();
     }
 
     mainController.rewritePathForCouncil = function() {
@@ -1345,8 +1354,9 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
 
     $scope.departmentSelectionClick = function () {
       if ( $scope.departmentState.selectedId ) {
-        $scope.departmentState.selectedName = $scope.departmentState.dict[$scope.departmentState.selectedId].name;
         // TODO FB: on changed selectedId, update the council for de department.
+        //console.log('update department clicked', $scope.departmentState.selectedId);
+        $scope.departmentState.selectedName = $scope.departmentState.dict[$scope.departmentState.selectedId].name;
       }
     };
 
@@ -1532,27 +1542,20 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
 
         // $scope.updateMyIssues();
         $scope.updateMapIssues();
+    }
 
-        // If there are departments shown, update the department based
-        // on the current (new) council. Relevant only for Fietsersbond.
-        if ( $scope.departmentState.show ) {
-          var query = { "council": city.long_name };
-          query = JSON.stringify(query);
-          departmentsService.getDepartments(query).then(function (data) {
-            if ( data.data.success && data.data.counts > 0 ) {
-              var new_department = data.data.departments[0];
-              console.log('update department new', new_department);
-              // TODO FB: state not propagated to the view, fix.
-              $scope.departmentState.selectedId = new_department.id;
-              $scope.departmentState.selectedName = new_department.name;
-            }
-          });
-        }
-
-        // TODO FB: update active department on geo here?
-        if ($rootScope.is_rapportage) {
-          logger('Update rapportage department');
-        }
+    $scope.updateDepartmentForCouncil = function(city) {
+      if ( $scope.departmentState.show ) {
+        var query = { "council": city.long_name };
+        query = JSON.stringify(query);
+        departmentsService.getDepartments(query).then(function (data) {
+          if ( data.data.success && data.data.counts > 0 ) {
+            var new_department = data.data.departments[0];
+            $scope.departmentState.selectedId = new_department.id;
+            $scope.departmentState.selectedName = new_department.name;
+          }
+        });
+      }
     }
 
     $scope.isUserLoggedIn = function() {

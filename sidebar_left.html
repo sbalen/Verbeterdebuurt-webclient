@@ -6,12 +6,9 @@
             <strong ng-show="departmentState.show">: {{departmentState.selectedName}}</strong>
         </div>
         <div class="panel-body" ng-show="departmentState.show">
-          <div class="list-group report-list-council">
+          <div class="list-group report-list-council" style="margin-bottom:0;">
             <strong>Kies een afdeling</strong><br>
             <select class="combobox" id="department-select" ng-model="departmentState.selectedId" ng-options="department.id as department.name for department in departmentState.list" ng-click="departmentSelectionClick()">
-              <!--
-              <option value=""  disabled selected>Afdeling</option>
-              -->
             </select>
           </div>
         </div>
