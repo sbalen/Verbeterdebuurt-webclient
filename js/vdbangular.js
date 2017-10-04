@@ -1237,7 +1237,8 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
       $scope.departmentState = {
         // Only active on fietsersbond.
         show: $rootScope.customisation.organisation_id === 1,
-        selectedId: 0,
+        selectedId: 0, // Value model for the select
+        preClickId: 0, // Value set by council-based update
         selectedName: '',
         list: [],
         dict: {},
@@ -1366,13 +1367,25 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
         addMapChangedListener($scope.updateAllInfo,$location);
     }
 
+    // If the manual department selection is clicked, and a different
+    // department is selected, then update the current council as defined in
+    // the department list, to reload the mainController with the new geo.
     $scope.departmentSelectionClick = function () {
-      if ( $scope.departmentState.selectedId ) {
-        // TODO FB: on changed selectedId, update the council for de department.
-        //console.log('update department clicked', $scope.departmentState.selectedId);
-        $scope.departmentState.selectedName = $scope.departmentState.dict[$scope.departmentState.selectedId].name;
+      logger('departmentSelectionClick old new', $scope.departmentState.preClickId, $scope.departmentState.selectedId);
+      if ( $scope.departmentState.selectedId &&
+           $scope.departmentState.selectedId !== $scope.departmentState.preClickId ) {
+        var new_department = $scope.departmentState.dict[$scope.departmentState.selectedId];
+        logger('departmentSelectionClick move to', new_department);
+        if ( new_department && new_department.council ) {
+          // Let googlemaps determine the actual geography for the council
+          // name; do not fallback to user location; after move, set the
+          // backend defined zoomlevel.
+          moveMapToAddress(new_department.council, false, function() {
+            map.setZoom(new_department.zoom);
+          });
+        }
       }
-    };
+    }
 
     $scope.updatePathForCouncil = function(city) {
         logger("updatePathForCouncil(" + city + ") -> " + $location.path() + " ::: " + $routeParams.nextaction);      
@@ -1566,6 +1579,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
           if ( data.data.success && data.data.counts > 0 ) {
             var new_department = data.data.departments[0];
             $scope.departmentState.selectedId = new_department.id;
+            $scope.departmentState.preClickId = new_department.id;
             $scope.departmentState.selectedName = new_department.name;
           }
         });
