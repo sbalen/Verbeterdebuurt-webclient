@@ -4687,6 +4687,7 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
     $scope.active_campaign = false;
     $scope.inactive_campaign_message = '';
     $scope.campaignSubmissionList = null;
+    hideBackgroundImage($rootScope, 'campagne');
 
     // Load issues for the current active campaign.
     function get_campaign_issues() {
