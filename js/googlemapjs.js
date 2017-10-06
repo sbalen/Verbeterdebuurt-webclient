@@ -159,10 +159,11 @@ function getaddressshow(latlng){
 }
 
 //google map auto complete change string to make it by id
-
-function attachAutoCompleteListener(stringid,marker,locationmap,location) {
+// Pass the originating scope for additional functions.
+function attachAutoCompleteListener(stringid,marker,locationmap,location,originalScope) {
     logger("attachAutoCompleteListener " +stringid);
     var input = document.getElementById(stringid);
+    var has_categories = location === "location";
     //if input cannot be found yet, it's probably not loaded yet, so return doing nothing
     if (input == undefined) return;
 
@@ -173,6 +174,9 @@ function attachAutoCompleteListener(stringid,marker,locationmap,location) {
     if (autocompleteListener != undefined) { autocompleteListener.remove(); }
     autocompleteListener = google.maps.event.addListener(autocomplete, 'place_changed', function() {
         logger("google place changed");
+        if ( has_categories && originalScope ) {
+          originalScope.loadCategory = 1;
+        }
 
         var place = autocomplete.getPlace();
         var address = "";
@@ -190,6 +194,12 @@ function attachAutoCompleteListener(stringid,marker,locationmap,location) {
         if (marker) {
             moveMapToAddress(address,false,function() {
                markerCenter(locationmap,marker,location);
+               // The create Problem page has a marker, and categories.
+               // Update the categories after moving from the
+               // mini-map autocomplete.
+               if ( has_categories && originalScope ) {
+                 originalScope.categoriesData()
+               }
             })
         } else {
             moveMapToAddress(address);

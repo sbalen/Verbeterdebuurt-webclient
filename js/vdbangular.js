@@ -3347,7 +3347,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
     $timeout(function () {        
          
         var issueMarker = googleMapCreateProblem();
-        attachAutoCompleteListener('searchCityProblem',issueMarker,map3,"location");        
+        attachAutoCompleteListener('searchCityProblem',issueMarker,map3,"location", $scope);
         $scope.categoriesData();
         $scope.getServiceStandard(city.long_name);
     }, 1500);
@@ -3376,6 +3376,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
     }
 
 
+    // Called during "enter"/button search from new problem.
     $scope.clickSearchCreateIssue = function () {
         $scope.loadCategory = 1;
         if(document.getElementById('searchCityProblem').value){
@@ -4843,7 +4844,7 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
         // the code below probably gives a small error. Check here, and test
         // if the normal campaigns stil work properly.
         var issueMarker = googleMapCreateProblem();
-        attachAutoCompleteListener('searchCityProblem',issueMarker,map3,"location");        
+        attachAutoCompleteListener('searchCityProblem',issueMarker,map3,"location-campagne");
     }, 1500);
 
     // TODO FB: see if it possible to also store an uploaded image..
