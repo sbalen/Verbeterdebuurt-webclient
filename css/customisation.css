@@ -29,6 +29,20 @@ body {
 #logo-text span {
   display: block;
   color: #000;
+  white-space: nowrap;
+}
+@media (max-width: 767px) { /* match min-width 768px */
+  #logo-image {
+    width: auto; /* prevent .mvdblogo breaking the image */
+    margin-left: -16px;
+  }
+  a.navbar-brand {
+    max-width: 80%;
+  }
+  #logo-text {
+    max-width: 75%;
+    position: relative;
+  }
 }
 #logo-text-up {
   margin-top: 12px;
