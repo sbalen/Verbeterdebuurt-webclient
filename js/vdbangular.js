@@ -3318,6 +3318,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
     $scope.postcode = "";
     $scope.city = "";
     $scope.phone = "";
+    $scope.newsletter = false;
     $scope.sexoption = [{'name': 'Dhr.', 'value': 'm'},
                         {'name': 'Mw.','value': 'f'}];
 
@@ -3454,6 +3455,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
             user_profile.postcode = $scope.postcode;
             user_profile.city = $scope.city;
             user_profile.phone = $scope.phone;
+            user_profile.newsletter = $scope.newsletter;
         }
 
         //description
@@ -3713,6 +3715,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
     $scope.postcode = "";
     $scope.city = "";
     $scope.phone = "";
+    $scope.newsletter = false;
     $scope.sexoption = [
         {
             'name': 'Dhr.',
@@ -3868,6 +3871,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
             user_profile.postcode = $scope.postcode;
             user_profile.city = $scope.city;
             user_profile.phone = $scope.phone;
+            user_profile.newsletter = $scope.newsletter;
         }
 
         //description
@@ -3934,7 +3938,8 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
                     "address_suffix": $scope.address_suffix,
                     "postcode" : $scope.postcode,
                     "city" : $scope.city,
-                    "phone" : $scope.phone                   
+                    "phone" : $scope.phone,
+                    "newsletter" : $scope.newsletter,
                 }, 
                 "issue" : {
                     "title" : issue.title,
