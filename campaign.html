@@ -48,11 +48,8 @@
                                   <fieldset class="gllpLatlonPicker">
                                   <div class="input-group" style="width:100%; margin-left:0; ">
                                      <form>
-                                         <input type="text" class="form-control gllpSearchField" placeholder="Vul hier het adres in, of sleep de marker..." ng-model="searchCityCreate" ng-submit="expression" ng-keyup="$event.keyCode == 13 && clickSearchCreateIssue()" id="searchCityProblem">
+                                         <input type="text" class="form-control gllpSearchField" placeholder="Vul hier het adres in, of sleep de marker..." ng-model="searchCityCreate" ng-submit="expression" id="searchCityProblem">
                                      </form>
-                                     <span class="input-group-btn">
-                                        <button class="btn btn-primary gllpSearchButton" type="button" ng-click="clickSearchCreateIssue()"><span class="glyphicon glyphicon-search"></span><span class="hidden-xs">Zoeken</span></button>
-                                     </span>
                                   </div>
                                   <div class="gllpMap" id="googleMapCreateProblem" ng-click="alrCityCreate()"></div>
                                   <input type="hidden" class="gllpLatitude" value="52.158367"/>
