@@ -125,6 +125,10 @@ errorhandler = function(rootScope,errorInfo){
     } else {
         logger('showErrorHandler')
     }
+    // TODO FB: do not show an error when the message is empty. This
+    // prevents the unnecessary error when confirming a message, and
+    // the backend doesn't now what happened anyway.
+    if ( errorInfo.message && errorInfo.message.trim() ) {
     rootScope.globaloverlay="";
     $("#errorModal").modal({backdrop: 'static', keyboard: false});
     $("#errorModal").modal('show');
@@ -132,6 +136,9 @@ errorhandler = function(rootScope,errorInfo){
         $('#errorModal').modal('hide');
         $('.modal-backdrop').hide();
     });
+    } else {
+      logger('showErrorHandler: not shown because the message was empty.')
+    }
     
 };
 
