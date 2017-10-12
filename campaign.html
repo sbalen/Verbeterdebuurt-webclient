@@ -85,13 +85,20 @@
                                 </div>
                                 <div class="form-group" >
                                         <div class="col-sm-12 form-col" ng-class="{'has-error': errorSurname }">
-                                            <input type="text" class="form-control" id="name" placeholder="Naam" ng-model ="surname" style="margin-bottom: 15px">
+                                            <input type="text" class="form-control" id="name" placeholder="Naam" ng-model ="surname">
                                         </div>
                                 </div>
-                                  <div class="checkbox">
-                                    <label style="margin-left: 5px;">
+                                <div class="form-group" >
+                                  <div class="col-sm-12 form-col checkbox">
+                                    <label>
                                         <input type="checkbox" ng-model="notify"> Ik wil graag op de hoogte gehouden worden over de campagne 
                                     </label>
+                                  </div>
+                                  <div class="col-sm-12 form-col checkbox">
+                                    <label>
+                                        <input type="checkbox" ng-model="newsletter"> Ik wil graag de nieuwsbrief ontvangen
+                                    </label>
+                                  </div>
                                 </div>
                             </div>
                             </form>

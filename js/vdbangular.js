@@ -4797,6 +4797,7 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
     $rootScope.urlBefore = $location.path();
    
     $scope.notify = false;
+    $scope.newsletter = false;
     $scope.email = "";
     $scope.username = "";
     $scope.password = "";
@@ -4873,6 +4874,7 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
         submission.campaign_id = $rootScope.customisation.campaign.id;
         submission.organisation_id = $rootScope.customisation.organisation_id;
         submission.notify = $scope.notify;
+        submission.newsletter = $scope.newsletter;
 
         //location
         location.latitude = markerLat;
