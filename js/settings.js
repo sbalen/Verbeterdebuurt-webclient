@@ -27,6 +27,7 @@ var CUSTOMISATION_SETTINGS = {
     logo_text_up: '',
     logo_text_down: '',
     campaign: { },
+    signature: 'Team Verbeterdebuurt',
   },
   fietsersbond: {
     organisation_id: 1,
@@ -36,5 +37,6 @@ var CUSTOMISATION_SETTINGS = {
     logo_text_up: 'Fietsersbond',
     logo_text_down: 'Meldpunt',
     campaign: { },
+    signature: 'De Fietsersbond',
   },
 };
