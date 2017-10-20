@@ -2711,6 +2711,43 @@ vdbApp.controller('registerCtrl', ['$scope', '$rootScope', '$window', 'registerS
 
     }
 
+    $scope.connectFietsersbond = function () {
+      // See: http://adodson.com/hello.js/modules#hellojs-already-has-you-connected
+      // See: http://adodson.com/hello.js/#hellologin
+      hello.init({
+        fietsersbond: {
+          id: 'HDyzFGgSEFqWGgBLDleCTRnJLXagft',
+          name: 'fietsersbond',
+          oauth : {
+            version : 2,
+            auth : 'https://www.fietsersbond.nl/oauth/authorize',
+          },
+          response_type: 'token',
+          base : 'https://www.fietsersbond.nl/oauth/',
+          get : {
+            "me": "me"
+          },
+        }
+      }, { redirect_uri: '/oauth.html' });
+
+      // Alternative to login().then, subscribe to listeners.
+      //hello.on('auth.login', function(auth) {
+      //  console.log('hello','on.auth.login',auth);
+      //});
+
+      hello('fietsersbond').login().then(
+        // Successful login, request /me and fill the form.
+        function(auth){
+          logger('hellojs success',auth);
+        },
+        // Some error, e.g. popup closed.
+        function(e) {
+          logger('hellojs error', e);
+        }
+      );
+    }
+
+
 
     $scope.sex = $scope.sexoption[0].value;
 
