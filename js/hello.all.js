@@ -1476,6 +1476,8 @@ hello.utils.extend(hello.utils, {
 			// Remove any addition information
 			// E.g. p.state = 'facebook.page';
 			try {
+        // N.B. wpoauth juggles around and encodes the state. Remove the \ (\\" -> ");
+				p.state = p.state.replace(/\\"/g,'"');
 				var a = JSON.parse(p.state);
 				_this.extend(p, a);
 			}
