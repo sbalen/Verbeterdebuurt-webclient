@@ -2716,7 +2716,7 @@ vdbApp.controller('registerCtrl', ['$scope', '$rootScope', '$window', 'registerS
       // See: http://adodson.com/hello.js/#hellologin
       hello.init({
         fietsersbond: {
-          id: 'HDyzFGgSEFqWGgBLDleCTRnJLXagft',
+          id: OAUTH_ID_FIETSERSBOND,
           name: 'fietsersbond',
           oauth : {
             version : 2,

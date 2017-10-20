@@ -40,3 +40,5 @@ var CUSTOMISATION_SETTINGS = {
     signature: 'De Fietsersbond',
   },
 };
+
+var OAUTH_ID_FIETSERSBOND = 'HDyzFGgSEFqWGgBLDleCTRnJLXagft';
