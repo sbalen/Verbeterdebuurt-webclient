@@ -12,9 +12,13 @@
                         <a class="list-group-item clearfix" dir-paginate="myIssues in myIssuesList |orderBy : 'myIssues.created_at' : true| itemsPerPage:totalPage" current-page="currentPage">
                                 <input type="hidden" ng-model="page" value="{{currentPage}}">
                                <div width="100%" class="clearfix">
+                                 <!-- instead of pulling the image left -50%, which almost removes portrait images from the view, show as much as possible from the top left using background image + cover.
                                <div class="pull-left"  style="width:90px;overflow-x:hidden; margin-right:10px;">
                                 <img src="{{noProtocol(myIssues.image.thumbnail_url)}}" ng-if="myIssues.image" height="100px" width="100px" style="padding-right:10px;width: auto;
                                 text-align: center;margin-left:-50%">
+                                -->
+                                <div class="pull-left"  style="width:90px;overflow-x:hidden; margin-right:10px; background-image:url('{{noProtocol(myIssues.image.thumbnail_url)}}'); background-size:cover;">
+                                <img src="{{noProtocol(myIssues.image.thumbnail_url)}}" ng-if="myIssues.image" height="100px" width="100px" style="padding-right:10px;width: auto; text-align: center; visibility: hidden;">
                                 <img src="./img/noimage-icon.jpg" ng-if="!myIssues.image" height="100px" width="100px" style="padding-right:10px;">
                                </div>
                                <div>
