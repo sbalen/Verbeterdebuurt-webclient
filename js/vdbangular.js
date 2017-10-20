@@ -2725,7 +2725,7 @@ vdbApp.controller('registerCtrl', ['$scope', '$rootScope', '$window', 'registerS
           response_type: 'token',
           base : 'https://www.fietsersbond.nl/oauth/',
           get : {
-            "me": "me"
+            "me": "me/"
           },
         }
       }, { redirect_uri: '/oauth.html' });
@@ -2739,6 +2739,12 @@ vdbApp.controller('registerCtrl', ['$scope', '$rootScope', '$window', 'registerS
         // Successful login, request /me and fill the form.
         function(auth){
           logger('hellojs success',auth);
+          // Now, request info about the user and put it in the form.
+          // TODO: this does not work because of CORS, either
+          // request header updaters or use the backend with Chiljon.
+          hello('fietsersbond').api('me').then(function(r){
+            logger('hellojs me', r);
+          });
         },
         // Some error, e.g. popup closed.
         function(e) {
