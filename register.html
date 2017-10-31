@@ -130,7 +130,7 @@
                                             Verbind Verbeterdebuurt met de Fietsersbond om eenvoudig in te loggen.
                                         </td>
                                         <td> 
-                                            <button type="button" class="btn btn-default marginmedia" ng-click="connectFietsersbond()">Koppel Fietsersbond</button>
+                                            <button type="button" class="btn btn-default marginmedia" ng-click="connectFietsersbond()" ng-disabled="fbOauthExist">{{fbOauthMessages}}</button>
                                         </td>
                                     </tr>
                                 </table>

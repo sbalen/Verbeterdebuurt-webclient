@@ -2616,7 +2616,7 @@ vdbApp.controller('loginCtrl', ['$scope', '$rootScope', '$window', 'loginService
 }])
 
 
-vdbApp.controller('registerCtrl', ['$scope', '$rootScope', '$window', 'registerService', 'newsletterService', '$location', '$facebook', function ($scope, $rootScope, $window, registerService, newsletterService, $location, $facebook) {
+vdbApp.controller('registerCtrl', ['$scope', '$rootScope', '$window', 'registerService', 'newsletterService', '$location', '$facebook', '$http', function ($scope, $rootScope, $window, registerService, newsletterService, $location, $facebook, $http) {
     $rootScope.dynamicTitle = "Registreren";
     $scope.home = function () {
         $location.path('/');
@@ -2640,6 +2640,7 @@ vdbApp.controller('registerCtrl', ['$scope', '$rootScope', '$window', 'registerS
     $scope.phone = "";
     $scope.errorFB = "";
     $scope.facebookID = "";
+    $scope.fbOauthID = "";
     $scope.sexoption = [
         {
             'name': 'Dhr.',
@@ -2711,6 +2712,10 @@ vdbApp.controller('registerCtrl', ['$scope', '$rootScope', '$window', 'registerS
 
     }
 
+    $scope.fbOauthMessages = "Koppel Fietsersbond";
+    $scope.fbOauthExist = ($scope.fbOauthStatus) ? 1 : 0;
+    if ($scope.fbOauthExist) $scope.fbOauthMessages = "Gekoppeld met Fietsersbond";
+
     $scope.connectFietsersbond = function () {
       // See: http://adodson.com/hello.js/modules#hellojs-already-has-you-connected
       // See: http://adodson.com/hello.js/#hellologin
@@ -2723,6 +2728,7 @@ vdbApp.controller('registerCtrl', ['$scope', '$rootScope', '$window', 'registerS
             auth : 'https://www.fietsersbond.nl/oauth/authorize',
           },
           response_type: 'token',
+          // Direct oauth...me does not work because of CORS.
           base : 'https://www.fietsersbond.nl/oauth/',
           get : {
             "me": "me/"
@@ -2740,11 +2746,30 @@ vdbApp.controller('registerCtrl', ['$scope', '$rootScope', '$window', 'registerS
         function(auth){
           logger('hellojs success',auth);
           // Now, request info about the user and put it in the form.
-          // TODO: this does not work because of CORS, either
-          // request header updaters or use the backend with Chiljon.
-          hello('fietsersbond').api('me').then(function(r){
-            logger('hellojs me', r);
-          });
+          // N.B. the hellojs me function doest not work with the
+          // verbeterdebuurt backend; probably expects application/json.
+          //hello('fietsersbond').api('me').then(function(r){
+          var query_me = {
+            access_token: auth.authResponse.access_token,
+          };
+          $http
+            .post(APIURL + 'fietsersbondOauthMe', query_me)
+            .success(function (data) {
+              console.log('hellojs me', data);
+
+              $scope.fbOauthUser = data;
+              $scope.errorFbOauth = "";
+
+              //set button to connected
+              $scope.fbOauthMessages = "Gekoppeld met Fietsersbond";
+              $scope.fbOauthExist = 1;
+              $scope.fbOauthID = $scope.fbOauthUser.ID;
+
+              //set value of the field if still blank
+              if ($scope.email == "") $scope.email = $scope.fbOauthUser.user_email;
+              if ($scope.username == "") $scope.username = $scope.fbOauthUser.user_login;
+              if ($scope.surname == "") $scope.surname = $scope.fbOauthUser.display_name;
+            });
         },
         // Some error, e.g. popup closed.
         function(e) {
@@ -2790,6 +2815,7 @@ vdbApp.controller('registerCtrl', ['$scope', '$rootScope', '$window', 'registerS
                 "city": "" + $scope.city + "",
                 "phone": "" + $scope.phone + "",
                 "facebookID": "" + $scope.facebookID + "",
+                "fietsersbondID": "" + $scope.fbOauthID + "",
                 "ondernemingsdossierID": "" + ondernemingsdossierID,
                 "organisation_id": $rootScope.customisation.organisation_id,
             }
