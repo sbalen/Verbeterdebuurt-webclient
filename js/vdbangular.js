@@ -2360,7 +2360,7 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope', '$routeParams', '$http', '$ro
 
 }])
 
-vdbApp.controller('loginCtrl', ['$scope', '$rootScope', '$window', 'loginService', '$location', '$facebook', '$cookies', function ($scope, $rootScope, $window, loginService, $location, $facebook, $cookies) {
+vdbApp.controller('loginCtrl', ['$scope', '$rootScope', '$window', 'loginService', '$location', '$facebook', '$cookies', '$http', function ($scope, $rootScope, $window, loginService, $location, $facebook, $cookies, $http) {
     $rootScope.dynamicTitle = "Login |";
     $scope.hide = "ng-hide";
     $scope.lusername = "";
@@ -2449,6 +2449,104 @@ vdbApp.controller('loginCtrl', ['$scope', '$rootScope', '$window', 'loginService
 
     $scope.FBlogin = function () {
         $facebook.login();
+    }
+
+    $scope.FietsersbondLogin = function () {
+      logger('login with fietsersbond oauth');
+      hello.init({
+        fietsersbond: {
+          id: OAUTH_ID_FIETSERSBOND,
+          name: 'fietsersbond',
+          oauth : {
+            version : 2,
+            auth : 'https://www.fietsersbond.nl/oauth/authorize',
+          },
+          response_type: 'token',
+          // Direct oauth...me does not work because of CORS.
+          base : 'https://www.fietsersbond.nl/oauth/',
+          get : {
+            "me": "me/"
+          },
+        }
+      }, { redirect_uri: '/oauth.html' });
+
+      // Login through Fietsersbond oauth popup, then get the /me.ID through
+      // the backend and use it to log in.
+      hello('fietsersbond').login().then(function(auth){
+        var query_me = { access_token: auth.authResponse.access_token };
+        $http
+          .post(APIURL + 'fietsersbondOauthMe', query_me)
+          .success(function (datame) {
+            var jsondata = JSON.stringify({ "user" : { "fietsersbond_token" : datame.ID } });
+
+            var getLogin = loginService.getLogin(jsondata).then(function (data) {
+              // Received a login response. If successful, set login cookies
+              // and continue. If not successful, redirect to the register page
+              // with some prefilled fields. N.B. The logic is copied from
+              // previous oauth setups for facebook/organisationId.
+              var result = data.data;
+              logger(result);
+
+              if (!result.success) {
+                $window.sessionStorage.fbOauthID = datame.ID;
+                $window.sessionStorage.username = datame.user_login;;
+                $window.sessionStorage.email = datame.user_email;
+                $window.sessionStorage.surname = datame.display_name;
+                $rootScope.globaloverlay = "";
+                $scope.hide = "";
+                $location.path('/registreren');
+
+              } else if (result.success) {
+                // N.B. mostly copied from ondernemingsDossier.
+                var getLogin = result;
+                var expired = new Date();
+                expired.setHours(expired.getHours() +2);
+                logger(expired);
+                $cookies.putObject('user', getLogin.user, {
+                    expires: expired
+                });
+                $cookies.putObject('user_profile', getLogin.user_profile, {
+                    expires: expired
+                });
+                logger($cookies.getObject('user'));
+                //remember me
+                if ($scope.rememberMe === true) {
+                    var expired = new Date();
+                    expired.setDate(expired.getDate() + 7);
+                    logger(expired);
+                    $cookies.put('username', $scope.lusername, {
+                        expires: expired
+                    });
+                    $cookies.put('password', $scope.lpassword, {
+                        expires: expired
+                    });
+                    $cookies.putObject('user', getLogin.user, {
+                        expires: expired
+                    });
+                    $cookies.putObject('user_profile', getLogin.user_profile, {
+                        expires: expired
+                    });
+                } else {
+                    $cookies.remove('username');
+                    $cookies.remove('password');
+                }
+
+                $rootScope.loginStatus = function () {
+                    return true;
+                }
+                $rootScope.globaloverlay = "";
+                $rootScope.errorSession = "";
+                $location.path('/');
+                }
+                $rootScope.globaloverlay = "";
+              });
+            });
+        },
+        // Some error, e.g. popup closed.
+        function(e) {
+          logger('hellojs login error', e);
+        }
+      );
     }
 
 
@@ -2672,6 +2770,22 @@ vdbApp.controller('registerCtrl', ['$scope', '$rootScope', '$window', 'registerS
         if ($window.sessionStorage.address_number) $scope.address_number = $window.sessionStorage.address_number;
         $scope.ondernemingsdossierID = $window.sessionStorage.ondernemingsdossierID;
 
+    }
+
+    // Load Fietsersbond oauth data, set during /login connect call for a
+    // non-existing user (username).
+    if ($window.sessionStorage.fbOauthID != undefined) {
+      if ($window.sessionStorage.username) {
+        $scope.username = $window.sessionStorage.username;
+      }
+      if ($window.sessionStorage.email) {
+        $scope.email = $window.sessionStorage.email;
+      }
+      if ($window.sessionStorage.surname) {
+        $scope.surname = $window.sessionStorage.surname;
+      }
+      $scope.fbOauthID = $window.sessionStorage.fbOauthID;
+      $scope.fbOauthStatus = 1;
     }
 
     //set default message for facebook button
