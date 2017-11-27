@@ -2883,6 +2883,14 @@ vdbApp.controller('registerCtrl', ['$scope', '$rootScope', '$window', 'registerS
               if ($scope.email == "") $scope.email = $scope.fbOauthUser.user_email;
               if ($scope.username == "") $scope.username = $scope.fbOauthUser.user_login;
               if ($scope.surname == "") $scope.surname = $scope.fbOauthUser.display_name;
+
+              // Hide the password field (show as login only with the
+              // Fietsersbond) and fill with a random string that we happen
+              // to have on hand.
+              // Password could be left empty in the future if the backend
+              // allows it.
+              $scope.password = auth.authResponse.access_token;
+              $scope.password2 = auth.authResponse.access_token;
             });
         },
         // Some error, e.g. popup closed.
