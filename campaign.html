@@ -9,11 +9,13 @@
     </div>
     <div class="panel-body">
         <div class="list-group" >
-          <a class="list-group-item clearfix" ng-repeat="cS in campaignSubmissionList">
+          <a class="list-group-item clearfix" ng-repeat="cS in campaignSubmissionList" ng-click="highlightCampaignSubmission(cS)">
             <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
             <strong>{{cS.campaign_submission.answer}}</strong>
+            <br>
             <span>{{cS.location.address}}</span>
-            <span>{{cS.campaign_submission.department_name}}</span>
+            <br>
+            <span><strong>{{cS.campaign_submission.department_name}}</strong></span>
           </a>
         </div>
     </div>  

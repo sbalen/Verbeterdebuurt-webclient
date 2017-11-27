@@ -5036,6 +5036,13 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
         },1000)
     }
 
+    // Set the map position to that of the given campaign "issue-like" item.
+    $scope.highlightCampaignSubmission = function(cS) {
+      moveMapToIssue(cS, null);
+      // `marker` is the marker on `map3`, the small map for issues.
+      marker.setPosition(issueLocationToGoogleLocation(cS.location));
+    }
+
     $scope.createIssue = function () {
         $rootScope.globaloverlay = "active";
         $scope.errorDescription = "";
