@@ -31,10 +31,11 @@ body {
   color: #000;
   white-space: nowrap;
 }
-@media (max-width: 767px) { /* match min-width 768px */
+@media (max-width: 767px) { /* match min-width 768px and .hidden-xs */
   #logo-image {
     width: auto; /* prevent .mvdblogo breaking the image */
     margin-left: -16px;
+    height: 50px;
   }
   a.navbar-brand {
     max-width: 80%;
@@ -42,6 +43,13 @@ body {
   #logo-text {
     max-width: 75%;
     position: relative;
+  }
+  span#logo-text-up,
+  span#logo-text-down {
+    display: inline;
+  }
+  span#logo-text-down::before {
+    content: " ";
   }
 }
 #logo-text-up {
