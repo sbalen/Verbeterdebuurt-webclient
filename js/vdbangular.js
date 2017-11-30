@@ -427,6 +427,12 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
                 }
             }
         })
+        .when('/campagne-melding/:slug/:cid', {
+            // N.B. before the pretty url below, because it catches
+            // this campaign id.
+            templateUrl: 'campaign.html',
+            controller: 'campaignCtrl'
+        })
         //pretty url for issue-detail
         .when('/:location/:title/:id', {
             templateUrl: 'issue_detail.html',
@@ -4854,6 +4860,37 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
     $scope.inactive_campaign_message = '';
     $scope.campaignSubmissionList = null;
     hideBackgroundImage($rootScope, 'campagne');
+    // Normally, show the form. If a specific id is given, show an
+    // existing issue instead.
+    $scope.showForm = false;
+    $scope.showId = false;
+    $scope.showIdContent = {};
+
+    // Check if we're viewing a specific existing submission.
+    // If so, get (and show) the fields instead of the form.
+    var campaign_submission_id = $routeParams.cid;
+    console.log('cSI', campaign_submission_id);
+    if ( campaign_submission_id ) {
+      $scope.showId = true;
+      var campaign_id_query = {
+        id: campaign_submission_id,
+      };
+      console.log('cSI', campaign_id_query);
+      campaign_id_query = JSON.stringify(campaign_id_query);
+      console.log(APIURL + 'getCampaignSubmission');
+      $http
+        .post(APIURL + 'getCampaignSubmission', campaign_id_query)
+        .success(function (data) {
+          console.log('cSI', 'getting data 2');
+          if (angular.isObject(data) && data.success) {
+            console.log('cSI', data);
+            $scope.showIdContent = data.campaign_submission;
+          }
+        });
+    } else {
+      $scope.showForm = true;
+    }
+
 
     // Load issues for the current active campaign.
     function get_campaign_issues() {

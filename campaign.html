@@ -9,7 +9,10 @@
     </div>
     <div class="panel-body">
         <div class="list-group" >
+          <!--
           <a class="list-group-item clearfix" ng-repeat="cS in campaignSubmissionList" ng-click="highlightCampaignSubmission(cS)">
+            -->
+            <a href="/campagne-melding/{{customisation.campaign.url_title}}/{{cS.campaign_submission.id}}" class="list-group-item clearfix" ng-repeat="cS in campaignSubmissionList">
             <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
             <strong>{{cS.campaign_submission.answer}}</strong>
             <br>
@@ -24,7 +27,7 @@
 
 	    <!-- main container -->
 	    <div class="col-lg-6 main-container marginbottom">
-	        <div class="panel panel-default main-panel margintop">
+	        <div class="panel panel-default main-panel margintop" ng-show="showForm">
              <div class="alert alert-danger {{hide}}" >
               <!-- TODO FB: ng-hide is to slow, it will flash an empty red
                             box. Switch to a hide-first method (ng-show?)
@@ -110,6 +113,20 @@
                     </div>   
                     </div>  
                      
+	        <div class="panel panel-default main-panel margintop" ng-show="showId">
+              <h1 class="marginheader meldingheader fontM">{{customisation.campaign.title}}</h1>
+              <p class="campaign-date">Deze campagne loopt van {{customisation.campaign.start_date}} t/m {{customisation.campaign.end_date}}.</p>
+              <p class="campaign-inactive" ng-show="! active_campaign">{{ inactive_campaign_message }}</p>
+              <p>{{customisation.campaign.description}}</p>
+              <hr>
+              <strong>{{showIdContent.campaign_submission.answer}}</strong>
+              <br>
+              <br>
+              <span>{{showIdContent.location.address}}</span>
+              <br>
+              <br>
+              <span>Afdeling: <strong>{{showIdContent.campaign_submission.department_name}}</strong></span>
+          </div>
 	    </div>
 	    
 	    <!--  sidebar right, if any, here -->
