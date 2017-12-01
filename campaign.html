@@ -126,6 +126,9 @@
               <br>
               <br>
               <span>Afdeling: <strong>{{showIdContent.campaign_submission.department_name}}</strong></span>
+              <br>
+              <br>
+              <img class="img-responsive" src="{{ noProtocol(showIdContent.campaign_submission.photo_url) }}" alt="Plaatje van de situatie" ng-if="showIdContent.campaign_submission.photo_url">
           </div>
 	    </div>
 	    
