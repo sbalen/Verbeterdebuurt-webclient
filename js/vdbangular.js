@@ -3200,13 +3200,13 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
                 $scope.errorLocation = issueData.errors.location;
             }
             if (issueData.errors.initials) {
-                $scope.errorInitials = "Voorsletters " + issueData.errors.initials;
+                $scope.errorInitials = "Voorletters " + issueData.errors.initials;
             }
             if (issueData.errors.owner_city) {
                 $scope.errorCity = "Plaats " + issueData.errors.owner_city;
             }
             if (issueData.errors.surname) {
-                $scope.errorSurname = "Acternaam " + issueData.errors.surname;
+                $scope.errorSurname = "Achternaam " + issueData.errors.surname;
             }
             if (issueData.errors.owner_email) {
                 $scope.errorEmail = issueData.errors.owner_email;
