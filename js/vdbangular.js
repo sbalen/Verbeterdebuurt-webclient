@@ -9,14 +9,14 @@ var vdbApp = angular.module('vdbApp',
      'angulartics', 
      'angulartics.google.analytics']);
 
-// var LOGGING = false; 
-var LOGGING = true; 
+ var LOGGING = false; 
+//var LOGGING = true; 
 
 var PROTOCOL = "https";
 // var PROTOCOL = "http";
 
-// var ROOT = "www.verbeterdebuurt.nl/";
-var ROOT = "staging.verbeterdebuurt.nl/";
+ var ROOT = "www.verbeterdebuurt.nl/";
+//var ROOT = "staging.verbeterdebuurt.nl/";
 
 var API_VERSION = "api.php/json_1_3/";
 
@@ -98,14 +98,14 @@ errorhandler = function(rootScope,errorInfo){
     } else {
         logger('showErrorHandler')
     }
-    rootScope.globaloverlay="";
+/*    rootScope.globaloverlay="";
     $("#errorModal").modal({backdrop: 'static', keyboard: false});
     $("#errorModal").modal('show');
     $("#errorModal").on('click','#errorModalRedirect',function(){
         $('#errorModal').modal('hide');
         $('.modal-backdrop').hide();
     });
-    
+*/    
 };
 
 //call google map at first 
@@ -3200,13 +3200,13 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
                 $scope.errorLocation = issueData.errors.location;
             }
             if (issueData.errors.initials) {
-                $scope.errorInitials = "Voorsletters " + issueData.errors.initials;
+                $scope.errorInitials = "Voorletters " + issueData.errors.initials;
             }
             if (issueData.errors.owner_city) {
                 $scope.errorCity = "Plaats " + issueData.errors.owner_city;
             }
             if (issueData.errors.surname) {
-                $scope.errorSurname = "Acternaam " + issueData.errors.surname;
+                $scope.errorSurname = "Achternaam " + issueData.errors.surname;
             }
             if (issueData.errors.owner_email) {
                 $scope.errorEmail = issueData.errors.owner_email;
