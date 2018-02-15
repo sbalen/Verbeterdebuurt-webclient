@@ -14,7 +14,7 @@
             -->
             <a href="/campagne-melding/{{customisation.campaign.url_title}}/{{cS.campaign_submission.id}}" class="list-group-item clearfix" ng-repeat="cS in campaignSubmissionList">
             <img class="icon" src="./img/icon_2_21_21.png" size="20px"/>
-            <strong>{{cS.campaign_submission.answer}}</strong>
+            <strong>{{cS.campaign_submission.answer ? cS.campaign_submission.answer : ''}}</strong>
             <br>
             <span>{{cS.location.address}}</span>
             <br>
@@ -119,7 +119,7 @@
               <p class="campaign-inactive" ng-show="! active_campaign">{{ inactive_campaign_message }}</p>
               <p>{{customisation.campaign.description}}</p>
               <hr>
-              <strong>{{showIdContent.campaign_submission.answer}}</strong>
+              <strong>{{showIdContent.campaign_submission.answer ? showIdContent.campaign_submission.answer : ''}}</strong>
               <br>
               <br>
               <span>{{showIdContent.location.address}}</span>
