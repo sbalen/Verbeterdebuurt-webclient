@@ -2834,7 +2834,16 @@ vdbApp.controller('registerCtrl', ['$scope', '$rootScope', '$window', 'registerS
 
     $scope.fbOauthMessages = "Koppel Fietsersbond";
     $scope.fbOauthExist = ($scope.fbOauthStatus) ? 1 : 0;
-    if ($scope.fbOauthExist) $scope.fbOauthMessages = "Gekoppeld met Fietsersbond";
+    // If already coupled with Fietsersbond when reaching the register
+    // page (i.e. fbOauthExist === 1, e.g. when trying to login with
+    // Fietsersbond without a Vdb account), authResponse.access_token
+    // is not available.
+    if ($scope.fbOauthExist) {
+      $scope.fbOauthMessages = "Gekoppeld met Fietsersbond";
+      var _access_token = Array.apply(0, Array(32)).map(function() { return (function(charset){ return charset.charAt(Math.floor(Math.random() * charset.length)) }('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789')); }).join('');
+      $scope.password = _access_token;
+      $scope.password2 = _access_token;
+    }
 
     $scope.connectFietsersbond = function () {
       // See: http://adodson.com/hello.js/modules#hellojs-already-has-you-connected
