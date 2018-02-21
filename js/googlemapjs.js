@@ -360,11 +360,16 @@ function initMainMapToSmallMapListener(smallMap) {
         map.setZoom(smallMap.getZoom());
     });
 
+    /* A change in the google maps included code causes continuous
+     * updates between the large and small map, effectively blocking
+     * any panning. As a possible solution, don't update the small map
+     * based on the large map.
     google.maps.event.addListener(map, 'bounds_changed', function (e) {
         //google.maps.event.trigger(map, 'resize')
         smallMap.setCenter(map.getCenter());
         smallMap.setZoom(map.getZoom());
     });
+    */
 
 }
 
