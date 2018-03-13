@@ -134,6 +134,11 @@ function initMap() {
     google.maps.event.addListener(map, 'zoom_changed', function() {
       toggle_stops();
     });
+
+    var data_routes = new google.maps.Data();
+    data_routes.loadGeoJson('/data/routes.geojson');
+    data_routes.setStyle({ strokeColor: '#016ab5' });
+    data_routes.setMap(map);
 }
 
 // TODO FB: add Fietsersbond map overlay. N.B. now always, make a switch
