@@ -104,13 +104,7 @@ function initMap() {
         //strokeColor: '#448',
         clickable: true,
         title: name + ' || ' + description,
-        /*
-        icon: {
-          strokeColor: '#448',
-          path: google.maps.SymbolPath.CIRCLE,
-          scale: 3
-        },
-        */
+        icon: '/img/stop.png',
       }
     });
 
