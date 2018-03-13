@@ -357,6 +357,11 @@ function googleMapCreateProblem() {
     getMarkerLocation(marker);
     markerGetAddress(marker, "location");    
 
+    var data_stops_map3 = new google.maps.Data();
+    data_stops_map3.loadGeoJson('/data/stops.geojson');
+    data_stops_map3.setStyle({icon: '/img/stop.png'});
+    data_stops_map3.setMap(map3);
+
     return marker;
 }
 
