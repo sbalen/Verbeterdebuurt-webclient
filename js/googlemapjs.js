@@ -101,13 +101,17 @@ function add_fietsersbond_maptype(to_map) {
       // Overlay paths only:
       //return "https://planner2.fietsersbond.nl/tile/NederlandTopRoadsWM/" + 
       // Full fietsersbond map:
-      return "https://planner2.fietsersbond.nl/tile/NederlandBackWM_NederlandTopRoadsWM/" + 
-             zoom + "/" + coord.x + "/" + coord.y;
+      //return "https://planner2.fietsersbond.nl/tile/NederlandBackWM_NederlandTopRoadsWM/" + 
+      //       zoom + "/" + coord.x + "/" + coord.y;
+      // See https://api.datapunt.amsterdam.nl/api, use t1-t4
+      return "https://t2.data.amsterdam.nl/topo_wm_light/" +
+             zoom + "/" + coord.x + "/" + coord.y + ".png";
     },
     tileSize: new google.maps.Size(256, 256),
     maxZoom: ZOOM_MAX,
     minZoom: ZOOM_INIT,
-    name: 'fietsersbondmaptype'
+    //name: 'fietsersbondmaptype'
+    name: 'gvbmaptype'
   });
 
   // Above the current mapType:
