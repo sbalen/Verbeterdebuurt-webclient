@@ -90,7 +90,43 @@ function initMap() {
     var mapObject = document.getElementById('googlemaps');
 
     map = new google.maps.Map(mapObject, mapOptions);
-    add_fietsersbond_maptype(map);
+    //add_fietsersbond_maptype(map);
+
+    var data_stops = new google.maps.Data();
+    data_stops.loadGeoJson('/data/stops.geojson');
+    data_stops.setStyle(function(feature) {
+      // f: {…}
+      //   description: "Stop id: GVB:00651"
+      //   name: "Weesp, Casparuslaan"
+      var name = feature.getProperty('name');
+      var description = feature.getProperty('description');
+      return {
+        //strokeColor: '#448',
+        title: name + ' || ' + description,
+        icon: {
+          strokeColor: '#448',
+          path: google.maps.SymbolPath.CIRCLE,
+          scale: 3
+        },
+      }
+    });
+    function toggle_stops() {
+      if ( map.getZoom() > 16 ) {
+        if ( ! data_stops.getMap() ) {
+          console.log('enable');
+          data_stops.setMap(map);
+        }
+      } else {
+        if ( data_stops.getMap() ) {
+          console.log('disable');
+          data_stops.setMap(null);
+        }
+      }
+    }
+    toggle_stops();
+    google.maps.event.addListener(map, 'zoom_changed', function() {
+      toggle_stops();
+    });
 }
 
 // TODO FB: add Fietsersbond map overlay. N.B. now always, make a switch
