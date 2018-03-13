@@ -102,16 +102,29 @@ function initMap() {
       var description = feature.getProperty('description');
       return {
         //strokeColor: '#448',
+        clickable: true,
         title: name + ' || ' + description,
+        /*
         icon: {
           strokeColor: '#448',
           path: google.maps.SymbolPath.CIRCLE,
           scale: 3
         },
+        */
       }
     });
+
+    data_stops.addListener('click', function(event) {
+      var name = event.feature.getProperty('name');
+      var id = event.feature.getProperty('description').substr(9);
+      var pos = event.feature.getGeometry().get();
+      var url = '/nieuw-probleem/'+pos.lat()+'/'+pos.lng()+'/'+id+'/'+name;
+      window.location = url;
+    });
+
     function toggle_stops() {
-      if ( map.getZoom() > 16 ) {
+      //if ( map.getZoom() > 16 ) {
+      if ( map.getZoom() > 8 ) {
         if ( ! data_stops.getMap() ) {
           console.log('enable');
           data_stops.setMap(map);

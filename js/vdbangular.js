@@ -378,6 +378,11 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
             templateUrl: 'create_problem.html',
             controller: 'createProblemCtrl'
         })
+        // Special route for gvb stop click.
+        .when('/nieuw-probleem/:latitude/:longitude/:gvbid/:gvbname', {
+            templateUrl: 'create_problem.html',
+            controller: 'createProblemCtrl'
+        })
         .when('/nieuw-idee', {
             templateUrl: 'create_idea.html',
             controller: 'createIdeaCtrl'
@@ -3465,6 +3470,15 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
         $rootScope.dynamicTitle = "Nieuw probleem |";
     }
     $rootScope.lastUrl = $location.path();
+
+    // $routeParams.latitude are used in mainController.determineStartLocation
+    if ( $routeParams.gvbid ) {
+      console.log('cPC',$routeParams.latitude);
+      console.log('cPC',$routeParams.longitude);
+      console.log('cPC',$routeParams.gvbid);
+      console.log('cPC',$routeParams.gvbname);
+      $scope.description = "ID: "+$routeParams.gvbid+"\nNaam: "+$routeParams.gvbname;
+    }
 
     $scope.hide = "ng-hide";
     $scope.issueName = "Probleem"
