@@ -285,8 +285,11 @@ body {
 .customisation.gvb .footer {
   border-color: #016ab5;
 }
+.customisation.gvb div.footer.container {
+  display: none;
+}
 .customisation.gvb .footer .verbeterdebuurt {
-  display: block;
+  display: none;
 }
 .customisation.gvb .footer .fietsersbond {
   display: none;
