@@ -127,6 +127,10 @@ vdbApp.run(['$location', '$rootScope', function($location, $rootScope) {
     }
     logger('customisation','fietsersbond');
 
+  } else if ($location.host().substring(0,3) == "gvb") {
+    $rootScope.customisation = CUSTOMISATION_SETTINGS.gvb;
+    logger('customisation','gvb');
+
   // By default, set the normal (i.e. no) customisation.
   } else {
     $rootScope.customisation = CUSTOMISATION_SETTINGS.verbeterdebuurt;

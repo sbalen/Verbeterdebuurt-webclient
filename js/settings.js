@@ -39,6 +39,16 @@ var CUSTOMISATION_SETTINGS = {
     campaign: { },
     signature: 'De Fietsersbond',
   },
+  gvb: {
+    organisation_id: 0,
+    name: 'gvb',
+    class: 'customisation gvb',
+    logo_src: '/img/gvb-logo.svg',
+    logo_text_up: '',
+    logo_text_down: '',
+    campaign: { },
+    signature: 'Infra-meldpunt',
+  },
 };
 
 var OAUTH_ID_FIETSERSBOND = 'HDyzFGgSEFqWGgBLDleCTRnJLXagft';

@@ -206,3 +206,95 @@ body {
 .customisation.fietsersbond .footer .fietsersbond {
   display: block;
 }
+
+/* Hide all buttons on the campaign page. */
+.customisation.gvb.campaign #subnav-items button {
+  display: none;
+}
+/* Fietsersbond specific styling rules. */
+/* Update: undo Kaart/Rapportage button changes for now.
+ * Rapportage will be added later, but maybe not in the menu.
+.customisation.gvb #rapportage-button,
+.customisation.gvb #responsive-rapportage-button {
+  display: block;
+}
+.customisation.gvb #map-button,
+.customisation.gvb #responsive-map-button {
+  display: none;
+}
+*/
+/* Fietsersbond colour scheme. */
+.customisation.gvb .subnav,
+.customisation.gvb .side-panel .panel-heading {
+  background-color: #016ab5;
+  color: #fff;
+  border-color: #fff;
+  border: none;
+}
+.customisation.gvb .navbar-default .navbar-nav > li > a {
+  color: #016ab5;
+}
+.customisation.gvb .main-panel,
+.customisation.gvb .side-panel {
+  border-color: #016ab5;
+}
+.customisation.gvb .subnav .sub-nav-btn {
+  border-color: #fff;
+  background-color: #016ab5;
+  color: #231f0;
+  border-bottom: none;
+}
+.customisation.gvb .subnav .sub-nav-btn.active {
+  color: #231f20 !important; /* Override already defiend !important.. */
+}
+.customisation.gvb #background-customisation-image {
+  background: none;
+  display: block; 
+}
+/* Customise the logo, e.g. positioning or size. */
+.customisation.gvb #logo-image {
+  margin-top: -15px;
+  height: 50px;
+}
+/* Responsive menu. */
+.customisation.gvb .navbar-default .navbar-toggle .icon-bar {
+  background-color: #016ab5;
+}
+.customisation.gvb .navbar-default .navbar-nav > li > a {
+  background-color: #fff;
+  color: #231f20;
+}
+.customisation.gvb .navbar-default .navbar-nav > li.active > a {
+  background-color: #016ab5;
+}
+.customisation.gvb .btn-default1 {
+  border-color: #016ab5;
+  color: #231f20;
+}
+.customisation.gvb ul.dropdown-menu {
+  background-color: #016ab5;
+  color: #231f20;
+}
+.customisation.gvb ul.dropdown-menu > li > a:hover,
+.customisation.gvb .dropdown-menu > li > a:focus {
+  color: #231f20 !important;
+}
+.customisation.gvb .btn-xs.btn-success {
+  border-color: #016ab5;
+  background-color: #016ab5;
+  color: #fff;
+}
+/* Hide colofon on gvb.
+ * TODO FB: only hide, or really remove? */
+.customisation.gvb .footer {
+  border-color: #016ab5;
+}
+.customisation.gvb .footer .verbeterdebuurt {
+  display: block;
+}
+.customisation.gvb .footer .fietsersbond {
+  display: none;
+}
+.customisation.gvb .footer .gvb { /* todo: create */
+  display: none;
+}
