@@ -207,22 +207,18 @@ body {
   display: block;
 }
 
-/* Hide all buttons on the campaign page. */
+/* GVB */
 .customisation.gvb.campaign #subnav-items button {
   display: none;
 }
-/* Fietsersbond specific styling rules. */
-/* Update: undo Kaart/Rapportage button changes for now.
- * Rapportage will be added later, but maybe not in the menu.
 .customisation.gvb #rapportage-button,
 .customisation.gvb #responsive-rapportage-button {
-  display: block;
-}
-.customisation.gvb #map-button,
-.customisation.gvb #responsive-map-button {
   display: none;
 }
-*/
+.customisation.gvb #my-button,
+.customisation.gvb #responsive-my-button {
+  display: none;
+}
 /* Fietsersbond colour scheme. */
 .customisation.gvb .subnav,
 .customisation.gvb .side-panel .panel-heading {
@@ -249,7 +245,7 @@ body {
 }
 .customisation.gvb #background-customisation-image {
   background: none;
-  display: block; 
+  display: none; 
 }
 /* Customise the logo, e.g. positioning or size. */
 .customisation.gvb #logo-image {
