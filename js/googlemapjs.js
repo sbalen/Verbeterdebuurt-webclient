@@ -366,6 +366,10 @@ function googleMapCreateProblem() {
     data_stops_map3.loadGeoJson('/data/stops.geojson');
     data_stops_map3.setStyle({icon: '/img/stop.png'});
     data_stops_map3.setMap(map3);
+    var data_routes_map3 = new google.maps.Data();
+    data_routes_map3.loadGeoJson('/data/routes.geojson');
+    data_routes_map3.setStyle({ strokeColor: '#016ab5' });
+    data_routes_map3.setMap(map3);
 
     return marker;
 }
