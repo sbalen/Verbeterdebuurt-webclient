@@ -139,6 +139,18 @@ function initMap() {
     data_routes.loadGeoJson('/data/routes.geojson');
     data_routes.setStyle({ strokeColor: '#016ab5' });
     data_routes.setMap(map);
+    data_routes.addListener('click', function(event) {
+      try {
+        console.log(event.feature);
+        var id = event.feature.getProperty('name');
+        var name = event.feature.getProperty('description').substr(0,50)+'...';
+        var pos = event.latLng;
+        var url = '/nieuw-probleem/'+pos.lat()+'/'+pos.lng()+'/'+id+'/'+name;
+        window.location = url;
+      } catch(e) {
+        console.log('no getProperty, multiple selected?');
+      }
+    });
 }
 
 // TODO FB: add Fietsersbond map overlay. N.B. now always, make a switch
