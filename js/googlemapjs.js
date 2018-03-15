@@ -616,8 +616,25 @@ function moveMapToBrowserLocation($rootScope,$q,withFallBack,callBack) {
 }
 
 function moveMapToLocation(location,callBack,boundsToFitTo) {
-    logger("moveMapToLocation("+location.lat+","+location.lng+")");
-    map.panTo(location);
+    logger("moveMapToLocation("+location.lat()+","+location.lng()+")");
+    // Update: the map move on geolocations moves the large map.
+    // The small maps can't directly listen to the large map anymore,
+    // so we have to set them manually. Check for the small maps below:
+    // - map is the main map
+    // - map3 is the CreateProblem map
+    // - map4 is the CreateIdea map
+    if ( typeof map3 !== 'undefined' ) {
+      logger('moveMapToLocation: map3 (problem)');
+      map3.panTo(location);
+    }
+    if ( typeof map4 !== 'undefined' ) {
+      logger('moveMapToLocation: map4 (idea)');
+      map4.panTo(location);
+    }
+    if ( typeof map3 === 'undefined' && typeof map4 === 'undefined' ) {
+      logger('moveMapToLocation: map (main)');
+      map.panTo(location);
+    }
     //map.setCenter(location);
     determineCityForGeocode(callBack,boundsToFitTo);
 }
