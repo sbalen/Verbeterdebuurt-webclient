@@ -350,6 +350,10 @@ function googleMapCreateIdea() {
     getMarkerLocation(marker);
     markerGetAddress(marker, "location2");
     var tempurl = window.location.pathname.replace('nieuw-idee','');
+    // Update: return the marker (as with createProblem). This marker
+    // is ultimately passed to the autocomplete google search listener,
+    // that will update the marker position on the small map.
+    return marker;
 }
 
 function initMainMapToSmallMapListener(smallMap) {
