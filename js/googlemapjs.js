@@ -93,7 +93,7 @@ function initMap() {
     //add_fietsersbond_maptype(map);
 
     var data_stops = new google.maps.Data();
-    data_stops.loadGeoJson('/data/stops.geojson');
+    data_stops.loadGeoJson('/data/stops_rich.geojson');
     data_stops.setStyle(function(feature) {
       // f: {…}
       //   description: "Stop id: GVB:00651"
@@ -104,7 +104,7 @@ function initMap() {
         //strokeColor: '#448',
         clickable: true,
         title: name + ' || ' + description,
-        icon: '/img/stop.png',
+        icon: feature.getProperty('is_stoparea') ? '/img/stoparea.png' : '/img/stop.png',
       }
     });
 
@@ -375,8 +375,16 @@ function googleMapCreateProblem() {
     markerGetAddress(marker, "location");    
 
     var data_stops_map3 = new google.maps.Data();
-    data_stops_map3.loadGeoJson('/data/stops.geojson');
-    data_stops_map3.setStyle({icon: '/img/stop.png'});
+    data_stops_map3.loadGeoJson('/data/stops_rich.geojson');
+    data_stops_map3.setStyle(function(feature) {
+      var name = feature.getProperty('name');
+      var description = feature.getProperty('description');
+      return {
+        clickable: false,
+        title: name + ' || ' + description,
+        icon: feature.getProperty('is_stoparea') ? '/img/stoparea.png' : '/img/stop.png',
+      }
+    });
     data_stops_map3.setMap(map3);
     var data_routes_map3 = new google.maps.Data();
     data_routes_map3.loadGeoJson('/data/routes.geojson');
