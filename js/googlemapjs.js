@@ -31,6 +31,9 @@ markers = null;
 markers = [];
 markerid = [];
 
+// Update de function definition below when loading the actual data stops.
+var gvb_update_data_stops_style = function(line_id){return false};
+
 
 //simple translation func
 function __t(str) {
@@ -68,6 +71,33 @@ function issueLocationToGoogleBounds(issueLocation) {
             west: issueLocation.longitude };    
 }
 
+
+function gvb_create_stop_style(line_id) {
+  return function(feature) {
+      // f: {…}
+      //   description: "Stop id: GVB:00651"
+      //   name: "Weesp, Casparuslaan"
+      var name = feature.getProperty('name');
+      var description = feature.getProperty('description');
+      // If the line_id was given during function generation, hide
+      // stops that do not match a line.
+      var visible = true;
+      if ( line_id && line_id !== '-' && feature.getProperty('lines').indexOf(line_id) < 0 ) {
+        visible = false;
+      }
+      return {
+        //strokeColor: '#448',
+        clickable: true,
+        title: name + ' || ' + description,
+        icon: feature.getProperty('is_stoparea') ? '/img/stoparea.png' : '/img/stop.png',
+        visible: visible,
+      }
+  };
+}
+
+function gvb_create_line_listener() {
+}
+
 function initMap() {
     logger("initMap");
 
@@ -94,19 +124,12 @@ function initMap() {
 
     var data_stops = new google.maps.Data();
     data_stops.loadGeoJson('/data/stops_rich.geojson');
-    data_stops.setStyle(function(feature) {
-      // f: {…}
-      //   description: "Stop id: GVB:00651"
-      //   name: "Weesp, Casparuslaan"
-      var name = feature.getProperty('name');
-      var description = feature.getProperty('description');
-      return {
-        //strokeColor: '#448',
-        clickable: true,
-        title: name + ' || ' + description,
-        icon: feature.getProperty('is_stoparea') ? '/img/stoparea.png' : '/img/stop.png',
-      }
-    });
+    data_stops.setStyle( gvb_create_stop_style('') );
+    // Make setting the data_stops style available through the 
+    // (global..) function below.
+    gvb_update_data_stops_style = function(line_id) {
+      data_stops.setStyle( gvb_create_stop_style(line_id) );
+    };
 
     data_stops.addListener('click', function(event) {
       var name = event.feature.getProperty('name');

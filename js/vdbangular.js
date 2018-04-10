@@ -1246,6 +1246,18 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
       }
     }
 
+    function setup_gvb_lines() {
+      // Track the selected line
+      $scope.gvbLinesState = {
+        // Only active on fietsersbond.
+        show: $rootScope.customisation.organisation_id === 2,
+        selectedId: '-', // Value model for the select
+        preClickId: '-', // Value set by council-based update
+        list: ['-', '1','2','3','4','5','7','9','10','12','13','14','15','17','18','21','22','24','26','30','31','32','33','34','35','36','37','38','40','41','44','47','48','49','50','51','53','54','61','62','63','65','66','69','231','240','245','246','247','248','249','269','461','463','464','465','748','752','753','754','755','757','758','759','761','763','900','901','902','903','905','906','907','909','910','911','912','913','914','915'],
+        dict: {},
+      }
+    }
+
     mainController.init = function() {
         logger("mainController.init");
 
@@ -1277,7 +1289,10 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
             });
         },10);
 
+        // Set Fietsersbond departments
         setup_departments();
+        // Set GVB lines
+        setup_gvb_lines();
     }
 
     mainController.rewritePathForCouncil = function() {
@@ -1367,6 +1382,19 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
           moveMapToAddress(new_department.council, false, function() {
             map.setZoom(new_department.zoom);
           });
+        }
+      }
+    }
+
+    $scope.gvbLinesSelectionClick = function () {
+      logger('gvbLinesSelectionClick old new', $scope.gvbLinesState.preClickId, $scope.gvbLinesState.selectedId);
+      if ( $scope.gvbLinesState.selectedId &&
+           $scope.gvbLinesState.selectedId !== $scope.gvbLinesState.preClickId ) {
+        var new_gvbLines = $scope.gvbLinesState.selectedId;
+        $scope.gvbLinesState.preClickId = $scope.gvbLinesState.selectedId;
+        logger('gvbLinesSelectionClick show', new_gvbLines);
+        if ( new_gvbLines ) {
+          gvb_update_data_stops_style(new_gvbLines );
         }
       }
     }

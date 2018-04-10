@@ -40,7 +40,7 @@ var CUSTOMISATION_SETTINGS = {
     signature: 'De Fietsersbond',
   },
   gvb: {
-    organisation_id: 0,
+    organisation_id: 2,
     name: 'gvb',
     class: 'customisation gvb',
     logo_src: '/img/gvb-logo.svg',
