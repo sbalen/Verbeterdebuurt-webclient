@@ -33,6 +33,7 @@ markerid = [];
 
 // Update de function definition below when loading the actual data stops.
 var gvb_update_data_stops_style = function(line_id){return false};
+var gvb_set_data_stops_listener = function(_listener){return false};
 
 
 //simple translation func
@@ -122,6 +123,8 @@ function initMap() {
     map = new google.maps.Map(mapObject, mapOptions);
     //add_fietsersbond_maptype(map);
 
+    // TODO: move all GVB data stops etc. logic to a separate
+    // init function. Similar for Fietsersbond.
     var data_stops = new google.maps.Data();
     data_stops.loadGeoJson('/data/stops_rich.geojson');
     data_stops.setStyle( gvb_create_stop_style('') );
@@ -130,14 +133,13 @@ function initMap() {
     gvb_update_data_stops_style = function(line_id) {
       data_stops.setStyle( gvb_create_stop_style(line_id) );
     };
-
-    data_stops.addListener('click', function(event) {
-      var name = event.feature.getProperty('name');
-      var id = event.feature.getProperty('description').substr(9);
-      var pos = event.feature.getGeometry().get();
-      var url = '/nieuw-probleem/'+pos.lat()+'/'+pos.lng()+'/'+id+'/'+name;
-      window.location = url;
-    });
+    // Make setting the data_stops click listenere available through
+    // the (global..) function below.
+    gvb_set_data_stops_listener = function(_listener) {
+      // Remove existing listeners (this function is called many times..)
+      google.maps.event.clearListeners(data_stops, 'click');
+      data_stops.addListener('click', _listener);
+    };
 
     function toggle_stops() {
       //if ( map.getZoom() > 16 ) {

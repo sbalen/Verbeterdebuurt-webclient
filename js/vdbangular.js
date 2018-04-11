@@ -379,7 +379,7 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
             controller: 'createProblemCtrl'
         })
         // Special route for gvb stop click.
-        .when('/nieuw-probleem/:latitude/:longitude/:gvbid/:gvbname', {
+        .when('/nieuw-probleem/gvb/:latitude/:longitude/:gvbid', {
             templateUrl: 'create_problem.html',
             controller: 'createProblemCtrl'
         })
@@ -1208,7 +1208,8 @@ vdbApp.run(['$rootScope', '$window', function ($rootScope, $window) {
 
     }]);
 
-vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location', '$rootScope', '$routeParams', '$http', 'issuesService', 'reportService', '$facebook', '$cacheFactory', 'agreementSevice', '$cookies','myIssuesService', 'departmentsService', 'departmentReportsService', function ($scope, $q,$timeout, $window, $location, $rootScope, $routeParams, $http, issuesService, reportService, $facebook, $cacheFactory, agreementSevice, $cookies, myIssuesService, departmentsService, departmentReportsService) {
+vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location', '$rootScope', '$routeParams', '$http', 'issuesService', 'reportService', '$facebook', '$cacheFactory', '$location', 'agreementSevice', '$cookies','myIssuesService', 'departmentsService', 'departmentReportsService', function ($scope, $q,$timeout, $window, $location, $rootScope, $routeParams, $http, issuesService, reportService, $facebook, $cacheFactory, $location, agreementSevice, $cookies, myIssuesService, departmentsService, departmentReportsService) {
+
     
     var mainController = this;
 
@@ -1258,6 +1259,20 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
       }
     }
 
+    function setup_gvb_listeners() {
+      if ( $rootScope.customisation.organisation_id === 2 ) {
+        gvb_set_data_stops_listener(function(event) {
+          $rootScope.clickedGvbStop = event.feature.f;
+          var id = event.feature.getProperty('gvb_id');
+          var pos = event.feature.getGeometry().get();
+          var url = '/nieuw-probleem/gvb/'+pos.lat()+'/'+pos.lng()+'/'+id;
+          $location.path(url);
+          // TODO: find out why rootscope apply is necessary here.
+          $rootScope.$apply();
+        });
+      }
+    }
+
     mainController.init = function() {
         logger("mainController.init");
 
@@ -1293,6 +1308,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
         setup_departments();
         // Set GVB lines
         setup_gvb_lines();
+        setup_gvb_listeners();
     }
 
     mainController.rewritePathForCouncil = function() {
@@ -3501,11 +3517,10 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
 
     // $routeParams.latitude are used in mainController.determineStartLocation
     if ( $routeParams.gvbid ) {
-      console.log('cPC',$routeParams.latitude);
-      console.log('cPC',$routeParams.longitude);
-      console.log('cPC',$routeParams.gvbid);
-      console.log('cPC',$routeParams.gvbname);
-      $scope.description = "ID: "+$routeParams.gvbid+"\nNaam: "+$routeParams.gvbname;
+      $scope.description = "ID: "+$routeParams.gvbid+"\n\n";
+      angular.forEach($rootScope.clickedGvbStop, function(v,k) {
+        $scope.description += k + ' : ' + v + "\n";
+      });
     }
 
     $scope.hide = "ng-hide";
