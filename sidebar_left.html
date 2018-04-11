@@ -15,7 +15,7 @@
         <div class="panel-body" ng-show="gvbLinesState.show">
           <div class="list-group report-list-council" style="margin-bottom:0;">
             <strong>Kies een lijn</strong><br>
-            <select class="combobox" id="gvbLines-select" ng-model="gvbLinesState.selectedId" ng-options="gvbLines as gvbLines for gvbLines in gvbLinesState.list" ng-click="gvbLinesSelectionClick()">
+            <select class="combobox" id="gvbLines-select" ng-model="gvbLinesState.selectedId" ng-options="gvbLines as gvbLines for gvbLines in gvbLinesState.list" ng-change="gvbLinesSelectionClick()">
             </select>
           </div>
         </div>
