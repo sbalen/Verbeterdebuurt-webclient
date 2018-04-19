@@ -1,4 +1,6 @@
-var ZOOM_PINS_VISIBLE = 14; 
+// TODO FB: make zoom_pins_visible etc site-specific configuration option.
+//var ZOOM_PINS_VISIBLE = 14;
+var ZOOM_PINS_VISIBLE = 12;
 var ZOOM_ISSUES_RETRIEVABLE = 12;
 var ZOOM_START = 15;
 var ZOOM_MAX = 17;
