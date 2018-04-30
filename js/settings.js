@@ -18,6 +18,7 @@ var RECENT_ISSUES_TO_SHOW = 3;
 
 // Customer specific settings, hardcoded for now. These settings
 // will be read throughout the application to determine custom display options.
+var CUSTOMISATION_SITE = "gvb";
 var CUSTOMISATION_SETTINGS = {
   verbeterdebuurt: {
     organisation_id: 0, // Sent with new issues etc. as organisation_id.

@@ -109,8 +109,13 @@ errorhandler = function(rootScope,errorInfo){
 // Run this first, to prevent unnecessary page updates.
 vdbApp.run(['$location', '$rootScope', function($location, $rootScope) {
 
+  // Customisation per settings
+  if ( CUSTOMISATION_SITE ) {
+    $rootScope.customisation = CUSTOMISATION_SETTINGS[CUSTOMISATION_SITE];
+    logger('customisation',CUSTOMISATION_SITE);
+
   // Customisation: Fietsersbond.
-  if ($location.host().substring(0,12) == "fietsersbond") {
+  } else if ($location.host().substring(0,12) == "fietsersbond") {
     $rootScope.customisation = CUSTOMISATION_SETTINGS.fietsersbond;
     // Redirect to the default page for the Fietsersbond, if the
     // current path is /, and if wanted. Was: to /nieuw-probleem,
