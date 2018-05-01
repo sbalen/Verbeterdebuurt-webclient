@@ -300,3 +300,9 @@ body {
 .customisation.gvb #menu-register-link {
   display: none;
 }
+.customisation.gvb #login-facebook-button {
+  display: none;
+}
+.customisation.gvb #login-fietsersbond-button {
+  display: none;
+}

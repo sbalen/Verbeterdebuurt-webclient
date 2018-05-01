@@ -2512,10 +2512,12 @@ vdbApp.controller('loginCtrl', ['$scope', '$rootScope', '$window', 'loginService
     });
 
     $scope.FBlogin = function () {
+      if ( $rootScope.customisation.name === 'gvb' ) { return; }
         $facebook.login();
     }
 
     $scope.FietsersbondLogin = function () {
+      if ( $rootScope.customisation.name === 'gvb' ) { return; }
       logger('login with fietsersbond oauth');
       hello.init({
         fietsersbond: {
