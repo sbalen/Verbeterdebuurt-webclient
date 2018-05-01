@@ -300,6 +300,9 @@ body {
 .customisation.gvb #menu-register-link {
   display: none;
 }
+.customisation.gvb #login-register-button {
+  display: none;
+}
 .customisation.gvb #login-facebook-button {
   display: none;
 }
