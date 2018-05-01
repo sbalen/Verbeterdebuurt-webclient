@@ -75,11 +75,8 @@ function issueLocationToGoogleBounds(issueLocation) {
 
 function gvb_create_stop_style(line_id) {
   return function(feature) {
-      // f: {…}
-      //   description: "Stop id: GVB:00651"
-      //   name: "Weesp, Casparuslaan"
-      var name = feature.getProperty('name');
-      var description = feature.getProperty('description');
+      var destinations = feature.getProperty('destinations');
+      var title = feature.getProperty('gvb_id') + ' / ' + feature.getProperty('name') + ' / ' + destinations.join(', ');
       // If the line_id was given during function generation, hide
       // stops that do not match a line.
       var visible = true;
@@ -89,7 +86,7 @@ function gvb_create_stop_style(line_id) {
       return {
         //strokeColor: '#448',
         clickable: true,
-        title: name + ' || ' + description,
+        title: title,
         icon: feature.getProperty('is_stoparea') ? '/img/stoparea.png' : '/img/stop.png',
         visible: visible,
       }
