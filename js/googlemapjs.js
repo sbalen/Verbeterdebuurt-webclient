@@ -126,7 +126,7 @@ function initMap() {
     // TODO: move all GVB data stops etc. logic to a separate
     // init function. Similar for Fietsersbond.
     var data_stops = new google.maps.Data();
-    data_stops.loadGeoJson('/data/stops_rich.geojson');
+    data_stops.loadGeoJson('/data/stops.geojson');
     data_stops.setStyle( gvb_create_stop_style('') );
     // Make setting the data_stops style available through the 
     // (global..) function below.
@@ -400,7 +400,7 @@ function googleMapCreateProblem() {
     markerGetAddress(marker, "location");    
 
     var data_stops_map3 = new google.maps.Data();
-    data_stops_map3.loadGeoJson('/data/stops_rich.geojson');
+    data_stops_map3.loadGeoJson('/data/stops.geojson');
     data_stops_map3.setStyle(function(feature) {
       var name = feature.getProperty('name');
       var description = feature.getProperty('description');
