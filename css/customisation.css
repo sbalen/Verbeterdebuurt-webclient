@@ -297,3 +297,6 @@ body {
 .customisation.gvb .footer .gvb { /* todo: create */
   display: none;
 }
+.customisation.gvb #menu-register-link {
+  display: none;
+}
