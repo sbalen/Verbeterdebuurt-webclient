@@ -1267,9 +1267,18 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
     function setup_gvb_listeners() {
       if ( $rootScope.customisation.organisation_id === 2 ) {
         gvb_set_data_stops_listener(function(event) {
-          $rootScope.clickedGvbStop = event.feature.f;
+          $rootScope.clickedGvbObject = event.feature.f;
           var id = event.feature.getProperty('gvb_id');
           var pos = event.feature.getGeometry().get();
+          var url = '/nieuw-probleem/gvb/'+pos.lat()+'/'+pos.lng()+'/'+id;
+          $location.path(url);
+          // TODO: find out why rootscope apply is necessary here.
+          $rootScope.$apply();
+        });
+        gvb_set_data_routes_listener(function(event) {
+          $rootScope.clickedGvbObject = event.feature.f;
+          var id = event.feature.getProperty('route_id');
+          var pos = event.latLng;
           var url = '/nieuw-probleem/gvb/'+pos.lat()+'/'+pos.lng()+'/'+id;
           $location.path(url);
           // TODO: find out why rootscope apply is necessary here.
@@ -1415,7 +1424,8 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
         $scope.gvbLinesState.preClickId = $scope.gvbLinesState.selectedId;
         logger('gvbLinesSelectionClick show', new_gvbLines);
         if ( new_gvbLines ) {
-          gvb_update_data_stops_style(new_gvbLines );
+          gvb_update_data_stops_style(new_gvbLines);
+          gvb_update_data_routes_style(new_gvbLines);
         }
       }
     }
@@ -3525,8 +3535,8 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
     // $routeParams.latitude are used in mainController.determineStartLocation
     if ( $routeParams.gvbid ) {
       $scope.description = "ID: "+$routeParams.gvbid+"\n\n";
-      $scope.title = "Melding bij: "+$rootScope.clickedGvbStop.name;
-      angular.forEach($rootScope.clickedGvbStop, function(v,k) {
+      $scope.title = "Melding bij: "+$rootScope.clickedGvbObject.name;
+      angular.forEach($rootScope.clickedGvbObject, function(v,k) {
         $scope.description += k + ' : ' + v + "\n";
       });
     }

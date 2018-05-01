@@ -34,6 +34,8 @@ markerid = [];
 // Update de function definition below when loading the actual data stops.
 var gvb_update_data_stops_style = function(line_id){return false};
 var gvb_set_data_stops_listener = function(_listener){return false};
+var gvb_update_data_routes_style = function(line_id){return false};
+var gvb_set_data_routes_listener = function(_listener){return false};
 
 
 //simple translation func
@@ -93,7 +95,30 @@ function gvb_create_stop_style(line_id) {
   };
 }
 
-function gvb_create_line_listener() {
+function gvb_create_route_style(line_id) {
+  return function(feature) {
+      var trips = feature.getProperty('trips');
+      var title = feature.getProperty('route_id') + ' / ' + ' / ' + trips.join(', ');
+      // If the line_id was given during function generation, hide
+      // stops that do not match a line.
+      var visible = true;
+      if ( line_id && line_id !== '-' && feature.getProperty('lines').indexOf(line_id) < 0 ) {
+        visible = false;
+      }
+      // N.B. maybe remove the "patterns" := absolute distance lines
+      // entirely.
+      var colour = feature.getProperty('is_pattern') ? '#ff0000' : '#016ab5';
+      if ( feature.getProperty('is_pattern') ) {
+        visible = false;
+      }
+
+      return {
+        strokeColor: colour,
+        clickable: true,
+        title: title,
+        visible: visible,
+      }
+  };
 }
 
 function initMap() {
@@ -138,40 +163,38 @@ function initMap() {
       data_stops.addListener('click', _listener);
     };
 
+    var data_routes = new google.maps.Data();
+    data_routes.loadGeoJson('/data/routes.geojson');
+    data_routes.setStyle( gvb_create_route_style('') );
+    gvb_update_data_routes_style = function(line_id) {
+      data_routes.setStyle( gvb_create_route_style(line_id) );
+    };
+    gvb_set_data_routes_listener = function(_listener) {
+      google.maps.event.clearListeners(data_routes, 'click');
+      data_routes.addListener('click', _listener);
+    };
+
     function toggle_stops() {
       //if ( map.getZoom() > 16 ) {
       if ( map.getZoom() > 8 ) {
         if ( ! data_stops.getMap() ) {
-          console.log('enable');
           data_stops.setMap(map);
+        }
+        if ( ! data_routes.getMap() ) {
+          data_routes.setMap(map);
         }
       } else {
         if ( data_stops.getMap() ) {
-          console.log('disable');
           data_stops.setMap(null);
+        }
+        if ( data_routes.getMap() ) {
+          data_routes.setMap(null);
         }
       }
     }
     toggle_stops();
     google.maps.event.addListener(map, 'zoom_changed', function() {
       toggle_stops();
-    });
-
-    var data_routes = new google.maps.Data();
-    data_routes.loadGeoJson('/data/routes.geojson');
-    data_routes.setStyle({ strokeColor: '#016ab5' });
-    data_routes.setMap(map);
-    data_routes.addListener('click', function(event) {
-      try {
-        console.log(event.feature);
-        var id = event.feature.getProperty('name');
-        var name = event.feature.getProperty('description').substr(0,50)+'...';
-        var pos = event.latLng;
-        var url = '/nieuw-probleem/'+pos.lat()+'/'+pos.lng()+'/'+id+'/'+name;
-        window.location = url;
-      } catch(e) {
-        console.log('no getProperty, multiple selected?');
-      }
     });
 }
 
