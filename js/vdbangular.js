@@ -142,20 +142,7 @@ vdbApp.run(['$location', '$rootScope', '$cookies', function($location, $rootScop
     logger('customisation','verbeterdebuurt');
   }
 
-  // GVB: on the GVB pages, redirect to the login if not logged in
-  console.log('tmp', $rootScope.customisation.name);
-  console.log('tmp', $cookies.getObject('user'));
-  console.log('tmp', $location.path().substring(0,15));
-  if ( $rootScope.customisation.name === 'gvb' ) {
-    if ( ! $cookies.getObject('user') ) {
-      //if ( $location.path().substring(0,6) !== '/login' ) {
-      // tmp, only on the nieuwe-melding page.
-      if ( $location.path().substring(0,15) === '/nieuwe-melding' ) {
-        window.location = '/login';
-      }
-    }
-  }
-
+  CUSTOMISATION_GVB.check_login($rootScope, $cookies, $location);
 }]);
 
 
