@@ -1,14 +1,14 @@
 // var LOGGING = false; 
 var LOGGING = true; 
 
-var PROTOCOL = "https";
-// var PROTOCOL = "http";
+// var PROTOCOL = "https";
+var PROTOCOL = "http";
 
 // var ROOT = "www.verbeterdebuurt.nl/";
 //var ROOT = "staging.verbeterdebuurt.nl/";
 var ROOT = "staging.infra-meldpunt.nl/"
 
-var API_VERSION = "api.php/json_1_3/";
+var API_VERSION = "api.php/json_1_2/";
 
 var APIURL = PROTOCOL + "://" + ROOT + API_VERSION;
 
