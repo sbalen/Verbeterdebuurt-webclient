@@ -3547,6 +3547,13 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
       angular.forEach($rootScope.clickedGvbObject, function(v,k) {
         $scope.description += k + ' : ' + v + "\n";
       });
+      // Move the map (and small map) to the targeted/clicked location.
+      if ( $routeParams.latitude && $routeParams.longitude ) {
+        moveMapToLocation({
+          lat: parseFloat($routeParams.latitude),
+          lng: parseFloat($routeParams.longitude)
+        });
+      }
     }
 
     $scope.hide = "ng-hide";
