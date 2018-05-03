@@ -107,7 +107,7 @@ errorhandler = function(rootScope,errorInfo){
 
 // Set the current (if any) customisation.
 // Run this first, to prevent unnecessary page updates.
-vdbApp.run(['$location', '$rootScope', function($location, $rootScope) {
+vdbApp.run(['$location', '$rootScope', '$cookies', function($location, $rootScope, $cookies) {
 
   // Customisation per settings
   if ( CUSTOMISATION_SITE ) {
@@ -141,6 +141,21 @@ vdbApp.run(['$location', '$rootScope', function($location, $rootScope) {
     $rootScope.customisation = CUSTOMISATION_SETTINGS.verbeterdebuurt;
     logger('customisation','verbeterdebuurt');
   }
+
+  // GVB: on the GVB pages, redirect to the login if not logged in
+  console.log('tmp', $rootScope.customisation.name);
+  console.log('tmp', $cookies.getObject('user'));
+  console.log('tmp', $location.path().substring(0,15));
+  if ( $rootScope.customisation.name === 'gvb' ) {
+    if ( ! $cookies.getObject('user') ) {
+      //if ( $location.path().substring(0,6) !== '/login' ) {
+      // tmp, only on the nieuwe-melding page.
+      if ( $location.path().substring(0,15) === '/nieuwe-melding' ) {
+        window.location = '/login';
+      }
+    }
+  }
+
 }]);
 
 
