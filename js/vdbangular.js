@@ -3549,6 +3549,12 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
 
     // $routeParams.latitude are used in mainController.determineStartLocation
     if ( $routeParams.gvbid ) {
+      if ( ! $rootScope.clickedGvbObject ) {
+        $rootScope.clickedGvbObject = {
+          name: '',
+          meta: {},
+        };
+      }
       $scope.description = "ID: "+$routeParams.gvbid+"\n\n";
       $scope.title = "Melding bij: "+$rootScope.clickedGvbObject.name;
       angular.forEach($rootScope.clickedGvbObject, function(v,k) {
