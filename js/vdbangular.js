@@ -1428,6 +1428,8 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
         if ( new_gvbLines ) {
           gvb_update_data_stops_style(new_gvbLines);
           gvb_update_data_routes_style(new_gvbLines);
+          gvb_update_data_stops_small_style(new_gvbLines);
+          gvb_update_data_routes_small_style(new_gvbLines);
         }
       }
     }
@@ -3762,6 +3764,28 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
                 latitude : location.latitude,
                 longitude : location.longitude
             }
+        }
+        // GVB TODO: make general check and update intelligently
+        if ( CUSTOMISATION_GVB.is_active($rootScope) ) {
+          jsondataSubmit = {
+            issue : {
+                title : issue.title,
+                description :  issue.description,
+                type :  issue.type,
+                // TODO: until we have correct categories, hardcode a valid
+                category_id : 17,
+                subcategory_id :26,
+                private_message : issue.privateMessage,
+                organisation_id: $rootScope.customisation.organisation_id,
+                // GVB TODO: parse from stop information if available/possible
+                lines: "1",
+                direction: "Cs",
+            }, 
+            location : {
+                latitude : location.latitude,
+                longitude : location.longitude
+            }
+          }
         }
 
         if ($cookies.getObject('user')) { //login

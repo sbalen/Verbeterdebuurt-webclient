@@ -36,6 +36,8 @@ var gvb_update_data_stops_style = function(line_id){return false};
 var gvb_set_data_stops_listener = function(_listener){return false};
 var gvb_update_data_routes_style = function(line_id){return false};
 var gvb_set_data_routes_listener = function(_listener){return false};
+var gvb_update_data_stops_small_style = function(line_id){return false};
+var gvb_update_data_routes_small_style = function(line_id){return false};
 
 
 //simple translation func
@@ -115,6 +117,52 @@ function gvb_create_route_style(line_id) {
       return {
         strokeColor: colour,
         clickable: true,
+        title: title,
+        visible: visible,
+      }
+  };
+}
+
+
+function gvb_create_stop_small_style(line_id) {
+  return function(feature) {
+      var destinations = feature.getProperty('destinations');
+      var title = feature.getProperty('gvb_id') + ' / ' + feature.getProperty('name') + ' / ' + destinations.join(', ');
+      // If the line_id was given during function generation, hide
+      // stops that do not match a line.
+      var visible = true;
+      if ( line_id && line_id !== '-' && feature.getProperty('lines').indexOf(line_id) < 0 ) {
+        visible = false;
+      }
+      return {
+        clickable: false,
+        title: title,
+        icon: feature.getProperty('is_stoparea') ? '/img/stoparea.png' : '/img/stop.png',
+        visible: visible,
+      }
+  };
+}
+
+function gvb_create_route_small_style(line_id) {
+  return function(feature) {
+      var trips = feature.getProperty('trips');
+      var title = feature.getProperty('route_id') + ' / ' + ' / ' + trips.join(', ');
+      // If the line_id was given during function generation, hide
+      // stops that do not match a line.
+      var visible = true;
+      if ( line_id && line_id !== '-' && feature.getProperty('lines').indexOf(line_id) < 0 ) {
+        visible = false;
+      }
+      // N.B. maybe remove the "patterns" := absolute distance lines
+      // entirely.
+      var colour = feature.getProperty('is_pattern') ? '#ff0000' : '#016ab5';
+      if ( feature.getProperty('is_pattern') ) {
+        visible = false;
+      }
+
+      return {
+        strokeColor: colour,
+        clickable: false,
         title: title,
         visible: visible,
       }
@@ -421,20 +469,19 @@ function googleMapCreateProblem() {
 
     var data_stops_map3 = new google.maps.Data();
     data_stops_map3.loadGeoJson('/data/stops.geojson');
-    data_stops_map3.setStyle(function(feature) {
-      var name = feature.getProperty('name');
-      var description = feature.getProperty('description');
-      return {
-        clickable: false,
-        title: name + ' || ' + description,
-        icon: feature.getProperty('is_stoparea') ? '/img/stoparea.png' : '/img/stop.png',
-      }
-    });
+    data_stops_map3.setStyle( gvb_create_stop_small_style('') );
     data_stops_map3.setMap(map3);
     var data_routes_map3 = new google.maps.Data();
     data_routes_map3.loadGeoJson('/data/routes.geojson');
-    data_routes_map3.setStyle({ strokeColor: '#016ab5' });
+    data_routes_map3.setStyle( gvb_create_route_small_style('') );
     data_routes_map3.setMap(map3);
+
+    gvb_update_data_stops_small_style = function(line_id) {
+      data_stops_map3.setStyle( gvb_create_stop_small_style(line_id) );
+    };
+    gvb_update_data_routes_small_style = function(line_id) {
+      data_routes_map3.setStyle( gvb_create_route_small_style(line_id) );
+    };
 
     return marker;
 }
