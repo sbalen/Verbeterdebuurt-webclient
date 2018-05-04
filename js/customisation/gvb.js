@@ -139,4 +139,26 @@ var CUSTOMISATION_GVB = {
     }
   },
 
+
+  // Add a custom Amsterdam-only background tilelayer.
+  "add_background_map": function(google, map) {
+    if ( ! this.is_active() ) { return; }
+    var mapType = new google.maps.ImageMapType({
+      getTileUrl: function(coord, zoom) {
+        // TODO: see https://api.datapunt.amsterdam.nl/api, use t1-t4
+        return "https://t2.data.amsterdam.nl/topo_wm_light/" +
+               zoom + "/" + coord.x + "/" + coord.y + ".png";
+      },
+      tileSize: new google.maps.Size(256, 256),
+      maxZoom: 19,
+      minZoom: 13,
+      name: 'gvb_maptype'
+    });
+    // Above the current mapType:
+    //map.overlayMapTypes.insertAt(0, mapType);
+    // As the mapType:
+    map.mapTypes.set('gvb_maptype', mapType);
+    map.setMapTypeId('gvb_maptype');
+  },
+
 }

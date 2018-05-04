@@ -97,7 +97,8 @@ function initMap() {
     var mapObject = document.getElementById('googlemaps');
 
     map = new google.maps.Map(mapObject, mapOptions);
-    //add_fietsersbond_maptype(map);
+    CUSTOMISATION_GVB.add_background_map(google, map);
+    //add_fietsersbond_maptype(map); // TODO move fietsersbond separately 
 
     var gvb_data = CUSTOMISATION_GVB.add_lines_to_map(undefined, google, map, 'main');
     if ( gvb_data ) {
@@ -319,7 +320,7 @@ function initGoogleMapForCreateIssue(location,issueType) {
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         styles: [ { featureType: "poi", elementType: "labels", stylers: [ { visibility: "off" } ] } ]
     });
-    add_fietsersbond_maptype(map);
+    CUSTOMISATION_GVB.add_background_map(google, map);
     
     (new google.maps.Marker({position: location,icon: iconImg})).setMap(map);    
 
@@ -347,7 +348,7 @@ function googleMapCreateProblem($rootScope) {
                 ]
     }
     map3 = new google.maps.Map(document.getElementById(issueType == ISSUE_TYPE_PROBLEM ? "googleMapCreateProblem" : googleMapCreateIdea), mapOptions);
-    add_fietsersbond_maptype(map3);
+    CUSTOMISATION_GVB.add_background_map(google, map3);
 
     marker = new google.maps.Marker();
     marker.setMap(map3);
@@ -381,7 +382,7 @@ function googleMapCreateIdea($rootScope) {
                 ]
     }
     map4 = new google.maps.Map(document.getElementById("googleMapCreateIdea"), mapOption4);
-    add_fietsersbond_maptype(map4);
+    CUSTOMISATION_GVB.add_background_map(google, map4);
     marker = new google.maps.Marker();
     marker.setMap(map4);
     marker.setPosition(map4.getCenter());
