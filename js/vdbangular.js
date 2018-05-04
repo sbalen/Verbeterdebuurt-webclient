@@ -3544,6 +3544,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
           meta: {},
         };
       }
+      $scope.is_urgent = false;
       $scope.description = "ID: "+$routeParams.gvbid+"\n\n";
       $scope.title = "Melding bij: "+$rootScope.clickedGvbObject.name;
       angular.forEach($rootScope.clickedGvbObject, function(v,k) {
@@ -3750,6 +3751,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
         location.longitude = markerLng;
         logger("createlat:"+location.latitude);
         logger("createlong:"+location.longitude);
+        issue.is_urgent = $scope.is_urgent;
         
         var jsondataSubmit = {
             issue : {
@@ -3766,15 +3768,16 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
             }
         }
         // GVB TODO: make general check and update intelligently
-        if ( CUSTOMISATION_GVB.is_active($rootScope) ) {
+        if ( CUSTOMISATION_GVB.is_active() ) {
           jsondataSubmit = {
             issue : {
                 title : issue.title,
                 description :  issue.description,
                 type :  issue.type,
                 // TODO: until we have correct categories, hardcode a valid
-                category_id : 17,
+                category_id : issue.category_id,
                 subcategory_id :26,
+                is_urgent: issue.is_urgent ? true : false,
                 private_message : issue.privateMessage,
                 organisation_id: $rootScope.customisation.organisation_id,
                 // GVB TODO: parse from stop information if available/possible
