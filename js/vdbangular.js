@@ -1255,8 +1255,10 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
     }
 
     function setup_gvb_lines() {
+      // Initialize only once.
+      if ( $rootScope.gvbLinesState ) { return; }
       // Track the selected line
-      $scope.gvbLinesState = {
+      $rootScope.gvbLinesState = {
         // Only active on fietsersbond.
         show: $rootScope.customisation.organisation_id === 2,
         selectedId: '-', // Value model for the select
@@ -1419,11 +1421,11 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
     }
 
     $scope.gvbLinesSelectionClick = function () {
-      logger('gvbLinesSelectionClick old new', $scope.gvbLinesState.preClickId, $scope.gvbLinesState.selectedId);
-      if ( $scope.gvbLinesState.selectedId &&
-           $scope.gvbLinesState.selectedId !== $scope.gvbLinesState.preClickId ) {
-        var new_gvbLines = $scope.gvbLinesState.selectedId;
-        $scope.gvbLinesState.preClickId = $scope.gvbLinesState.selectedId;
+      logger('gvbLinesSelectionClick old new', $rootScope.gvbLinesState.preClickId, $rootScope.gvbLinesState.selectedId);
+      if ( $rootScope.gvbLinesState.selectedId &&
+           $rootScope.gvbLinesState.selectedId !== $rootScope.gvbLinesState.preClickId ) {
+        var new_gvbLines = $rootScope.gvbLinesState.selectedId;
+        $rootScope.gvbLinesState.preClickId = $rootScope.gvbLinesState.selectedId;
         logger('gvbLinesSelectionClick show', new_gvbLines);
         if ( new_gvbLines ) {
           gvb_update_data_stops_style(new_gvbLines);
