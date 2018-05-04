@@ -22,18 +22,15 @@ var CUSTOMISATION_GVB = {
    * `_<var>` arguments are expected to be given `$<var>` angular objects.
    */
 
-  // Check if this customisation is active according to the rootScope.
-  // TODO: check active based on the variable instead of rootScope?
-  "is_active": function(_rootScope) {
-    if ( _rootScope === undefined ) {
-      return CUSTOMISATION_SITE === this.name;
-    }
-    return _rootScope.customisation.name === this.name;
+  // Check if this customisation is active according to the settings.
+  "is_active": function() {
+    return CUSTOMISATION_SITE === this.name ? true : false;
   },
 
-  // Check if there is a logged in user, 
+  // Check if there is a logged in user. 
+  // TODO: _rootScope is deprecated, remove.
   "check_login": function(_rootScope, _cookies, _location) {
-    if ( ! this.is_active(_rootScope) ) { return; }
+    if ( ! this.is_active() ) { return; }
 
     if ( ! _cookies.getObject('user') ) {
       if ( _location.path().substring(0,6) !== '/login' ) {
@@ -83,7 +80,7 @@ var CUSTOMISATION_GVB = {
 
   // Add stops and routes to a map.
   "add_lines_to_map": function(_rootScope, google, map, map_name) {
-    if ( ! this.is_active(_rootScope) ) { return; }
+    if ( ! this.is_active() ) { return; }
 
     var line_id = '';
     if ( _rootScope && _rootScope.gvbLinesState) {
@@ -107,6 +104,9 @@ var CUSTOMISATION_GVB = {
 
   // Update the style of all stops/routes data layers for a given line.
   "update_lines_on_maps": function(line_id) {
+    if ( ! this.is_active() ) { return; }
+    // TODO: implement with loops, this is too much..
+
     if ( this.lines_data.main.stops ) {
       this.lines_data.main.stops.setStyle(
         this.lines_style('main', 'stops', line_id)
