@@ -32,12 +32,8 @@ markers = [];
 markerid = [];
 
 // Update de function definition below when loading the actual data stops.
-var gvb_update_data_stops_style = function(line_id){return false};
 var gvb_set_data_stops_listener = function(_listener){return false};
-var gvb_update_data_routes_style = function(line_id){return false};
 var gvb_set_data_routes_listener = function(_listener){return false};
-var gvb_update_data_stops_small_style = function(line_id){return false};
-var gvb_update_data_routes_small_style = function(line_id){return false};
 
 
 //simple translation func
@@ -60,6 +56,8 @@ function googlemapinit () {
 
     initMap();
     initMapListeners();
+    // TODO: remove duplicate bubble hiding on normal verbeterdebuurt
+    // TODO: also on GVB?
     $('#duplicate-bubble').hide();
 
 }
@@ -76,98 +74,6 @@ function issueLocationToGoogleBounds(issueLocation) {
             west: issueLocation.longitude };    
 }
 
-
-function gvb_create_stop_style(line_id) {
-  return function(feature) {
-      var destinations = feature.getProperty('destinations');
-      var title = feature.getProperty('gvb_id') + ' / ' + feature.getProperty('name') + ' / ' + destinations.join(', ');
-      // If the line_id was given during function generation, hide
-      // stops that do not match a line.
-      var visible = true;
-      if ( line_id && line_id !== '-' && feature.getProperty('lines').indexOf(line_id) < 0 ) {
-        visible = false;
-      }
-      return {
-        //strokeColor: '#448',
-        clickable: true,
-        title: title,
-        icon: feature.getProperty('is_stoparea') ? '/img/stoparea.png' : '/img/stop.png',
-        visible: visible,
-      }
-  };
-}
-
-function gvb_create_route_style(line_id) {
-  return function(feature) {
-      var trips = feature.getProperty('trips');
-      var title = feature.getProperty('route_id') + ' / ' + ' / ' + trips.join(', ');
-      // If the line_id was given during function generation, hide
-      // stops that do not match a line.
-      var visible = true;
-      if ( line_id && line_id !== '-' && feature.getProperty('lines').indexOf(line_id) < 0 ) {
-        visible = false;
-      }
-      // N.B. maybe remove the "patterns" := absolute distance lines
-      // entirely.
-      var colour = feature.getProperty('is_pattern') ? '#ff0000' : '#016ab5';
-      if ( feature.getProperty('is_pattern') ) {
-        visible = false;
-      }
-
-      return {
-        strokeColor: colour,
-        clickable: true,
-        title: title,
-        visible: visible,
-      }
-  };
-}
-
-
-function gvb_create_stop_small_style(line_id) {
-  return function(feature) {
-      var destinations = feature.getProperty('destinations');
-      var title = feature.getProperty('gvb_id') + ' / ' + feature.getProperty('name') + ' / ' + destinations.join(', ');
-      // If the line_id was given during function generation, hide
-      // stops that do not match a line.
-      var visible = true;
-      if ( line_id && line_id !== '-' && feature.getProperty('lines').indexOf(line_id) < 0 ) {
-        visible = false;
-      }
-      return {
-        clickable: false,
-        title: title,
-        icon: feature.getProperty('is_stoparea') ? '/img/stoparea.png' : '/img/stop.png',
-        visible: visible,
-      }
-  };
-}
-
-function gvb_create_route_small_style(line_id) {
-  return function(feature) {
-      var trips = feature.getProperty('trips');
-      var title = feature.getProperty('route_id') + ' / ' + ' / ' + trips.join(', ');
-      // If the line_id was given during function generation, hide
-      // stops that do not match a line.
-      var visible = true;
-      if ( line_id && line_id !== '-' && feature.getProperty('lines').indexOf(line_id) < 0 ) {
-        visible = false;
-      }
-      // N.B. maybe remove the "patterns" := absolute distance lines
-      // entirely.
-      var colour = feature.getProperty('is_pattern') ? '#ff0000' : '#016ab5';
-      if ( feature.getProperty('is_pattern') ) {
-        visible = false;
-      }
-
-      return {
-        strokeColor: colour,
-        clickable: false,
-        title: title,
-        visible: visible,
-      }
-  };
-}
 
 function initMap() {
     logger("initMap");
@@ -193,57 +99,46 @@ function initMap() {
     map = new google.maps.Map(mapObject, mapOptions);
     //add_fietsersbond_maptype(map);
 
-    // TODO: move all GVB data stops etc. logic to a separate
-    // init function. Similar for Fietsersbond.
-    var data_stops = new google.maps.Data();
-    data_stops.loadGeoJson('/data/stops.geojson');
-    data_stops.setStyle( gvb_create_stop_style('') );
-    // Make setting the data_stops style available through the 
-    // (global..) function below.
-    gvb_update_data_stops_style = function(line_id) {
-      data_stops.setStyle( gvb_create_stop_style(line_id) );
-    };
-    // Make setting the data_stops click listenere available through
-    // the (global..) function below.
-    gvb_set_data_stops_listener = function(_listener) {
-      // Remove existing listeners (this function is called many times..)
-      google.maps.event.clearListeners(data_stops, 'click');
-      data_stops.addListener('click', _listener);
-    };
+    var gvb_data = CUSTOMISATION_GVB.add_lines_to_map(undefined, google, map, 'main');
+    if ( gvb_data ) {
 
-    var data_routes = new google.maps.Data();
-    data_routes.loadGeoJson('/data/routes.geojson');
-    data_routes.setStyle( gvb_create_route_style('') );
-    gvb_update_data_routes_style = function(line_id) {
-      data_routes.setStyle( gvb_create_route_style(line_id) );
-    };
-    gvb_set_data_routes_listener = function(_listener) {
-      google.maps.event.clearListeners(data_routes, 'click');
-      data_routes.addListener('click', _listener);
-    };
+      // TODO: move all this gvb specific code to gvb.js
+      // Make setting the data_stops click listenere available through
+      // the (global..) function below.
+      gvb_set_data_stops_listener = function(_listener) {
+        // Remove existing listeners (this function is called many times..)
+        google.maps.event.clearListeners(gvb_data.stops, 'click');
+        gvb_data.stops.addListener('click', _listener);
+      };
 
-    function toggle_stops() {
-      //if ( map.getZoom() > 16 ) {
-      if ( map.getZoom() > 8 ) {
-        if ( ! data_stops.getMap() ) {
-          data_stops.setMap(map);
-        }
-        if ( ! data_routes.getMap() ) {
-          data_routes.setMap(map);
-        }
-      } else {
-        if ( data_stops.getMap() ) {
-          data_stops.setMap(null);
-        }
-        if ( data_routes.getMap() ) {
-          data_routes.setMap(null);
+      gvb_set_data_routes_listener = function(_listener) {
+        google.maps.event.clearListeners(gvb_data.routes, 'click');
+        gvb_data.routes.addListener('click', _listener);
+      };
+
+      function toggle_stops() {
+        //if ( map.getZoom() > 16 ) {
+        if ( map.getZoom() > 8 ) {
+          if ( ! gvb_data.stops.getMap() ) {
+            gvb_data.stops.setMap(map);
+          }
+          if ( ! gvb_data.routes.getMap() ) {
+            gvb_data.routes.setMap(map);
+          }
+        } else {
+          if ( gvb_data.stops.getMap() ) {
+            gvb_data.stops.setMap(null);
+          }
+          if ( gvb_data.routes.getMap() ) {
+            gvb_data.routes.setMap(null);
+          }
         }
       }
-    }
-    toggle_stops();
-    google.maps.event.addListener(map, 'zoom_changed', function() {
       toggle_stops();
-    });
+      google.maps.event.addListener(map, 'zoom_changed', function() {
+        toggle_stops();
+      });
+    }
 }
 
 // TODO FB: add Fietsersbond map overlay. N.B. now always, make a switch
@@ -430,7 +325,7 @@ function initGoogleMapForCreateIssue(location,issueType) {
 
 }
 
-function googleMapCreateProblem() {
+function googleMapCreateProblem($rootScope) {
     logger("googleMapCreateProblem");
     var latlng = map.getCenter();
     var issueType = ISSUE_TYPE_PROBLEM;
@@ -467,26 +362,12 @@ function googleMapCreateProblem() {
     getMarkerLocation(marker);
     markerGetAddress(marker, "location");    
 
-    var data_stops_map3 = new google.maps.Data();
-    data_stops_map3.loadGeoJson('/data/stops.geojson');
-    data_stops_map3.setStyle( gvb_create_stop_small_style('') );
-    data_stops_map3.setMap(map3);
-    var data_routes_map3 = new google.maps.Data();
-    data_routes_map3.loadGeoJson('/data/routes.geojson');
-    data_routes_map3.setStyle( gvb_create_route_small_style('') );
-    data_routes_map3.setMap(map3);
-
-    gvb_update_data_stops_small_style = function(line_id) {
-      data_stops_map3.setStyle( gvb_create_stop_small_style(line_id) );
-    };
-    gvb_update_data_routes_small_style = function(line_id) {
-      data_routes_map3.setStyle( gvb_create_route_small_style(line_id) );
-    };
+    CUSTOMISATION_GVB.add_lines_to_map($rootScope, google, map3, 'problem');
 
     return marker;
 }
 
-function googleMapCreateIdea() {
+function googleMapCreateIdea($rootScope) {
     logger("googleMapIssue");
     var latlng = map.getCenter();
     var mapOption4 = {
@@ -523,6 +404,8 @@ function googleMapCreateIdea() {
     getMarkerLocation(marker);
     markerGetAddress(marker, "location2");
     var tempurl = window.location.pathname.replace('nieuw-idee','');
+
+    CUSTOMISATION_GVB.add_lines_to_map($rootScope, google, map4, 'idea');
 }
 
 function initMainMapToSmallMapListener(smallMap) {

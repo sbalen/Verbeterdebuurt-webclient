@@ -1428,10 +1428,8 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
         $rootScope.gvbLinesState.preClickId = $rootScope.gvbLinesState.selectedId;
         logger('gvbLinesSelectionClick show', new_gvbLines);
         if ( new_gvbLines ) {
-          gvb_update_data_stops_style(new_gvbLines);
-          gvb_update_data_routes_style(new_gvbLines);
-          gvb_update_data_stops_small_style(new_gvbLines);
-          gvb_update_data_routes_small_style(new_gvbLines);
+
+          CUSTOMISATION_GVB.update_lines_on_maps(new_gvbLines);
         }
       }
     }
@@ -3620,7 +3618,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
     //first initial
     $timeout(function () {        
          
-        var issueMarker = googleMapCreateProblem();
+        var issueMarker = googleMapCreateProblem($rootScope);
         attachAutoCompleteListener('searchCityProblem',issueMarker,map3,"location", $scope);
         $scope.categoriesData();
         $scope.getServiceStandard(city.long_name);
@@ -4046,7 +4044,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
 
     //first initial
     $timeout(function () {
-        var issueMarker = googleMapCreateIdea();
+        var issueMarker = googleMapCreateIdea($rootScope);
         attachAutoCompleteListener('searchCityProblem',issueMarker,map4,"location2");
         $scope.getServiceStandard(city.long_name);
     }, 1500);
@@ -5175,7 +5173,7 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
         // TODO FB: on the campaign_thanks page, there is no searchCityProblem,
         // the code below probably gives a small error. Check here, and test
         // if the normal campaigns stil work properly.
-        var issueMarker = googleMapCreateProblem();
+        var issueMarker = googleMapCreateProblem($rootScope);
         attachAutoCompleteListener('searchCityProblem',issueMarker,map3,"location-campagne");
     }, 1500);
 
