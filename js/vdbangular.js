@@ -3637,6 +3637,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
         });
         $timeout(function () {
             $scope.categoriesList = null;
+            $scope.subcategoriesList = [];
             var getCategories = categoriesService.getCategories(jsondataCity).then(function (data) {
                 // GVB has special two-tier double categories.
                 if ( CUSTOMISATION_GVB.is_active() ) {
@@ -3644,6 +3645,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
                   angular.forEach(data.data.categories, function(v,k) {
                     if ( v.type === 'problem' ) {
                       problemCategories.push(v);
+                      $scope.subcategoriesList[v.id] = v.subcategories;
                     }
                   });
                   $scope.categoriesList = problemCategories;
@@ -3741,6 +3743,11 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
         } else {
             issue.category_id = -1;
         }
+        if ($scope.subcategoryId) {
+            issue.subcategory_id = $scope.subcategoryId;
+        } else {
+            issue.subcategory_id = -1;
+        }
 
         if ($scope.title) {
             issue.title = $scope.title;
@@ -3787,7 +3794,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
                 type :  issue.type,
                 // TODO: until we have correct categories, hardcode a valid
                 category_id : issue.category_id,
-                subcategory_id :26,
+                subcategory_id : issue.subcategory_id,
                 is_urgent: issue.is_urgent ? true : false,
                 private_message : issue.privateMessage,
                 organisation_id: $rootScope.customisation.organisation_id,
