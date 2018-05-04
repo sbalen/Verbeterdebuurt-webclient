@@ -3638,7 +3638,18 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
         $timeout(function () {
             $scope.categoriesList = null;
             var getCategories = categoriesService.getCategories(jsondataCity).then(function (data) {
-                $scope.categoriesList = data.data.categories;
+                // GVB has special two-tier double categories.
+                if ( CUSTOMISATION_GVB.is_active() ) {
+                  var problemCategories = [];
+                  angular.forEach(data.data.categories, function(v,k) {
+                    if ( v.type === 'problem' ) {
+                      problemCategories.push(v);
+                    }
+                  });
+                  $scope.categoriesList = problemCategories;
+                } else {
+                  $scope.categoriesList = data.data.categories;
+                }
                 $timeout(function () {
                     $scope.loadCategory = 0;
                 })
