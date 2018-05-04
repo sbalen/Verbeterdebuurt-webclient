@@ -3545,9 +3545,22 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
         };
       }
       $scope.is_urgent = false;
-      $scope.description = "ID: "+$routeParams.gvbid+"\n\n";
+      $scope.description = "";
       $scope.title = "Melding bij: "+$rootScope.clickedGvbObject.name;
+      if ( $rootScope.clickedGvbObject.lines ) {
+        $scope.description += 'Lijnen: '+$rootScope.clickedGvbObject.lines.join(', ') + "\n\n";
+      }
+      if ( $rootScope.clickedGvbObject.destinations ) {
+        $scope.description += "Richtingen:\n"+$rootScope.clickedGvbObject.destinations.join("\n") + "\n\n";
+      }
+
+      $scope.description += "Meta-data:\n";
+      angular.forEach($rootScope.clickedGvbObject.meta, function(v,k) {
+        $scope.description += k + ' : ' + v + "\n";
+      });
+
       angular.forEach($rootScope.clickedGvbObject, function(v,k) {
+        if ( k === 'meta' || k === 'lines' || k === "destinations" ) { return; }
         $scope.description += k + ' : ' + v + "\n";
       });
       // Move the map (and small map) to the targeted/clicked location.
