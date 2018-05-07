@@ -317,3 +317,8 @@ body {
   height: 34px;
   padding-left: 5px;
 }
+.customisation.gvb #description-meta {
+  padding: 6px 12px;
+  background: #eef;
+  white-space: pre;
+}

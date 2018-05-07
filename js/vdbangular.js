@@ -3548,22 +3548,24 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
       }
       $scope.is_urgent = false;
       $scope.description = "";
+      // Text from the stop/route is shown separately, and added to the description field before sending to the backend.
+      $scope.description_meta = "";
       $scope.title = "Melding bij: "+$rootScope.clickedGvbObject.name;
       if ( $rootScope.clickedGvbObject.lines ) {
-        $scope.description += 'Lijnen: '+$rootScope.clickedGvbObject.lines.join(', ') + "\n\n";
+        $scope.description_meta += 'Lijnen: '+$rootScope.clickedGvbObject.lines.join(', ') + "\n\n";
       }
       if ( $rootScope.clickedGvbObject.destinations ) {
-        $scope.description += "Richtingen:\n"+$rootScope.clickedGvbObject.destinations.join("\n") + "\n\n";
+        $scope.description_meta += "Richtingen:\n"+$rootScope.clickedGvbObject.destinations.join("\n") + "\n\n";
       }
 
-      $scope.description += "Meta-data:\n";
+      $scope.description_meta += "Meta-data:\n";
       angular.forEach($rootScope.clickedGvbObject.meta, function(v,k) {
-        $scope.description += k + ' : ' + v + "\n";
+        $scope.description_meta += k + ' : ' + v + "\n";
       });
 
       angular.forEach($rootScope.clickedGvbObject, function(v,k) {
         if ( k === 'meta' || k === 'lines' || k === "destinations" ) { return; }
-        $scope.description += k + ' : ' + v + "\n";
+        $scope.description_meta += k + ' : ' + v + "\n";
       });
       // Move the map (and small map) to the targeted/clicked location.
       if ( $routeParams.latitude && $routeParams.longitude ) {
