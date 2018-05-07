@@ -1,5 +1,13 @@
  <!--  sidebar left -->
-<div class="col-md-3 hidden-sm hidden-xs hidden-md">
+<div class="col-md-3">
+  <div class="panel side-panel panel-default" id="gvb-lines-widget" ng-show="gvbLinesState.show">
+    <div class="panel-heading">
+      <strong>Lijnen</strong>
+      <select class="combobox pull-right" id="gvbLines-select" ng-model="gvbLinesState.selectedId" ng-options="gvbLines as gvbLines for gvbLines in gvbLinesState.list" ng-change="gvbLinesSelectionClick()" style="color:#000;">
+      </select>
+    </div>
+  </div>
+  <div class="hidden-sm hidden-xs hidden-md">
     <div class="panel side-panel panel-default" id="new-problem-widget">
         <div class="panel-heading">
             <strong>Report</strong>
@@ -9,13 +17,6 @@
           <div class="list-group report-list-council" style="margin-bottom:0;">
             <strong>Kies een afdeling</strong><br>
             <select class="combobox" id="department-select" ng-model="departmentState.selectedId" ng-options="department.id as department.name for department in departmentState.list" ng-click="departmentSelectionClick()">
-            </select>
-          </div>
-        </div>
-        <div class="panel-body" ng-show="gvbLinesState.show">
-          <div class="list-group report-list-council" style="margin-bottom:0;">
-            <strong>Kies een lijn</strong><br>
-            <select class="combobox" id="gvbLines-select" ng-model="gvbLinesState.selectedId" ng-options="gvbLines as gvbLines for gvbLines in gvbLinesState.list" ng-change="gvbLinesSelectionClick()">
             </select>
           </div>
         </div>
@@ -67,4 +68,5 @@
             </div>
         </div>  
     </div>
+  </div><!-- /hidden-sm ->
 </div>
