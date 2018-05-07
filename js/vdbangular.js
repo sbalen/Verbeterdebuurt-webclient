@@ -3530,6 +3530,8 @@ vdbApp.controller('selectProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
 
 vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', 'duplicateIssuesService', '$cookies', 'serviceStandardService','reportService','issuesService','agreementSevice','$routeParams', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, duplicateIssuesService, $cookies, serviceStandardService,reportService,issuesService,agreementSevice,$routeParams) {
     logger('createProblemCtrl');
+    CUSTOMISATION_GVB.check_login($rootScope, $cookies, $location);
+
     $scope.privateMessageHide = false;
     if($location.path().includes('nieuwe-melding')){
         $rootScope.dynamicTitle = "Nieuwe melding |";
@@ -3996,6 +3998,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
 
 vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', 'serviceStandardService','$location', 'issuesService', 'issueSubmitServiceWithImage', '$cookies','reportService','issuesService','agreementSevice','$routeParams', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, serviceStandardService, $location, issuesService, issueSubmitServiceWithImage, $cookies,reportService,issuesService,agreementSevice,$routeParams) {
     logger("createIdeaCtrl");
+    CUSTOMISATION_GVB.check_login($rootScope, $cookies, $location);
 
     if ($location.path().includes('utrechtse-heuvelrug')) {
         $rootScope.ideaExplanation = "Wij delen je idee met de gemeente & met buurtbewoners. Niet alle ideeën kunnen worden uitgevoerd, maar een goed verhaal en veel medestanders vergroot de kans wel.";
