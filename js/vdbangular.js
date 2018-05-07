@@ -3802,28 +3802,14 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
                 longitude : location.longitude
             }
         }
-        // GVB TODO: make general check and update intelligently
+
         if ( CUSTOMISATION_GVB.is_active() ) {
-          jsondataSubmit = {
-            issue : {
-                title : issue.title,
-                description :  issue.description,
-                type :  issue.type,
-                // TODO: until we have correct categories, hardcode a valid
-                category_id : issue.category_id,
-                subcategory_id : issue.subcategory_id,
-                is_urgent: issue.is_urgent ? true : false,
-                private_message : issue.privateMessage,
-                organisation_id: $rootScope.customisation.organisation_id,
-                // GVB TODO: parse from stop information if available/possible
-                lines: "1",
-                direction: "Cs",
-            }, 
-            location : {
-                latitude : location.latitude,
-                longitude : location.longitude
-            }
-          }
+          jsondataSubmit.issue.description += "\n\n" + $scope.description_meta;
+          jsondataSubmit.issue.subcategory_id = issue.subcategory_id;
+          jsondataSubmit.issue.is_urgent = issue.is_urgent ? true : false;
+          // GVB TODO: parse from stop information if available/possible
+          jsondataSubmit.issue.lines = "1";
+          jsondataSubmit.issue.direction = "Cs";
         }
 
         if ($cookies.getObject('user')) { //login
