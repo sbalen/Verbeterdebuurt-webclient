@@ -1509,6 +1509,8 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
     }
 
     $scope.zoomedInEnoughToShowIssues = function() {
+        // Never show zoom-in-messages on GVB.
+        if ( CUSTOMISATION_GVB.is_active() ) { return true; }
         return $rootScope.zoom >= $rootScope.pinsVisibleZoom;
     }
 
