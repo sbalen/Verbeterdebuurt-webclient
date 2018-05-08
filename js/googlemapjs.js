@@ -1,4 +1,6 @@
-var ZOOM_PINS_VISIBLE = 14; 
+// TODO FB: make zoom_pins_visible etc site-specific configuration option.
+//var ZOOM_PINS_VISIBLE = 14;
+var ZOOM_PINS_VISIBLE = 12;
 var ZOOM_ISSUES_RETRIEVABLE = 12;
 var ZOOM_START = 15;
 var ZOOM_MAX = 19;
@@ -407,6 +409,11 @@ function googleMapCreateIdea($rootScope) {
     var tempurl = window.location.pathname.replace('nieuw-idee','');
 
     CUSTOMISATION_GVB.add_lines_to_map($rootScope, google, map4, 'idea');
+
+    // Update: return the marker (as with createProblem). This marker
+    // is ultimately passed to the autocomplete google search listener,
+    // that will update the marker position on the small map.
+    return marker;
 }
 
 function initMainMapToSmallMapListener(smallMap) {
@@ -673,8 +680,25 @@ function moveMapToBrowserLocation($rootScope,$q,withFallBack,callBack) {
 }
 
 function moveMapToLocation(location,callBack,boundsToFitTo) {
-    logger("moveMapToLocation("+location.lat+","+location.lng+")");
-    map.panTo(location);
+    logger("moveMapToLocation("+location.lat()+","+location.lng()+")");
+    // Update: the map move on geolocations moves the large map.
+    // The small maps can't directly listen to the large map anymore,
+    // so we have to set them manually. Check for the small maps below:
+    // - map is the main map
+    // - map3 is the CreateProblem map
+    // - map4 is the CreateIdea map
+    if ( typeof map3 !== 'undefined' ) {
+      logger('moveMapToLocation: map3 (problem)');
+      map3.panTo(location);
+    }
+    if ( typeof map4 !== 'undefined' ) {
+      logger('moveMapToLocation: map4 (idea)');
+      map4.panTo(location);
+    }
+    if ( typeof map3 === 'undefined' && typeof map4 === 'undefined' ) {
+      logger('moveMapToLocation: map (main)');
+      map.panTo(location);
+    }
     //map.setCenter(location);
     determineCityForGeocode(callBack,boundsToFitTo);
 }
