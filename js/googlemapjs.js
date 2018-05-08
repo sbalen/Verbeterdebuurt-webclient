@@ -682,7 +682,7 @@ function moveMapToBrowserLocation($rootScope,$q,withFallBack,callBack) {
 function moveMapToLocation(location,callBack,boundsToFitTo) {
     // TODO: determine all location variants provided, and normalise
     // logging.
-    if ( location.lat ) {
+    if ( typeof location.lat == "function" ) {
       logger("moveMapToLocation("+location.lat()+","+location.lng()+")");
     } else {
       logger("moveMapToLocation("+location.lat+","+location.lng+")");
