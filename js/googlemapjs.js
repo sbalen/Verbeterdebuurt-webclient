@@ -680,7 +680,13 @@ function moveMapToBrowserLocation($rootScope,$q,withFallBack,callBack) {
 }
 
 function moveMapToLocation(location,callBack,boundsToFitTo) {
-    logger("moveMapToLocation("+location.lat()+","+location.lng()+")");
+    // TODO: determine all location variants provided, and normalise
+    // logging.
+    if ( location.lat ) {
+      logger("moveMapToLocation("+location.lat()+","+location.lng()+")");
+    } else {
+      logger("moveMapToLocation("+location.lat+","+location.lng+")");
+    }
     // Update: the map move on geolocations moves the large map.
     // The small maps can't directly listen to the large map anymore,
     // so we have to set them manually. Check for the small maps below:
