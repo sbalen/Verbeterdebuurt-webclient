@@ -3727,6 +3727,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
         $scope.errorPostcode = "";
         $scope.errorStreet = "";
         $scope.errorStreetNumber = "";
+        $scope.errorImg = "";
 
         //initial data for request
         var user = {};
@@ -3734,6 +3735,16 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
         var issue = {};
         var location = {};
         var file = $scope.imgData;
+
+        // Photos are required for the GVB.
+        if ( CUSTOMISATION_GVB.is_active() && ! file ) {
+          $scope.errorImg = "Foto is vereist";
+          $scope.hide = "";
+          $rootScope.globaloverlay = "";
+          $(window).scrollTop(0);
+          return;
+        }
+
         //login
         if ($cookies.getObject('user')) {
             user.username = $cookies.getObject('user').username;

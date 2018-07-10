@@ -82,6 +82,7 @@
                                   <p>{{errorPostcode}}</p>
                                   <p>{{errorStreet}}</p>
                                   <p>{{errorStreetNumber}}</p>
+                                  <p>{{errorImg}}</p>
               </div>
 		        <h1 class="marginheader meldingheader fontM">Nieuw Probleem</h1>
             <div class="problem">
@@ -207,8 +208,10 @@
                                     </div>
                                 </div> -->
                                 <!--<label class="control-label">Select File</label>-->
-                                <p>Foto uploaden (optioneel)</p>
-                                <input id="file-input-problem" type="file" style="width: 94%;margin-left: 3%;" data-show-upload="false" img-upload='imgData'>
+                                <p>Foto uploaden (verplicht)</p>
+                                <div ng-class="{'has-error': errorImg }">
+                                  <input id="file-input-problem" type="file" style="width: 94%;margin-left: 3%;" data-show-upload="false" img-upload='imgData'>
+                                </div>
                             </div>
                             <div class="panel-body" ng-hide="hideLogin">
                                 <h4 class="fontM">3. Contactgegevens</h4>
