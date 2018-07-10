@@ -3237,6 +3237,8 @@ vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileSer
     var c_user_profile = $cookies.getObject('user_profile');
 
     //set default message for facebook button
+    // Hide Facebook connect for GVB;
+    $scope.allowFacebookConnect = ! CUSTOMISATION_GVB.is_active();
     $scope.facebookMessages = "Connect Facebook";
     $scope.facebookExist = (c_user_profile.facebookID) ? 1 : 0;
     if ($scope.facebookExist) $scope.facebookMessages = "Gekoppeld met Facebook";
