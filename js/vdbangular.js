@@ -1269,15 +1269,20 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
     }
 
     function setup_gvb_listeners() {
-      if ( $rootScope.customisation.organisation_id === 2 ) {
+      if ( ! CUSTOMISATION_GVB.is_active() ) { return; }
+      if ( true ) {
         gvb_set_data_stops_listener(function(event) {
           $rootScope.clickedGvbObject = event.feature.f;
+          CUSTOMISATION_GVB.create_stop_info_window(event, map);
+          /* TODO: the info windows contains links, do these always work
+           * properly with the rootScope set above?
           var id = event.feature.getProperty('gvb_id');
           var pos = event.feature.getGeometry().get();
           var url = '/nieuw-probleem/gvb/'+pos.lat()+'/'+pos.lng()+'/'+id;
           $location.path(url);
           // TODO: find out why rootscope apply is necessary here.
           $rootScope.$apply();
+          */
         });
         gvb_set_data_routes_listener(function(event) {
           $rootScope.clickedGvbObject = event.feature.f;
@@ -1325,6 +1330,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
         // Set Fietsersbond departments
         setup_departments();
         // Set GVB lines
+        // TODO: move definitions to CUSTOMISATION_GVB.
         setup_gvb_lines();
         setup_gvb_listeners();
     }

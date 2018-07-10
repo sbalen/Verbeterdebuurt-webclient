@@ -16,6 +16,8 @@ var CUSTOMISATION_GVB = {
     "idea": {"stops": undefined, "routes": undefined},
   },
 
+  // Current googlemaps popup for for clicked stops.
+  stop_info_window: undefined,
 
   /*
    * Methods.
@@ -159,6 +161,26 @@ var CUSTOMISATION_GVB = {
     // As the mapType:
     map.mapTypes.set('gvb_maptype', mapType);
     map.setMapTypeId('gvb_maptype');
+  },
+
+
+  // Open an info window with links to new problem/idea issues.
+  create_stop_info_window: function(event, target_map) {
+    // Cleanup old marker first.
+    if ( this.info_window ) { this.info_window.setMap(null); }
+
+    // The event contains the geojson feature as loaded before.
+    var latlng = event.feature.getGeometry().get();
+    var id = event.feature.getProperty('gvb_id');
+    var name = id+': '+event.feature.getProperty('name')+'<br>'+event.feature.getProperty('destinations').join(', ');
+    // TODO: nieuw-probleem -> nieuw-defect
+    var problem_url = '/nieuw-probleem/gvb/'+latlng.lat()+'/'+latlng.lng()+'/'+id;
+    var idea_url = '/nieuwe-aanpassing/gvb/'+latlng.lat()+'/'+latlng.lng()+'/'+id;
+    this.info_window = new google.maps.InfoWindow({
+      position: latlng,
+      content: name+'<br><img class="icon" src="/img/pin-32.png"/><a href="'+problem_url+'">Defect melden</a><br><img class="icon" src="/img/bulb-32.png"/><a href="'+idea_url+'">Aanpassing melden</a>',
+    });
+    this.info_window.open(target_map);
   },
 
 }
