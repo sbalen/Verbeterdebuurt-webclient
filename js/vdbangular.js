@@ -399,6 +399,10 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
         })
         // Special route for gvb stop "aanpassing" click, which is almost
         // identical to a "defect" problem.
+        .when('/nieuwe-aanpassing', {
+            templateUrl: 'create_aanpassing.html',
+            controller: 'createProblemCtrl'
+        })
         .when('/nieuwe-aanpassing/gvb/:latitude/:longitude/:gvbid', {
             templateUrl: 'create_aanpassing.html',
             controller: 'createProblemCtrl'
@@ -3547,6 +3551,9 @@ vdbApp.controller('selectProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
 
     selectProblemController.redirectTo = function(type) {
         var path = '/' + ($routeParams.cityName ? 'gemeente/' + $routeParams.cityName + '/': '') + (type == ISSUE_TYPE_IDEA ? 'nieuw-idee' : 'nieuw-probleem');
+        if ( type === ISSUE_TYPE_IDEA && CUSTOMISATION_GVB.is_active() ) {
+          path = '/nieuwe-aanpassing';
+        }
         $location.path(path);
     }
 }])
