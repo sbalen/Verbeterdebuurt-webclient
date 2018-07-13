@@ -390,6 +390,12 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
             templateUrl: 'create_problem.html',
             controller: 'createProblemCtrl'
         })
+        // Special route for gvb stop "aanpassing" click, which is almost
+        // identical to a "defect" problem.
+        .when('/nieuwe-aanpassing/gvb/:latitude/:longitude/:gvbid', {
+            templateUrl: 'create_aanpassing.html',
+            controller: 'createProblemCtrl'
+        })
         .when('/nieuw-idee', {
             templateUrl: 'create_idea.html',
             controller: 'createIdeaCtrl'
@@ -3539,10 +3545,13 @@ vdbApp.controller('selectProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
 vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$timeout', 'categoriesService', 'issueSubmitService', 'myIssuesService', '$location', 'issuesService', 'issueSubmitServiceWithImage', 'duplicateIssuesService', '$cookies', 'serviceStandardService','reportService','issuesService','agreementSevice','$routeParams', function ($scope, $rootScope, $window, $timeout, categoriesService, issueSubmitService, myIssuesService, $location, issuesService, issueSubmitServiceWithImage, duplicateIssuesService, $cookies, serviceStandardService,reportService,issuesService,agreementSevice,$routeParams) {
     logger('createProblemCtrl');
     CUSTOMISATION_GVB.check_login($rootScope, $cookies, $location);
+    var is_gvb_aanpassing = $location.path().includes('nieuwe-aanpassing') && CUSTOMISATION_GVB.is_active();
 
     $scope.privateMessageHide = false;
     if($location.path().includes('nieuwe-melding')){
         $rootScope.dynamicTitle = "Nieuwe melding |";
+    } else if( is_gvb_aanpassing ){
+        $rootScope.dynamicTitle = "Nieuwe aanpassing |";
     } else {
         $rootScope.dynamicTitle = "Nieuw probleem |";
     }
@@ -3646,8 +3655,13 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
     //first initial
     $timeout(function () {        
          
+        if ( is_gvb_aanpassing ) {
+          var issueMarker = googleMapCreateIdea($rootScope);
+          attachAutoCompleteListener('searchCityProblem',issueMarker,map4,"location2", $scope);
+        } else {
         var issueMarker = googleMapCreateProblem($rootScope);
         attachAutoCompleteListener('searchCityProblem',issueMarker,map3,"location", $scope);
+        }
         $scope.categoriesData();
         $scope.getServiceStandard(city.long_name);
     }, 1500);
@@ -3690,6 +3704,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
 
 
     // Called during "enter"/button search from new problem.
+    // GVB TODO: search would break the flow.. Disable
     $scope.clickSearchCreateIssue = function () {
         $scope.loadCategory = 1;
         if(document.getElementById('searchCityProblem').value){
@@ -3775,7 +3790,11 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
         }
 
         //description
+        if ( is_gvb_aanpassing ) {
+          issue.type = "idea";
+        } else {
         issue.type = "problem";
+        }
         if ($scope.categoryId) {
             issue.category_id = $scope.categoryId;
         } else {
