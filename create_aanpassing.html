@@ -6,21 +6,6 @@
     <div id="main-content" class="container">
 	   
       <div class="col-md-3 hidden-sm hidden-xs hidden-md">
-	     <div class="panel side-panel panel-default" id="new-problem-widget">
-            <div class="panel-heading">
-                <strong>Report</strong>
-            </div>
-           <div class="panel-body">
-                            <div class="list-group  report-list-council" ng-hide="reportList.council == null || reportList.council == 'undefined' " >
-                            <strong>Gemeente: {{reportList.council}}</strong></br>
-                            Meldingen per maand: {{reportList.reports}} </br>
-                            Oplossingen per maand: {{reportList.solutions}}
-                          </div>
-                            <div class="list-group  report-list-council"  ng-show="reportList.council == null || reportList.council == 'undifined' ">
-                             geen locatieinformatie gevonden
-                           </div>
-            </div>  
-</div>
 
 <div class="panel side-panel panel-default" id="new-problem-widget" ng-hide="results.length == 0 || newProblemList==null">
     <div class="panel-heading">

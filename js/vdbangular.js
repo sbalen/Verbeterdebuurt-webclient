@@ -143,6 +143,13 @@ vdbApp.run(['$location', '$rootScope', '$cookies', function($location, $rootScop
   }
 
   CUSTOMISATION_GVB.check_login($rootScope, $cookies, $location);
+
+  // Hide parts of the interface on GVB.
+  if ( CUSTOMISATION_GVB.is_active() ) {
+    $rootScope.hideReport = true;
+  }  else {
+    $rootScope.hideReport = false;
+  }
 }]);
 
 
