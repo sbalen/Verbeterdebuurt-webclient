@@ -1742,6 +1742,7 @@ vdbApp.controller('issueCtrl', ['$scope', '$rootScope', '$window', '$routeParams
         $rootScope.dynamicTitle = "Melding |";
         $scope.hideSelection = true;
         $scope.changeid = $routeParams.id;
+        $scope.showSocial = ! CUSTOMISATION_GVB.is_active();
 
         $scope.keepTrackOfURL();
 
@@ -2230,6 +2231,7 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope', '$routeParams', '$http', '$ro
     menuSelected($rootScope, 'myIssues');
     $rootScope.globaloverlay = "active";
     $scope.hideSelection = true;
+    $scope.showSocial = ! CUSTOMISATION_GVB.is_active();
     $scope.id = function () {
         return $routeParams.id;
     }

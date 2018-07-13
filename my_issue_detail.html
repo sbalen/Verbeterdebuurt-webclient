@@ -26,12 +26,12 @@
                             <tbody> 
                                 <tr>
                                     <td/><td/>
-                                    <td colspan="2" align="right" style='padding:0px 30px 0px 0px'>Delen met:</td>  
+                                    <td colspan="2" align="right" style='padding:0px 30px 0px 0px' ng-show="showSocial">Delen met:</td>  
                                 </tr>
                                 <tr>
                                     <td>Door:</td>
                                     <td>{{myIssues.owner.username}}</td>
-                                    <td rowspan="3" colspan="2" align="right"> 
+                                    <td rowspan="3" colspan="2" align="right" ng-show="showSocial"> 
                                         <img class="img-rounded" alt="Twitter" width="49" height="49" src="./img/twitter_s.png">
                                         <img class="img-rounded" alt="Facebook" width="49" height="49" src="./img/facebook_s.png">
                                     </td>
