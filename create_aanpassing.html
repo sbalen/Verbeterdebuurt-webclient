@@ -189,6 +189,18 @@
                                 <div ng-class="{'has-error': errorImg }">
                                   <input id="file-input-problem" type="file" style="width: 94%;margin-left: 3%;" data-show-upload="false" img-upload='imgData'>
                                 </div>
+                                <div style="margin-top:0.5em;">
+                                  <input id="file-input-problem2" type="file" style="width: 94%;margin-left: 3%;" data-show-upload="false" img-upload='imgData2'>
+                                </div>
+                                <div style="margin-top:0.5em;">
+                                  <input id="file-input-problem3" type="file" style="width: 94%;margin-left: 3%;" data-show-upload="false" img-upload='imgData3'>
+                                </div>
+                                <div style="margin-top:0.5em;">
+                                  <input id="file-input-problem4" type="file" style="width: 94%;margin-left: 3%;" data-show-upload="false" img-upload='imgData4'>
+                                </div>
+                                <div style="margin-top:0.5em;">
+                                  <input id="file-input-problem5" type="file" style="width: 94%;margin-left: 3%;" data-show-upload="false" img-upload='imgData5'>
+                                </div>
                             </div>
                             <div class="panel-body" ng-hide="hideLogin">
                                 <h4 class="fontM">3. Contactgegevens</h4>
@@ -293,6 +305,15 @@
         $("#file-input-problem").fileinput({'showUpload':false});
         $("#file-input-idea").fileinput();
         $("#file-input-idea").fileinput({'showUpload':false});
+        // For GVB
+        $("#file-input-problem2").fileinput();
+        $("#file-input-problem2").fileinput({'showUpload':false});
+        $("#file-input-problem3").fileinput();
+        $("#file-input-problem3").fileinput({'showUpload':false});
+        $("#file-input-problem4").fileinput();
+        $("#file-input-problem4").fileinput({'showUpload':false});
+        $("#file-input-problem5").fileinput();
+        $("#file-input-problem5").fileinput({'showUpload':false});
 //        
 //    $('.duplicate-item').on('click', function(e) {
 //        e.preventDefault();

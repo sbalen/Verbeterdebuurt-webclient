@@ -868,11 +868,24 @@ vdbApp.factory('issueSubmitService', ['$http','$rootScope', function ($http,$roo
 
 vdbApp.factory('issueSubmitServiceWithImage', ['$http','$rootScope', function ($http,$rootScope) {
     return {
-        getIssueSubmit: function (jsondata, img) {
+        getIssueSubmit: function (jsondata, img, img2, img3, img4, img5) {
             logger('issueSubmitServiceWithImage.getIssueSubmit('+jsondata+')');
             var dataForm = new FormData();
             dataForm.append('json', jsondata);
             dataForm.append('image', img);
+            // For GVB
+            if ( img2 ) {
+              dataForm.append('image2', img2);
+            }
+            if ( img3 ) {
+              dataForm.append('image3', img3);
+            }
+            if ( img4 ) {
+              dataForm.append('image4', img4);
+            }
+            if ( img5 ) {
+              dataForm.append('image5', img5);
+            }
             return $http.post(APIURL + 'issueSubmit', dataForm, {
                     transformRequest: angular.identity,
                     headers : { 'Content-Type' : undefined }
@@ -3774,6 +3787,11 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
         var issue = {};
         var location = {};
         var file = $scope.imgData;
+        // For GVB
+        var file2 = $scope.imgData2;
+        var file3 = $scope.imgData3;
+        var file4 = $scope.imgData4;
+        var file5 = $scope.imgData5;
 
         // Photos are required for the GVB.
         if ( CUSTOMISATION_GVB.is_active() && ! file ) {
@@ -3878,7 +3896,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
         jsondataSubmit = JSON.stringify(jsondataSubmit);
 
         if (file) {
-            issueSubmitServiceWithImage.getIssueSubmit(jsondataSubmit, file).then($scope.handleSubmit);
+            issueSubmitServiceWithImage.getIssueSubmit(jsondataSubmit, file, file2, file3, file4, file5).then($scope.handleSubmit);
         } else {
             issueSubmitService.getIssueSubmit(jsondataSubmit).then($scope.handleSubmit);
         }
