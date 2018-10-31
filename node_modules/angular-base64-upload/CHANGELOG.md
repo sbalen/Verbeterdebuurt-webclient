@@ -1,6 +1,20 @@
 Change Log
 --------
 
+v0.1.23
+ - added `allow-same-file` attribute option, which fixes #103 and #108
+
+v0.1.22
+ - Clear model when selecting empty files. See [PR#75](https://github.com/adonespitogo/angular-base64-upload/pull/75)
+ - Allow selecting the same file (issue [#66](https://github.com/adonespitogo/angular-base64-upload/issues/66))
+
+v0.1.21
+ - Migrate to `Gulp` build
+ - Clear validation errors after clearing input with empty value - [see PR#90](https://github.com/adonespitogo/angular-base64-upload/pull/90)
+
+v0.1.20
+ - Added do-not-parse-if-oversize flag to prevent images above maximum size to be converted to base64.
+
 v0.1.19
  - Refactored unit tests - separated into multiple files for easier navigation.
  - Set view value only once
