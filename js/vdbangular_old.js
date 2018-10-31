@@ -1,15 +1,28 @@
-// var LOGGING = false;
+
+//var vdbApp = angular.module('vdbApp',[]);
+var vdbApp = angular.module('vdbApp', 
+    ['ngRoute', 
+     'angularUtils.directives.dirPagination', 
+     'ngFacebook', 
+     'ngCookies', 
+     'naif.base64',
+     'angulartics', 
+     'angulartics.google.analytics']);
+
+
+
+// var LOGGING = false; 
 var LOGGING = true; 
 
 var PROTOCOL = "https";
 
 // var ROOT = "www.verbeterdebuurt.nl/";
-// var ROOT = vdbApp.baseUrl;
+var ROOT = vdbApp.baseUrl;
 
 // var API_VERSION = "api.php/json_1_3/";
-// var API_VERSION = vdbApp.apiVersion;
+var API_VERSION = vdbApp.apiVersion;
 
-// var APIURL = PROTOCOL + "://" + ROOT + API_VERSION;
+var APIURL = PROTOCOL + "://" + ROOT + API_VERSION;
 
 var ISSUE_TYPE_PROBLEM = "problem";
 var ISSUE_TYPE_IDEA = "idea";
@@ -77,7 +90,7 @@ if (!String.prototype.endsWith) {
   };
 }
 //console log() if you want to deactive it, change the parameter from true to false
-var logger = console.log.bind(window.console);
+var logger = LOGGING ? console.log.bind(window.console) : function(){}
 
 //error api handler
 errorhandler = function(rootScope,errorInfo){
@@ -103,9 +116,8 @@ vdbApp.run(function(){
     googlemapinit();
 })
 
-vdbApp.run(['$route', '$rootScope', '$location', 'baseUrl', 'apiVersion', function ($route, $rootScope, $location, baseUrl, apiVersion) {
+vdbApp.run(['$route', '$rootScope', '$location', function ($route, $rootScope, $location) {
     var original = $location.path;
-    $rootScope.APIURL = "http://" + baseUrl + '/' + apiVersion;
     $location.path = function (path, keepstate) {        
         if (keepstate) {
             var lastRoute = $route.current;
@@ -431,7 +443,7 @@ vdbApp.factory('issuesService', ['$http','$rootScope', function ($http,$rootScop
     return {
         getIssues: function (jsondata) {
             logger('issuesService.getIssues('+jsondata+')');
-            return $http.post($rootScope.APIURL + 'issues', jsondata)
+            return $http.post(APIURL + 'issues', jsondata)
                 .success(function (data) {
                     if (angular.isObject(data)) {
                         issuesService.data = data;
@@ -453,7 +465,7 @@ vdbApp.factory('reportService', ['$http','$rootScope', function ($http,$rootScop
     return {
         getReport: function (jsondata) {
             logger('reportService.getReport('+jsondata+')');
-            return $http.post($rootScope.APIURL + 'reports', jsondata)
+            return $http.post(APIURL + 'reports', jsondata)
                 .success(function (data) {
                     if (angular.isObject(data)) {
                         reportService.data = data;
@@ -474,7 +486,7 @@ vdbApp.factory('loginService', ['$http','$rootScope', function ($http,$rootScope
     return {
         getLogin: function (jsondata) {
             logger('loginService.getLogin('+jsondata+')');
-            return $http.post($rootScope.APIURL + 'login', jsondata)
+            return $http.post(APIURL + 'login', jsondata)
                 .success(function (data) {
                     if (angular.isObject(data)) {
                         loginService.data = data;
@@ -495,7 +507,7 @@ vdbApp.factory('commentService', ['$http','$rootScope', function ($http,$rootSco
     return {
         getComment: function (jsondata) {
             logger('commentService.getComment('+jsondata+')');
-            return $http.post($rootScope.APIURL + 'comments', jsondata).success(function (data) {
+            return $http.post(APIURL + 'comments', jsondata).success(function (data) {
                 if (angular.isObject) {
                     commentService.data = data;
                     return commentService.data;
@@ -512,7 +524,7 @@ vdbApp.factory('registerService', ['$http','$rootScope', function ($http,$rootSc
     return {
         getRegister: function (jsondata) {
             logger('registerService.getRegister('+jsondata+')');
-            return $http.post($rootScope.APIURL + 'register', jsondata)
+            return $http.post(APIURL + 'register', jsondata)
                 .success(function (data) {
                     if (angular.isObject(data)) {
                         registerService.data = data;
@@ -531,7 +543,7 @@ vdbApp.factory('newsletterService', ['$http','$rootScope', function ($http,$root
     return {
         getNewsletter: function (jsonnewsletter) {
             logger('newsletterService.getNewsletter('+jsondata+')');
-            return $http.post($rootScope.APIURL + 'subscribeNewsletter', jsonnewsletter)
+            return $http.post(APIURL + 'subscribeNewsletter', jsonnewsletter)
                 .success(function (data) {
                     if (angular.isObject(data)) {
                         newsletterService.data = data;
@@ -553,7 +565,7 @@ vdbApp.factory('forgotService', ['$http','$rootScope', function ($http,$rootScop
     return {
         getForgot: function (jsondata) {
             logger('forgotService.getForgot('+jsondata+')');
-            return $http.post($rootScope.APIURL + 'resetPassword', jsondata)
+            return $http.post(APIURL + 'resetPassword', jsondata)
                 .success(function (data) {
                     if (angular.isObject(data)) {
                         forgotService.data = data;
@@ -572,7 +584,7 @@ vdbApp.factory('myIssuesService', ['$http','$rootScope', function ($http,$rootSc
     return {
         getMyIssues: function (jsondata) {
             logger('myIssuesService.getMyIssues('+jsondata+')');
-            return $http.post($rootScope.APIURL + 'myIssues', jsondata)
+            return $http.post(APIURL + 'myIssues', jsondata)
                 .success(function (data) {
                     if (angular.isObject(data)) {
                         myIssuesService.data = data;
@@ -591,7 +603,7 @@ vdbApp.factory('commentSubmitService', ['$http','$rootScope', function ($http,$r
     return {
         getCommentSubmit: function (jsondata) {
             logger('commentSubmitService.getCommentSubmit('+jsondata+')');
-            return $http.post($rootScope.APIURL + 'commentSubmit', jsondata)
+            return $http.post(APIURL + 'commentSubmit', jsondata)
                 .success(function (data) {
                     if (angular.isObject(data)) {
                         commentSubmitService.data = data;
@@ -611,7 +623,7 @@ vdbApp.factory('profileService', ['$http','$rootScope', function ($http,$rootSco
     return {
         getProfile: function (jsondata) {
             logger('profileService.getProfile('+jsondata+')');
-            return $http.post($rootScope.APIURL + 'editSettings', jsondata)
+            return $http.post(APIURL + 'editSettings', jsondata)
                 .success(function (data) {
                     if (angular.isObject(data)) {
                         profileService.data = data;
@@ -630,7 +642,7 @@ vdbApp.factory('syncFBService', ['$http','$rootScope', function ($http,$rootScop
     return {
         getFBSync: function (jsondata) {
             logger('syncFBService.getFBSync('+jsondata+')');
-            return $http.post($rootScope.APIURL + 'connectFacebook', jsondata)
+            return $http.post(APIURL + 'connectFacebook', jsondata)
                 .success(function (data) {
                     if (angular.isObject(data)) {
                         syncFBService.data = data;
@@ -649,7 +661,7 @@ vdbApp.factory('loginFBService', ['$http','$rootScope', function ($http,$rootSco
     return {
         getFBLogin: function (jsondata) {
             logger('loginFBService.getFBLogin('+jsondata+')');
-            return $http.post($rootScope.APIURL + 'connectFacebook', jsondata)
+            return $http.post(APIURL + 'connectFacebook', jsondata)
                 .success(function (data) {
                     if (angular.isObject(data)) {
                         loginFBService.data = data;
@@ -672,7 +684,7 @@ vdbApp.factory('workLogService', ['$http','$rootScope', function ($http,$rootSco
     return {
         getWorkLog: function (jsondata) {
             logger('workLogService.getWorkLog('+jsondata+')');
-            return $http.post($rootScope.APIURL + 'worklogs', jsondata)
+            return $http.post(APIURL + 'worklogs', jsondata)
                 .success(function (data) {
                     if (angular.isObject(data)) {
                         workLogService.data = data;
@@ -691,7 +703,7 @@ vdbApp.factory('categoriesService', ['$http','$rootScope', function ($http,$root
     return {
         getCategories: function (jsondata) {
             logger('categoriesService.getCategories('+jsondata+')');
-            return $http.post($rootScope.APIURL + 'categories', jsondata)
+            return $http.post(APIURL + 'categories', jsondata)
                 .success(function (data) {
                     if (angular.isObject(data)) {
                         categoriesService.data = data;
@@ -710,7 +722,7 @@ vdbApp.factory('issueSubmitService', ['$http','$rootScope', function ($http,$roo
     return {
         getIssueSubmit: function (jsondata) {
             logger('issueSubmitService.getIssueSubmit('+jsondata+')');
-            return $http.post($rootScope.APIURL + 'issueSubmit', jsondata)
+            return $http.post(APIURL + 'issueSubmit', jsondata)
                 .success(function (data) {
                     issueSubmitService.data = data;
                     return issueSubmitService.data;
@@ -730,7 +742,7 @@ vdbApp.factory('issueSubmitServiceWithImage', ['$http','$rootScope', function ($
             var dataForm = new FormData();
             dataForm.append('json', jsondata);
             dataForm.append('image', img);
-            return $http.post($rootScope.APIURL + 'issueSubmit', dataForm, {
+            return $http.post(APIURL + 'issueSubmit', dataForm, {
                     transformRequest: angular.identity,
                     headers : { 'Content-Type' : undefined }
                 })
@@ -751,7 +763,7 @@ vdbApp.factory('voteSubmitService', ['$http','$rootScope', function ($http,$root
     return {
         getvoteSummit: function (jsondata) {
             logger('voteSubmitService.getvoteSummit('+jsondata+')');
-            return $http.post($rootScope.APIURL + 'voteSubmit', jsondata)
+            return $http.post(APIURL + 'voteSubmit', jsondata)
                 .success(function (data) {
                     voteSubmitService.data = data;
                     return voteSubmitService.data;
@@ -769,7 +781,7 @@ vdbApp.factory('statusChangeService', ['$http','$rootScope', function ($http,$ro
     return {
         getStatusChange: function (jsondata) {
             logger('statusChangeService.getStatusChange('+jsondata+')');
-            return $http.post($rootScope.APIURL + 'statusChange', jsondata)
+            return $http.post(APIURL + 'statusChange', jsondata)
                 .success(function (data) {
                     statusChangeService.data = data;
                     return statusChangeService.data;
@@ -786,7 +798,7 @@ vdbApp.factory('issueLogService', ['$http','$rootScope', function ($http,$rootSc
     return {
         getIssueLog: function (jsondata) {
             logger('issueLogService.getIssueLog('+jsondata+')');
-            return $http.post($rootScope.APIURL + 'issueLog', jsondata)
+            return $http.post(APIURL + 'issueLog', jsondata)
                 .success(function (data) {
                     issueLogService.data = data;
                     return issueLogService.data;
@@ -803,7 +815,7 @@ vdbApp.factory('agreementSevice', ['$http','$rootScope', function ($http,$rootSc
     return {
         getAgreement: function (jsondata) {
             logger('agreementSevice.getAgreement('+jsondata+')');
-            return $http.post($rootScope.APIURL + 'agreement', jsondata)
+            return $http.post(APIURL + 'agreement', jsondata)
                 .success(function (data) {
                     agreementSevice.data = data;
                     return agreementSevice.data;
@@ -821,7 +833,7 @@ vdbApp.factory('duplicateIssuesService', ['$http','$rootScope', function ($http,
     return {
         getDuplicateIssue: function (jsondata) {
             logger('duplicateIssuesService.getDuplicateIssue('+jsondata+')');
-            return $http.post($rootScope.APIURL + 'duplicateIssues', jsondata)
+            return $http.post(APIURL + 'duplicateIssues', jsondata)
                 .success(function (data) {
                     duplicateIssuesService.data = data;
                     return duplicateIssuesService.data;
@@ -838,7 +850,7 @@ vdbApp.factory('getIssueService', ['$http','$rootScope', function ($http,$rootSc
     return {
         getIssue: function (jsondata) {
             logger('getIssueService.getIssue('+jsondata+')');
-            return $http.post($rootScope.APIURL + 'issueForHash', jsondata)
+            return $http.post(APIURL + 'issueForHash', jsondata)
                 .success(function (data) {
                     getIssueService.data = data;
                     return getIssueService.data;
@@ -855,7 +867,7 @@ vdbApp.factory('confirmRegistrationService', ['$http','$rootScope', function ($h
     return {
         getConfirm: function (jsondata) {
             logger('confirmRegistrationService.getConfirm('+jsondata+')');
-            return $http.post($rootScope.APIURL + 'confirmRegistration', jsondata)
+            return $http.post(APIURL + 'confirmRegistration', jsondata)
                 .success(function (data) {
                     if (angular.isObject(data)) {
                         confirmRegistrationService.data = data;
@@ -875,7 +887,7 @@ vdbApp.factory('cancelRegistrationService', ['$http','$rootScope', function ($ht
     return {
         getConfirm: function (jsondata) {
             logger('cancelRegistrationService.getConfirm('+jsondata+')');
-            return $http.post($rootScope.APIURL + 'cancelRegistration', jsondata)
+            return $http.post(APIURL + 'cancelRegistration', jsondata)
                 .success(function (data) {
                     if (angular.isObject(data)) {
                         cancelRegistrationService.data = data;
@@ -894,7 +906,7 @@ vdbApp.factory('confirmIssueService', ['$http','$rootScope', function ($http,$ro
     return {
         getConfirmIssue: function (jsondata) {
             logger('confirmIssueService.getConfirmIssue('+jsondata+')');
-            return $http.post($rootScope.APIURL + 'confirmIssue', jsondata)
+            return $http.post(APIURL + 'confirmIssue', jsondata)
                 .success(function (data) {
                     confirmIssueService.data = data;
                     return confirmIssueService.data;
@@ -913,7 +925,7 @@ vdbApp.factory('remindIssueService', ['$http','$rootScope', function ($http,$roo
     return {
         getRemindIssue: function (jsondata) {
             logger('remindIssueService.getRemindIssue('+jsondata+')');
-            return $http.post($rootScope.APIURL + 'emailLink', jsondata)
+            return $http.post(APIURL + 'emailLink', jsondata)
                 .success(function (data) {
                     remindIssueService.data = data;
                     return remindIssueService.data;
@@ -930,7 +942,7 @@ vdbApp.factory('serviceStandardService', ['$http','$rootScope', function ($http,
     return {
         getServiceStandard: function (jsondata) {
             logger('serviceStandardService.getServiceStandard('+jsondata+')');
-            return $http.post($rootScope.APIURL + 'serviceStandard', jsondata)
+            return $http.post(APIURL + 'serviceStandard', jsondata)
                 .success(function (data) {
                     serviceStandardService.data = data;
                     return serviceStandardService.data;
@@ -947,7 +959,7 @@ vdbApp.factory('unfollowIssueService', ['$http','$rootScope', function ($http,$r
     return {
         getUnfollowIssue: function (jsondata) {
             logger('unfollowIssueService.getUnfollowIssue('+jsondata+')');
-            return $http.post($rootScope.APIURL + 'unfollowIssue', jsondata)
+            return $http.post(APIURL + 'unfollowIssue', jsondata)
                 .success(function (data) {
                     unfollowIssueService.data = data;
                     return unfollowIssueService.data;
@@ -965,7 +977,7 @@ vdbApp.factory('confirmVoteService', ["$http",'$rootScope',function ($http,$root
     return {
         getConfirmVote: function (jsondata){
             logger('confirmVoteService.getConfirmVote('+jsondata+')');
-            return $http.post($rootScope.APIURL+ 'confirmVote',jsondata)
+            return $http.post(APIURL+ 'confirmVote',jsondata)
             .success(function (data){
                 confirmVoteService.data = data;
                 return confirmVoteService.data;
@@ -1336,7 +1348,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
 
 }]);
 
-vdbApp.controller('issueCtrl', ['$scope', '$rootScope', '$window', '$routeParams', 'issuesService', 'reportService', '$location', '$anchorScroll', 'issueLogService', 'commentService', '$timeout', 'voteSubmitService', '$cookies', 'confirmIssueService', 'remindIssueService', 'unfollowIssueService','myIssuesService', 'statusChangeService','getIssueService',function ($scope, $rootScope, $window, $routeParams, issuesService, reportService, $location, $anchorScroll, issueLogService, commentService, $timeout, voteSubmitService, $cookies, confirmIssueService, remindIssueService, unfollowIssueService,myIssuesService,statusChangeService,getIssueService,baseUrl) {
+vdbApp.controller('issueCtrl', ['$scope', '$rootScope', '$window', '$routeParams', 'issuesService', 'reportService', '$location', '$anchorScroll', 'issueLogService', 'commentService', '$timeout', 'voteSubmitService', '$cookies', 'confirmIssueService', 'remindIssueService', 'unfollowIssueService','myIssuesService', 'statusChangeService','getIssueService',function ($scope, $rootScope, $window, $routeParams, issuesService, reportService, $location, $anchorScroll, issueLogService, commentService, $timeout, voteSubmitService, $cookies, confirmIssueService, remindIssueService, unfollowIssueService,myIssuesService,statusChangeService,getIssueService) {
     logger("issueCtrl");
 
     var issueController = this;
@@ -1514,7 +1526,7 @@ vdbApp.controller('issueCtrl', ['$scope', '$rootScope', '$window', '$routeParams
         $rootScope.globaloverlay = "active";
         
         var jsondata = JSON.stringify({
-            "link" : baseUrl + "melding/herinneren/" + authorisation_hash
+            "link" : ROOT + "melding/herinneren/" + authorisation_hash    
         });
         var getRemindIssue = remindIssueService.getRemindIssue(jsondata).then(function (data) {
             var getRemindIssue = data.data;

@@ -31,6 +31,7 @@ markers = null;
 markers = [];
 markerid = [];
 
+var logger = console.log.bind(window.console);
 
 //simple translation func
 function __t(str) {
