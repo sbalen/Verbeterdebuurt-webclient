@@ -1,0 +1,14 @@
+{
+  "name": "vbdb-web",
+  "version": "1.0.0",
+  "description": "Example of how to correctly inject configuration into angular",
+  "dependencies": {
+    "express": "^4.13.3",
+    "gulp": "^3.9.0",
+    "gulp-ng-config": "^1.2.1",
+    "angular-base64-upload": "~0.1.19",
+    "angular-spinner": "~0.8.1",
+    "angular-utils-pagination": "~0.11.1",
+    "jquery.smartbanner": "~0.1.0"
+  }
+}
