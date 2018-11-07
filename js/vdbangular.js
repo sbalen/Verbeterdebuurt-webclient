@@ -105,7 +105,7 @@ vdbApp.run(function(){
 
 vdbApp.run(['$route', '$rootScope', '$location', 'baseUrl', 'apiVersion', function ($route, $rootScope, $location, baseUrl, apiVersion) {
     var original = $location.path;
-    $rootScope.APIURL = "http://" + baseUrl + '/' + apiVersion;
+    $rootScope.APIURL = "https://" + baseUrl + '/' + apiVersion;
     $location.path = function (path, keepstate) {        
         if (keepstate) {
             var lastRoute = $route.current;
