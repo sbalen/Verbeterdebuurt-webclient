@@ -1,0 +1,60 @@
+/* Harderwijk colour scheme. */
+.customisation.harderwijk .subnav,
+.customisation.harderwijk .side-panel .panel-heading {
+  background-color: #2d93d4;
+  color: #231f20;
+  border-color: #fff;
+  border: none;
+}
+.customisation.harderwijk .navbar-default .navbar-nav > li > a {
+  color: #2d93d4;
+}
+.customisation.harderwijk .main-panel,
+.customisation.harderwijk .side-panel {
+  border-color: #2d93d4;
+}
+.customisation.harderwijk .subnav .sub-nav-btn {
+  border-color: #fff;
+  background-color: #2d93d4;
+  color: #231f20;
+  border-bottom: none;
+}
+.customisation.harderwijk .subnav .sub-nav-btn.active {
+  color: #231f20 !important; /* Override already defiend !important.. */
+}
+}
+/* Customise the logo, e.g. positioning or size. */
+.customisation.harderwijk #logo-image {
+  margin-top: -15px;
+}
+/* Responsive menu. */
+.customisation.harderwijk .navbar-default .navbar-toggle .icon-bar {
+  background-color: #2d93d4;
+}
+.customisation.harderwijk .navbar-default .navbar-nav > li > a {
+  background-color: #fff;
+  color: #231f20;
+}
+.customisation.harderwijk .navbar-default .navbar-nav > li.active > a {
+  background-color: #2d93d4;
+}
+.customisation.harderwijk .btn-default1 {
+  border-color: #2d93d4;
+  color: #231f20;
+}
+.customisation.harderwijk ul.dropdown-menu {
+  background-color: #2d93d4;
+  color: #231f20;
+}
+.customisation.harderwijk ul.dropdown-menu > li > a:hover,
+.customisation.harderwijk .dropdown-menu > li > a:focus {
+  color: #231f20 !important;
+}
+.customisation.harderwijk .btn-xs.btn-success {
+  border-color: #2d93d4;
+  background-color: #2d93d4;
+  color: #231f20;
+}
+.customisation.harderwijk .footer {
+  border-color: #2d93d4;
+}
