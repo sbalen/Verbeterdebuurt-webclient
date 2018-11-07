@@ -4,7 +4,7 @@ COPY . /usr/local/apache2/htdocs/
 WORKDIR /usr/local/apache2/htdocs/
 
 RUN apt-get update \
-    && apt-get -y install curl wget \
+    && apt-get -y install curl wget gnupg2 \
     && curl -sL https://deb.nodesource.com/setup_8.x | bash - \
     && apt-get install -y nodejs \
     && npm install \
