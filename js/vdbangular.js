@@ -1193,7 +1193,8 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
                     "min_lat": map.getBounds().getSouthWest().lat(),
                     "max_long": map.getBounds().getNorthEast().lng(),
                     "min_long": map.getBounds().getSouthWest().lng()
-                }
+                },
+                "organisation_id": 2, // Harderwijk organisation id
             });
             var getIssues = issuesService.getIssues(jsondata).then(function (data) {
                 var getdata = data.data;                        
@@ -1215,7 +1216,9 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
     }
     $scope.updateCouncilReport = function(city)  {
         logger("updateCouncilReport");
-        reportService.getReport(JSON.stringify({"council": "" + city + ""})).then(function (data) {                
+      reportService.getReport(JSON.stringify({"council": "" + city + "",
+                "organisation_id": 2, // Harderwijk organisation id
+      })).then(function (data) {                
             $rootScope.reportList = data.data.report;
         });
     }
@@ -2446,7 +2449,9 @@ vdbApp.controller('registerCtrl', ['$scope', '$rootScope', '$window', 'registerS
                 "city": "" + $scope.city + "",
                 "phone": "" + $scope.phone + "",
                 "facebookID": "" + $scope.facebookID + "",
-                "ondernemingsdossierID": "" + ondernemingsdossierID
+                "ondernemingsdossierID": "" + ondernemingsdossierID,
+                "organisation_id": 2, // Harderwijk organisation id
+
             }
         });
 
@@ -2491,6 +2496,9 @@ vdbApp.controller('registerCtrl', ['$scope', '$rootScope', '$window', 'registerS
                         "user": {
                             "username": "" + $scope.username + "",
                             "password": "" + $scope.password + ""
+                        },
+                        "user_profile": {
+                            "organisation_id": 2, // Harderwijk organisation id
                         }
                     })
 
@@ -3147,7 +3155,8 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
                 description :  issue.description,
                 type :  issue.type,
                 category_id :  issue.category_id,
-                private_message : issue.privateMessage
+                private_message : issue.privateMessage,
+                "organisation_id": 2, // Harderwijk organisation id
             }, 
             location : {
                 latitude : location.latitude,
@@ -3555,7 +3564,8 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
                     "description" :  issue.description,
                     "type" : issue.type,
                     "realization" : issue.realization,
-                    "private_message" : issue.privateMessage
+                    "private_message" : issue.privateMessage,
+                    "organisation_id": 2, // Harderwijk organisation id
                     
                 }, 
                 "location" : {
@@ -3587,7 +3597,8 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
                     "description" :  issue.description,
                     "type" : issue.type,
                     "realization" : issue.realization,
-                    "private_message" : issue.privateMessage
+                    "private_message" : issue.privateMessage,
+                    "organisation_id": 2, // Harderwijk organisation id
                     
                 }, 
                 "location" : {
