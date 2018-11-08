@@ -22,10 +22,11 @@
 .customisation.harderwijk .subnav .sub-nav-btn.active {
   color: #231f20 !important; /* Override already defiend !important.. */
 }
-}
 /* Customise the logo, e.g. positioning or size. */
-.customisation.harderwijk #logo-image {
-  margin-top: -15px;
+.customisation.harderwijk img.vdblogo {
+  margin: -16px 0 0 -16px;
+  width: auto;
+  height: 50px;
 }
 /* Responsive menu. */
 .customisation.harderwijk .navbar-default .navbar-toggle .icon-bar {
