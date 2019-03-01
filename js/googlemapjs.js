@@ -136,10 +136,11 @@ function getaddressshow(latlng){
 }
 
 //google map auto complete change string to make it by id
-
-function attachAutoCompleteListener(stringid,marker,locationmap,location) {
+// Pass the originating scope for additional functions.
+function attachAutoCompleteListener(stringid,marker,locationmap,location,originalScope) {
     logger("attachAutoCompleteListener " +stringid);
     var input = document.getElementById(stringid);
+    var has_categories = location === "location";
     //if input cannot be found yet, it's probably not loaded yet, so return doing nothing
     if (input == undefined) return;
 
@@ -150,6 +151,10 @@ function attachAutoCompleteListener(stringid,marker,locationmap,location) {
     if (autocompleteListener != undefined) { autocompleteListener.remove(); }
     autocompleteListener = google.maps.event.addListener(autocomplete, 'place_changed', function() {
         logger("google place changed");
+
+        if ( has_categories && originalScope ) {
+          originalScope.loadCategory = 1;
+        }
 
         var place = autocomplete.getPlace();
         var address = "";
@@ -167,6 +172,12 @@ function attachAutoCompleteListener(stringid,marker,locationmap,location) {
         if (marker) {
             moveMapToAddress(address,false,function() {
                markerCenter(locationmap,marker,location);
+               // The create Problem page has a marker, and categories.
+               // Update the categories after moving from the
+               // mini-map autocomplete.
+               if ( has_categories && originalScope ) {
+                 originalScope.categoriesData()
+               }
             })
         } else {
             moveMapToAddress(address);
@@ -314,6 +325,10 @@ function googleMapCreateIdea() {
     getMarkerLocation(marker);
     markerGetAddress(marker, "location2");
     var tempurl = window.location.pathname.replace('nieuw-idee','');
+    // Update: return the marker (as with createProblem). This marker
+    // is ultimately passed to the autocomplete google search listener,
+    // that will update the marker position on the small map.
+    return marker;
 }
 
 function initMainMapToSmallMapListener(smallMap) {
@@ -324,11 +339,16 @@ function initMainMapToSmallMapListener(smallMap) {
         map.setZoom(smallMap.getZoom());
     });
 
+/* A change in the google maps included code causes continuous
+     * updates between the large and small map, effectively blocking
+     * any panning. As a possible solution, don't update the small map
+     * based on the large map.
     google.maps.event.addListener(map, 'bounds_changed', function (e) {
         //google.maps.event.trigger(map, 'resize')
         smallMap.setCenter(map.getCenter());
         smallMap.setZoom(map.getZoom());
     });
+    */
 
 }
 
@@ -575,8 +595,26 @@ function moveMapToBrowserLocation($rootScope,$q,withFallBack,callBack) {
 }
 
 function moveMapToLocation(location,callBack,boundsToFitTo) {
-    logger("moveMapToLocation("+location.lat+","+location.lng+")");
-    map.panTo(location);
+    //logger("moveMapToLocation("+location.lat()+","+location.lng()+")");
+logger("moveMapToLocation("+location.lat+","+location.lng+")");
+    // Update: the map move on geolocations moves the large map.
+    // The small maps can't directly listen to the large map anymore,
+    // so we have to set them manually. Check for the small maps below:
+    // - map is the main map
+    // - map3 is the CreateProblem map
+    // - map4 is the CreateIdea map
+    if ( typeof map3 !== 'undefined' ) {
+      logger('moveMapToLocation: map3 (problem)');
+      map3.panTo(location);
+    }
+    if ( typeof map4 !== 'undefined' ) {
+      logger('moveMapToLocation: map4 (idea)');
+      map4.panTo(location);
+    }
+    if ( typeof map3 === 'undefined' && typeof map4 === 'undefined' ) {
+      logger('moveMapToLocation: map (main)');
+      map.panTo(location);
+    }
     //map.setCenter(location);
     determineCityForGeocode(callBack,boundsToFitTo);
 }

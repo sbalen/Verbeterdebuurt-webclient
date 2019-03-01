@@ -10,7 +10,7 @@ var vdbApp = angular.module('vdbApp',
      'angulartics.google.analytics']);
 
  var LOGGING = false; 
-//var LOGGING = true; 
+var LOGGING = true; 
 
 var PROTOCOL = "https";
 // var PROTOCOL = "http";
@@ -3021,7 +3021,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
     $timeout(function () {        
          
         var issueMarker = googleMapCreateProblem();
-        attachAutoCompleteListener('searchCityProblem',issueMarker,map3,"location");        
+        attachAutoCompleteListener('searchCityProblem',issueMarker,map3,"location", $scope);        
         $scope.categoriesData();
         $scope.getServiceStandard(city.long_name);
     }, 1500);
