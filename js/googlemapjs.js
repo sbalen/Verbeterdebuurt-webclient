@@ -35,13 +35,15 @@ markerid = [];
 //simple translation func
 function __t(str) {
     switch(str) {
-        case "problem": return "probleem";
-        case "idea": return "idee";
-        case "open": return "open";
-        case "resolved": return "opgelost";
-        case "confirmed": return "bevestigd";
-        case "closed": return "gesloten";
-        case "accepted": return "aanvaard";
+        case "problem": return "Probleem";
+        case "idea": return "Idee";
+        case "open": return "Open";
+	case "processing": return "In behandeling";
+	case "assigned": return "Toegewezen";
+        case "resolved": return "Opgelost";
+        case "confirmed": return "Bevestigd";
+        case "closed": return "Gesloten";
+        case "accepted": return "Aanvaard";
         default: return str;
     }
 }
