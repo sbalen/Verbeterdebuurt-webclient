@@ -1240,7 +1240,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
     
     //click function at map
     $scope.alrCity = function () {
-        logger("mainCtrl.alrCity() -> getreport / getagreement / getIssues if city.long_name");
+        logger("mainCtrl.alrCity() -> getreport / getagreement / getIssues if city");
         $scope.updateAllInfo();
     }
 
@@ -1249,19 +1249,19 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
         logger("updateAllInfo("+forceUpdate+") --> ");
 
         //if force, just reload all, regardless of the city name
-        if(forceUpdate && city.long_name != null) {
-            $scope.updatePathForCouncil(city.long_name);
-            $scope.updateSearchBoxForCouncil(city.long_name);
-            $scope.updateCouncilReport(city.long_name);
-            $scope.updateCouncilAgreement(city.long_name);
+        if(forceUpdate && city != null) {
+            $scope.updatePathForCouncil(city);
+            $scope.updateSearchBoxForCouncil(city);
+            $scope.updateCouncilReport(city);
+            $scope.updateCouncilAgreement(city);
         } else { // otherwise, get the cityname and check it it has changed, only then reload info
-            var currentCity = city.long_name;
+            var currentCity = city;
             determineCityForGeocode(function() {
-                if (currentCity == undefined || city.long_name != currentCity.long_name) {
-                    $scope.updatePathForCouncil(city.long_name);
-                    $scope.updateSearchBoxForCouncil(city.long_name);
-                    $scope.updateCouncilReport(city.long_name);
-                    $scope.updateCouncilAgreement(city.long_name);
+                if (currentCity == undefined || city != currentCity) {
+                    $scope.updatePathForCouncil(city);
+                    $scope.updateSearchBoxForCouncil(city);
+                    $scope.updateCouncilReport(city);
+                    $scope.updateCouncilAgreement(city);
                 }
             });
         }
@@ -3023,7 +3023,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
         var issueMarker = googleMapCreateProblem();
         attachAutoCompleteListener('searchCityProblem',issueMarker,map3,"location", $scope);        
         $scope.categoriesData();
-        $scope.getServiceStandard(city.long_name);
+        $scope.getServiceStandard(city);
     }, 1500);
 
     $scope.categoriesData = function () {
@@ -3054,10 +3054,10 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
         $scope.loadCategory = 1;
         if(document.getElementById('searchCityProblem').value){
            var citytemp = document.getElementById('searchCityProblem').value ;         
-           city.long_name =  citytemp.substring(citytemp.lastIndexOf(',')+1).replace(" ","");
-           $location.path('/gemeente/'+city.long_name+'/nieuw-probleem',false);      
+           city =  citytemp.substring(citytemp.lastIndexOf(',')+1).replace(" ","");
+           $location.path('/gemeente/'+city+'/nieuw-probleem',false);      
         }
-        $rootScope.lastCity = city.long_name;
+        $rootScope.lastCity = city;
         $timeout(function(){
             marker.setPosition(map3.getCenter());
         },1000)
@@ -3072,8 +3072,8 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
                 $scope.categoriesList = data.data.categories;
                 $scope.loadCategory = 0;
             });
-            $scope.updateCouncilReport(city.long_name);
-            $scope.updateCouncilAgreement(city.long_name);
+            $scope.updateCouncilReport(city);
+            $scope.updateCouncilAgreement(city);
             $scope.updateMapIssues();
 
             marker.setPosition(map3.getCenter());
@@ -3246,8 +3246,8 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
     $scope.alrCityCreate = function () {
         logger('alrCityCreate');
         //Get city problem when click/drag
-        $scope.updateCouncilReport(city.long_name);
-        $scope.updateCouncilAgreement(city.long_name);
+        $scope.updateCouncilReport(city);
+        $scope.updateCouncilAgreement(city);
         $scope.updateMapIssues();
     }
 
@@ -3277,7 +3277,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
         }
         var lat = markerLat;
         var long = markerLng;
-        var council = city.long_name;
+        var council = city;
         var category_id = $scope.categoryId;
         $rootScope.currentPage = 1;
         $scope.totalPage = 5;
@@ -3418,7 +3418,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
     $timeout(function () {
         var issueMarker = googleMapCreateIdea();
         attachAutoCompleteListener('searchCityProblem',issueMarker,map4,"location2");
-        $scope.getServiceStandard(city.long_name);
+        $scope.getServiceStandard(city);
     }, 1500);
 
 
@@ -3448,8 +3448,8 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
     $scope.clickSearchCreateIssue = function () {
         if(document.getElementById('searchCityProblem').value){
            var citytemp = document.getElementById('searchCityProblem').value ;         
-           city.long_name =  citytemp.substring(citytemp.lastIndexOf(',')+1).replace(" ","");
-           $location.path('/gemeente/'+city.long_name+'/nieuw-idee');      
+           city =  citytemp.substring(citytemp.lastIndexOf(',')+1).replace(" ","");
+           $location.path('/gemeente/'+city+'/nieuw-idee');      
         }
         var latitude = markerLat;
         var longitude = markerLng;
@@ -3460,8 +3460,8 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
         });
     
         $timeout(function () {
-            $scope.updateCouncilReport(city.long_name);
-            $scope.updateCouncilAgreement(city.long_name);
+            $scope.updateCouncilReport(city);
+            $scope.updateCouncilAgreement(city);
             $scope.updateMapIssues();
 
             marker.setPosition(map4.getCenter());
@@ -3480,8 +3480,8 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
 
     $scope.alrCityCreate = function () {
         //Get city problem when click/drag
-        $scope.updateCouncilReport(city.long_name);
-        $scope.updateCouncilAgreement(city.long_name);
+        $scope.updateCouncilReport(city);
+        $scope.updateCouncilAgreement(city);
         $scope.updateMapIssues();
     }
 

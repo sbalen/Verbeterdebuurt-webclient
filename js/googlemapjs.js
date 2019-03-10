@@ -31,7 +31,6 @@ markers = null;
 markers = [];
 markerid = [];
 
-
 //simple translation func
 function __t(str) {
     switch(str) {
@@ -476,9 +475,10 @@ function markerGetAddress(marker, location) {
 }
 
 function updateCityFromGeocodeResult(result) {
-    logger("googlemaps.js.updateCityFromGeocodeResult");
+    logger("googlemaps.js.updateCityFromGeocodeResult " + result.woonplaats);
     if (result == undefined) return;
-
+    city = result.woonplaats;
+/*
     for (var i=0; i<result[0].address_components.length; i++) {
         for (var b=0;b<result[0].address_components[i].types.length;b++) {
             //if you want the change the area ..
@@ -488,7 +488,7 @@ function updateCityFromGeocodeResult(result) {
                 break;
             }
         }
-    }
+    }*/
 }
 
 var addressHolderPendingInterval;
@@ -533,12 +533,41 @@ function updateAddressFromGeocodeResult(result,addressHolder) {
     }
 
 }
+var getJSON = function(url, callback) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.responseType = 'json';
+    xhr.onload = function() {
+      
+      var status = xhr.status;
+      if (status === 200) {
+        callback(null, xhr.response);
+      } else {
+        callback(status, xhr.response);
+      }
+    };
+    xhr.send();
+};
 
 function determineCityForGeocode(callBack,boundsToFitTo) {
+    logger("determineCityForGeocode() " + map.getCenter()); 
     logger("determineCityForGeocode() --> fit: " + boundsToFitTo);
-    geocoder.geocode({'latLng': map.getCenter()} , function (results, status) {
+    /*geocoder.geocode({'latLng': map.getCenter()} , function (results, status) {
         if (status == google.maps.GeocoderStatus.OK) {
             updateCityFromGeocodeResult(results);
+
+            if (boundsToFitTo) {
+                map.fitBounds(boundsToFitTo);
+            }
+            if (callBack != undefined && typeof callBack === 'function') {
+                callBack(true);
+            }
+        }
+    });*/
+    getJSON('https://calzonelovers.com/coolmonkeyproxy.php?lat='+map.getCenter().lat()+"&lng="+map.getCenter().lng(),function( err,data) {
+	logger("geocode success " + data);
+	if (err == null) {
+            updateCityFromGeocodeResult(data);
 
             if (boundsToFitTo) {
                 map.fitBounds(boundsToFitTo);
