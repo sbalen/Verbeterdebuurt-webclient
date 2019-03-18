@@ -37,14 +37,15 @@
                         <form class="form-horizontal position1" role="form" >
                             <div class="panel-body">
                                 <h4 class="fontM">Inloggegevens</h4>
-                                <div class="form-group">
-                                    <div class="col-sm-12 form-col" ng-class="{'has-error': errorEmail}">
-                                        <input type="text" class="form-control" id="email" placeholder="E-mailadres" ng-model="email">
-                                    </div>
-                                </div>
-                                <div class="form-group">
+				<h5 class="fontM" style="color:green; margin-right: 26px;">De gebruikersnaam is publiek zichtbaar, het e-mailadres kan ook worden gebruikt om in te loggen.</h5>
+				<div class="form-group">
                                     <div class="col-sm-12 form-col" ng-class="{'has-error': errorNewUsername}">
                                         <input type="text" class="form-control" id="username" placeholder="Gebruikersnaam" ng-model="username">
+				    </div>
+				</div>
+				<div class="form-group">
+                                    <div class="col-sm-12 form-col" ng-class="{'has-error': errorEmail}">
+                                        <input type="text" class="form-control" id="email" placeholder="E-mailadres" ng-model="email">
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -55,10 +56,10 @@
                                         <input type="password" class="form-control" id="password-2" placeholder="Wachtwoord herhalen" ng-model="password2">
                                     </div>
                                 </div>
-                    </div>
+	                    </div>
                             <div class="panel-body">
                                 <h4 class="fontM">Persoonsgegevens</h4>
-                                 <h5 class="fontM" style="color:green; margin-right: 26px;">Deze gegevens zijn nodig voor de gemeente om aan je melding te kunnen werken. Ze worden niet openbaar gemaakt en nooit gebruikt voor marketingdoeleinden.</h5>
+                                <h5 class="fontM" style="color:green; margin-right: 26px;">Deze gegevens zijn nodig voor de gemeente om aan je melding te kunnen werken. Ze worden niet openbaar gemaakt en nooit gebruikt voor marketingdoeleinden.</h5>
                                 <div class="form-group" >
                                         <div class="col-sm-2 form-col marginwidth "   ng-class="{'has-error': errorSex }">
                                             <select class="combobox" id="category"  ng-model="sex" ng-options="template.value as template.name for template in sexoption" >
