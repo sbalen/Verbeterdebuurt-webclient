@@ -1302,7 +1302,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
       if ( ! CUSTOMISATION_GVB.is_active() ) { return; }
       if ( true ) {
         gvb_set_data_stops_listener(function(event) {
-          $rootScope.clickedGvbObject = event.feature.f;
+	  $rootScope.clickedGvbObject = event.feature.l;
           CUSTOMISATION_GVB.create_stop_info_window(event, map);
           /* TODO: the info windows contains links, do these always work
            * properly with the rootScope set above?
@@ -1315,13 +1315,16 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
           */
         });
         gvb_set_data_routes_listener(function(event) {
-          $rootScope.clickedGvbObject = event.feature.f;
-          var id = event.feature.getProperty('route_id');
+          console.log(event.feature);
+          $rootScope.clickedGvbObject = event.feature.l;
+          CUSTOMISATION_GVB.create_route_info_window(event, map);
+          /* TODO: the info windows contains links, do these always work
+          /*var id = event.feature.getProperty('route_id');
           var pos = event.latLng;
           var url = '/nieuw-probleem/gvb/'+pos.lat()+'/'+pos.lng()+'/'+id;
           $location.path(url);
           // TODO: find out why rootscope apply is necessary here.
-          $rootScope.$apply();
+          $rootScope.$apply();*/
         });
       }
     }

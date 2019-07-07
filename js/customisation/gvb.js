@@ -183,4 +183,23 @@ var CUSTOMISATION_GVB = {
     this.info_window.open(target_map);
   },
 
+  // Open an info window with links to new problem/idea issues.
+  create_route_info_window: function(event, target_map) {
+    // Cleanup old marker first.
+    if ( this.info_window ) { this.info_window.setMap(null); }
+
+    // The event contains the geojson feature as loaded before.
+    var latlng = event.latLng;
+    var id = event.feature.getProperty('route_id');
+    var name = id+': '+event.feature.getProperty('name');
+    // TODO: nieuw-probleem -> nieuw-defect
+    var problem_url = '/nieuw-probleem/gvb/'+latlng.lat()+'/'+latlng.lng()+'/'+id;
+    var idea_url = '/nieuwe-aanpassing/gvb/'+latlng.lat()+'/'+latlng.lng()+'/'+id;
+    this.info_window = new google.maps.InfoWindow({
+      position: latlng,
+      content: name+'<br><img class="icon" src="/img/pin-32.png"/><a href="'+problem_url+'">Defect melden</a><br><img class="icon" src="/img/bulb-32.png"/><a href="'+idea_url+'">Aanpassing melden</a>',
+    });
+    this.info_window.open(target_map);
+  },
+
 }
