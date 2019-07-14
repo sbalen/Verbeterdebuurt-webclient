@@ -475,9 +475,10 @@ function markerGetAddress(marker, location) {
 }
 
 function updateCityFromGeocodeResult(result) {
-    logger("googlemaps.js.updateCityFromGeocodeResult " + result.woonplaats);
+
+    logger("googlemaps.js.updateCityFromGeocodeResult " + result.response.docs[0].gemeentenaam);
     if (result == undefined) return;
-    city = result.woonplaats;
+    city = result.response.docs[0].gemeentenaam;
 /*
     for (var i=0; i<result[0].address_components.length; i++) {
         for (var b=0;b<result[0].address_components[i].types.length;b++) {
@@ -563,8 +564,10 @@ function determineCityForGeocode(callBack,boundsToFitTo) {
                 callBack(true);
             }
         }
-    });*/
+    });
     getJSON('https://calzonelovers.com/coolmonkeyproxy.php?lat='+map.getCenter().lat()+"&lng="+map.getCenter().lng(),function( err,data) {
+    */
+    getJSON('https://geodata.nationaalgeoregister.nl/locatieserver/v3/free?q=gemeente&lat='+map.getCenter().lat()+'&lon='+map.getCenter().lng()+'&type=gemeente&rows=1', function( err,data) {
 	logger("geocode success " + data);
 	if (err == null) {
             updateCityFromGeocodeResult(data);
