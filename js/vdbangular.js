@@ -15,7 +15,7 @@ var LOGGING = true;
 var PROTOCOL = "https";
 // var PROTOCOL = "http";
 
- var ROOT = "www.verbeterdebuurt.nl/";
+var ROOT = "www.verbeterdebuurt.nl/";
 //var ROOT = "staging.verbeterdebuurt.nl/";
 
 var API_VERSION = "api.php/json_1_3/";
@@ -3140,10 +3140,10 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
         } else {
             issue.description = "";
         }
-        if ($scope.privateMessage) {
-            issue.privateMessage = $scope.privateMessage;
+        if ($scope.privateNote) {
+            issue.privateNote = $scope.privateNote;
         } else {
-            issue.privateMessage = "";
+            issue.privateNote = "";
         }
         //location
         location.latitude = markerLat;
@@ -3157,7 +3157,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
                 description :  issue.description,
                 type :  issue.type,
                 category_id :  issue.category_id,
-                private_message : issue.privateMessage
+                private_note : issue.privateNote
             }, 
             location : {
                 latitude : location.latitude,
@@ -3545,10 +3545,10 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
         } else {
             issue.description = "";
         }
-        if ($scope.privateMessage) {
-            issue.privateMessage = $scope.privateMessage;
+        if ($scope.privateNote) {
+            issue.privateNote = $scope.privateNote;
         } else {
-            issue.privateMessage = "";
+            issue.privateNote = "";
         }
         //location
         location.latitude = markerLat;
@@ -3565,7 +3565,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
                     "description" :  issue.description,
                     "type" : issue.type,
                     "realization" : issue.realization,
-                    "private_message" : issue.privateMessage
+                    "private_note" : issue.privateNote
                     
                 }, 
                 "location" : {
@@ -3597,7 +3597,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
                     "description" :  issue.description,
                     "type" : issue.type,
                     "realization" : issue.realization,
-                    "private_message" : issue.privateMessage
+                    "private_note" : issue.privateNote
                     
                 }, 
                 "location" : {
