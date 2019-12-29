@@ -31,17 +31,18 @@ markers = null;
 markers = [];
 markerid = [];
 
-
 //simple translation func
 function __t(str) {
     switch(str) {
-        case "problem": return "probleem";
-        case "idea": return "idee";
-        case "open": return "open";
-        case "resolved": return "opgelost";
-        case "confirmed": return "bevestigd";
-        case "closed": return "gesloten";
-        case "accepted": return "aanvaard";
+        case "problem": return "Probleem";
+        case "idea": return "Idee";
+        case "open": return "Open";
+	case "processing": return "In behandeling";
+	case "assigned": return "Toegewezen";
+        case "resolved": return "Opgelost";
+        case "confirmed": return "Bevestigd";
+        case "closed": return "Gesloten";
+        case "accepted": return "Aanvaard";
         default: return str;
     }
 }
@@ -136,10 +137,11 @@ function getaddressshow(latlng){
 }
 
 //google map auto complete change string to make it by id
-
-function attachAutoCompleteListener(stringid,marker,locationmap,location) {
+// Pass the originating scope for additional functions.
+function attachAutoCompleteListener(stringid,marker,locationmap,location,originalScope) {
     logger("attachAutoCompleteListener " +stringid);
     var input = document.getElementById(stringid);
+    var has_categories = location === "location";
     //if input cannot be found yet, it's probably not loaded yet, so return doing nothing
     if (input == undefined) return;
 
@@ -150,6 +152,10 @@ function attachAutoCompleteListener(stringid,marker,locationmap,location) {
     if (autocompleteListener != undefined) { autocompleteListener.remove(); }
     autocompleteListener = google.maps.event.addListener(autocomplete, 'place_changed', function() {
         logger("google place changed");
+
+        if ( has_categories && originalScope ) {
+          originalScope.loadCategory = 1;
+        }
 
         var place = autocomplete.getPlace();
         var address = "";
@@ -167,6 +173,12 @@ function attachAutoCompleteListener(stringid,marker,locationmap,location) {
         if (marker) {
             moveMapToAddress(address,false,function() {
                markerCenter(locationmap,marker,location);
+               // The create Problem page has a marker, and categories.
+               // Update the categories after moving from the
+               // mini-map autocomplete.
+               if ( has_categories && originalScope ) {
+                 originalScope.categoriesData()
+               }
             })
         } else {
             moveMapToAddress(address);
@@ -314,6 +326,10 @@ function googleMapCreateIdea() {
     getMarkerLocation(marker);
     markerGetAddress(marker, "location2");
     var tempurl = window.location.pathname.replace('nieuw-idee','');
+    // Update: return the marker (as with createProblem). This marker
+    // is ultimately passed to the autocomplete google search listener,
+    // that will update the marker position on the small map.
+    return marker;
 }
 
 function initMainMapToSmallMapListener(smallMap) {
@@ -324,11 +340,16 @@ function initMainMapToSmallMapListener(smallMap) {
         map.setZoom(smallMap.getZoom());
     });
 
+/* A change in the google maps included code causes continuous
+     * updates between the large and small map, effectively blocking
+     * any panning. As a possible solution, don't update the small map
+     * based on the large map.
     google.maps.event.addListener(map, 'bounds_changed', function (e) {
         //google.maps.event.trigger(map, 'resize')
         smallMap.setCenter(map.getCenter());
         smallMap.setZoom(map.getZoom());
     });
+    */
 
 }
 
@@ -454,9 +475,11 @@ function markerGetAddress(marker, location) {
 }
 
 function updateCityFromGeocodeResult(result) {
-    logger("googlemaps.js.updateCityFromGeocodeResult");
-    if (result == undefined) return;
 
+    logger("googlemaps.js.updateCityFromGeocodeResult " + result.response.docs[0].gemeentenaam);
+    if (result == undefined) return;
+    city = result.response.docs[0].gemeentenaam;
+/*
     for (var i=0; i<result[0].address_components.length; i++) {
         for (var b=0;b<result[0].address_components[i].types.length;b++) {
             //if you want the change the area ..
@@ -466,7 +489,7 @@ function updateCityFromGeocodeResult(result) {
                 break;
             }
         }
-    }
+    }*/
 }
 
 var addressHolderPendingInterval;
@@ -511,12 +534,43 @@ function updateAddressFromGeocodeResult(result,addressHolder) {
     }
 
 }
+var getJSON = function(url, callback) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.responseType = 'json';
+    xhr.onload = function() {
+      
+      var status = xhr.status;
+      if (status === 200) {
+        callback(null, xhr.response);
+      } else {
+        callback(status, xhr.response);
+      }
+    };
+    xhr.send();
+};
 
 function determineCityForGeocode(callBack,boundsToFitTo) {
+    logger("determineCityForGeocode() " + map.getCenter()); 
     logger("determineCityForGeocode() --> fit: " + boundsToFitTo);
-    geocoder.geocode({'latLng': map.getCenter()} , function (results, status) {
+    /*geocoder.geocode({'latLng': map.getCenter()} , function (results, status) {
         if (status == google.maps.GeocoderStatus.OK) {
             updateCityFromGeocodeResult(results);
+
+            if (boundsToFitTo) {
+                map.fitBounds(boundsToFitTo);
+            }
+            if (callBack != undefined && typeof callBack === 'function') {
+                callBack(true);
+            }
+        }
+    });
+    getJSON('https://calzonelovers.com/coolmonkeyproxy.php?lat='+map.getCenter().lat()+"&lng="+map.getCenter().lng(),function( err,data) {
+    */
+    getJSON('https://geodata.nationaalgeoregister.nl/locatieserver/v3/free?q=gemeente&lat='+map.getCenter().lat()+'&lon='+map.getCenter().lng()+'&type=gemeente&rows=1', function( err,data) {
+	logger("geocode success " + data);
+	if (err == null) {
+            updateCityFromGeocodeResult(data);
 
             if (boundsToFitTo) {
                 map.fitBounds(boundsToFitTo);
@@ -575,8 +629,26 @@ function moveMapToBrowserLocation($rootScope,$q,withFallBack,callBack) {
 }
 
 function moveMapToLocation(location,callBack,boundsToFitTo) {
-    logger("moveMapToLocation("+location.lat+","+location.lng+")");
-    map.panTo(location);
+    //logger("moveMapToLocation("+location.lat()+","+location.lng()+")");
+logger("moveMapToLocation("+location.lat+","+location.lng+")");
+    // Update: the map move on geolocations moves the large map.
+    // The small maps can't directly listen to the large map anymore,
+    // so we have to set them manually. Check for the small maps below:
+    // - map is the main map
+    // - map3 is the CreateProblem map
+    // - map4 is the CreateIdea map
+    if ( typeof map3 !== 'undefined' ) {
+      logger('moveMapToLocation: map3 (problem)');
+      map3.panTo(location);
+    }
+    if ( typeof map4 !== 'undefined' ) {
+      logger('moveMapToLocation: map4 (idea)');
+      map4.panTo(location);
+    }
+    if ( typeof map3 === 'undefined' && typeof map4 === 'undefined' ) {
+      logger('moveMapToLocation: map (main)');
+      map.panTo(location);
+    }
     //map.setCenter(location);
     determineCityForGeocode(callBack,boundsToFitTo);
 }

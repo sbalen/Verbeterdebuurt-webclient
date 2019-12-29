@@ -167,24 +167,25 @@
                                         <textarea class="form-control" rows="5" id="description" placeholder="Beschrijving" ng-model="description"></textarea>
                                     </div>
                                 </div >
-                                <!-- <div class="form-group">
-                                    <div class="col-sm-12 form-col">  
-                                        <table cellspacing="2px" style="border-spacing:4px; border-collapse: separate;">
-                                          <tr> 
-                                            <td><input type="checkbox" class="privatecheckbox" id="checkPrivate" name="checkbox" ng-model="privateMessageHide"></td>
-                                            <td class="privateTable" ng-click="expression"><label for="checkPrivate" class="checkPrivate">Voeg priv&eacute; bericht toe</label></td>
-                                          </tr>
-                                        </table>
-                                       
-                                    </div>
-                                </div> -->
-                               <!--  <div class="form-group" ng-show="privateMessageHide">
-                                    <div class="col-sm-12 form-col" ng-class="{'has-error':errorDescription}" style="margin-bottom: 10px;">  
-                                        <h5 class="fontM" style="color:green; margin-right: 26px; margin-top: 0px;">Een priv&eacute; bericht wordt enkel naar de gemeente/afhandelaar gestuurd. Het priv&eacute; bericht zal niet openbaar op verbeterdebuurt getoond worden.</h5>
-                                        <textarea class="form-control" rows="5" id="description" placeholder="Priv&eacute; bericht …. " ng-model="privateMessage"></textarea>
-                                    </div>
-                                </div> -->
-                                <!--<label class="control-label">Select File</label>-->
+                                
+				<div class="form-group">
+				    <div id="accordion">
+					<div class="card">
+    					    <div class="card-header" id="headingTwo">
+						<button type="button" style="width:100%;" class="btn btn-default collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">Priv&eacute;notitie toevoegen</button>
+    					    </div>
+					    <div class="col-sm-12 form-col" ng-class="{'has-error':errorPrivateNote}" style="margin-bottom: 10px;">
+    						<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+      						    <div class="card-body">
+        						<textarea class="form-control" rows="5" id="Privenotitie" placeholder="Een priv&eacute;notitie wordt alleen naar de gemeente/behandelaar gestuurd en wordt niet zichtbaar op de site." ng-model="privateNote"></textarea>
+      						    </div>
+    						</div>
+					    </div>
+  					</div>
+				    </div>
+                                </div>				
+
+				<!--<label class="control-label">Select File</label>-->
                                 <p>Foto uploaden (optioneel)</p>
                                 <input id="file-input-problem" type="file" style="width: 94%;margin-left: 3%;" data-show-upload="false" img-upload='imgData'>
                             </div>
@@ -234,8 +235,15 @@
                             </div>
                             </form>
 
+
+
+     			 <div class="checkbox" ng-hide="hideLogin">
+                                <label style="margin-left: 5px;">
+                            	    <input type="checkbox" ng-model="agree"> Ik ben akkoord met de <a href="http://blog.verbeterdebuurt.nl/algemene-voorwaarden/" target="_blank">Algemene Voorwaarden</a>
+                                </label>
+                            </div>
                           <div class="modal-footer">
-                                <button type="button" class="btn btn-success" data-dismiss="modal" ng-click="createIssue()">Verzenden</button>
+                                <button type="button" class="btn btn-success" data-dismiss="modal" ng-disabled="(agree || hideLogin) ? false : true"  ng-click="createIssue()">Verzenden</button>
                         </div>            
                     </div>   
                     </div>  
