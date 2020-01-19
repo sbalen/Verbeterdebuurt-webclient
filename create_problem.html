@@ -78,6 +78,7 @@
                                   <p>{{errorPostcode}}</p>
                                   <p>{{errorStreet}}</p>
                                   <p>{{errorStreetNumber}}</p>
+                                  <p>{{errorPhoneNumber}}</p>
               </div>
 		        <h1 class="marginheader meldingheader fontM">Nieuw Probleem</h1>
             <div class="problem">
@@ -228,7 +229,7 @@
                                     <div class="col-sm-8 form-col" ng-class="{'has-error':errorCity}">
                                         <input type="text" class="form-control " id="city" placeholder="Plaats" ng-model="city" style="margin-bottom: 15px">
                                     </div>
-                                    <div class="col-sm-12 form-col">
+                                    <div class="col-sm-12 form-col" ng-class="{'has-error': errorPhoneNumber}">
                                         <input type="text" class="form-control" id="telephonenumber" placeholder="Telefoonnummer" ng-model="phone">
                                     </div>
                                 </div>

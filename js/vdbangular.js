@@ -15,8 +15,8 @@ var LOGGING = true;
 var PROTOCOL = "https";
 // var PROTOCOL = "http";
 
-var ROOT = "www.verbeterdebuurt.nl/";
-//var ROOT = "staging.verbeterdebuurt.nl/";
+//var ROOT = "www.verbeterdebuurt.nl/";
+var ROOT = "staging.verbeterdebuurt.nl/";
 
 var API_VERSION = "api.php/json_1_3/";
 
@@ -3095,6 +3095,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
         $scope.errorPostcode = "";
         $scope.errorStreet = "";
         $scope.errorStreetNumber = "";
+        $scope.errorPhoneNumber = "";
 
         //initial data for request
         var user = {};
@@ -3220,6 +3221,10 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
             if (issueData.errors.street_number) {
                 $scope.errorStreetNumber = "Huisnummer " + issueData.errors.street_number;
             }
+            if (issueData.errors.owner_telnr) {
+                $scope.errorPhoneNumber = "Telefoonnummer " + issueData.errors.owner_telnr;
+            }
+
             $rootScope.globaloverlay = "";
             $(window).scrollTop(0);
         } else if (issueData.success == "false") {
