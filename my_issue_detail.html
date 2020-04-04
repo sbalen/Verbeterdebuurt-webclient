@@ -19,7 +19,7 @@
              </div>
             <h1 class="fontM">{{myIssues.title}}<br><small>{{myIssues.location.full_address}}</small></h1>
             <div class="thumbnail right-caption span4 fontM">
-                <img class="img-responsive" src="{{ noProtocol(myIssues.image.image_url) }}" alt="Plaatje van de situatie" ng-if="newProblem.image.length > 0">
+                <img class="img-responsive" src="{{ noProtocol(myIssues.image.image_url) }}" alt="Plaatje van de situatie" ng-if="newProblem.image.length !== 0">
                 <img class="img-responsive" src="{{sateliteimg}}" alt="Plaatje van de situatie" ng-if="newProblem.image.length === 0">
                 <div class="detail-table hidden-xs fontM">
                     <table width="100%">
