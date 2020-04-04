@@ -15,7 +15,7 @@ RewriteCond %{HTTP_HOST} !^www\.
 RewriteRule ^(.*)$ https://www.%{HTTP_HOST}%{REQUEST_URI} [R=301]
 
 #Now, rewrite to HTTPS:
-RewriteCond %{HTTPS} off
-RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301]
+#RewriteCond %{HTTPS} off
+#RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301]
 </IfModule>
 

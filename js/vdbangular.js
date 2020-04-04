@@ -15,8 +15,8 @@ var LOGGING = true;
 var PROTOCOL = "https";
 // var PROTOCOL = "http";
 
-var ROOT = "www.verbeterdebuurt.nl/";
-//var ROOT = "staging.verbeterdebuurt.nl/";
+// var ROOT = "www.verbeterdebuurt.nl/";
+var ROOT = "dev.verbeterdebuurt.nl/";
 
 var API_VERSION = "api.php/json_1_3/";
 
