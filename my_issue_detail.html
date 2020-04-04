@@ -1,9 +1,9 @@
- <!-- body -->  
+ <!-- body -->
     <div id="main-content" class="container" >
 	    <!--  sidebar left -->
-      
+
 	    <div class="col-md-3 hidden-sm hidden-xs hidden-md" ng-controller="myIssuesDetailCtrl">
-                    
+
             </div>
 	    <!-- main container -->
 	    <div class="col-lg-6 main-container marginbottom">
@@ -16,22 +16,22 @@
                                       <p>{{successMessage}}</p>
                                       <p>{{successMessageNonApi}}</p>
                 </div>
-             </div> 
+             </div>
             <h1 class="fontM">{{myIssues.title}}<br><small>{{myIssues.location.full_address}}</small></h1>
             <div class="thumbnail right-caption span4 fontM">
-                <img class="img-responsive" src="{{ noProtocol(myIssues.image.image_url) }}" alt="Plaatje van de situatie" ng-if="myIssues.image">
-                <img class="img-responsive" src="{{sateliteimg}}" alt="Plaatje van de situatie" ng-if="!myIssues.image">
+                <img class="img-responsive" src="{{ noProtocol(myIssues.image.image_url) }}" alt="Plaatje van de situatie" ng-if="newProblem.image.length > 0">
+                <img class="img-responsive" src="{{sateliteimg}}" alt="Plaatje van de situatie" ng-if="newProblem.image.length === 0">
                 <div class="detail-table hidden-xs fontM">
                     <table width="100%">
-                            <tbody> 
+                            <tbody>
                                 <tr>
                                     <td/><td/>
-                                    <td colspan="2" align="right" style='padding:0px 30px 0px 0px'>Delen met:</td>  
+                                    <td colspan="2" align="right" style='padding:0px 30px 0px 0px'>Delen met:</td>
                                 </tr>
                                 <tr>
                                     <td>Door:</td>
                                     <td>{{myIssues.owner.username}}</td>
-                                    <td rowspan="3" colspan="2" align="right"> 
+                                    <td rowspan="3" colspan="2" align="right">
                                         <img class="img-rounded" alt="Twitter" width="49" height="49" src="./img/twitter_s.png">
                                         <img class="img-rounded" alt="Facebook" width="49" height="49" src="./img/facebook_s.png">
                                     </td>
@@ -58,7 +58,7 @@
                                             <li ng-repeat="issueLog in issueLogList" class="list-group-item status-log-item"><span class="text-muted">{{issueLog.createdAt}}: </span>{{issueLog.message}}</li>
                                         </ul>
                                     </td>
-                                </tr> 
+                                </tr>
                             </tbody>
                     </table>
                 </div>
@@ -72,7 +72,7 @@
                         <tr>
                             <td class="issueDetailTableContentfontM"><p>{{myIssues.description}}</p></td>
                         </tr>
-                        
+
                     </table>
               </div>
               <div class="issueDetaiTable fontM" ng-if="myIssues.type=='idea'">
@@ -86,7 +86,7 @@
                     </table>
               </div>
             <button type="button" class="btn btn-primary mobilebtn" data-toggle="modal" data-target="{{stemModal}}" ng-click="sessionValid()">Reageer <span class="badge"id="mobilebtn">{{myIssues.comments}}</span></button>
-        
+
             <button type="button" class="btn btn-primary mobilebtn" ng-click="voteSubmit()">
                 <span style="text-align:start">Stem </span><span class="badge" id="mobilebtn">{{myIssues.votes}}</span></button>
               <div ng-hide="results== 0 || commentList == null">
@@ -99,13 +99,13 @@
                         </li>
                     </ul>
               </div>
-            </div> 
+            </div>
 
 	    </div>
 	    <!--  sidebar right -->
 
         <div ng-include="'sidebar_my_issues.html'"></div>
-    </div>	
+    </div>
 
     <!--MyIssueCOmmentModal-->
     <div id="StemModal" class="modal fade" role="dialog" ng-controller="commentSubmitCtrl" ng-repeat="myIssues in myIssuesList |filter : {id : id()}">
@@ -172,7 +172,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- deleteModal -->
     <div id="DeleteModal" class="modal fade" role="dialog">
         <div class="modal-dialog">
@@ -225,6 +225,6 @@
       			offset: {
         			top: $('#navtop').height()
       			}
-		});	
+		});
         });
 </script>
