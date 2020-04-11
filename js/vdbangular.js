@@ -21,7 +21,7 @@ var LOGGING = true;
 var PROTOCOL = "https";
 // var PROTOCOL = "http";
 
-var ROOT = var ROOT = env.root;
+var ROOT = env.root;
 
 var API_VERSION = "api.php/json_1_3/";
 
