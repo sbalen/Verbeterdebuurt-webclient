@@ -1,6 +1,11 @@
 Verbeterdebuurt 2.0 is a web client that communicates with Verbeterdebuurt through the Verbeterdebuurt API 
 It's currently in the mock-up phase. For design and documentation see /doc
 
+Setup:
+
+In order to run, please configure env.js file. Look at the example in env.js.dist to see how it has to look like
+
+
 TODO: 
 - Work pages and documentation into UX-design (link to blog).
 - Connect the mockup with the API.
