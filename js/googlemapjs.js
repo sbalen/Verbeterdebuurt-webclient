@@ -1,4 +1,4 @@
-var ZOOM_PINS_VISIBLE = 14; 
+var ZOOM_PINS_VISIBLE = 14;
 var ZOOM_ISSUES_RETRIEVABLE = 12;
 var ZOOM_START = 15;
 var ZOOM_MAX = 17;
@@ -63,10 +63,10 @@ function issueLocationToGoogleLocation(issueLocation) {
 }
 
 function issueLocationToGoogleBounds(issueLocation) {
-    return {north: issueLocation.latitude, 
+    return {north: issueLocation.latitude,
             south: issueLocation.latitude,
             east: issueLocation.longitude,
-            west: issueLocation.longitude };    
+            west: issueLocation.longitude };
 }
 
 function initMap() {
@@ -95,11 +95,11 @@ function initMap() {
 }
 
 
-function initMapListeners() { 
+function initMapListeners() {
     logger("initMapListeners");
 
     //couldn't this be on page change instead of mouseover?
-    google.maps.event.addListener(map,'mouseover',determineMapScrollingAllowed);    
+    google.maps.event.addListener(map,'mouseover',determineMapScrollingAllowed);
 
   //  addMapChangedListener(handleMapChanged);
 
@@ -129,7 +129,7 @@ function getaddressshow(latlng){
             'latLng': latlng
     }, function (result, status) {
         logger("geocode result");
-        if (status == google.maps.GeocoderStatus.OK) {            
+        if (status == google.maps.GeocoderStatus.OK) {
             var addressHolder = window.location.pathname.includes('nieuw-probleem') ? document.getElementById("location") : document.getElementById("location2");
             updateAddressFromGeocodeResult(result,addressHolder);
         }
@@ -160,7 +160,7 @@ function attachAutoCompleteListener(stringid,marker,locationmap,location,origina
         var place = autocomplete.getPlace();
         var address = "";
         var bounds = undefined;
-        
+
         logger(place);
 
         if (place.formatted_address) {
@@ -233,7 +233,7 @@ function initGoogleMapForCreateIssue(location,issueType) {
     logger("initGoogleMapForCreateIssue(" + lat + "," + lng + "," + issueType +")");
     var location = { lat: lat, lng: lng };
     var iconImg = ( issueType === ISSUE_TYPE_PROBLEM ? "/img/icon_2_42_42.png" : "/img/icon_idea_2_42_42.png" ) ;
-    
+
     var map = new google.maps.Map(document.getElementById("googleMapIssue"), {
         draggable: false,
         zoomControl: false,
@@ -246,8 +246,8 @@ function initGoogleMapForCreateIssue(location,issueType) {
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         styles: [ { featureType: "poi", elementType: "labels", stylers: [ { visibility: "off" } ] } ]
     });
-    
-    (new google.maps.Marker({position: location,icon: iconImg})).setMap(map);    
+
+    (new google.maps.Marker({position: location,icon: iconImg})).setMap(map);
 
 }
 
@@ -285,7 +285,7 @@ function googleMapCreateProblem() {
 
     markerCenter(map3, marker, "location");
     getMarkerLocation(marker);
-    markerGetAddress(marker, "location");    
+    markerGetAddress(marker, "location");
 
     return marker;
 }
@@ -361,7 +361,7 @@ function markerCenter(map, marker, location) {
     marker.setPosition(map.getCenter());
     markerLat = marker.getPosition().lat();
     markerLng = marker.getPosition().lng();
-    
+
     updateAddressToPending(location);
     geocoder.geocode({
         'latLng': marker.getPosition()
@@ -389,7 +389,7 @@ function markerCenter(map, marker, location) {
                 if(status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
                     addressDelay = setTimeout(function(){
                         // logger("timeout work");
-                        geocoder.geocode({ 'latLng': e.latLng }, function (result, status) {            
+                        geocoder.geocode({ 'latLng': e.latLng }, function (result, status) {
                             if (status == google.maps.GeocoderStatus.OK) {
                                updateAddressFromGeocodeResult(result,location);
                             }
@@ -398,7 +398,7 @@ function markerCenter(map, marker, location) {
                 }
             }
         });
-    }); 
+    });
 
 }
 //get location marker
@@ -443,11 +443,11 @@ function geocodeAddressCreateProblem(geocoder, resultsMap, address,location) {
 function markerGetAddress(marker, location) {
     logger("markerGetAdress");
     //first time load
-    
+
 
     var addressDelay;
     google.maps.event.addListener(marker, 'dragend', function (e) {
-        
+
         updateAddressToPending(location);
 
         clearTimeout(addressDelay);
@@ -469,16 +469,15 @@ function markerGetAddress(marker, location) {
                 }
             }
         });
-      
-        
+
+
     });
 }
 
 function updateCityFromGeocodeResult(result) {
-
     logger("googlemaps.js.updateCityFromGeocodeResult " + result.response.docs[0].gemeentenaam);
     if (result == undefined) return;
-    city = result.response.docs[0].gemeentenaam;
+    city = result.response.docs[0].weergavenaam;
 /*
     for (var i=0; i<result[0].address_components.length; i++) {
         for (var b=0;b<result[0].address_components[i].types.length;b++) {
@@ -525,7 +524,7 @@ function updateAddressFromGeocodeResult(result,addressHolder) {
                             the_street_number = result[0].address_components[c].short_name;
                         }
                         break;
-                    }  
+                    }
                 }
                 addressHolder.value = street + " " + the_street_number;
                 break;
@@ -539,7 +538,7 @@ var getJSON = function(url, callback) {
     xhr.open('GET', url, true);
     xhr.responseType = 'json';
     xhr.onload = function() {
-      
+
       var status = xhr.status;
       if (status === 200) {
         callback(null, xhr.response);
@@ -551,7 +550,7 @@ var getJSON = function(url, callback) {
 };
 
 function determineCityForGeocode(callBack,boundsToFitTo) {
-    logger("determineCityForGeocode() " + map.getCenter()); 
+    logger("determineCityForGeocode() " + map.getCenter());
     logger("determineCityForGeocode() --> fit: " + boundsToFitTo);
     /*geocoder.geocode({'latLng': map.getCenter()} , function (results, status) {
         if (status == google.maps.GeocoderStatus.OK) {
@@ -567,8 +566,9 @@ function determineCityForGeocode(callBack,boundsToFitTo) {
     });
     getJSON('https://calzonelovers.com/coolmonkeyproxy.php?lat='+map.getCenter().lat()+"&lng="+map.getCenter().lng(),function( err,data) {
     */
-    getJSON('https://geodata.nationaalgeoregister.nl/locatieserver/v3/free?q=gemeente&lat='+map.getCenter().lat()+'&lon='+map.getCenter().lng()+'&type=gemeente&rows=1', function( err,data) {
+    getJSON('https://geodata.nationaalgeoregister.nl/locatieserver/revgeo?lat='+map.getCenter().lat()+'&lon='+map.getCenter().lng()+'&type=gemeente&rows=1', function( err,data) {
 	logger("geocode success " + data);
+
 	if (err == null) {
             updateCityFromGeocodeResult(data);
 
@@ -588,9 +588,9 @@ function moveMapToBrowserLocation($rootScope,$q,withFallBack,callBack) {
 
     /*
         If the use takes too long to decide to allow browser location, or if the user has firefox and clicks 'not now' when asked
-        we do not get a position or error. 
+        we do not get a position or error.
         Also in the case that it just takes too long to get a location fixed (for whatever reason), we don't want to wait
-        indefinitely. 
+        indefinitely.
         To catch all of these cases, we handle the geolocation positioning with a promise.
         And if that promise takes too long to recover, we continue.
     */
@@ -602,7 +602,7 @@ function moveMapToBrowserLocation($rootScope,$q,withFallBack,callBack) {
         function(position) {
             logger("user accepted location awareness");
             moveMapToLocation({lat: position.coords.latitude,lng:  position.coords.longitude},callBack);
-        }, 
+        },
         function (error) {
            logger("user did not accept location awareness");
             if (withFallBack) {
@@ -616,8 +616,8 @@ function moveMapToBrowserLocation($rootScope,$q,withFallBack,callBack) {
         deferredResponse.resolve(position);
     }, function (error) {
         deferredResponse.reject(error);
-    }, {        
-        timeout: resolveBy        
+    }, {
+        timeout: resolveBy
     });
 
     //if user is just waiting to long, reject all together
@@ -656,7 +656,7 @@ logger("moveMapToLocation("+location.lat+","+location.lng+")");
 function moveMapToDefaultLocation(callBack) {
     logger("moveMapToDefaultLocation");
     moveMapToAddress("Amsterdam",false,callBack);
-    
+
 }
 
 function moveMapToUserLocation(withFallBack,callBack) {
@@ -667,14 +667,14 @@ function moveMapToUserLocation(withFallBack,callBack) {
     }
 }
 
-function moveMapToAddress(address, withFallBack,callBack) {    
+function moveMapToAddress(address, withFallBack,callBack) {
     logger("moveMapToAddress(" + address + "," + withFallBack +")");
     geocoder.geocode({'address': address,componentRestrictions: {country: 'nl'}}, function(results, status) {
         logger("geocodeAddress " + address);
         if (status === google.maps.GeocoderStatus.OK) {
-            moveMapToLocation(results[0].geometry.location,callBack,results[0].geometry.bounds);            
+            moveMapToLocation(results[0].geometry.location,callBack,results[0].geometry.bounds);
         } else if (withFallBack) {
-            moveMapToBrowserLocation(true,callBack); 
+            moveMapToBrowserLocation(true,callBack);
         }
     });
 }
@@ -734,7 +734,7 @@ function repaintMarkers () {
                     //window.history.pushState('map','map','/');
                     infoWindow.setContent(marker.contentString);
                     infoWindow.open(map,marker);
-                    moveMapToIssue(marker.issue);                 
+                    moveMapToIssue(marker.issue);
                 }
             })(marker,i));
         } else {
@@ -754,7 +754,7 @@ function markerForIssue(issue) {
     } else if (issue.type == "problem") {
         icon = "/img/pin-32.png";
     } else if (issue.type == "idea") {
-        icon = "/img/bulb-32.png"; 
+        icon = "/img/bulb-32.png";
     }
 
     var markerOption = {
