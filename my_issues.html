@@ -1,8 +1,8 @@
- <!-- body -->  
+ <!-- body -->
     <div id="main-content" class="container" ng-controller="myIssuesCtrl">
 	    <!--  sidebar left -->
 	    <div class="col-md-3 hidden-sm hidden-xs hidden-md">
-		  
+
 	    </div>
 	    <!-- main container -->
 	    <div class="col-lg-6 main-container marginbottom" >
@@ -13,9 +13,9 @@
                                 <input type="hidden" ng-model="page" value="{{currentPage}}">
                                <div width="100%" class="clearfix">
                                <div class="pull-left"  style="width:90px;overflow-x:hidden; margin-right:10px;">
-                                <img src="{{noProtocol(myIssues.image.thumbnail_url)}}" ng-if="myIssues.image" height="100px" width="100px" style="padding-right:10px;width: auto;
+                                <img src="{{noProtocol(myIssues.image.thumbnail_url)}}" ng-if="myIssues.image.length !== 0" height="100px" width="100px" style="padding-right:10px;width: auto;
                                 text-align: center;margin-left:-50%">
-                                <img src="./img/noimage-icon.jpg" ng-if="!myIssues.image" height="100px" width="100px" style="padding-right:10px;">
+                                <img src="./img/noimage-icon.jpg" ng-if="myIssues.image.length === 0" height="100px" width="100px" style="padding-right:10px;">
                                </div>
                                <div>
                                <p><strong>{{myIssues.title}}</strong><img class="icon" ng-if="myIssues.type === 'problem' && myIssues.status != 'closed' " src="./img/icon_2_21_21.png" /><img class="icon" ng-if="myIssues.type === 'idea' && myIssues.status != 'closed' " src="./img/icon_idea_2_21_21.png" /><img class="icon" ng-if="myIssues.status === 'closed' " src="./img/flag_2_21_21.png" /></p>
@@ -32,11 +32,11 @@
                                 </div></div>
                               </span>
                             </a>
-                     </div> 
+                     </div>
                     <div class="notice-no-issue" ng-show="count<=0">
                         Je hebt nog geen meldingen. <a href="/nieuw-melding">Klik hier</a> om een melding te maken.
                     </div>
-                
+
                      <span class="clearfix">
                                     <div class="submit-buttons pull-right">
 				        <nav>
@@ -56,8 +56,8 @@
 	    </div>
 	    <!--  sidebar right -->
 	    <div class="col-lg-3 hidden-xs">
-		   
-	    </div>  
+
+	    </div>
     </div>
 
      <!-- CloseModal -->
@@ -140,6 +140,6 @@
       	    offset: {
                 top: $('#navtop').height()
       	    }
-        });	
+        });
     });
 </script>
