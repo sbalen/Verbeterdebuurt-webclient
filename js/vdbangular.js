@@ -3591,8 +3591,6 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
 
     $rootScope.lastUrl = $location.path();
 
-    console.log(1);
-
     // $routeParams.latitude are used in mainController.determineStartLocation
     if ( $routeParams.gvbid ) {
       if ( ! $rootScope.clickedGvbObject ) {
