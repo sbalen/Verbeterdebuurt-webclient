@@ -3582,6 +3582,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
     var is_gvb_aanpassing = $location.path().includes('nieuwe-aanpassing') && CUSTOMISATION_GVB.is_active();
 
     $scope.privateMessageHide = false;
+
     if($location.path().includes('nieuwe-melding')){
         $rootScope.dynamicTitle = "Nieuwe melding |";
     } else if( is_gvb_aanpassing ){
@@ -3589,6 +3590,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
     } else {
         $rootScope.dynamicTitle = "Nieuw probleem |";
     }
+
     $rootScope.lastUrl = $location.path();
 
     // $routeParams.latitude are used in mainController.determineStartLocation
@@ -3604,9 +3606,11 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
       // Text from the stop/route is shown separately, and added to the description field before sending to the backend.
       $scope.description_meta = "";
       $scope.title = "Melding bij: "+$rootScope.clickedGvbObject.name;
+
       if ( $rootScope.clickedGvbObject.lines ) {
         $scope.description_meta += 'Lijnen: '+$rootScope.clickedGvbObject.lines.join(', ') + "\n\n";
       }
+
       if ( $rootScope.clickedGvbObject.destinations ) {
         $scope.description_meta += "Richtingen:\n"+$rootScope.clickedGvbObject.destinations.join("\n") + "\n\n";
       }
@@ -3992,6 +3996,12 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
         markerLat = marker.getPosition().lat();
         markerLng = marker.getPosition().lng();
     }
+
+    $scope.setCategoryUrgent = function () {
+        // category name: Verkeerslichten /  Waarschuwingslichten
+        $scope.is_urgent = $scope.categoryId === 13 ? true : false;
+    }
+
      //dulicate data
     $scope.duplicateData = function () {
 
