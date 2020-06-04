@@ -1,5 +1,5 @@
 // session time 7 days
-const sessionTime = 24 * 7;
+const sessionTime = 168;
 
 //var vdbApp = angular.module('vdbApp',[]);
 var vdbApp = angular.module('vdbApp',
