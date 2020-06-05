@@ -1,12 +1,14 @@
+// session time 7 days
+const sessionTime = 168;
 
 //var vdbApp = angular.module('vdbApp',[]);
-var vdbApp = angular.module('vdbApp', 
-    ['ngRoute', 
-     'angularUtils.directives.dirPagination', 
-     'ngFacebook', 
-     'ngCookies', 
+var vdbApp = angular.module('vdbApp',
+    ['ngRoute',
+     'angularUtils.directives.dirPagination',
+     'ngFacebook',
+     'ngCookies',
      'naif.base64',
-     'angulartics', 
+     'angulartics',
      'angulartics.google.analytics']);
 
 // settings moved to settings.js for easier deployment without build tools
@@ -56,7 +58,7 @@ if (!String.prototype.includes) {
     if (typeof start !== 'number') {
       start = 0;
     }
-    
+
     if (start + search.length > this.length) {
       return false;
     } else {
@@ -101,7 +103,7 @@ errorhandler = function(rootScope,errorInfo){
     } else {
       logger('showErrorHandler: not shown because the message was empty.')
     }
-    
+
 };
 
 
@@ -153,7 +155,7 @@ vdbApp.run(['$location', '$rootScope', '$cookies', function($location, $rootScop
 }]);
 
 
-//call google map at first 
+//call google map at first
 vdbApp.run(function(){
     mainControllerInitialized = false;
     googlemapinit();
@@ -161,7 +163,7 @@ vdbApp.run(function(){
 
 vdbApp.run(['$route', '$rootScope', '$location', function ($route, $rootScope, $location) {
     var original = $location.path;
-    $location.path = function (path, keepstate) {        
+    $location.path = function (path, keepstate) {
         if (keepstate) {
             var lastRoute = $route.current;
             var un = $rootScope.$on('$locationChangeSuccess', function () {
@@ -437,7 +439,7 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
                     return true;
                 }
             }
-        })        
+        })
         //handle registration for hash session
         .when('/registratie/annuleren/hash/:hashkey', {
             templateUrl: 'confirmation.html',
@@ -470,7 +472,7 @@ vdbApp.config(['$routeProvider', '$locationProvider', '$httpProvider', '$sceDele
         .when('/:location/:title/:id', {
             templateUrl: 'issue_detail.html',
             controller: 'issueCtrl'
-            
+
         })
         .when('/auth/:type', {
             resolve: {
@@ -607,7 +609,7 @@ vdbApp.factory('reportService', ['$http','$rootScope', function ($http,$rootScop
                     logger("reportService.getReport.error:")
                     errorhandler($rootScope,{url:config.url,'data':config.data,'status':status,'message':data})
                 });
-           
+
 
         }
     }
@@ -665,7 +667,7 @@ vdbApp.factory('registerService', ['$http','$rootScope', function ($http,$rootSc
                 .error(function(data, status, headers, config){
                     logger("registerService.getRegister.error:")
                     errorhandler($rootScope,{url:config.url,'data':config.data,'status':status,'message':data})
-                });            
+                });
         }
     };
 }])
@@ -685,7 +687,7 @@ vdbApp.factory('newsletterService', ['$http','$rootScope', function ($http,$root
                     logger("newsletterService.getNewsletter.error:")
                     errorhandler($rootScope,{url:config.url,'data':config.data,'status':status,'message':data})
                 });
-           
+
         }
     };
 }])
@@ -1118,7 +1120,7 @@ vdbApp.factory('remindIssueService', ['$http','$rootScope', function ($http,$roo
                     logger("remindIssueService.getRemindIssue.error:")
                     errorhandler($rootScope,{url:config.url,'data':config.data,'status':status,'message':data})
                 });
-        }      
+        }
     };
 }])
 
@@ -1247,7 +1249,7 @@ vdbApp.run(['$rootScope', '$window', function ($rootScope, $window) {
 
 vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location', '$rootScope', '$routeParams', '$http', 'issuesService', 'reportService', '$facebook', '$cacheFactory', '$location', 'agreementSevice', '$cookies','myIssuesService', 'departmentsService', 'departmentReportsService', function ($scope, $q,$timeout, $window, $location, $rootScope, $routeParams, $http, issuesService, reportService, $facebook, $cacheFactory, $location, agreementSevice, $cookies, myIssuesService, departmentsService, departmentReportsService) {
 
-    
+
     var mainController = this;
 
     //very hacky, should be removed when making the google maps a service with the proper dependencies
@@ -1334,7 +1336,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
 
         //some vars that are needed?
         $rootScope.dynamicTitle = "";
-        $scope.showuserpanel();        
+        $scope.showuserpanel();
         $rootScope.urlBefore = $location.path();
         $rootScope.errorSession = "";
 
@@ -1342,16 +1344,16 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
         //if really the first time loading, listen to the map being done loading, find start location, and remove listener.
         if (!mainControllerInitialized) {
 
-            var listenerForMapReady = google.maps.event.addListener(map,'idle',function() {                
+            var listenerForMapReady = google.maps.event.addListener(map,'idle',function() {
                 //determine where the map should start
                 mainController.determineStartLocation(mainController.startLocationDetermined);
                 listenerForMapReady.remove();
-            });   
+            });
             mainControllerInitialized = true;
         }
 
-        $timeout(function () { 
-            var listener = attachAutoCompleteListener('searchCity'); 
+        $timeout(function () {
+            var listener = attachAutoCompleteListener('searchCity');
             var input = $('#searchCity');
             $('#clickSearch').mousedown(function() {input.focus();});
             $('#clickSearch').mouseup(function() {
@@ -1409,7 +1411,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
               lat: parseFloat($routeParams.latitude),
               lng: parseFloat($routeParams.longitude)
             });
-        } else if ($routeParams.cityName) {    
+        } else if ($routeParams.cityName) {
             moveMapToAddress($routeParams.cityName,true,doneCallBack);
         } else if ($routeParams.postalcode) {
             moveMapToAddress($routeParams.postalcode,true,doneCallBack);
@@ -1474,7 +1476,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
     }
 
     $scope.updatePathForCouncil = function(city) {
-        logger("updatePathForCouncil(" + city + ") -> " + $location.path() + " ::: " + $routeParams.nextaction);      
+        logger("updatePathForCouncil(" + city + ") -> " + $location.path() + " ::: " + $routeParams.nextaction);
 
         var currentPath = $location.path();
 
@@ -1494,8 +1496,8 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
     }
 
     $scope.updateSearchBoxForCouncil = function(city) {
-        logger("updateSearchBoxForCouncil(" + city + ")");    
-        logger($scope.searchCity);    
+        logger("updateSearchBoxForCouncil(" + city + ")");
+        logger($scope.searchCity);
         $scope.searchCity = city;
     }
 
@@ -1513,7 +1515,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
             })
         }
 
-    }    
+    }
 
     mainController.recentIssuesOfType = function(type, count) {
         if (!$scope.zoomedInEnoughToRetrieveIssues() || $rootScope.newProblemList == undefined || $rootScope.newProblemList.length <= 0) return [];
@@ -1588,7 +1590,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
             logger('issues data request', data_request);
             var jsondata = JSON.stringify(data_request);
             var getIssues = issuesService.getIssues(jsondata).then(function (data) {
-                var getdata = data.data;                        
+                var getdata = data.data;
                 logger('issues data result', getdata);
 
                 $rootScope.newProblemList = getdata.issues;
@@ -1614,7 +1616,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
           report_query.organisation_id = $rootScope.customisation.organisation_id;
         }
         logger("updateCouncilReport query", report_query);
-        reportService.getReport(JSON.stringify(report_query)).then(function (data) {                
+        reportService.getReport(JSON.stringify(report_query)).then(function (data) {
             $rootScope.reportList = data.data.report;
         });
     }
@@ -1626,7 +1628,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
             $timeout(function () { $rootScope.hideLogo = !data.data.logo; });
         });
     }
-    
+
     //click function at map
     $scope.alrCity = function () {
         logger("mainCtrl.alrCity() -> getreport / getagreement / getIssues if city.long_name");
@@ -1634,7 +1636,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
     }
 
 
-    $scope.updateAllInfo = function(forceUpdate) {        
+    $scope.updateAllInfo = function(forceUpdate) {
         logger("updateAllInfo("+forceUpdate+") --> ");
 
         //if force, just reload all, regardless of the city name
@@ -1740,7 +1742,7 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
         } else {
             $location.path('/' + selected);
         }
-    }           
+    }
 
     $scope.noProtocol = function(url) {
         return url.replace('http:','').replace('https:','');
@@ -1868,7 +1870,7 @@ vdbApp.controller('issueCtrl', ['$scope', '$rootScope', '$window', '$routeParams
                 currentIssue = data.data.issues[0];
                 $rootScope.problemIdList = issues;
                 $rootScope.dynamicTitle = ''+currentIssue.title+' |';
-                
+
                 $scope.sateliteimg = $scope.getSateliteImage(currentIssue.location);
 
                 issueController.hideLogStatus();
@@ -1892,7 +1894,7 @@ vdbApp.controller('issueCtrl', ['$scope', '$rootScope', '$window', '$routeParams
         logger("handleIssueActions("+action+","+issueId+","+hashkey+")");
 
          //close issue with hashcode
-        
+
         $rootScope.hashToDelete = hashkey;
         //this is where delete issue with hash was
 
@@ -1927,13 +1929,13 @@ vdbApp.controller('issueCtrl', ['$scope', '$rootScope', '$window', '$routeParams
     $scope.remindIssue = function(authorisation_hash,callBack) {
         logger("remindIssue("+authorisation_hash+")")
         $rootScope.globaloverlay = "active";
-        
+
         var jsondata = JSON.stringify({
-            "link" : ROOT + "melding/herinneren/" + authorisation_hash    
+            "link" : ROOT + "melding/herinneren/" + authorisation_hash
         });
         var getRemindIssue = remindIssueService.getRemindIssue(jsondata).then(function (data) {
             var getRemindIssue = data.data;
-            $scope.hideError = 0;                    
+            $scope.hideError = 0;
             $rootScope.globaloverlay = "";
             if (!getRemindIssue.success) {
                 $scope.errorConfirmed = getRemindIssue.error;
@@ -1943,16 +1945,16 @@ vdbApp.controller('issueCtrl', ['$scope', '$rootScope', '$window', '$routeParams
                 callBack();
             }
 
-        });        
+        });
     }
 
     $scope.confirmIssue = function(authorisation_hash,callBack) {
         logger("confirmIssue("+authorisation_hash+")")
 
         $rootScope.globaloverlay = "active";
-        
+
         var jsondata = JSON.stringify({
-            "authorisation_hash" : authorisation_hash    
+            "authorisation_hash" : authorisation_hash
         });
         var getConfirmIssue = confirmIssueService.getConfirmIssue(jsondata).then(function (data) {
             var getConfirmIssue = data.data;
@@ -1973,8 +1975,8 @@ vdbApp.controller('issueCtrl', ['$scope', '$rootScope', '$window', '$routeParams
     $scope.deleteIssueWithHash = function () {
         logger("issueCtrl.deleteIssueWithHash() --> " + $rootScope.hashToDelete);
         $rootScope.globaloverlay = "active";
-        
-        
+
+
         var jsondata = {};
         jsondata.user = {};
         jsondata.user.authorisation_hash = $rootScope.hashToDelete;
@@ -1983,10 +1985,10 @@ vdbApp.controller('issueCtrl', ['$scope', '$rootScope', '$window', '$routeParams
 
         jsondata = JSON.stringify(jsondata);
 
-        
+
         var getStatusChange = statusChangeService.getStatusChange(jsondata).then(function (data) {
             var getStatusChange = data.data;
-            
+
             //validate error or not
             if (getStatusChange.success) {
                 $('#DeleteModal').modal('hide');
@@ -2141,7 +2143,7 @@ vdbApp.controller('issueCtrl', ['$scope', '$rootScope', '$window', '$routeParams
     $scope.googleMapIssue = function (lat, lng, type) {
             googleMapIssue(lat, lng, type);
     }
-    
+
     issueController.hideLogStatus = function() {
         var parameters = {issue_id:$routeParams.id}
         //hide log Status
@@ -2150,7 +2152,7 @@ vdbApp.controller('issueCtrl', ['$scope', '$rootScope', '$window', '$routeParams
                 username:$cookies.getObject('user').username,
                 password_hash:$cookies.getObject('user').password_hash
             }
-        } 
+        }
         var logjsondata = JSON.stringify(parameters);
 
         var getIssueLog = issueLogService.getIssueLog(logjsondata).then(function (data) {
@@ -2214,7 +2216,7 @@ vdbApp.controller('mentionCtrl', ['$scope', '$rootScope', '$window', '$location'
 }])
 
 vdbApp.controller('myIssuesCtrl', ['$scope', '$rootScope', '$window', '$location', 'myIssuesService', '$cookies', function ($scope, $rootScope, $window, $location, myIssuesService, $cookies) {
-    
+
 
     var myIssuesController = this;
 
@@ -2298,7 +2300,7 @@ vdbApp.controller('myIssuesDetailCtrl', ['$scope', '$routeParams', '$http', '$ro
                     mainLng = getdata.issues[i].location.longitude;
                     map.setCenter({ lat: mainLat, lng: mainLng});
                 },1000);
-                
+
                 var lat = getdata.issues[i].location.latitude;
                 var lng = getdata.issues[i].location.longitude;
                 $scope.sateliteimg = "//maps.googleapis.com/maps/api/staticmap?center="+lat+","+lng+"&zoom=18&size=515x300&maptype=hybrid&format=jpg&key=AIzaSyCk3yxCifnV67hIJ2iyRupfH2iHvshna3I&markers=color:red%7C"+lat+","+lng+"&sensor=false";
@@ -2623,7 +2625,7 @@ vdbApp.controller('loginCtrl', ['$scope', '$rootScope', '$window', 'loginService
                 // N.B. mostly copied from ondernemingsDossier.
                 var getLogin = result;
                 var expired = new Date();
-                expired.setHours(expired.getHours() +2);
+                expired.setHours(expired.getHours() + sessionTime);
                 logger(expired);
                 $cookies.putObject('user', getLogin.user, {
                     expires: expired
@@ -2705,7 +2707,7 @@ vdbApp.controller('loginCtrl', ['$scope', '$rootScope', '$window', 'loginService
                 //this is the same code as login succes, better to separate?
                 //temp for data session
                 var expired = new Date();
-                expired.setHours(expired.getHours() +2);
+                expired.setHours(expired.getHours() + sessionTime);
                 logger(expired);
                 $cookies.putObject('user', getLogin.user, {
                     expires: expired
@@ -2772,7 +2774,7 @@ vdbApp.controller('loginCtrl', ['$scope', '$rootScope', '$window', 'loginService
             } else if (getLogin.success) {
                 //temp for data session
                 var expired = new Date();
-                expired.setHours(expired.getHours() +2);
+                expired.setHours(expired.getHours() + sessionTime);
                 $cookies.putObject('user', getLogin.user, {
                     expires: expired
                 });
@@ -3126,7 +3128,7 @@ vdbApp.controller('registerCtrl', ['$scope', '$rootScope', '$window', 'registerS
                         var getNewsletter = data.data;
                     })
                 }
-            
+
             }
         })
     }
@@ -3171,7 +3173,7 @@ vdbApp.controller('commentSubmitCtrl', ['$scope', '$route', '$rootScope', '$wind
             },
             "issue_id" : issue_id,
             "type" : type,
-            "body" : body            
+            "body" : body
         });
         var getCommentSubmit = commentSubmitService.getCommentSubmit(jsondata).then(function (data) {
             var getCommentSubmit = data.data;
@@ -3294,7 +3296,7 @@ vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileSer
                 $scope.facebookuser = user;
 
 
-                //here we create the json     
+                //here we create the json
                 var username = $scope.username;
                 var facebookID = $scope.facebookuser.id;
                 var jsondata = JSON.stringify({
@@ -3336,12 +3338,12 @@ vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileSer
                         $scope.facebookMessages = "Gekoppeld met Facebook";
                         $scope.facebookExist = 1;
 
-                        //fix this into cookies 
+                        //fix this into cookies
                         $window.sessionStorage.facebookID = facebookID;
                         var user = $cookies.getObject('user');
                         var user_profile = $cookies.getObject('user_profile');
                         var expired = new Date();
-                        expired.setHours(expired.getHours() +2);
+                        expired.setHours(expired.getHours() + sessionTime);
                         user_profile.facebookID = facebookID;
                         $cookies.putObject('user', user, {
                             expires: expired
@@ -3401,7 +3403,7 @@ vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileSer
         $scope.errorPasshash = "";
         $scope.errorFB = "";
         $scope.errorPassword3 = null;
-    
+
         $scope.hide = "ng-hide";
         c_user = $cookies.getObject('user');
         c_user_profile = $cookies.getObject('user_profile');
@@ -3468,13 +3470,13 @@ vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileSer
 
 
         } else if ($scope.password_new == $scope.rpassword) {
-            
+
             var jsondataObj = new Object();
             jsondataObj.user = user;
             jsondataObj.password = password;
             jsondataObj.user_profile = user_profile;
             var jsondata = JSON.stringify(jsondataObj);
-            
+
             var getProfile = profileService.getProfile(jsondata).then(function (data) {
 
                 var getProfile = data.data;
@@ -3524,11 +3526,11 @@ vdbApp.controller('profileCtrl', ['$scope', '$rootScope', '$window', 'profileSer
                     }
                     var getLogin = loginService.getLogin(jsondatalogin).then(function (data) {
                         var getLogin = data.data;
-                       
+
                         $cookies.putObject('user', getLogin.user);
                         $cookies.putObject('user_profile', getLogin.user_profile);
                         var expired = new Date();
-                        expired.setHours(expired.getHours() +2);
+                        expired.setHours(expired.getHours() + sessionTime);
                         $cookies.putObject('user', getLogin.user, {
                             expires: expired
                         });
@@ -3580,6 +3582,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
     var is_gvb_aanpassing = $location.path().includes('nieuwe-aanpassing') && CUSTOMISATION_GVB.is_active();
 
     $scope.privateMessageHide = false;
+
     if($location.path().includes('nieuwe-melding')){
         $rootScope.dynamicTitle = "Nieuwe melding |";
     } else if( is_gvb_aanpassing ){
@@ -3587,6 +3590,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
     } else {
         $rootScope.dynamicTitle = "Nieuw probleem |";
     }
+
     $rootScope.lastUrl = $location.path();
 
     // $routeParams.latitude are used in mainController.determineStartLocation
@@ -3602,9 +3606,11 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
       // Text from the stop/route is shown separately, and added to the description field before sending to the backend.
       $scope.description_meta = "";
       $scope.title = "Melding bij: "+$rootScope.clickedGvbObject.name;
+
       if ( $rootScope.clickedGvbObject.lines ) {
         $scope.description_meta += 'Lijnen: '+$rootScope.clickedGvbObject.lines.join(', ') + "\n\n";
       }
+
       if ( $rootScope.clickedGvbObject.destinations ) {
         $scope.description_meta += "Richtingen:\n"+$rootScope.clickedGvbObject.destinations.join("\n") + "\n\n";
       }
@@ -3637,7 +3643,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
     $scope.count = 0;
     $scope.standardMessage = "";
     $rootScope.urlBefore = $location.path();
-   
+
     $scope.email = "";
     $scope.username = "";
     $scope.password = "";
@@ -3685,8 +3691,8 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
         $scope.hideLogin = false;
     }
     //first initial
-    $timeout(function () {        
-         
+    $timeout(function () {
+
         if ( is_gvb_aanpassing ) {
           var issueMarker = googleMapCreateIdea($rootScope);
           attachAutoCompleteListener('searchCityProblem',issueMarker,map4,"location2", $scope);
@@ -3740,9 +3746,9 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
     $scope.clickSearchCreateIssue = function () {
         $scope.loadCategory = 1;
         if(document.getElementById('searchCityProblem').value){
-           var citytemp = document.getElementById('searchCityProblem').value ;         
+           var citytemp = document.getElementById('searchCityProblem').value ;
            city.long_name =  citytemp.substring(citytemp.lastIndexOf(',')+1).replace(" ","");
-           $location.path('/gemeente/'+city.long_name+'/nieuw-probleem',false);      
+           $location.path('/gemeente/'+city.long_name+'/nieuw-probleem',false);
         }
         $rootScope.lastCity = city.long_name;
         $timeout(function(){
@@ -3864,7 +3870,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
         logger("createlat:"+location.latitude);
         logger("createlong:"+location.longitude);
         issue.is_urgent = $scope.is_urgent;
-        
+
         var jsondataSubmit = {
             issue : {
                 title : issue.title,
@@ -3873,7 +3879,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
                 category_id :  issue.category_id,
                 private_message : issue.privateMessage,
                 organisation_id: $rootScope.customisation.organisation_id,
-            }, 
+            },
             location : {
                 latitude : location.latitude,
                 longitude : location.longitude
@@ -3895,7 +3901,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
             jsondataSubmit.user = {email:user.email}
             jsondataSubmit.user_profile = user_profile;
         }
-       
+
         jsondataSubmit = JSON.stringify(jsondataSubmit);
 
         if (file) {
@@ -3964,7 +3970,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
             }
             $rootScope.globaloverlay = "";
             $scope.updateMapIssues();
-        }        
+        }
     }
 
     $scope.alrCityCreate = function () {
@@ -3990,9 +3996,15 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
         markerLat = marker.getPosition().lat();
         markerLng = marker.getPosition().lng();
     }
+
+    $scope.setCategoryUrgent = function () {
+        // category name: Verkeerslichten /  Waarschuwingslichten
+        $scope.is_urgent = $scope.categoryId === 13 ? true : false;
+    }
+
      //dulicate data
     $scope.duplicateData = function () {
-        
+
         $('#duplicate-bubble').hide();
         var user = {};
         if ($cookies.getObject('user')) {
@@ -4005,7 +4017,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
         var category_id = $scope.categoryId;
         $rootScope.currentPage = 1;
         $scope.totalPage = 5;
-        
+
         var jsondataDuplicate = JSON.stringify({
             "user" : {
                 "username" : user.username,
@@ -4176,14 +4188,14 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
             })
         }
     }
-    
+
 
 
     $scope.clickSearchCreateIssue = function () {
         if(document.getElementById('searchCityProblem').value){
-           var citytemp = document.getElementById('searchCityProblem').value ;         
+           var citytemp = document.getElementById('searchCityProblem').value ;
            city.long_name =  citytemp.substring(citytemp.lastIndexOf(',')+1).replace(" ","");
-           $location.path('/gemeente/'+city.long_name+'/nieuw-idee');      
+           $location.path('/gemeente/'+city.long_name+'/nieuw-idee');
         }
         var latitude = markerLat;
         var longitude = markerLng;
@@ -4192,19 +4204,19 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
             "latitude" : latitude,
             "longitude" : longitude
         });
-    
+
         $timeout(function () {
             $scope.updateCouncilReport(city.long_name);
             $scope.updateCouncilAgreement(city.long_name);
             $scope.updateMapIssues();
 
             marker.setPosition(map4.getCenter());
-            
+
             //change location after search
             markerLat = marker.getPosition().lat();
             markerLng = marker.getPosition().lng();
 
-            
+
         }, 1000)
         $timeout(function(){
             marker.setPosition(map4.getCenter());
@@ -4302,14 +4314,14 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
                     "realization" : issue.realization,
                     "private_message" : issue.privateMessage,
                     "organisation_id" : $rootScope.customisation.organisation_id
-                    
-                }, 
+
+                },
                 "location" : {
                     "latitude" : location.latitude,
                     "longitude" : location.longitude
                 }
             });
-            
+
         } else {
             //not login
             jsondataSubmit = JSON.stringify({
@@ -4318,7 +4330,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
                 },
                 "user_profile" : {
                     "initials" : $scope.initials,
-                    "tussenvoegsel" : $scope.tussenvoegsel,    
+                    "tussenvoegsel" : $scope.tussenvoegsel,
                     "surname" : $scope.surname,
                     "sex" : $scope.sex,
                     "address" : $scope.address,
@@ -4328,7 +4340,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
                     "city" : $scope.city,
                     "phone" : $scope.phone,
                     "newsletter" : $scope.newsletter,
-                }, 
+                },
                 "issue" : {
                     "title" : issue.title,
                     "description" :  issue.description,
@@ -4336,15 +4348,15 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
                     "realization" : issue.realization,
                     "private_message" : issue.privateMessage,
                     "organisation_id" : $rootScope.customisation.organisation_id
-                    
-                }, 
+
+                },
                 "location" : {
                     "latitude" : location.latitude,
                     "longitude" : location.longitude
                 }
             });
         }
-            
+
         if (!file) {
             var getIssueSubmit = issueSubmitService.getIssueSubmit(jsondataSubmit).then(function (data) {
                 var issueData = data.data;
@@ -4584,8 +4596,8 @@ vdbApp.controller('closeIssueCtrl', ['$scope', '$rootScope', '$routeParams', '$w
           "appreciation" : appreciation,
           "status" : status
           });
-        
-        
+
+
         var getStatusChange = statusChangeService.getStatusChange(jsondata).then(function (data) {
             var getStatusChange = data.data;
             if (!getStatusChange.success) {
@@ -4757,7 +4769,7 @@ vdbApp.controller('voteCtrl', ['$scope','$rootScope','$routeParams','voteSubmitS
                 $scope.hide = 0;
                 $scope.error = "" + data.data.error + ""
             }
-        }); 
+        });
     }
     $scope.close = function () {
         $scope.hide = 1;
@@ -4815,7 +4827,7 @@ vdbApp.controller('resolveIssueCommentNoCtrl', ['$scope','$rootScope','$routePar
             "comment" : comment,
             "issue_id" : issue_id,
             "status" : status});
-        
+
         var getStatusChange = statusChangeService.getStatusChange(jsondata).then(function (data){
             var getStatusChange = data.data;
             if(!getStatusChange.success){
@@ -5142,7 +5154,7 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
     };
 
     // Retrieve a specific campaign based on the url. If not specific campaign
-    // is requested, show the first found active campaign. If no valid 
+    // is requested, show the first found active campaign. If no valid
     // campaign can be found, show a message.
     var campaign_slug = $routeParams.slug;
     var campaign_query = {
@@ -5171,7 +5183,7 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
       end_date: undefined,
       active: false,
     };
-   
+
     // Something something Safari..
     function Date_parse(s) {
       var s = s.split(/[^0-9]/);
@@ -5252,7 +5264,7 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
     $scope.count = 0;
     $scope.standardMessage = "";
     $rootScope.urlBefore = $location.path();
-   
+
     $scope.notify = false;
     $scope.newsletter = false;
     $scope.email = "";
@@ -5270,8 +5282,8 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
     }
 
     //first initial
-    $timeout(function () {        
-         
+    $timeout(function () {
+
         // TODO FB: on the campaign_thanks page, there is no searchCityProblem,
         // the code below probably gives a small error. Check here, and test
         // if the normal campaigns stil work properly.
@@ -5292,9 +5304,9 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
 
     $scope.clickSearchCreateIssue = function () {
         if(document.getElementById('searchCityProblem').value){
-           var citytemp = document.getElementById('searchCityProblem').value ;         
+           var citytemp = document.getElementById('searchCityProblem').value ;
            city.long_name =  citytemp.substring(citytemp.lastIndexOf(',')+1).replace(" ","");
-           $location.path('/gemeente/'+city.long_name+'/nieuw-probleem',false);      
+           $location.path('/gemeente/'+city.long_name+'/nieuw-probleem',false);
         }
         $rootScope.lastCity = city.long_name;
         $timeout(function(){
@@ -5345,7 +5357,7 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
         location.longitude = markerLng;
         logger("createlat:"+location.latitude);
         logger("createlong:"+location.longitude);
-        
+
         var jsondataSubmit = {
             campaign_submission : submission,
             location : {
@@ -5398,7 +5410,7 @@ vdbApp.controller('campaignCtrl', ['$http', '$scope', '$rootScope', '$window', '
             $location.path('/campagne-bedankt/'+to);
             $rootScope.globaloverlay = "";
             //$scope.updateMapIssues();
-        }        
+        }
     }
 
     $scope.alrCityCreate = function () {
