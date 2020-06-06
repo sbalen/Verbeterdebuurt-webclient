@@ -51,6 +51,7 @@ var searchCreateTemp = 0;
 var user = undefined;
 var userProfile = undefined;
 var mainControllerInitialized = false;
+
 //polyfill for includes for internet explore not support js
 if (!String.prototype.includes) {
   String.prototype.includes = function(search, start) {
@@ -619,10 +620,12 @@ vdbApp.factory('loginService', ['$http','$rootScope', function ($http,$rootScope
     return {
         getLogin: function (jsondata) {
             logger('loginService.getLogin('+jsondata+')');
+
             return $http.post(APIURL + 'login', jsondata)
                 .success(function (data) {
                     if (angular.isObject(data)) {
                         loginService.data = data;
+
                         return loginService.data;
                     }
                 })
@@ -1343,12 +1346,12 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
         menuSelected($rootScope, 'home');
         //if really the first time loading, listen to the map being done loading, find start location, and remove listener.
         if (!mainControllerInitialized) {
-
             var listenerForMapReady = google.maps.event.addListener(map,'idle',function() {
                 //determine where the map should start
                 mainController.determineStartLocation(mainController.startLocationDetermined);
                 listenerForMapReady.remove();
             });
+
             mainControllerInitialized = true;
         }
 
@@ -1361,6 +1364,10 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
                 moveMapToAddress(input.val());
             });
         },10);
+
+        if ($location.path().includes('melding') && !$cookies.getObject('user')) {
+            $window.sessionStorage.issueurl = $location.path();
+        }
 
         // Set Fietsersbond departments
         setup_departments();
@@ -1747,9 +1754,8 @@ vdbApp.controller('mainCtrl', ['$scope', '$q','$timeout', '$window', '$location'
     $scope.noProtocol = function(url) {
         return url.replace('http:','').replace('https:','');
     }
+
     mainController.init();
-
-
 }]);
 
 vdbApp.controller('issueCtrl', ['$scope', '$rootScope', '$window', '$routeParams', 'issuesService', 'reportService', '$location', '$anchorScroll', 'issueLogService', 'commentService', '$timeout', 'voteSubmitService', '$cookies', 'confirmIssueService', 'remindIssueService', 'unfollowIssueService','myIssuesService', 'statusChangeService','getIssueService',function ($scope, $rootScope, $window, $routeParams, issuesService, reportService, $location, $anchorScroll, issueLogService, commentService, $timeout, voteSubmitService, $cookies, confirmIssueService, remindIssueService, unfollowIssueService,myIssuesService,statusChangeService,getIssueService) {
@@ -1760,7 +1766,6 @@ vdbApp.controller('issueCtrl', ['$scope', '$rootScope', '$window', '$routeParams
     var lng;
 
     issueController.init = function() {
-
         $rootScope.globaloverlay = "active";
         $scope.hide = "ng-hide";
         $scope.overlay = "overlay";
@@ -1795,8 +1800,6 @@ vdbApp.controller('issueCtrl', ['$scope', '$rootScope', '$window', '$routeParams
         } else {
             $scope.showIssueDetail($routeParams.id);
         }
-
-
     }
 
     issueController.getIssueForHash = function(hashkey,callBackWithIssueId) {
@@ -2492,10 +2495,15 @@ vdbApp.controller('loginCtrl', ['$scope', '$rootScope', '$window', 'loginService
     //$scope.overlay ACTIVE WHENclick and overlay when no event
     $scope.overlay = "overlay";
 
+    if ($window.sessionStorage.issueurl) {
+        $rootScope.urlBefore = $window.sessionStorage.issueurl;
+        $window.sessionStorage.removeItem('issueurl');
+    }
 
     if ($rootScope.urlBefore == null || $rootScope.urlBefore == '/login') {
         $rootScope.urlBefore = '/';
     }
+
     if ($cookies.getObject('user') != null) {
         $location.path('/');
     }
@@ -2562,11 +2570,7 @@ vdbApp.controller('loginCtrl', ['$scope', '$rootScope', '$window', 'loginService
                     }
                     $rootScope.globaloverlay = "";
                 });
-
-
             });
-        } else {
-
         }
     });
 
@@ -2674,7 +2678,6 @@ vdbApp.controller('loginCtrl', ['$scope', '$rootScope', '$window', 'loginService
       );
     }
 
-
     $scope.loginWithOndernemingsDossier = function () {
         $rootScope.globaloverlay = "active";
         var jsondata = JSON.stringify({
@@ -2698,7 +2701,6 @@ vdbApp.controller('loginCtrl', ['$scope', '$rootScope', '$window', 'loginService
                 $window.sessionStorage.postcode = getLogin.ondernemingsDossier.postcode;
                 $window.sessionStorage.address_number = getLogin.ondernemingsDossier.huisnummer;
                 $rootScope.errorSession = getLogin.error;
-
             } else if (!getLogin.success) {
                 $scope.errorMessage = getLogin.error;
                 $scope.hide = "";
@@ -2843,7 +2845,6 @@ vdbApp.controller('registerCtrl', ['$scope', '$rootScope', '$window', 'registerS
     $rootScope.dynamicTitle = "Registreren";
     $scope.home = function () {
         $location.path('/');
-
     }
 
     $scope.hide = "ng-hide";
@@ -2942,13 +2943,8 @@ vdbApp.controller('registerCtrl', ['$scope', '$rootScope', '$window', 'registerS
         }
     });
 
-
-
-
     $scope.connectFacebook = function () {
-
         $facebook.login();
-
     }
 
     $scope.fbOauthMessages = "Koppel Fietsersbond";
