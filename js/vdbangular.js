@@ -3995,7 +3995,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
 
     $scope.setCategoryUrgent = function () {
         // category name: Verkeerslichten /  Waarschuwingslichten
-        $scope.is_urgent = $scope.is_urgent_disabled = $scope.categoryId === 13 ? true : false;
+        $scope.is_urgent = $scope.is_urgent_disabled = $scope.hideFormField = $scope.categoryId === 13 ? true : false;
     }
 
      //dulicate data
