@@ -127,7 +127,7 @@
                         <h4 class="fontM">2. Beschrijf de melding</h4>
                         <div class="form-group">
                             <div class="col-sm-12 form-col" style="margin-bottom: 10px;">
-                                Is er spoed? <input type="checkbox" id="is_urgent" ng-model="is_urgent">
+                                Is er spoed? <input type="checkbox" id="is_urgent" ng-model="is_urgent" ng-disabled="is_urgent_disabled">
                             </div>
                             <div class="col-sm-12 form-col" style="margin-bottom: 10px;" ng-show="is_urgent">
                                 <strong>Meld per mobifoon aan CCV of bel <a href="tel:6090">6090</a>.</strong>
@@ -158,7 +158,7 @@
                             </div>
                             <div class="col-sm-12 form-col" style="margin-bottom: 10px;"
                                  ng-class="{'has-error':errorId}">
-                                <select class="combobox" id="subcategory" ng-model="subcategoryId"
+                                <select class="combobox" id="subcategory" ng-model="subcategoryId" ng-hide="hideFormField"
                                         ng-options="categories.id as categories.title for categories in subcategoriesList[categoryId]"
                                         style="{{errorIdStyle}}">
                                     <option value="" disabled selected>Subcategorie</option>
@@ -205,7 +205,7 @@
                         <div class="form-group">
                             <div class="col-sm-12 form-col" ng-class="{'has-error':errorDescription}"
                                  style="margin-bottom: 10px;">
-                                <textarea class="form-control" rows="5" id="description" placeholder="Beschrijving"
+                                <textarea class="form-control" rows="5" id="description" placeholder="Beschrijving" ng-hide="hideFormField"
                                           ng-model="description"></textarea>
                             </div>
                         </div>
