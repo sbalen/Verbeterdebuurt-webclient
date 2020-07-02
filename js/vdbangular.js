@@ -3799,7 +3799,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
         var file5 = $scope.imgData5;
 
         // Photos are required for the GVB.
-        if ( CUSTOMISATION_GVB.is_active() && ! file ) {
+        if ( CUSTOMISATION_GVB.is_active() && $scope.categoryId !== 13 && ! file) {
           $scope.errorImg = "Foto is vereist";
           $scope.hide = "";
           $rootScope.globaloverlay = "";

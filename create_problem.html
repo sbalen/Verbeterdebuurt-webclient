@@ -209,7 +209,7 @@
                                           ng-model="description"></textarea>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div ng-hide="hideFormField" class="form-group">
                             <div class="col-sm-12 form-col">
                                 <div id="description-meta">{{ description_meta }}</div>
                             </div>
@@ -232,24 +232,24 @@
                              </div>
                          </div> -->
                         <!--<label class="control-label">Select File</label>-->
-                        <p>Foto uploaden (verplicht)</p>
-                        <div ng-class="{'has-error': errorImg }">
+                        <p ng-hide="hideFormField">Foto uploaden (verplicht)</p>
+                        <div ng-hide="hideFormField" ng-class="{'has-error': errorImg }">
                             <input id="file-input-problem" type="file" style="width: 94%;margin-left: 3%;"
                                    data-show-upload="false" img-upload='imgData'>
                         </div>
-                        <div style="margin-top:0.5em;">
+                        <div ng-hide="hideFormField" style="margin-top:0.5em;">
                             <input id="file-input-problem2" type="file" style="width: 94%;margin-left: 3%;"
                                    data-show-upload="false" img-upload='imgData2'>
                         </div>
-                        <div style="margin-top:0.5em;">
+                        <div ng-hide="hideFormField" style="margin-top:0.5em;">
                             <input id="file-input-problem3" type="file" style="width: 94%;margin-left: 3%;"
                                    data-show-upload="false" img-upload='imgData3'>
                         </div>
-                        <div style="margin-top:0.5em;">
+                        <div ng-hide="hideFormField" style="margin-top:0.5em;">
                             <input id="file-input-problem4" type="file" style="width: 94%;margin-left: 3%;"
                                    data-show-upload="false" img-upload='imgData4'>
                         </div>
-                        <div style="margin-top:0.5em;">
+                        <div ng-hide="hideFormField" style="margin-top:0.5em;">
                             <input id="file-input-problem5" type="file" style="width: 94%;margin-left: 3%;"
                                    data-show-upload="false" img-upload='imgData5'>
                         </div>
