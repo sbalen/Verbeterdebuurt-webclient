@@ -133,7 +133,7 @@
                                 <strong>Meld per mobifoon aan CCV of bel <a href="tel:6090">6090</a>.</strong>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" ng-hide="hideFormField">
                             <div class="col-sm-12 form-col" style="margin-bottom: 10px;"
                                  ng-class="{'has-error':errorTitle}">
                                 <input type="text" class="form-control" id="Onderwerp" placeholder="Onderwerp" ng-model="title">
@@ -315,7 +315,7 @@
                     </div>
                 </form>
 
-                <div class="modal-footer">
+                <div class="modal-footer" ng-hide="hideFormField">
                     <button type="button" class="btn btn-success" data-dismiss="modal" ng-click="createIssue()">
                         Verzenden
                     </button>
