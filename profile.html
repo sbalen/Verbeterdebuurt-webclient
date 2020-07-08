@@ -64,47 +64,6 @@
                                     </div>
                                 </div>
                     </div>
-                            <div class="panel-body">
-                                <h4 class="fontM">Persoonsgegevens</h4>
-                                <h5 style="color:green; margin-right: 26px;font-family: Merriweather;">Deze gegevens zijn nodig voor de gemeente om aan je melding te kunnen werken. Ze worden niet openbaar gemaakt en nooit gebruikt voor marketingdoeleinden.</h5>
-                                <div class="form-group" ng-class="{'has-error': errorSex }" >
-                                        <div class="col-sm-2 form-col marginwidth">
-                                            <select class="combobox" id="category"  ng-model ="sex">
-                                                <option value="m" ng-selected="selected1" >Dhr.</option>
-                                                <option value="f" ng-selected="selected2" >Mw.</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-sm-3 form-col margin1 marginwidth" ng-class="{'has-error': errorInitials }">
-                                            <input type="text" class="form-control margin2 margin2m" id="initials" placeholder="voorletters" ng-model="initials"  >
-                                        </div>
-                                        <div class="col-sm-3 form-col margin1 marginwidth" ng-class="{'has-error': errorMiddle }">
-                                            <input type="text" class="form-control margin4 margin4m" id="tussenvoegsel" placeholder="tussenvoegsel" ng-model="tussenvoegsel" >
-                                        </div>
-                                        <div class="col-sm-3 form-col margin1 marginwidth1" ng-class="{'has-error': errorSurname }">
-                                            <input type="text" class="form-control margin3 margin3m" id="name" placeholder="Achternaam" ng-model ="surname" >
-                                        </div>
-                                </div>
-                               <div class="form-group">
-                                    <div class="col-sm-8  form-col " ng-class="{'has-error': errorAddress}">
-                                        <input type="text"   class="form-control field marginwidth " id="street" placeholder="Straat" ng-model ="address" >
-                                    </div>
-                                    <div class="col-sm-4 form-col " ng-class="{'has-error': errorAddressN}">
-                                        <input type="text" class="form-control"   id="number" placeholder="Huisnummer" ng-model ="address_number">
-                                    </div>
-                                    </div>
-                                <div class="form-group">
-                                    <div class="col-sm-4 form-col " ng-class="{'has-error': errorPost}">
-                                        <input type="text" class="form-control field1 marginwidth "  id="postcode" placeholder="Postcode" ng-model="postcode">
-                                    </div>
-                                    <div class="col-sm-8 form-col" ng-class="{'has-error': errorCity}">
-                                        <input type="text" class="form-control " id="city" placeholder="Plaats" ng-model="city" style="margin-bottom: 15px">
-                                    </div>
-                                    <div class="col-sm-12 form-col">
-                                        <input type="text" class="form-control" id="telephonenumber" placeholder="Telefoonnummer" ng-model="phone">
-                                    </div>
-                                </div>
-                            </div>
-            
                             <div class="panel-body " ng-show="allowFacebookConnect">
                                 <h4 class="fontM " style="margin-left: 5px;">Verbinden met social media</h4>
                                 <table class="mediamargin mediamobile">
