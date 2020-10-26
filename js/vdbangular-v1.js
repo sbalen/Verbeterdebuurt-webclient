@@ -3100,6 +3100,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
         $scope.errorPostcode = "";
         $scope.errorStreet = "";
         $scope.errorStreetNumber = "";
+        $scope.errorFileSize = "";
 
         //initial data for request
         var user = {};
@@ -3107,6 +3108,17 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
         var issue = {};
         var location = {};
         var file = $scope.imgData;
+
+        if (file.size > 26214400) { // 25mb
+            $scope.errorFileSize = 'Maximale bestandsgrootte is 25mb';
+            $scope.imgData = "";
+            $scope.hide = "";
+            $rootScope.globaloverlay = "";
+            $(window).scrollTop(0);
+
+            return;
+        }
+
         //login
         if ($cookies.getObject('user')) {
             user.username = $cookies.getObject('user').username;
@@ -3225,6 +3237,10 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
             if (issueData.errors.street_number) {
                 $scope.errorStreetNumber = "Huisnummer " + issueData.errors.street_number;
             }
+            if (issueData.errors.file_size) {
+                $scope.errorFileSize = issueData.errors.file_size;
+            }
+            
             $rootScope.globaloverlay = "";
             $(window).scrollTop(0);
         } else if (issueData.success == "false") {
@@ -3271,9 +3287,9 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
         markerLat = marker.getPosition().lat();
         markerLng = marker.getPosition().lng();
     }
-     //dulicate data
-    $scope.duplicateData = function () {
 
+    //dulicate data
+    $scope.duplicateData = function () {
         $('#duplicate-bubble').hide();
         var user = {};
         if ($cookies.getObject('user')) {
@@ -3504,7 +3520,19 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
         $scope.errorPostcode = "";
         $scope.errorStreet = "";
         $scope.errorStreetNumber = "";
+        $scope.errorFileSize = "";
+        
         var file = $scope.imgData;
+
+        if (file.size > 26214400) { // 25mb
+            $scope.errorFileSize = 'Maximale bestandsgrootte is 25mb';
+            $scope.imgData = "";
+            $scope.hide = "";
+            $rootScope.globaloverlay = "";
+            $(window).scrollTop(0);
+
+            return;
+        }
 
         //initial data for request
         var user = {};
@@ -3650,6 +3678,9 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
                     if (issueData.errors.street_number) {
                         $scope.errorStreetNumber = "Huisnummer " + issueData.errors.street_number;
                     }
+                    if (issueData.errors.file_size) {
+                        $scope.errorFileSize = issueData.errors.file_size;
+                    }
 
 
                     $rootScope.globaloverlay = "";
@@ -3717,6 +3748,10 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
                     if (issueData.errors.street_number) {
                         $scope.errorStreetNumber = "Huisnummer " + issueData.errors.street_number;
                     }
+                    if (issueData.errors.file_size) {
+                        $scope.errorFileSize = issueData.errors.file_size;
+                    }
+                    
                     $rootScope.globaloverlay = "";
                     $(window).scrollTop(0);
                 } else if (issueData.success == "false") {
