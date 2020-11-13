@@ -3109,7 +3109,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
         var location = {};
         var file = $scope.imgData;
 
-        if (file.size > 26214400) { // 25mb
+        if (file && file.size > 26214400) { // 25mb
             $scope.errorFileSize = 'Maximale bestandsgrootte is 25mb';
             $scope.imgData = "";
             $scope.hide = "";
@@ -3240,7 +3240,7 @@ vdbApp.controller('createProblemCtrl', ['$scope', '$rootScope', '$window', '$tim
             if (issueData.errors.file_size) {
                 $scope.errorFileSize = issueData.errors.file_size;
             }
-            
+
             $rootScope.globaloverlay = "";
             $(window).scrollTop(0);
         } else if (issueData.success == "false") {
@@ -3521,7 +3521,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
         $scope.errorStreet = "";
         $scope.errorStreetNumber = "";
         $scope.errorFileSize = "";
-        
+
         var file = $scope.imgData;
 
         if (file.size > 26214400) { // 25mb
@@ -3751,7 +3751,7 @@ vdbApp.controller('createIdeaCtrl', ['$scope', '$rootScope', '$window', '$timeou
                     if (issueData.errors.file_size) {
                         $scope.errorFileSize = issueData.errors.file_size;
                     }
-                    
+
                     $rootScope.globaloverlay = "";
                     $(window).scrollTop(0);
                 } else if (issueData.success == "false") {
