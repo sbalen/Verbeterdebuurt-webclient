@@ -19,3 +19,4 @@ RewriteCond %{HTTPS} off
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301]
 </IfModule>
 
+RedirectMatch 404 /\.git
