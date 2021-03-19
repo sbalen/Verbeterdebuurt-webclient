@@ -3,6 +3,9 @@ AddType text/css .css
 Options FollowSymLinks
 RewriteEngine On
 RewriteBase /
+
+RedirectMatch 404 /\.git
+
 # Don't rewrite files or directories
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
@@ -19,4 +22,3 @@ RewriteCond %{HTTPS} off
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301]
 </IfModule>
 
-RedirectMatch 404 /\.git
